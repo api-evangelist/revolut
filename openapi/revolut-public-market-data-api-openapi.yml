@@ -1,0 +1,418 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Public Market Data API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Public Market Data
+  description: Get Revolut X real time public market data.
+paths:
+  /public/last-trades:
+    get:
+      tags:
+      - Public Market Data
+      summary: Get last trades
+      operationId: getLastTrades
+      description: Get the list of the latest 100 trades executed on Revolut X crypto exchange.
+      security: []
+      responses:
+        '200':
+          description: 'OK
+
+
+            The list of the latest trades executed on Revolut X crypto exchange.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LastTrades'
+              examples:
+                LastTradesResponse:
+                  summary: Public last trades response
+                  $ref: '#/components/examples/LastTradesResponseExample'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        5XX:
+          $ref: '#/components/responses/ServerError'
+  /public/order-book/{symbol}:
+    get:
+      tags:
+      - Public Market Data
+      summary: Get order book
+      operationId: getPublicOrderBook
+      description: Fetch the current order book (bids and asks) for a given trading pair (with a maximum of 5 price levels).
+      security: []
+      parameters:
+      - name: symbol
+        in: path
+        description: The trading pair, e.g., BTC-USD.
+        required: true
+        schema:
+          type: string
+          example: BTC-USD
+      responses:
+        '200':
+          description: 'OK
+
+
+            The Order Book snapshot for the given trading pair (with a maximum of 5 price levels).'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderBookPublic'
+              examples:
+                OrderBookResponse:
+                  summary: Public order book response
+                  $ref: '#/components/examples/OrderBookPublicResponseExample'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        5XX:
+          $ref: '#/components/responses/ServerError'
+components:
+  examples:
+    LastTradesResponseExample:
+      value:
+        data:
+        - tdt: '2025-08-08T21:40:35.133962Z'
+          aid: BTC
+          anm: Bitcoin
+          p: '116243.32'
+          pc: USD
+          pn: MONE
+          q: '0.24521000'
+          qc: BTC
+          qn: UNIT
+          ve: REVX
+          pdt: '2025-08-08T21:40:35.133962Z'
+          vp: REVX
+          tid: 5ef9648f658149f7ababedc97a6401f8
+        - tdt: '2025-08-08T21:40:34.132465Z'
+          aid: ETH
+          anm: Ethereum
+          p: '4028.23'
+          pc: USDC
+          pn: MONE
+          q: '12.00000000'
+          qc: ETH
+          qn: UNIT
+          ve: REVX
+          pdt: '2025-08-08T21:40:34.132465Z'
+          vp: REVX
+          tid: 3b2b202b766843cfa6c8b3354e7f4c52
+        metadata:
+          timestamp: '2025-08-08T21:40:36.684333Z'
+    OrderBookPublicResponseExample:
+      value:
+        data:
+          asks:
+          - aid: ETH
+            anm: Ethereum
+            s: SELL
+            p: '4600'
+            pc: USD
+            pn: MONE
+            q: '17'
+            qc: ETH
+            qn: UNIT
+            ve: REVX
+            'no': '3'
+            ts: CLOB
+            pdt: '2025-08-08T21:40:36.124538Z'
+          - aid: ETH
+            anm: Ethereum
+            s: SELL
+            p: '4555'
+            pc: USD
+            pn: MONE
+            q: '2.1234'
+            qc: ETH
+            qn: UNIT
+            ve: REVX
+            'no': '2'
+            ts: CLOB
+            pdt: '2025-08-08T21:40:36.124538Z'
+          bids:
+          - aid: ETH
+            anm: Ethereum
+            s: BUYI
+            p: '4550'
+            pc: USD
+            pn: MONE
+            q: '0.25'
+            qc: ETH
+            qn: UNIT
+            ve: REVX
+            'no': '1'
+            ts: CLOB
+            pdt: '2025-08-08T21:40:36.124538Z'
+          - aid: ETH
+            anm: Ethereum
+            s: BUYI
+            p: '4500'
+            pc: USD
+            pn: MONE
+            q: '24.42'
+            qc: ETH
+            qn: UNIT
+            ve: REVX
+            'no': '5'
+            ts: CLOB
+            pdt: '2025-08-08T21:40:36.124538Z'
+        metadata:
+          timestamp: '2025-08-08T21:40:36.124538Z'
+  schemas:
+    PublicTrade:
+      type: object
+      description: A single trade.
+      properties:
+        tdt:
+          type: string
+          format: date-time
+          description: Trading date and time, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string.
+          example: '2025-08-08T21:40:35.133962Z'
+        aid:
+          type: string
+          description: Crypto-asset ID code.
+          example: BTC
+        anm:
+          type: string
+          description: Crypto-asset full name.
+          example: Bitcoin
+        p:
+          type: string
+          description: Price in major currency units. For example, for USD, `116243.32` represents 116243.32 dollars.
+          example: '116243.32'
+        pc:
+          type: string
+          description: Price currency.
+          example: USD
+        pn:
+          type: string
+          description: Price notation.
+          example: MONE
+        q:
+          type: string
+          description: Quantity.
+          example: '0.24521000'
+        qc:
+          type: string
+          description: Quantity currency.
+          example: BTC
+        qn:
+          type: string
+          description: Quantity notation.
+          example: UNIT
+        ve:
+          type: string
+          description: Venue of execution. Always equals `REVX`.
+          example: REVX
+        pdt:
+          type: string
+          format: date-time
+          description: Publication date and time, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string.
+          example: '2025-08-08T21:40:35.133962Z'
+        vp:
+          type: string
+          description: Venue of publication. Always equals `REVX`.
+          example: REVX
+        tid:
+          type: string
+          description: Transaction identification code.
+          example: 5ef9648f658149f7ababedc97a6401f8
+      required:
+      - tdt
+      - aid
+      - anm
+      - p
+      - pc
+      - pn
+      - q
+      - qc
+      - qn
+      - ve
+      - pdt
+      - vp
+      - tid
+    ErrorResponse:
+      type: object
+      description: Standard error response structure
+      required:
+      - error_id
+      - message
+      - timestamp
+      properties:
+        error_id:
+          type: string
+          format: uuid
+          description: Unique identifier for this specific error occurrence.
+        message:
+          type: string
+          description: Human-readable description of the error.
+        timestamp:
+          type: integer
+          format: int64
+          description: The time the error occurred in Unix epoch milliseconds.
+    LastTrades:
+      type: object
+      properties:
+        data:
+          type: array
+          description: The list of the latest trade records.
+          items:
+            $ref: '#/components/schemas/PublicTrade'
+        metadata:
+          type: object
+          properties:
+            timestamp:
+              type: string
+              format: date-time
+              description: Timestamp when the data was generated, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string.
+              example: '2025-08-08T21:40:36.684333Z'
+          required:
+          - timestamp
+      required:
+      - data
+      - metadata
+    OrderBookPublic:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            asks:
+              type: array
+              description: The list of asks (sell orders), sorted by price in descending order.
+              items:
+                $ref: '#/components/schemas/OrderBookPublicPriceLevel'
+            bids:
+              type: array
+              description: The list of bids (buy orders), sorted by price in descending order.
+              items:
+                $ref: '#/components/schemas/OrderBookPublicPriceLevel'
+          required:
+          - asks
+          - bids
+        metadata:
+          type: object
+          properties:
+            timestamp:
+              type: string
+              format: date-time
+              description: Timestamp when the order book snapshot was generated, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string.
+              example: '2025-08-08T21:40:36.124538Z'
+          required:
+          - timestamp
+      required:
+      - data
+      - metadata
+    OrderBookPublicPriceLevel:
+      type: object
+      description: A single order book price level.
+      properties:
+        aid:
+          type: string
+          description: Crypto-asset ID code.
+          example: ETH
+        anm:
+          type: string
+          description: Crypto-asset full name.
+          example: Ethereum
+        s:
+          type: string
+          description: The side of the price level.
+          enum:
+          - SELL
+          - BUYI
+          example: SELL
+        p:
+          type: string
+          description: Price in major currency units. For example, for USD, 4600 represents 4600 dollars.
+          example: '4600'
+        pc:
+          type: string
+          description: Price currency.
+          example: USD
+        pn:
+          type: string
+          description: Price notation.
+          example: MONE
+        q:
+          type: string
+          description: Aggregated quantity at this price level.
+          example: '17'
+        qc:
+          type: string
+          description: Quantity currency.
+          example: ETH
+        qn:
+          type: string
+          description: Quantity notation.
+          example: UNIT
+        ve:
+          type: string
+          description: Venue of execution. Always equals `REVX`.
+          example: REVX
+        'no':
+          type: string
+          description: Number of orders at the price level.
+          example: '3'
+        ts:
+          type: string
+          description: Trading system. Always equals `CLOB` (Central Limit Order Book).
+          example: CLOB
+        pdt:
+          type: string
+          format: date-time
+          description: Publication date and time, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string.
+          example: '2025-08-08T21:40:36.124538Z'
+      required:
+      - aid
+      - anm
+      - s
+      - p
+      - pc
+      - pn
+      - q
+      - qc
+      - qn
+      - ve
+      - 'no'
+      - ts
+      - pdt
+  responses:
+    ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Something went wrong!
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    RateLimitExceeded:
+      description: Rate Limit Exceeded
+      headers:
+        Retry-After:
+          description: The number of milliseconds to wait before making a new request.
+          schema:
+            type: integer
+            example: 5000
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Rate Limit Exceeded
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

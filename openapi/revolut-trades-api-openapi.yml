@@ -1,0 +1,537 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Trades API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Trades
+  description: 'Retrieve Revolut X trade history and execution details: view public market trades or your specific private trade executions (fills).'
+paths:
+  /trades/all/{symbol}:
+    get:
+      tags:
+      - Trades
+      summary: Get all public trades (market history)
+      operationId: getAllTrades
+      description: Retrieve a list of all trades for a specific symbol, not limited to the current client's activity.
+      parameters:
+      - $ref: '#/components/parameters/XRevxTimestamp'
+      - $ref: '#/components/parameters/XRevxSignature'
+      - name: symbol
+        in: path
+        required: true
+        description: Trading pair symbol (e.g., BTC-USD).
+        example: BTC-USD
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StartDateQueryParam'
+      - $ref: '#/components/parameters/EndDateQueryParam'
+      - name: cursor
+        in: query
+        description: Pagination cursor obtained from the [`metadata.next_cursor`](https://developer.revolut.com/docs/api/revolut-x-crypto-exchange#get-all-trades#response) property of the previous response.
+        schema:
+          type: string
+          example: ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw==
+      - name: limit
+        in: query
+        description: Maximum number of records to return.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 1900
+          default: 1900
+          example: 1000
+      responses:
+        '200':
+          description: 'OK
+
+
+            The list of trades.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllTradesPaginatedResponse'
+              examples:
+                TradesPaginatedResponse:
+                  summary: All trades paginated response
+                  $ref: '#/components/examples/TradesPaginatedResponseExample'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        5XX:
+          $ref: '#/components/responses/ServerError'
+  /trades/private/{symbol}:
+    get:
+      tags:
+      - Trades
+      summary: Get client trades (associated with the provided API key)
+      operationId: getPrivateTrades
+      description: 'Retrieve the trade history (fills) for the authenticated client.
+
+        The user context is resolved based on the provided API key.'
+      parameters:
+      - $ref: '#/components/parameters/XRevxTimestamp'
+      - $ref: '#/components/parameters/XRevxSignature'
+      - name: symbol
+        in: path
+        required: true
+        description: Trading pair symbol (e.g., BTC-USD).
+        schema:
+          type: string
+          example: BTC-USD
+      - $ref: '#/components/parameters/StartDateQueryParam'
+      - $ref: '#/components/parameters/EndDateQueryParam'
+      - name: cursor
+        in: query
+        description: Pagination cursor obtained from the [`metadata.next_cursor`](https://developer.revolut.com/docs/api/revolut-x-crypto-exchange#get-private-trades#response) property of the previous response.
+        schema:
+          type: string
+          example: ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw==
+      - name: limit
+        in: query
+        description: Maximum number of records to return.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 1900
+          default: 1900
+          example: 1000
+      responses:
+        '200':
+          description: 'OK
+
+
+            The list of trades.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivateTradesPaginatedResponse'
+              examples:
+                TradesPaginatedResponse:
+                  summary: Client trades paginated response
+                  $ref: '#/components/examples/ClientTradesPaginatedResponseExample'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        5XX:
+          $ref: '#/components/responses/ServerError'
+components:
+  parameters:
+    StartDateQueryParam:
+      name: start_date
+      in: query
+      description: 'Start timestamp for the query range in Unix epoch milliseconds.
+
+
+        :::note
+
+        If `start_date` is omitted, it defaults to 7 days prior to `end_date`.
+
+        The difference between `start_date` and `end_date` must be <= 30 days.
+
+        :::'
+      schema:
+        type: integer
+        format: int64
+        example: 3318215482991
+    XRevxTimestamp:
+      in: header
+      name: X-Revx-Timestamp
+      required: true
+      description: "Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers."
+      schema:
+        type: integer
+        example: 1746007718237
+    EndDateQueryParam:
+      name: end_date
+      in: query
+      description: 'End timestamp for the query range in Unix epoch milliseconds.
+
+
+        :::note
+
+        If `end_date` is omitted, it defaults to `start_date` + 7 days (if `start_date` is provided) or the current date (if `start_date` is missing).
+
+        The duration between `start_date` and `end_date` must not exceed 30 days.
+
+        :::'
+      schema:
+        type: integer
+        format: int64
+        example: 3318215482991
+    XRevxSignature:
+      in: header
+      name: X-Revx-Signature
+      required: true
+      description: "The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::"
+      schema:
+        type: string
+        example: 2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+
+  schemas:
+    Trade:
+      type: object
+      description: A single trade.
+      properties:
+        tdt:
+          type: integer
+          format: int64
+          description: Trade date and time, expressed in Unix epoch milliseconds.
+          example: 3318215482991
+        aid:
+          type: string
+          description: Crypto-asset ID code.
+          example: BTC
+        anm:
+          type: string
+          description: Crypto-asset full name.
+          example: Bitcoin
+        p:
+          type: string
+          description: Price in major currency units. For example, for USD, `116243.32` represents 116243.32 dollars.
+          example: '116243.32'
+        pc:
+          type: string
+          description: Price currency.
+          example: USD
+        pn:
+          type: string
+          description: Price notation.
+          example: MONE
+        q:
+          type: string
+          description: Quantity.
+          example: '0.24521000'
+        qc:
+          type: string
+          description: Quantity currency.
+          example: BTC
+        qn:
+          type: string
+          description: Quantity notation.
+          example: UNIT
+        ve:
+          type: string
+          description: Venue of execution. Always equals `REVX`.
+          example: REVX
+        pdt:
+          type: integer
+          format: int64
+          description: Publication date and time, expressed in Unix epoch milliseconds.
+          example: 3318215482991
+        vp:
+          type: string
+          description: Venue of publication. Always equals `REVX`.
+          example: REVX
+        tid:
+          type: string
+          description: Transaction identification code.
+          example: 5ef9648f658149f7ababedc97a6401f8
+      required:
+      - tdt
+      - aid
+      - anm
+      - p
+      - pc
+      - pn
+      - q
+      - qc
+      - qn
+      - ve
+      - pdt
+      - vp
+      - tid
+    PrivateTradesPaginatedResponse:
+      type: object
+      required:
+      - data
+      - metadata
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClientTrade'
+        metadata:
+          type: object
+          required:
+          - timestamp
+          properties:
+            timestamp:
+              type: integer
+              format: int64
+              description: Timestamp in Unix epoch milliseconds.
+            next_cursor:
+              type: string
+              description: 'Cursor used to retrieve the next page of results.
+
+
+                To continue paginating through the results, make a new request and pass this value in the [`cursor`](https://developer.revolut.com/docs/api/revolut-x-crypto-exchange#get-private-trades#request) query parameter.'
+    ErrorResponse:
+      type: object
+      description: Standard error response structure
+      required:
+      - error_id
+      - message
+      - timestamp
+      properties:
+        error_id:
+          type: string
+          format: uuid
+          description: Unique identifier for this specific error occurrence.
+        message:
+          type: string
+          description: Human-readable description of the error.
+        timestamp:
+          type: integer
+          format: int64
+          description: The time the error occurred in Unix epoch milliseconds.
+    AllTradesPaginatedResponse:
+      type: object
+      required:
+      - data
+      - metadata
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Trade'
+        metadata:
+          type: object
+          required:
+          - timestamp
+          properties:
+            timestamp:
+              type: integer
+              format: int64
+              description: Timestamp in Unix epoch milliseconds.
+            next_cursor:
+              type: string
+              description: 'Cursor used to retrieve the next page of results.
+
+
+                To continue paginating through the results, make a new request and pass this value in the [`cursor`](https://developer.revolut.com/docs/api/revolut-x-crypto-exchange#get-all-trades#request) query parameter.'
+    ClientTrade:
+      type: object
+      description: A single trade.
+      properties:
+        tdt:
+          type: integer
+          format: int64
+          description: Trade date and time, expressed in Unix epoch milliseconds.
+          example: 3318215482991
+        aid:
+          type: string
+          description: Crypto-asset ID code.
+          example: BTC
+        anm:
+          type: string
+          description: Crypto-asset full name.
+          example: Bitcoin
+        p:
+          type: string
+          description: Price in major currency units. For example, for USD, `116243.32` represents 116243.32 dollars.
+          example: '116243.32'
+        pc:
+          type: string
+          description: Price currency.
+          example: USD
+        pn:
+          type: string
+          description: Price notation.
+          example: MONE
+        q:
+          type: string
+          description: Quantity.
+          example: '0.24521000'
+        qc:
+          type: string
+          description: Quantity currency.
+          example: BTC
+        qn:
+          type: string
+          description: Quantity notation.
+          example: UNIT
+        ve:
+          type: string
+          description: Venue of execution. Always equals `REVX`.
+          example: REVX
+        pdt:
+          type: integer
+          format: int64
+          description: Publication date and time, expressed in Unix epoch milliseconds.
+          example: 3318215482991
+        vp:
+          type: string
+          description: Venue of publication. Always equals `REVX`.
+          example: REVX
+        tid:
+          type: string
+          description: Transaction identification code.
+          example: 5ef9648f658149f7ababedc97a6401f8
+        oid:
+          type: string
+          format: uuid
+          description: Unique identifier for the order associated with the trade.
+          example: 2affb2ac-4cf7-4bbf-b7b2-fc1e885bdc2c
+        s:
+          type: string
+          enum:
+          - buy
+          - sell
+          description: Indicates the trade direction of the order.
+          example: buy
+        im:
+          type: boolean
+          description: Indicates whether the trade was a maker (true) or taker (false).
+          example: true
+      required:
+      - tdt
+      - aid
+      - anm
+      - p
+      - pc
+      - pn
+      - q
+      - qc
+      - qn
+      - ve
+      - pdt
+      - vp
+      - tid
+      - oid
+      - im
+  responses:
+    ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Something went wrong!
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: API key can only be used for authentication from whitelisted IP
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: 'No such pair: BTC-BTC'
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Request timestamp is in the future
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Forbidden
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    RateLimitExceeded:
+      description: Rate Limit Exceeded
+      headers:
+        Retry-After:
+          description: The number of milliseconds to wait before making a new request.
+          schema:
+            type: integer
+            example: 5000
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Rate Limit Exceeded
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+  examples:
+    TradesPaginatedResponseExample:
+      value:
+        data:
+        - tdt: 3318215482991
+          aid: BTC
+          anm: Bitcoin
+          p: '125056.76'
+          pc: USD
+          pn: MONE
+          q: '0.00003999'
+          qc: BTC
+          qn: UNIT
+          ve: REVX
+          pdt: 3318215482991
+          vp: REVX
+          tid: 80654a036323311cb0ea28462b42db6d
+        metadata:
+          timestamp: 3318215482991
+          next_cursor: GF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw==
+    ClientTradesPaginatedResponseExample:
+      value:
+        data:
+        - tdt: 3318215482991
+          aid: BTC
+          anm: Bitcoin
+          p: '125056.76'
+          pc: USD
+          pn: MONE
+          q: '0.00003999'
+          qc: BTC
+          qn: UNIT
+          ve: REVX
+          pdt: 3318215482991
+          vp: REVX
+          tid: 80654a036323311cb0ea28462b42db6d
+          oid: 2affb2ac-4cf7-4bbf-b7b2-fc1e885bdc2c
+          s: buy
+          im: false
+        metadata:
+          timestamp: 3318215482991
+          next_cursor: GF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw==
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

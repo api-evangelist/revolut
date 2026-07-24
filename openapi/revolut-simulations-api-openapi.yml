@@ -1,0 +1,228 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Simulations API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Simulations
+  description: "The Simulations API is only available in the Sandbox environment. \nIt lets you simulate certain events that are otherwise only possible in the production environment, such as your account's top-up and transfer state changes. \n\nFor more information, see the guides: [Test your flows with simulations (Sandbox only)](https://developer.revolut.com/docs/guides/manage-accounts/api-usage-and-testing/test-flows-with-simulations).\n\n:::note\nTo play around with Sandbox, [create a Sandbox account](https://sandbox-business.revolut.com/).\n:::"
+paths:
+  /sandbox/transactions/{id}/{action}:
+    servers:
+    - url: https://sandbox-b2b.revolut.com/api/1.0
+      description: Sandbox server (uses test data)
+    post:
+      summary: Simulate a transfer state update (Sandbox only)
+      operationId: simulateTransferStateUpdate
+      description: "Simulate a transfer state change in the Sandbox environment. \n\nFor example, after you make a transfer in Sandbox, you can change its state to `completed`. The resulting state is final and cannot be changed.\n\nFor more information, see the guides: [Test your flows with simulations (Sandbox only)](https://developer.revolut.com/docs/guides/manage-accounts/api-usage-and-testing/test-flows-with-simulations)."
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The ID of the transfer whose state you want to update.
+        required: true
+      - name: action
+        in: path
+        schema:
+          type: string
+          enum:
+          - complete
+          - revert
+          - decline
+          - fail
+          description: 'Indicates the transaction state update. Possible values:
+
+            - `complete` - Transaction is successfully processed.
+
+            - `revert` - Transaction is reverted by the system or company, but not the user. This can happen for a variety of reasons, for example, the receiver being inaccessible.
+
+            - `decline` - Transaction is declined to the user for a good reason, such as insufficient account balance, wrong receiver information, etc.
+
+            - `fail` - Transaction fails during initiation or completion. This can happen for a variety of reasons, for example, invalid API calls, blocked payments, etc.'
+        required: true
+      security:
+      - AccessToken:
+        - WRITE
+      responses:
+        '200':
+          description: Information about the updated transfer state
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: The ID of the transfer whose state was updated.
+                  state:
+                    type: string
+                    enum:
+                    - completed
+                    - reverted
+                    - declined
+                    - failed
+                    description: 'Indicates the simulated transaction state. Possible values:
+
+                      - `completed` - Transaction was successfully processed.
+
+                      - `reverted` - Transaction was reverted by the system or company, but not the user. This can happen for a variety of reasons, for example, the receiver being inaccessible.
+
+                      - `declined` - Transaction was declined to the user for a good reason, such as insufficient account balance, wrong receiver information, etc.
+
+                      - `failed` - Transaction failed during initiation or completion. This can happen for a variety of reasons, for example, invalid API calls, blocked payments, etc.'
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: The date and time the transfer was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+                  completed_at:
+                    type: string
+                    format: date-time
+                    description: The date and time the transfer was completed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+                required:
+                - id
+                - state
+                - created_at
+              example:
+                id: a6ea39d7-62c9-481c-8ba6-8a887a44c486
+                state: completed
+                created_at: '2023-01-23T08:39:35.811005Z'
+                completed_at: '2023-01-23T08:39:35.811005Z'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Simulations
+  /sandbox/topup:
+    servers:
+    - url: https://sandbox-b2b.revolut.com/api/1.0
+      description: Sandbox server (uses test data)
+    post:
+      summary: Simulate an account top-up (Sandbox only)
+      operationId: simulateTopUp
+      description: "Simulate a top-up of your account in the Sandbox environment. \n\nThis is useful during testing, when you run out of money in your test account and need to add more.\n\nFor more information, see the guides: [Test your flows with simulations (Sandbox only)](https://developer.revolut.com/docs/guides/manage-accounts/api-usage-and-testing/test-flows-with-simulations)."
+      requestBody:
+        description: Top-up details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account_id:
+                  type: string
+                  format: uuid
+                  description: The ID of the account that you want to top up.
+                amount:
+                  type: number
+                  format: double
+                  description: The amount with which you want to top up the account.
+                  maximum: 10000
+                currency:
+                  $ref: '#/components/schemas/Currency'
+                  description: The currency of the account that you want to top up.
+                reference:
+                  type: string
+                  description: A short description for your top up.
+                  default: Test Top-up
+                state:
+                  type: string
+                  description: The state to which you want to set the top-up transaction.
+                  enum:
+                  - pending
+                  - completed
+                  - reverted
+                  - failed
+                  default: completed
+              required:
+              - account_id
+              - amount
+              - currency
+            example:
+              account_id: e042f1fe-f721-49cc-af82-db7a6c46944f
+              amount: 100
+              currency: GBP
+              reference: Test Top-up
+              state: completed
+      security:
+      - AccessToken:
+        - WRITE
+      responses:
+        '200':
+          description: Information about the top-up state
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: The ID of the account that was topped up.
+                  state:
+                    type: string
+                    description: The state of the top-up transaction.
+                    enum:
+                    - pending
+                    - completed
+                    - reverted
+                    - failed
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: The date and time the transaction was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+                  completed_at:
+                    type: string
+                    format: date-time
+                    description: The date and time the transaction was completed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+                required:
+                - id
+                - state
+                - created_at
+              example:
+                id: 330953b8-b089-4cfd-9f03-e88173d64248
+                state: completed
+                created_at: '2023-01-23T08:39:35.811005Z'
+                completed_at: '2023-01-23T08:39:35.811005Z'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Simulations
+components:
+  schemas:
+    Currency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

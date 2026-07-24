@@ -1,0 +1,757 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Payout links API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Payout links
+  description: "Use payout links to send money without having to request full banking details of the recipient.  \nThe recipient must claim the money before the link expires.\n\n:::note\nThis feature is available in the UK, the EEA, AU, and SG.\n:::\n\nFor more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links)."
+paths:
+  /payout-links:
+    post:
+      summary: Create a payout link
+      operationId: createPayoutLink
+      description: "Create a payout link to send money even when you don't have the full banking details of the counterparty.  \nAfter you have created the link, send it to the recipient so that they can claim the payment.\n\n:::note\nThis feature is available in the UK, the EEA, AU, and SG.\n:::\n\nFor more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links)."
+      security:
+      - AccessToken:
+        - PAY
+        - WRITE
+      requestBody:
+        description: Payout link to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePayoutLinkRequest'
+      responses:
+        '201':
+          description: Created payout link details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutLinkInitialProps'
+              example:
+                id: 12dcd8c2-6408-458f-98a9-3f4abc180898
+                state: active
+                created_at: '2023-07-11T13:55:54.834963Z'
+                updated_at: '2023-07-11T13:55:55.082655Z'
+                counterparty_name: John Smith
+                request_id: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dd1
+                expiry_date: '2023-07-18T13:55:55.082280Z'
+                payout_methods:
+                - revolut
+                - bank_account
+                - card
+                account_id: 85f515e4-588f-4496-a6a5-a7615a193e6b
+                amount: 105.6
+                currency: GBP
+                url: https://business.revolut.com/p/uSJVAd5SnP1
+                reference: Rent
+                transfer_reason_code: property_rental
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                required_param_missing:
+                  summary: Required parameter missing
+                  value:
+                    message: Required 'account_id' is missing
+                    code: 3009
+                incorrect_param_format:
+                  summary: Incorrect parameter format
+                  value:
+                    message: Value '123' is not in correct format for field 'account_id'
+                    code: 3000
+                ivalid_json:
+                  summary: Invalid JSON
+                  value:
+                    message: 'Cannot parse request: invalid JSON'
+                    code: 3000
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: This action is forbidden
+                code: 9002
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Payout links
+    get:
+      summary: Retrieve a list of payout links
+      description: "Get all the links that you have created, or use the query parameters to filter the results.\n\nThe links are sorted by the `created_at` date in reverse chronological order.\n\nThe returned links are **paginated**. \nThe maximum number of payout links returned per page is specified by the `limit` parameter.\nTo get to the next page, make a new request and use the `created_at` date of the last payout link returned in the previous response.\n\n:::note\nThis feature is available in the UK, the EEA, AU, and SG.\n:::        \n\nFor more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links)."
+      operationId: getPayoutLinks
+      security:
+      - AccessToken:
+        - READ
+      parameters:
+      - name: state
+        in: query
+        description: 'Retrieves links in the specified state(s). Possible states are:
+
+          - `created`: The payout link has been created, but the amount has not yet been [blocked](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links#sender-link-generation).
+
+          - `failed`: The payout link couldn''t be generated due to a failure during transaction booking.
+
+          - `awaiting`: The payout link is awaiting approval.
+
+          - `active`: The payout link can be redeemed.
+
+          - `expired`: The payout link cannot be redeemed because it wasn''t claimed before its expiry date.
+
+          - `cancelled`: The payout link cannot be redeemed because it was cancelled.
+
+          - `processing`: The payout link has been redeemed and is being processed.
+
+          - `processed`: The payout link has been redeemed and the money has been transferred to the recipient.
+
+
+          Use for filtering to retrieve only links in specified states.
+
+          To specify multiple values, follow this pattern: `state={VALUE1}&state={VALUE2}`.'
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/PayoutLinkState'
+        explode: true
+        uniqueItems: true
+      - name: created_before
+        in: query
+        description: 'Retrieves links with `created_at` < `created_before`.
+
+          The default value is the current date and time at which you are calling the endpoint.
+
+
+          Provided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.'
+        schema:
+          type: string
+          format: date-time
+          default: the date-time at which the request is made
+      - name: limit
+        in: query
+        description: 'The maximum number of links returned per page.
+
+
+          To get to the next page, make a new request and use the `created_at` date of the last payout link returned in the previous response as the value for `created_before`.'
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 100
+      responses:
+        '200':
+          description: List of your payout links
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutLinks'
+              example:
+              - id: 8e32b08a-e012-4530-bd15-c4e9ebde953d
+                state: processed
+                created_at: '2024-01-11T14:02:53.472318Z'
+                updated_at: '2024-01-11T14:05:02.962886Z'
+                counterparty_name: Jane Doe
+                request_id: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dMM
+                expiry_date: '2023-07-18T14:02:53.717626Z'
+                payout_methods:
+                - revolut
+                - bank_account
+                - card
+                account_id: 85f515e4-588f-4496-a6a5-a7615a193e6b
+                amount: 5.6
+                currency: GBP
+                counterparty_id: 2ef4618a-f258-4ac5-a846-ca6e089214f6
+                transaction_id: 64ad618e-655a-a925-8425-2284c03f6c08
+                reference: Bus ticket
+                transfer_reason_code: travel
+              - id: 12dcd8c2-6408-458f-98a9-3f4abc180898
+                state: active
+                created_at: '2023-07-11T13:55:54.834963Z'
+                updated_at: '2023-07-11T14:02:12.868346Z'
+                counterparty_name: John Doe
+                request_id: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dd1
+                expiry_date: '2023-07-18T13:55:55.082280Z'
+                payout_methods:
+                - revolut
+                - bank_account
+                account_id: 85f515e4-588f-4496-a6a5-a7615a193e6b
+                amount: 105.6
+                currency: GBP
+                url: https://business.revolut.com/p/uSJVAd5SnP1
+                reference: Rent
+                transfer_reason_code: property_rental
+              - id: d3b02315-044c-471f-ad41-59d9a4e3c538
+                state: active
+                created_at: '2023-07-11T13:53:45.986248Z'
+                updated_at: '2023-07-11T13:53:46.475470Z'
+                counterparty_name: John Smith
+                request_id: rev-001
+                expiry_date: '2023-07-18T13:53:46.474777Z'
+                payout_methods:
+                - revolut
+                account_id: 85f515e4-588f-4496-a6a5-a7615a193e6b
+                amount: 15.6
+                currency: GBP
+                url: https://business.revolut.com/p/DPYtd2BUUwP
+                reference: meal delivery
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                forbidden:
+                  summary: Action forbidden
+                  value:
+                    message: This action is forbidden
+                    code: 9002
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Payout links
+  /payout-links/{payout_link_id}:
+    get:
+      summary: Retrieve a payout link
+      description: 'Get the information about a specific link by its ID.
+
+
+        :::note
+
+        This feature is available in the UK, the EEA, AU, and SG.
+
+        :::
+
+
+        For more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links).'
+      operationId: getPayoutLink
+      security:
+      - AccessToken:
+        - READ
+      parameters:
+      - name: payout_link_id
+        in: path
+        required: true
+        description: The ID of the link to retrieve.
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: The information about a specific link
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayoutLink'
+              examples:
+                active_payout_link:
+                  summary: Active payout link
+                  value:
+                    $ref: '#/components/examples/payoutLinkActive'
+                processed_payout_link:
+                  summary: Processed payout link
+                  value:
+                    $ref: '#/components/examples/payoutLinkProcessed'
+                cancelled_payout_link:
+                  summary: Cancelled payout link
+                  value:
+                    $ref: '#/components/examples/payoutLinkCancelled'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                forbidden:
+                  summary: Action forbidden
+                  value:
+                    message: This action is forbidden
+                    code: 9002
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Resource not found
+                code: 3006
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Payout links
+  /payout-links/{payout_link_id}/cancel:
+    post:
+      summary: Cancel a payout link
+      operationId: cancelPayoutLink
+      description: "Cancel a payout link. You can only cancel a link that hasn't been claimed yet. \nA successful request does not get any content in response.\n\n:::note\nThis feature is available in the UK, the EEA, AU, and SG.\n:::\n\nFor more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links)."
+      security:
+      - AccessToken:
+        - READ
+        - WRITE
+      parameters:
+      - name: payout_link_id
+        in: path
+        required: true
+        description: The ID of the link to cancel.
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Payout link has been cancelled
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                forbidden:
+                  summary: Action forbidden
+                  value:
+                    message: This action is forbidden
+                    code: 9002
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Payout links
+  /transfer-reasons:
+    get:
+      summary: Get transfer reasons
+      description: "In order to initiate a transfer in certain currencies and countries, you must provide a transfer reason. \nWith this endpoint you can retrieve all transfer reasons available to your business account per country and currency.\n\nAfter you retrieve the results, use the appropriate reason code in the `transfer_reason_code` field when [making a transfer to a counterparty](https://developer.revolut.com/docs/api/business#create-payment) or [creating a payout link](https://developer.revolut.com/docs/api/business#create-payout-link)."
+      operationId: getTransferReasons
+      security:
+      - AccessToken:
+        - READ
+      tags:
+      - Payout links
+      responses:
+        '200':
+          description: List of transfer reasons
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferReasons'
+              example:
+              - country: IN
+                currency: INR
+                code: advertising
+                description: Advertising
+              - country: IN
+                currency: INR
+                code: advisor_fees
+                description: Advisor fees
+              - country: IN
+                currency: INR
+                code: construction
+                description: Construction
+              - country: IN
+                currency: INR
+                code: delivery
+                description: Delivery
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    PayoutLinkInitialProps:
+      type: object
+      required:
+      - id
+      - state
+      - created_at
+      - updated_at
+      - counterparty_name
+      - request_id
+      - payout_methods
+      - account_id
+      - amount
+      - currency
+      - reference
+      - save_counterparty
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the payout link.
+        state:
+          $ref: '#/components/schemas/PayoutLinkState'
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the payout link was created in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the payout link was last updated in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
+        counterparty_name:
+          $ref: '#/components/schemas/PayoutLinkCounterpartyName'
+        save_counterparty:
+          type: boolean
+          default: false
+          description: "Indicates whether you chose to save the recipient as your counterparty upon link claim. \nIf `false` then the counterparty will not show up on your counterparties list, for example, when you [retrieve your counterparties](https://developer.revolut.com/docs/api/business#get-counterparties). \nHowever, you can still [retrieve this counterparty by its ID](https://developer.revolut.com/docs/api/business#get-counterparty).\n\nIf you didn't choose to save the counterparty on link creation, you can still do it from your transactions list in the Business app."
+        request_id:
+          $ref: '#/components/schemas/PayoutLinkRequestId'
+        expiry_date:
+          $ref: '#/components/schemas/PayoutLinkExpiryDate'
+        payout_methods:
+          $ref: '#/components/schemas/PayoutLinkPayoutMethods'
+        account_id:
+          $ref: '#/components/schemas/PayoutLinkAccountId'
+        amount:
+          $ref: '#/components/schemas/PayoutLinkAmount'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        url:
+          type: string
+          format: uri
+          description: The URL of the payout link. Returned only for active payout links.
+        reference:
+          $ref: '#/components/schemas/PayoutLinkReference'
+        transfer_reason_code:
+          $ref: '#/components/schemas/TransferReasonCode'
+    CreatePayoutLinkRequest:
+      type: object
+      required:
+      - counterparty_name
+      - request_id
+      - account_id
+      - amount
+      - currency
+      - reference
+      properties:
+        counterparty_name:
+          $ref: '#/components/schemas/PayoutLinkCounterpartyName'
+        save_counterparty:
+          type: boolean
+          description: "Indicates whether to save the recipient as your counterparty upon link claim.\nIf `false` then the counterparty will not show up on your counterparties list, for example, when you retrieve your counterparties. \nHowever, you will still be able to retrieve this counterparty by its ID.\n\nIf you don't choose to save the counterparty on link creation, you can do it later from your transactions list in the Business app."
+          default: false
+        request_id:
+          $ref: '#/components/schemas/PayoutLinkRequestId'
+          description: 'The ID of the request, provided by the sender.
+
+
+            :::warning
+
+            To ensure that a link payment is not processed multiple times if there are network or system errors, the same `request_id` should be used for requests related to the same link.
+
+            :::'
+          example: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dd1
+        account_id:
+          $ref: '#/components/schemas/PayoutLinkAccountId'
+        amount:
+          $ref: '#/components/schemas/PayoutLinkAmount'
+        currency:
+          $ref: '#/components/schemas/Currency'
+          example: GBP
+        reference:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: 'The reference for the payout link.
+
+            A piece of text or number you provide to help identify what the payment relates to.
+
+            It can be used, for example, for reconciliation or tracking purposes.
+
+
+            You might include an invoice number, account or transaction ID, or any other reference meaningful to you or the recipient.'
+        payout_methods:
+          $ref: '#/components/schemas/PayoutLinkPayoutMethods'
+          default:
+          - revolut
+          - bank_account
+        expiry_period:
+          $ref: '#/components/schemas/PayoutLinkExpiryPeriod'
+        transfer_reason_code:
+          $ref: '#/components/schemas/TransferReasonCode'
+    PayoutLinkState:
+      enum:
+      - created
+      - failed
+      - awaiting
+      - active
+      - expired
+      - cancelled
+      - processing
+      - processed
+      type: string
+      description: 'The state that the payout link is in. Possible states are:
+
+        - `created`: The payout link has been created, but the amount has not yet been [blocked](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links#sender-link-generation).
+
+        - `failed`: The payout link couldn''t be generated due to a failure during transaction booking.
+
+        - `awaiting`: The payout link is awaiting approval.
+
+        - `active`: The payout link can be redeemed.
+
+        - `expired`: The payout link cannot be redeemed because it wasn''t claimed before its expiry date.
+
+        - `cancelled`: The payout link cannot be redeemed because it was cancelled.
+
+        - `processing`: The payout link has been redeemed and is being processed.
+
+        - `processed`: The payout link has been redeemed and the money has been transferred to the recipient.'
+    Currency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    PayoutLinkAccountId:
+      type: string
+      format: uuid
+      description: The ID of the sender's account.
+      example: 85f515e4-588f-4496-a6a5-a7615a193e6b
+    PayoutLinkAdditionalProps:
+      type: object
+      properties:
+        counterparty_id:
+          type: string
+          format: uuid
+          description: "The ID of the counterparty created based on the recipient's details. \n\n:::note\nBy default, the newly created counterparty is hidden from your counterparties list. \n\nTo automatically save it when the link is claimed, pass the `save_counterparty` parameter set to `true`. \n\nAlternatively, you can add the recipient to your counterparties later from the list of transactions in the Business app.\n:::"
+        transaction_id:
+          type: string
+          format: uuid
+          description: The ID of the created transaction. Returned only if the payout has been claimed.
+        cancellation_reason:
+          type: string
+          readOnly: true
+          enum:
+          - too_many_name_check_attempts
+          description: The reason for which the payout link was cancelled.
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
+    TransferReasons:
+      type: array
+      items:
+        $ref: '#/components/schemas/TransferReason'
+    PayoutLinkExpiryDate:
+      type: string
+      format: date-time
+      description: 'The date and time after which the payout link expires in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
+
+        If the recipient doesn''t claim the money before then, the payout link expires and is no longer available.
+
+
+        The default and maximum value is the date and time of creating the link + 7 days.'
+      default: now + 7 days
+      maximum: now + 7 days
+      minimum: now + 1 day
+      example: 2023‐07‐20T15:09:24Z
+    PayoutLinkExpiryPeriod:
+      type: string
+      format: duration
+      description: 'The period after which the payout link expires if not claimed before, provided in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
+
+
+        The default and maximum value is 7 days from the link creation.'
+      default: P7D
+      maximum: P7D
+      minimum: P1D
+      example: P3D
+    PayoutLinkCounterpartyName:
+      type: string
+      description: The name of the counterparty provided by the sender.
+      example: John Smith
+    PayoutLinkRequestId:
+      type: string
+      description: The ID of the request, provided by the sender.
+      example: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dd1
+    PayoutLinks:
+      type: array
+      items:
+        $ref: '#/components/schemas/PayoutLink'
+      description: A list of payout links
+    PayoutLinkReference:
+      type: string
+      description: The reference for the payout transaction, provided by the sender.
+      example: Rent
+    PayoutLink:
+      allOf:
+      - $ref: '#/components/schemas/PayoutLinkInitialProps'
+      - $ref: '#/components/schemas/PayoutLinkAdditionalProps'
+    TransferReason:
+      type: object
+      properties:
+        country:
+          $ref: '#/components/schemas/CountryCode'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        code:
+          type: string
+          description: Category name of the transfer reason.
+          enum:
+          - advertising
+          - advisor_fees
+          - business_insurance
+          - construction
+          - delivery
+          - education
+          - family
+          - fund_investment
+          - goods
+          - homesend
+          - hotel
+          - exports
+          - insurance_claims
+          - insurance_premium
+          - loan_repayment
+          - medical
+          - office
+          - other_fees
+          - personal_transfer
+          - property_purchase
+          - property_rental
+          - royalties
+          - services
+          - share_investment
+          - tax
+          - transfer
+          - transportation
+          - travel
+          - utilities
+        description:
+          type: string
+          description: The description of the given transfer reason.
+      required:
+      - country
+      - currency
+      - code
+      - description
+    CountryCode:
+      type: string
+      pattern: ^[A-Z]{2}$
+      description: The counterparty's bank country, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+    PayoutMethod:
+      type: string
+      description: The payout method that the recipient can use to claim the payout.
+      enum:
+      - revolut
+      - bank_account
+      - card
+    TransferReasonCode:
+      type: string
+      description: "The reason code for the transaction. Transactions to certain countries and currencies might require you to provide a transfer reason. \nYou can check available reason codes with the [`GET /transfer-reasons` operation](https://developer.revolut.com/docs/api/business#get-transfer-reasons).\n\nIf a transfer reason is not required for the given currency and country, this field is ignored."
+      example: property_rental
+    PayoutLinkPayoutMethods:
+      type: array
+      items:
+        $ref: '#/components/schemas/PayoutMethod'
+      explode: true
+      description: "The list of payout methods that the recipient can use to claim the payout, where:\n- `revolut`: Revolut peer-to-peer (P2P) transfer\n- `bank_account`: External bank transfer\n- `card`: Card transfer\n  :::note\n  - This payout method is available in the UK and the EEA.\n  - This payout method is not available in Sandbox.\n  :::"
+      example:
+      - revolut
+      - bank_account
+      - card
+    PayoutLinkAmount:
+      type: number
+      format: double
+      description: 'The amount of money to be transferred.
+
+
+        :::note
+
+        The amount must be between £1 and £2,500, or equivalent in the selected currency.
+
+        :::'
+      example: 105.6
+  examples:
+    payoutLinkCancelled:
+      id: 12dcd8c2-6408-458f-98a9-3f4abc180898
+      state: cancelled
+      created_at: '2023-07-11T13:55:54.834963Z'
+      updated_at: '2023-07-11T15:01:20.236508Z'
+      counterparty_name: John Doe
+      request_id: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dd1
+      expiry_date: '2023-07-18T13:55:55.082280Z'
+      payout_methods:
+      - revolut
+      - bank_account
+      account_id: 85f515e4-588f-4496-a6a5-a7615a193e6b
+      amount: 105.6
+      currency: GBP
+      reference: Rent
+      transfer_reason_code: property_rental
+    payoutLinkProcessed:
+      id: 8e32b08a-e012-4530-bd15-c4e9ebde953d
+      state: processed
+      created_at: '2024-01-11T14:02:53.472318Z'
+      updated_at: '2024-01-11T14:05:02.962886Z'
+      counterparty_name: Jane Doe
+      request_id: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dMM
+      expiry_date: '2023-07-18T14:02:53.717626Z'
+      payout_methods:
+      - revolut
+      account_id: 85f515e4-588f-4496-a6a5-a7615a193e6b
+      amount: 5.6
+      currency: GBP
+      counterparty_id: 2ef4618a-f258-4ac5-a846-ca6e089214f6
+      transaction_id: 64ad618e-655a-a925-8425-2284c03f6c08
+      reference: Bus ticket
+      transfer_reason_code: travel
+    payoutLinkActive:
+      id: 12dcd8c2-6408-458f-98a9-3f4abc180898
+      state: active
+      created_at: '2023-07-11T13:55:54.834963Z'
+      updated_at: '2023-07-11T13:55:55.082655Z'
+      counterparty_name: John Smith
+      request_id: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dd1
+      expiry_date: '2023-07-18T13:55:55.082280Z'
+      payout_methods:
+      - revolut
+      - bank_account
+      - card
+      account_id: 85f515e4-588f-4496-a6a5-a7615a193e6b
+      amount: 105.6
+      currency: GBP
+      url: https://business.revolut.com/p/uSJVAd5SnP1
+      reference: Rent
+      transfer_reason_code: property_rental
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

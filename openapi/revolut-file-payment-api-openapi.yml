@@ -1,0 +1,1578 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting File Payment API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: File Payment
+paths:
+  /file-payment-consents/{ConsentId}:
+    get:
+      tags:
+      - File Payment
+      summary: Retrieve a file payment consent
+      security:
+      - AccessToken:
+        - payments
+      description: 'Get the details of a file payment consent.
+
+
+        See also [Tutorials: Create a file payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-a-file-payment).'
+      operationId: GetFilePaymentConsentsConsentId
+      parameters:
+      - name: ConsentId
+        in: path
+        description: The ID of the account access consent.
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-financial-id
+        in: header
+        description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
+
+          The ID of Revolut is `001580000103UAvAAM`.'
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-customer-last-logged-time
+        in: header
+        description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+
+
+          All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
+
+          For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
+        schema:
+          pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
+          type: string
+      - name: x-fapi-customer-ip-address
+        in: header
+        description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        schema:
+          type: string
+      - name: x-fapi-interaction-id
+        in: header
+        description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: 'The access token that you''ve generated.
+
+          For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).'
+        required: true
+        schema:
+          type: string
+      - name: x-customer-user-agent
+        in: header
+        description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: File Payment Consents Read
+          headers:
+            x-jws-signature:
+              description: Header containing a [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.
+              schema:
+                type: string
+            x-fapi-interaction-id:
+              description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBWriteFileConsentResponse2'
+              example:
+                Data:
+                  Status: AwaitingUpload
+                  StatusUpdateDateTime: '2022-11-22T17:16:28.350197Z'
+                  CreationDateTime: '2022-11-22T17:16:28.350197Z'
+                  ConsentId: 6fb10dd9-xxxx-yyyy-zzzz-430e37f8cea0
+                  Initiation:
+                    FileHash: 7YuW8NQJ78/cHthltcqeJd1234BlATBS92IzoBXqQz0=
+                    FileType: text/csv
+                    FileReference: reference1234
+                Links:
+                  Self: https://oba-auth.revolut.com/file-payment-consents/6fb10dd9-xxxx-yyyy-zzzz-430e37f8cea0
+                Meta:
+                  TotalPages: 1
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '401':
+          description: Unauthorized
+          content: {}
+        '403':
+          description: Forbidden
+          content: {}
+        '405':
+          description: Method Not Allowed
+          content: {}
+        '406':
+          description: Not Acceptable
+          content: {}
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              description: Time in seconds to wait before you make a new request.
+              schema:
+                type: integer
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+  /file-payment-consents:
+    post:
+      tags:
+      - File Payment
+      summary: Create a file payment consent
+      security:
+      - AccessToken:
+        - payments
+        JWS:
+        - payments
+      description: 'Create a file payment consent described in the [Open Banking API documentation: Account and Transaction API Specification](https://openbanking.atlassian.net/wiki/spaces/DZ/pages/999622968/Account+and+Transaction+API+Specification+-+v3.1.1).
+
+
+        :::note
+
+        File Payments are available only for Revolut Business users.
+
+        Currently only the `text/csv` file type is supported for File Payments.
+
+        :::
+
+
+        When you make the API call, ensure that you pass the corresponding JSON Web Signature (JWS) in the `x-jws-signature` request header. Note:
+
+        - The JWS is generated from the request body with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) signing key that is specified in the JWS header.
+
+        - The JWS consists of a header and a signature in the `<jws_header>..<jws_signature>` format.
+
+
+        To see how to create a JWS, see the guide: [Work with JSON Web Signatures](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures).
+
+
+        For more information, see [Tutorials: Create a file payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-a-file-payment#4-create-a-file-payment-consent).'
+      operationId: CreateFilePaymentConsents
+      parameters:
+      - name: x-fapi-financial-id
+        in: header
+        description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
+
+          The ID of Revolut is `001580000103UAvAAM`.'
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-customer-last-logged-time
+        in: header
+        description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+
+
+          All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
+
+          For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
+        schema:
+          pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
+          type: string
+      - name: x-fapi-customer-ip-address
+        in: header
+        description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        schema:
+          type: string
+      - name: x-fapi-interaction-id
+        in: header
+        description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: 'The access token that you''ve generated.
+
+          For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).'
+        required: true
+        schema:
+          type: string
+      - name: x-idempotency-key
+        in: header
+        description: 'Each request is processed only once per `x-idempotency-key`.
+
+          The idempotency key is valid for 24 hours.'
+        required: true
+        schema:
+          maxLength: 40
+          pattern: ^(?!\s)(.*)(\S)$
+          type: string
+      - name: x-jws-signature
+        in: header
+        description: A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.
+        required: true
+        schema:
+          type: string
+      - name: x-customer-user-agent
+        in: header
+        description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OBWriteFileConsent2'
+            example:
+              Data:
+                Initiation:
+                  FileType: text/csv
+                  FileHash: a31f80c0-4946-11ed-b878-0242ac120002
+                  FileReference: reference1234
+        required: true
+      responses:
+        '201':
+          description: File Payment Consents Created
+          headers:
+            x-jws-signature:
+              description: Header containing a [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.
+              schema:
+                type: string
+            x-fapi-interaction-id:
+              description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBWriteFileConsentResponse2'
+              example:
+                Data:
+                  Status: AwaitingUpload
+                  StatusUpdateDateTime: '2022-10-11T13:17:08.140705Z'
+                  CreationDateTime: '2022-10-11T13:17:08.140705Z'
+                  ConsentId: d2ca7407-1234-466e-xxxx-00010770a4ff
+                  Initiation:
+                    FileType: text/csv
+                    FileHash: 7YuW8NQJ78/cHthltcqeJd1234BlATBS92IzoBXqQz0=
+                    FileReference: reference1234
+                Links:
+                  Self: https://oba-auth.revolut.com/file-payment-consents/d2ca7407-1234-466e-xxxx-00010770a4ff
+                Meta:
+                  TotalPages: 1
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '401':
+          description: Unauthorized
+          content: {}
+        '403':
+          description: Forbidden
+          content: {}
+        '405':
+          description: Method Not Allowed
+          content: {}
+        '406':
+          description: Not Acceptable
+          content: {}
+        '415':
+          description: Unsupported Media Type
+          content: {}
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              description: Time in seconds to wait before you make a new request.
+              schema:
+                type: integer
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+      x-codegen-request-body-name: OBWriteFileConsent2Param
+  /file-payment-consents/{ConsentId}/file:
+    get:
+      tags:
+      - File Payment
+      summary: Retrieve an uploaded payment file
+      security:
+      - AccessToken:
+        - payments
+      description: 'Get the payment file that was uploaded with the given consent.
+
+
+        See also [Tutorials: Create a file payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-a-file-payment).'
+      operationId: GetFilePaymentConsentsConsentIdFile
+      parameters:
+      - name: ConsentId
+        in: path
+        description: The ID of the account access consent.
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-financial-id
+        in: header
+        description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
+
+          The ID of Revolut is `001580000103UAvAAM`.'
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-customer-last-logged-time
+        in: header
+        description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+
+
+          All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
+
+          For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
+        schema:
+          pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
+          type: string
+      - name: x-fapi-customer-ip-address
+        in: header
+        description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        schema:
+          type: string
+      - name: x-fapi-interaction-id
+        in: header
+        description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: 'The access token that you''ve generated.
+
+          For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).'
+        required: true
+        schema:
+          type: string
+      - name: x-customer-user-agent
+        in: header
+        description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: File Payment Consents Read
+          headers:
+            x-jws-signature:
+              description: Header containing a [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.
+              schema:
+                type: string
+            x-fapi-interaction-id:
+              description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+              schema:
+                type: string
+          content:
+            text/csv:
+              schema:
+                description: The payment file that was uploaded with the specified consent.
+                type: string
+                format: binary
+              examples:
+                fileExample:
+                  summary: CSV formatted-text
+                  value: 'Name,Recipient type,Account number,Sort code,Routing number,IBAN,BIC,Recipient bank country,Currency,Amount,Payment reference,Recipient country,State or province,Address line 1,Address line 2,City,Postal code
+
+                    John Smith,INDIVIDUAL,40513598,207409,,,GB,GBP,10,User comment,GB,,Revolutest LTD,Somewhere in London,London,E14 5AB'
+        '400':
+          description: Bad request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '401':
+          description: Unauthorized
+          content: {}
+        '403':
+          description: Forbidden
+          content: {}
+        '405':
+          description: Method Not Allowed
+          content: {}
+        '406':
+          description: Not Acceptable
+          content: {}
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              description: Time in seconds to wait before you make a new request.
+              schema:
+                type: integer
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+    post:
+      tags:
+      - File Payment
+      summary: Upload a payment file
+      security:
+      - AccessToken:
+        - payments
+        JWS:
+        - payments
+      description: 'Use this endpoint to upload a file for the given file payment consent.
+
+
+        For the format of the CSV file, check the request body details.
+
+
+        :::note
+
+        Download an [example CSV file](https://assets.revolut.com/api-docs/oba-api/file-payment-file.csv).
+
+        :::
+
+
+        For more information, see [Tutorials: Create a file payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-a-file-payment#5-upload-the-csv-file).'
+      operationId: CreateFilePaymentConsentsConsentIdFile
+      parameters:
+      - name: ConsentId
+        in: path
+        description: The ID of the account access consent.
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-financial-id
+        in: header
+        description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
+
+          The ID of Revolut is `001580000103UAvAAM`.'
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-customer-last-logged-time
+        in: header
+        description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+
+
+          All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
+
+          For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
+        schema:
+          pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
+          type: string
+      - name: x-fapi-customer-ip-address
+        in: header
+        description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        schema:
+          type: string
+      - name: x-fapi-interaction-id
+        in: header
+        description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: 'The access token that you''ve generated.
+
+          For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).'
+        required: true
+        schema:
+          type: string
+      - name: x-idempotency-key
+        in: header
+        description: 'Each request is processed only once per `x-idempotency-key`.
+
+          The idempotency key is valid for 24 hours.'
+        required: true
+        schema:
+          maxLength: 40
+          pattern: ^(?!\s)(.*)(\S)$
+          type: string
+      - name: x-jws-signature
+        in: header
+        description: A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.
+        required: true
+        schema:
+          type: string
+      - name: x-customer-user-agent
+        in: header
+        description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
+        schema:
+          type: string
+      requestBody:
+        content:
+          text/csv:
+            schema:
+              description: 'The CSV payments file.
+
+                Provided as CSV-formatted text representing file payments, or as the path to the CSV payments file preceded by `@`.
+
+                For the format of the CSV file, check the details below.
+
+
+                <details><summary>The format of the payment file:</summary>
+
+
+                | FIELD | REQUIRED | DESCRIPTION |
+
+                |---|---|---|
+
+                |`Name`|Yes| Can contain up to 80 characters. If `recipient type` is `INDIVIDUAL`, this field must contain a first and a last name, separated by a space.|
+
+                |`Recipient type` |Yes| Can be either `INDIVIDUAL` or `COMPANY`.|
+
+                |`Account number` |For UK transfers| Must contain valid account number if provided.|
+
+                |`Sort code`| For UK transfers| Must contain valid sort code if provided.|
+
+                |`Routing number`| For US transfers| Must contain valid routing number if provided.|
+
+                |`IBAN` |For SEPA transfers| Must contain valid IBAN if provided.|
+
+                |`BIC` |For SEPA transfers| Must contain valid BIC if provided.|
+
+                |`Recipient bank country` |Yes| Must contain valid [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) country code.|
+
+                |`Currency`| Yes |Must contain valid [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code.|
+
+                |`Amount` |Yes| Must match the following pattern `[0-9]*(\.[0-9]*)?`.|
+
+                |`Payment reference` |Yes| Can contain up to 100 characters.|
+
+                |`Recipient country` |No |Must contain valid [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) country code if provided.|
+
+                |`State or province`| No| Can contain up to 50 characters.|
+
+                |`Address line 1` |No| Can contain up to 50 characters.|
+
+                |`Address line 2` | No |Can contain up to 50 characters.|
+
+                |`City` |No| Can contain up to 50 characters.|
+
+                |`Postal code` |No| Can contain up to 50 characters.|
+
+
+                </details>'
+              type: string
+            examples:
+              CSV-formatted text-UK:
+                summary: 'CSV-formatted text: UK local transfer'
+                value: 'Name,Recipient type,Account number,Sort code,Recipient bank country,Currency,Amount,Payment reference,Payment reference,Recipient country,State or province,Address line 1,Address line 2,City,Postal code
+
+                  John Smith,INDIVIDUAL,40513598,207409,,,GB,GBP,10,User comment,GB,,Revolutest LTD,Somewhere in London,London,E14 5AB
+
+                  John Doe,INDIVIDUAL,90352556,600001,GB,GBP,10,Second comment,,,,,,'
+              CSV-formatted text-US:
+                summary: 'CSV-formatted text: US local transfer'
+                value: 'Name,Recipient type,Account number,Routing number,Recipient bank country,Currency,Amount,Payment reference,Recipient country,State or province,Address line 1,Address line 2,City,Postal code
+
+                  John Smith,INDIVIDUAL,531782059505,024600402,US,USD,10,First comment,US,California,Revolutest LTD,2340 Marietta Street,Oakland,94612
+
+                  John Doe,INDIVIDUAL,356972945639,118677794,US,USD,10,Second comment,US,Arkansas,Revolutest LTD,3243 Midway Road,Portland,71654'
+              CSV-formatted text-IBAN:
+                summary: 'CSV-formatted text: IBAN transfer'
+                value: 'Name,Recipient type,IBAN,BIC,Recipient bank country,Currency,Amount,Payment reference,Recipient country,State or province,Address line 1,Address line 2,City,Postal code
+
+                  Jaques Martin,INDIVIDUAL,FR0514508000305251415643Y69,SOGEFRPP,FR,EUR,10,First comment,FR,Bretagne,Revolutest LTD,82 rue Lenotre,RENNES,35000
+
+                  Michel Dupont,INDIVIDUAL,FR3210057000308845567335Q88,BNPAFRPP,FR,EUR,10,Second comment,FR,Aquitaine,Revolutest LTD,52 rue Jean Vilar,BERGERAC,24100'
+              CSV file:
+                summary: Path to a CSV file
+                value: '@file-payment-file.csv'
+        required: true
+      responses:
+        '200':
+          description: File Payment CSV Uploaded
+          headers:
+            x-fapi-interaction-id:
+              description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                description: An empty JSON object (`{}`) is returned.
+                $ref: '#/components/schemas/EmptyBody'
+              example: {}
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '401':
+          description: Unauthorized
+          content: {}
+        '403':
+          description: Forbidden
+          content: {}
+        '405':
+          description: Method Not Allowed
+          content: {}
+        '406':
+          description: Not Acceptable
+          content: {}
+        '415':
+          description: Unsupported Media Type
+          content: {}
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              description: Time in seconds to wait before you make a new request.
+              schema:
+                type: integer
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+      x-codegen-request-body-name: FileParam
+  /file-payments:
+    post:
+      tags:
+      - File Payment
+      summary: Create a file payment
+      security:
+      - AccessToken:
+        - payments
+        JWS:
+        - payments
+      description: 'Create a file payment.
+
+
+        :::note
+
+        As is defined in the Open Banking Specifications, the `/Data/Initiation` and the `/Data/Risk` sections of the request must be an exact match for the related consent passed in `ConsentId`.
+
+        :::
+
+
+        For more information, see [Tutorials: Create a file payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-a-file-payment).'
+      operationId: CreateFilePayments
+      parameters:
+      - name: x-fapi-financial-id
+        in: header
+        description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
+
+          The ID of Revolut is `001580000103UAvAAM`.'
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-customer-last-logged-time
+        in: header
+        description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+
+
+          All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
+
+          For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
+        schema:
+          pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
+          type: string
+      - name: x-fapi-customer-ip-address
+        in: header
+        description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        schema:
+          type: string
+      - name: x-fapi-interaction-id
+        in: header
+        description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: 'The access token that you''ve generated.
+
+          For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).'
+        required: true
+        schema:
+          type: string
+      - name: x-idempotency-key
+        in: header
+        description: 'Each request is processed only once per `x-idempotency-key`.
+
+          The idempotency key is valid for 24 hours.'
+        required: true
+        schema:
+          maxLength: 40
+          pattern: ^(?!\s)(.*)(\S)$
+          type: string
+      - name: x-jws-signature
+        in: header
+        description: A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.
+        required: true
+        schema:
+          type: string
+      - name: x-customer-user-agent
+        in: header
+        description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OBWriteFile2'
+            example:
+              Data:
+                ConsentId: 7ffe4969-1234-1234-acab-d24e89855fdd
+                Initiation:
+                  FileType: text/csv
+                  FileHash: 7YuW8NQJ78/cHthltcqeJdJKX3BlATBS92IzoBXqQz0=
+                  FileReference: reference1234
+        required: true
+      responses:
+        '201':
+          description: File Payments Created
+          headers:
+            x-jws-signature:
+              description: Header containing a [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.
+              schema:
+                type: string
+            x-fapi-interaction-id:
+              description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBWriteFileResponse2'
+              example:
+                Data:
+                  ConsentId: 7ffe4969-1234-1234-acab-d24e89855fdd
+                  CreationDateTime: '2022-10-12T14:06:27.883606Z'
+                  FilePaymentId: 6036c4d7-b311-xxxx-xxxx-b37a0a1395e0
+                  Initiation:
+                    DebtorAccount:
+                      SchemeName: UK.OBIE.IBAN
+                      Identification: GB95REVO00997053872360
+                      Name: John Doe
+                    FileHash: 7YuW8NQJ78/cHthltcqeJd1234BlATBS92IzoBXqQz0=
+                    FileReference: reference1234
+                    FileType: text/csv
+                  Status: InitiationCompleted
+                  StatusUpdateDateTime: '2022-10-12T14:06:27.883606Z'
+                Links:
+                  Self: https://oba-auth.revolut.com/file-payments/6036c4d7-b311-xxxx-xxxx-b37a0a1395e0
+                Meta:
+                  TotalPages: 1
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '401':
+          description: Unauthorized
+          content: {}
+        '403':
+          description: Forbidden
+          content: {}
+        '405':
+          description: Method Not Allowed
+          content: {}
+        '406':
+          description: Not Acceptable
+          content: {}
+        '415':
+          description: Unsupported Media Type
+          content: {}
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              description: Time in seconds to wait before you make a new request.
+              schema:
+                type: integer
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+      x-codegen-request-body-name: OBWriteFile2Param
+  /file-payments/{FilePaymentId}:
+    get:
+      tags:
+      - File Payment
+      summary: Retrieve a file payment
+      security:
+      - AccessToken:
+        - payments
+      description: 'Get the state of a file payment.
+
+
+        For more information, see [Tutorials: Create a file payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-a-file-payment#10-check-the-file-payment-status).'
+      operationId: GetFilePaymentsFilePaymentId
+      parameters:
+      - name: FilePaymentId
+        in: path
+        description: The ID of the file payment.
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-financial-id
+        in: header
+        description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
+
+          The ID of Revolut is `001580000103UAvAAM`.'
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-customer-last-logged-time
+        in: header
+        description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+
+
+          All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
+
+          For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
+        schema:
+          pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
+          type: string
+      - name: x-fapi-customer-ip-address
+        in: header
+        description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        schema:
+          type: string
+      - name: x-fapi-interaction-id
+        in: header
+        description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: 'The access token that you''ve generated.
+
+          For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).'
+        required: true
+        schema:
+          type: string
+      - name: x-customer-user-agent
+        in: header
+        description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: File Payments Read
+          headers:
+            x-jws-signature:
+              description: Header containing a [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.
+              schema:
+                type: string
+            x-fapi-interaction-id:
+              description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBWriteFileResponse2'
+              example:
+                Data:
+                  Status: InitiationCompleted
+                  StatusUpdateDateTime: '2022-10-12T14:06:28.48358Z'
+                  CreationDateTime: '2022-10-12T14:06:27.883606Z'
+                  FilePaymentId: 6036c4d7-b311-xxxx-xxxx-b37a0a1395e0
+                  ConsentId: 7ffe4969-1234-1234-acab-d24e89855fdd
+                  Initiation:
+                    FileHash: 7YuW8NQJ78/cHthltcqeJd1234BlATBS92IzoBXqQz0=
+                    FileType: text/csv
+                    FileReference: reference1234
+                    DebtorAccount:
+                      SchemeName: UK.OBIE.IBAN
+                      Identification: GB95REVO00997053872360
+                      Name: John Doe
+                Links:
+                  Self: https://oba-auth.revolut.com/file-payments/6036c4d7-b311-xxxx-xxxx-b37a0a1395e0
+                Meta:
+                  TotalPages: 1
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '401':
+          description: Unauthorized
+          content: {}
+        '403':
+          description: Forbidden
+          content: {}
+        '405':
+          description: Method Not Allowed
+          content: {}
+        '406':
+          description: Not Acceptable
+          content: {}
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              description: Time in seconds to wait before you make a new request.
+              schema:
+                type: integer
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+  /file-payments/{FilePaymentId}/report-file:
+    get:
+      tags:
+      - File Payment
+      summary: Retrieve all payments of a file payment
+      security:
+      - AccessToken:
+        - payments
+      description: 'Get the state of all individual payments for the given file payment.
+
+
+        :::note
+
+        Currently only the `JSON` format is supported.
+
+        :::
+
+
+        For more information, see [Tutorials: Create a file payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-a-file-payment#11-check-the-status-of-all-payments).
+
+        '
+      operationId: GetFilePaymentsFilePaymentIdReportFile
+      parameters:
+      - name: FilePaymentId
+        in: path
+        description: The ID of the file payment.
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-financial-id
+        in: header
+        description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
+
+          The ID of Revolut is `001580000103UAvAAM`.'
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-customer-last-logged-time
+        in: header
+        description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+
+
+          All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
+
+          For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
+        schema:
+          pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
+          type: string
+      - name: x-fapi-customer-ip-address
+        in: header
+        description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        schema:
+          type: string
+      - name: x-fapi-interaction-id
+        in: header
+        description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: 'The access token that you''ve generated.
+
+          For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).'
+        required: true
+        schema:
+          type: string
+      - name: x-customer-user-agent
+        in: header
+        description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: File Payments Read
+          headers:
+            x-jws-signature:
+              description: Header containing a [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.
+              schema:
+                type: string
+            x-fapi-interaction-id:
+              description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBReportFileResponse'
+              example:
+                Payments:
+                - Amount:
+                    Amount: '10.00'
+                    Currency: GBP
+                  Reference: First of my two payments in the file
+                  Status: Created
+                - Amount:
+                    Amount: '213.00'
+                    Currency: GBP
+                  Reference: Second of my two payments in the file
+                  Status: Created
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '401':
+          description: Unauthorized
+          content: {}
+        '403':
+          description: Forbidden
+          content: {}
+        '405':
+          description: Method Not Allowed
+          content: {}
+        '406':
+          description: Not Acceptable
+          content: {}
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              description: Time in seconds to wait before you make a new request.
+              schema:
+                type: integer
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+components:
+  schemas:
+    OBFileInitiationResponse:
+      type: object
+      description: The initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds using a payment file.
+      allOf:
+      - $ref: '#/components/schemas/OBFileBase'
+      - type: object
+        properties:
+          DebtorAccount:
+            $ref: '#/components/schemas/OBCashAccountDebtorResponse'
+      - type: object
+        required:
+        - FileHash
+        - FileType
+        - DebtorAccount
+    OBWriteFileConsent2:
+      required:
+      - Data
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataFileConsent2'
+    OBWriteDataFileConsentResponse2:
+      required:
+      - ConsentId
+      - CreationDateTime
+      - Initiation
+      - Status
+      - StatusUpdateDateTime
+      type: object
+      properties:
+        ConsentId:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
+        CreationDateTime:
+          type: string
+          description: 'The date and time when the resource was created.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Status:
+          $ref: '#/components/schemas/OBExternalConsentStatus2Code'
+        StatusUpdateDateTime:
+          type: string
+          description: 'The date and time when the consent resource status was updated.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Initiation:
+          $ref: '#/components/schemas/OBFile2'
+    OBRemittanceInformation1:
+      type: object
+      properties:
+        Unstructured:
+          maxLength: 140
+          minLength: 1
+          type: string
+          description: The information used for matching/reconciliation of an entry with the items that the payment is intended to settle, such as commercial invoices in an accounts' receivable system, in an unstructured form.
+        Reference:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: 'The unique reference that the creditor assigns to unambiguously identify the payment transaction.
+
+
+            If available, the initiating party should provide this reference in the structured remittance information to enable reconciliation by the creditor upon receipt of the amount of money.
+
+
+            If the business context requires the use of a creditor reference or a payment remit identification, and only one identifier can be passed through the end-to-end chain, the creditor''s reference or payment remittance identification should be quoted in the end-to-end transaction identification.
+
+
+            :::note
+
+            Faster Payments Scheme can accept only 18 characters for the `Reference` field.
+
+            :::
+
+
+            :::warning
+
+            Only one reference should be provided, if both `Reference` and `Unstructured` parameters are provided, then the `Unstructured` parameter will be ignored.
+
+            :::'
+      description: The information used for matching an entry with the items that the transfer is intended to settle, such as commercial invoices in an accounts' receivable system.
+    OBExternalLocalInstrument1Code:
+      maxLength: 50
+      minLength: 1
+      type: string
+      description: 'User community specific instrument.
+
+
+        Use this element to specify a local instrument, local clearing option and/or further qualify the service or service level.'
+    Meta:
+      title: MetaData
+      type: object
+      properties:
+        TotalPages:
+          type: integer
+          description: Used for pagination. Indicates how many pages of results are available.
+          format: int32
+      description: Meta data relevant to the payload.
+    EmptyBody:
+      description: An empty JSON object (`{}`).
+      type: object
+      nullable: true
+    OBExternalAccountIdentification4Code:
+      type: string
+      description: The name of the identification scheme.
+      enum:
+      - UK.OBIE.IBAN
+      - UK.OBIE.SortCodeAccountNumber
+      - US.RoutingNumberAccountNumber
+      - US.BranchCodeAccountNumber
+      example: UK.OBIE.IBAN
+    Currency:
+      pattern: ^[A-Z]{3}$
+      type: string
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    Amount:
+      pattern: ^\d{1,13}\.\d{1,5}$
+      type: string
+      description: The amount of money.
+    OBReportFileResponse:
+      required:
+      - Payments
+      type: object
+      properties:
+        Payments:
+          type: array
+          description: 'The list of payments included in the file payment.
+
+            Each element in the list corresponds to a single payment and contains the amount, reference, and status of that individual payment.'
+          items:
+            type: object
+            description: Detailes for a single payment.
+            required:
+            - Amount
+            - Reference
+            - Status
+            properties:
+              Amount:
+                required:
+                - Amount
+                - Currency
+                type: object
+                description: The amount of money paid. Specifies the amount and the currency.
+                properties:
+                  Amount:
+                    $ref: '#/components/schemas/Amount'
+                  Currency:
+                    $ref: '#/components/schemas/Currency'
+              Reference:
+                maxLength: 100
+                minLength: 1
+                type: string
+                description: The unique reference assigned to the payment.
+              Status:
+                $ref: '#/components/schemas/PaymentStatus'
+    OBWriteDataFileResponse2:
+      required:
+      - ConsentId
+      - CreationDateTime
+      - FilePaymentId
+      - Initiation
+      - Status
+      - StatusUpdateDateTime
+      type: object
+      properties:
+        FilePaymentId:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the file payment resource.
+        ConsentId:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
+        CreationDateTime:
+          type: string
+          description: 'The date and time when the message was created.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Status:
+          $ref: '#/components/schemas/OBExternalStatus1Code'
+        StatusUpdateDateTime:
+          type: string
+          description: 'The date and time when the consent resource status was updated.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Initiation:
+          $ref: '#/components/schemas/OBFileInitiationResponse'
+    OBCashAccountDebtorResponse:
+      required:
+      - Identification
+      - SchemeName
+      type: object
+      description: 'The details to identify the account which was used to approve the payment consent.
+
+
+        This information can be used as a refund address.'
+      properties:
+        SchemeName:
+          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
+        Identification:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The identifier assigned to the account, which is known by the account owner.
+        Name:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: 'The name or names of the account owner(s) represented at an account level.
+
+
+            The account name is not the product name or the nickname of the account.
+
+
+            :::warning[Name validation]
+
+            This field will only return the actual owner(s) name if `DebtorAccount` was not defined in the consent.
+
+
+            If it was defined in the consent, the same value from the consent will be returned.
+
+            :::'
+        SecondaryIdentification:
+          maxLength: 34
+          minLength: 1
+          type: string
+          description: 'The secondary account ID that the account servicing institution assigns.
+
+
+            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
+    OBWriteFileConsentResponse2:
+      required:
+      - Data
+      - Links
+      - Meta
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataFileConsentResponse2'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+    OBExternalConsentStatus2Code:
+      type: string
+      description: The status of the consent.
+      enum:
+      - Authorised
+      - AwaitingAuthorisation
+      - AwaitingUpload
+      - Consumed
+      - Rejected
+    OBCashAccountDebtor4:
+      required:
+      - Identification
+      - SchemeName
+      type: object
+      description: 'The details to identify the account from which the payment consent can be approved.
+
+
+        If provided in the consent, the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) will only be able to approve the payment consent from an account which matches the provided account identifier.
+
+        '
+      properties:
+        SchemeName:
+          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
+        Identification:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The identifier assigned to the account, which is known by the account owner.
+        Name:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: 'The name or names of the account owner(s) represented at an account level.
+
+
+            The account name is not the product name or the nickname of the account.
+
+
+            :::warning
+
+            The name value is not validated against the actual owner name of the account.
+
+            :::'
+        SecondaryIdentification:
+          maxLength: 34
+          minLength: 1
+          type: string
+          description: 'The secondary account ID that the account servicing institution assigns.
+
+
+            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
+    OBExternalStatus1Code:
+      type: string
+      description: The status of the payment.
+      enum:
+      - InitiationCompleted
+      - InitiationFailed
+      - InitiationPending
+    OBErrorResponse1:
+      required:
+      - Code
+      - Errors
+      - Message
+      type: object
+      properties:
+        Code:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The error code in high level that helps categorize the error.
+        Id:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'The error message.
+
+            For example, `There is something wrong with the request parameters provided`.'
+        Errors:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OBError1'
+      description: The detailed information about the error to help troubleshooting.
+    Links:
+      required:
+      - Self
+      type: object
+      properties:
+        Self:
+          type: string
+          description: The absolute URI to the resource.
+          format: uri
+        Next:
+          type: string
+          description: The absolute URI to the next pagination resource.
+          format: uri
+        Prev:
+          type: string
+          description: The absolute URI to the previous pagination resource.
+          format: uri
+      description: Links relevant to the payload.
+    OBExternalFileType1Code:
+      type: string
+      description: The payment file type.
+      example: text/csv
+    OBFile2:
+      type: object
+      description: The initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds using a payment file.
+      allOf:
+      - $ref: '#/components/schemas/OBFileBase'
+      - type: object
+        properties:
+          DebtorAccount:
+            $ref: '#/components/schemas/OBCashAccountDebtor4'
+      - type: object
+        required:
+        - FileHash
+        - FileType
+    OBWriteDataFileConsent2:
+      required:
+      - Initiation
+      type: object
+      properties:
+        Initiation:
+          $ref: '#/components/schemas/OBFile2'
+    OBWriteDataFile2:
+      required:
+      - ConsentId
+      - Initiation
+      type: object
+      properties:
+        ConsentId:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
+        Initiation:
+          $ref: '#/components/schemas/OBFile2'
+    OBError1:
+      required:
+      - ErrorCode
+      - Message
+      type: object
+      properties:
+        ErrorCode:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The error code in low level, for example, `UK.OBIE.Field.Missing`.
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'The description of the error that occurred.
+
+            For example, `A mandatory field isn''t supplied`, `RequestedExecutionDateTime must be in future`, and `OBIE doesn''t standardise this field`.'
+    OBWriteFile2:
+      required:
+      - Data
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataFile2'
+    OBWriteFileResponse2:
+      required:
+      - Data
+      - Links
+      - Meta
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataFileResponse2'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+    OBFileBase:
+      type: object
+      properties:
+        FileType:
+          $ref: '#/components/schemas/OBExternalFileType1Code'
+        FileHash:
+          maxLength: 44
+          minLength: 1
+          type: string
+          description: A base64 encoding of a SHA256 hash of the file to be uploaded.
+        FileReference:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: Reference for the file.
+        RequestedExecutionDateTime:
+          type: string
+          description: 'The date and time when the initiating party requests the clearing agent to process the payment.
+
+            This is the date the debtor''s account is to be debited.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        LocalInstrument:
+          $ref: '#/components/schemas/OBExternalLocalInstrument1Code'
+        RemittanceInformation:
+          $ref: '#/components/schemas/OBRemittanceInformation1'
+      description: The initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds using a payment file.
+    PaymentStatus:
+      type: string
+      description: The status of the payment.
+      enum:
+      - Created
+      - Pending
+      - Completed
+      - Failed
+      - Deleted
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

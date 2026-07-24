@@ -1,0 +1,2120 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Transactions API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Transactions
+  description: 'Get the details of your transactions.
+
+
+    :::note
+
+    An incoming or outgoing payment is represented as a transaction.
+
+    :::
+
+
+    For more information, see the guides: [Retrieve transactions](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-transactions).'
+paths:
+  /transactions:
+    get:
+      summary: Retrieve a list of transactions
+      operationId: getTransactions
+      description: "Retrieve the historical transactions based on the provided query criteria.\n\nThe transactions are sorted by the `created_at` date in reverse chronological order, and they're **paginated**. \nThe maximum number of transactions returned per page is specified by the `count` parameter. \nTo get the next page of results, make a new request and use the `created_at` date from the last item of the previous page as the value for the `to` parameter.\n\n:::note\nThe API returns a maximum of 1,000 transactions per request.\n:::\n\nFor more details, see the guides: [Retrieve transactions](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-transactions)."
+      security:
+      - AccessToken:
+        - READ
+      parameters:
+      - in: query
+        name: from
+        schema:
+          type: string
+          format: date-time or date
+        description: 'The date and time you retrieve the historical transactions from, including this date-time.
+
+          Corresponds to the `created_at` value of the transaction.
+
+          Provided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+
+
+          Used also for pagination.
+
+          To get back to the previous page of results, make a new request and use the `created_at` date from the first item of the current page as the value for the `from` parameter.'
+      - in: query
+        name: to
+        schema:
+          type: string
+          format: date-time or date
+          default: the date-time at which the request is made
+        description: "The date and time you retrieve the historical transactions to, excluding this date-time. \nCorresponds to the `created_at` value of the transaction.\nProvided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\nThe default value is the date and time at which you're calling the endpoint.\n\nUsed also for pagination.\nTo get the next page of results, make a new request and use the `created_at` date from the last item of the previous (current) page as the value for the `to` parameter."
+      - in: query
+        name: account
+        schema:
+          type: string
+          format: uuid
+        description: The ID of the account
+      - in: query
+        name: count
+        schema:
+          type: integer
+          default: 100
+          maximum: 1000
+        description: 'The maximum number of the historical transactions to retrieve per page.
+
+
+          To get the next page of results, make a new request and use the `created_at` date from the last item of the previous page as the value for the `to` parameter.'
+      - in: query
+        name: type
+        schema:
+          $ref: '#/components/schemas/TransactionType'
+        description: The type of the historical transactions to retrieve.
+      - in: query
+        name: request_id
+        schema:
+          type: string
+          example: invoice00912345
+        description: 'The request ID provided when the transaction was created.
+
+          Lets you filter transactions related to that ID.
+
+
+          When provided, the `from` query parameter is also required, and the search interval must not exceed 14 days.
+
+          For older transactions, adjust the `to` parameter as well.'
+      - in: query
+        name: state
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - created
+            - pending
+            - completed
+            - declined
+            - failed
+            - reverted
+        description: 'The transaction [state(s)](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-transactions#transaction-states) to filter by.
+
+
+          To specify multiple values, follow this pattern: `state={VALUE1}&state={VALUE2}`.'
+      responses:
+        '200':
+          description: List of historical transactions retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transactions'
+              example:
+              - id: 630f9890-95e3-add1-be4a-95f126988221
+                type: transfer
+                state: pending
+                request_id: invoice00912345
+                created_at: '2024-08-31T17:21:20.364171Z'
+                updated_at: '2024-08-31T17:21:20.364171Z'
+                reference: invoice00912345
+                legs:
+                - leg_id: 630f9890-95e3-add1-0000-95f1269f0000
+                  account_id: 812fff9a-3b0c-4ad1-b41a-cc60899d9900
+                  counterparty:
+                    account_type: revolut
+                    account_id: e0af9f24-504c-4c5d-bd1d-07edf9f49876
+                  amount: -1.16
+                  currency: EUR
+                  bill_amount: -1
+                  bill_currency: GBP
+                  description: To John Doe
+              - id: 640c2b97-aaaa-1234-aaaa-c47a165c2e7e
+                type: card_payment
+                state: completed
+                request_id: REVP:8988a9a0-aaaa-1234-aaaa-5bcc66d938bf
+                created_at: '2024-03-11T07:19:51.302559Z'
+                updated_at: '2024-03-12T02:13:36.842322Z'
+                completed_at: '2024-03-12T02:13:36.836595Z'
+                merchant:
+                  name: Acme Corp.
+                  city: New York
+                  category_code: '7311'
+                  country: USA
+                legs:
+                - leg_id: 640c2b97-aaaa-1234-aaaa-c47a165c2e7e
+                  account_id: 92e43866-aaaa-1234-aaaa-6e31dd23f024
+                  amount: -47.8
+                  fee: 0.66
+                  currency: AED
+                  bill_amount: -13
+                  bill_currency: USD
+                  description: Acm *1234mn1ha2
+                  balance: 7.74
+                card:
+                  id: 2b1a31bc-4795-4f95-b939-ae9cf911dc6e
+                  card_number: 516760******1234
+                  first_name: John
+                  last_name: Smith
+                  phone: '+12412341234'
+              - id: 6886001b-c4a4-4920-912b-c9d7d2575bf7
+                type: card_payment
+                state: completed
+                request_id: REVP:5b3dc80d-f77b-4073-b245-d05f0acd348f
+                created_at: '2025-09-11T07:19:51.302559Z'
+                updated_at: '2025-09-12T02:13:36.842322Z'
+                completed_at: '2025-03-12T02:13:36.836595Z'
+                merchant:
+                  name: Alfa
+                  city: Paris
+                  category_code: '7311'
+                  country: FRA
+                legs:
+                - leg_id: 0e82681d-10db-40b7-b6c8-f99c595f1c82
+                  account_id: 5e85a129-74c9-4714-bbd2-d762b42b15fb
+                  amount: -153.32
+                  fee: 0
+                  currency: EUR
+                  description: Al 1234abcxyz0
+                  balance: 3210.43
+                card:
+                  id: 12d6d4c2-288b-4670-8297-444720bd811b
+                  card_number: 456230******1433
+                  references:
+                  - name: PNR
+                    value: RT12345
+                  - name: Traveller
+                    value: John Smith
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Transactions
+  /transaction/{id}:
+    get:
+      summary: Retrieve a transaction
+      operationId: getTransaction
+      description: 'Retrieve the details of a specific transaction by the transaction''s ID.
+
+        The details can include, for example, cardholder details for card payments.
+
+
+        :::tip [Retrieve by request_id instead]
+
+        Alternatively, you can retrieve a transaction by the **request ID** that was provided for this transaction at the time of its creation, for example, when you [created a payment](https://developer.revolut.com/docs/api/business#create-payment).
+
+
+        To do that, use the `GET /transactions` endpoint to [retrieve a list of transactions](https://developer.revolut.com/docs/api/business#get-transactions) and provide the `request_id` and appropriate `from`/`to` values as filters.
+
+        :::
+
+
+        For more details, see the guides: [Retrieve transactions](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-transactions).'
+      security:
+      - AccessToken:
+        - READ
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: 'The unique ID of the transaction.
+
+
+          :::warning [Request ID deprecation]
+
+          If `id_type=request_id` is provided, set this field to the request ID from payment creation instead of the transaction ID.
+
+
+          This behavior is deprecated and will be removed in a future release.
+
+          Use [`GET /transactions`](https://developer.revolut.com/docs/api/business#get-transactions) to retrieve transactions by request ID.
+
+          :::'
+        schema:
+          type: string
+      - name: id_type
+        in: query
+        required: false
+        deprecated: true
+        description: 'The type of ID to retrieve the transaction by.
+
+
+          :::warning [Deprecated]
+
+          This field is now deprecated and will be removed in a future release.
+
+
+          To retrieve transactions by their unique transaction ID, use this endpoint.
+
+          To retrieve transactions by request ID, use the [`GET /transactions`](https://developer.revolut.com/docs/api/business#get-transactions) endpoint instead.
+
+          :::'
+        schema:
+          enum:
+          - request_id
+          type: string
+      responses:
+        '200':
+          description: The information about a specific transaction
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+              examples:
+                exchange:
+                  summary: Exchange
+                  value:
+                    id: 640dc0b7-1234-aaaa-1234-92ac4de1dacd
+                    type: exchange
+                    state: completed
+                    request_id: d8f041ab-1234-aaaa-1234-78b6a0b2801f
+                    created_at: '2023-03-12T12:08:07.833414Z'
+                    updated_at: '2023-03-12T12:08:07.833414Z'
+                    completed_at: '2023-03-12T12:08:07.833705Z'
+                    legs:
+                    - leg_id: 640dc0a7-aaaa-a5b5-aaaa-92ac4de1dacd
+                      account_id: 0d1848dc-aaaa-4a9a-aaaa-cae53cbd4baf
+                      amount: -1
+                      currency: GBP
+                      bill_amount: -8.39
+                      bill_currency: DKK
+                      description: Exchanged to DKK
+                      balance: 8.74
+                    - leg_id: 640dc0a7-aaaa-a5b5-aaaa-92ac4de1dacd
+                      account_id: 246bc9de-aaaa-4f86-aaaa-4d291a5d0390
+                      amount: 8.39
+                      fee: 0.08
+                      currency: DKK
+                      description: Exchanged from GBP Main
+                      balance: 19.33
+                card_payment:
+                  summary: Card payment
+                  value:
+                    id: 640c2b97-aaaa-1234-aaaa-c47a165c2e7e
+                    type: card_payment
+                    state: completed
+                    request_id: REVP:8988a9a0-aaaa-1234-aaaa-5bcc66d938bf
+                    created_at: '2023-03-11T07:19:51.302559Z'
+                    updated_at: '2023-03-12T02:13:36.842322Z'
+                    completed_at: '2023-03-12T02:13:36.836595Z'
+                    merchant:
+                      name: Acme Corp.
+                      city: New York
+                      category_code: '7311'
+                      country: USA
+                    legs:
+                    - leg_id: 640c2b97-aaaa-1234-aaaa-c47a165c2e7e
+                      account_id: 92e43866-aaaa-1234-aaaa-6e31dd23f024
+                      amount: -47.8
+                      fee: 0.66
+                      currency: AED
+                      bill_amount: -13
+                      bill_currency: USD
+                      description: Acm *1234mn1ha2
+                      balance: 7.74
+                    card:
+                      id: 2b1a31bc-4795-4f95-b939-ae9cf911dc6e
+                      card_number: 516760******1234
+                      first_name: John
+                      last_name: Smith
+                      phone: '+12412341234'
+                company_card_payment:
+                  summary: Payment by card with no holder
+                  value:
+                    id: 6886001b-c4a4-4920-912b-c9d7d2575bf7
+                    type: card_payment
+                    state: completed
+                    request_id: REVP:5b3dc80d-f77b-4073-b245-d05f0acd348f
+                    created_at: '2025-09-11T07:19:51.302559Z'
+                    updated_at: '2025-09-12T02:13:36.842322Z'
+                    completed_at: '2025-03-12T02:13:36.836595Z'
+                    merchant:
+                      name: Alfa
+                      city: Paris
+                      category_code: '7311'
+                      country: FRA
+                    legs:
+                    - leg_id: 0e82681d-10db-40b7-b6c8-f99c595f1c82
+                      account_id: 5e85a129-74c9-4714-bbd2-d762b42b15fb
+                      amount: -153.32
+                      fee: 0
+                      currency: EUR
+                      description: Al 1234abcxyz0
+                      balance: 3210.43
+                    card:
+                      id: 12d6d4c2-288b-4670-8297-444720bd811b
+                      card_number: 456230******1433
+                      references:
+                      - name: PNR
+                        value: RT12345
+                      - name: Traveller
+                        value: John Smith
+                outbound_transfer:
+                  summary: Outbound transfer
+                  value:
+                    id: 640c1963-aaaa-1234-aaaa-a6b451197c6a
+                    type: transfer
+                    state: completed
+                    request_id: 8cc6f5db-aaaa-1234-aaaa-068a05af424e
+                    created_at: '2023-03-11T06:02:11.785704Z'
+                    updated_at: '2023-03-11T06:02:14.628964Z'
+                    completed_at: '2023-03-11T06:02:14.624946Z'
+                    reference: Reference example
+                    legs:
+                    - leg_id: 640c1963-aaaa-1234-aaaa-a6b451197c6a
+                      account_id: 0d1848dc-aaaa-1234-aaaa-cae53cbd4baf
+                      counterparty:
+                        id: f5a9a06b-aaaa-1234-aaaa-c51df843e30d
+                        account_type: external
+                        account_id: 25c9d813-aaaa-1234-aaaa-28334fc4d133
+                      amount: -100
+                      fee: 0.1
+                      currency: GBP
+                      description: To John Smith
+                      balance: 9.74
+                inbound_transfer:
+                  summary: Inbound transfer
+                  value:
+                    id: 63f3a305-aaaa-1234-aaaa-54f06420ae58
+                    type: transfer
+                    state: completed
+                    request_id: 7d3a3358-aaaa-1234-aaaa-c332c49b6431
+                    created_at: '2023-02-20T16:42:45.897576Z'
+                    updated_at: '2023-02-20T16:42:45.897576Z'
+                    completed_at: '2023-02-20T16:42:45.897845Z'
+                    reference: Reference 1234
+                    legs:
+                    - leg_id: 63f3a305-aaaa-1234-aaaa-54f06420ae58
+                      account_id: 74d4d6cb-aaaa-1234-aaaa-9604b94e3019
+                      counterparty:
+                        account_type: revolut
+                      amount: 10
+                      currency: GBP
+                      description: From JOHN SMITH
+                      balance: 3.7
+                internal_transfer:
+                  summary: Internal transfer
+                  value:
+                    id: 640b4fbf-aaaa-1234-aaaa-17a2d10142af
+                    type: transfer
+                    state: completed
+                    request_id: f8bbea44-aaaa-1234-aaaa-113df56660f7
+                    created_at: '2023-03-10T15:41:51.304765Z'
+                    updated_at: '2023-03-10T15:41:51.395348Z'
+                    completed_at: '2023-03-10T15:41:51.388279Z'
+                    legs:
+                    - leg_id: 640b4fbf-aaaa-1234-aaaa-17a2d10142af
+                      account_id: 0d1848dc-aaaa-1234-aaaa-cae53cbd4baf
+                      amount: 100
+                      currency: GBP
+                      description: To GBP Deposit pocket
+                      balance: 100.84
+                    - leg_id: 640b4fbf-aaaa-1234-aaaa-17a2d10142af
+                      account_id: 87f2f697-aaaa-1234-aaaa-a20c78c0d24f
+                      amount: 100
+                      currency: GBP
+                      description: From GBP Regular pocket
+                      balance: 100.65
+                atm_withdrawal:
+                  summary: ATM withdrawal
+                  value:
+                    id: 62d5161d-aaaa-1234-aaaa-219f88258175
+                    type: atm
+                    state: completed
+                    request_id: REVP:b46e51ca-aaaa-1234-aaaa-e54321796ff0
+                    created_at: '2022-07-18T08:13:17.025950Z'
+                    updated_at: '2022-07-19T16:21:22.521625Z'
+                    completed_at: '2022-07-19T16:21:22.515565Z'
+                    merchant:
+                      name: Barclays
+                      city: Canary Wharf
+                      category_code: '6011'
+                      country: GBR
+                    legs:
+                    - leg_id: c84cec91-aaaa-1234-aaaa-62d1979dcf3a
+                      account_id: dbd3c68b-aaaa-1234-aaaa-5621a117ecbf
+                      amount: -21.22
+                      fee: 0.48
+                      currency: GBP
+                      bill_amount: -25
+                      bill_currency: EUR
+                      description: Cash at Barclays
+                      balance: 9.9
+                    card:
+                      id: 2b1a31bc-4795-4f95-b939-ae9cf911dc6e
+                      card_number: 516760******1234
+                      first_name: John
+                      last_name: Smith
+                      phone: '+447712341234'
+                top_up:
+                  summary: Top up
+                  value:
+                    id: 63c95e75-aaaa-1234-aaaa-4e7a7768c663
+                    type: topup
+                    state: completed
+                    request_id: 9d4d90c5-aaaa-1234-aaaa-ac65bf589532
+                    created_at: '2023-01-19T15:15:01.895737Z'
+                    updated_at: '2023-01-19T15:16:14.839234Z'
+                    completed_at: '2023-01-19T15:16:14.833964Z'
+                    reference: Top up Revolut account
+                    legs:
+                    - leg_id: 63c95e75-aaaa-1234-aaaa-4e7a7768c663
+                      account_id: 6ce35350-aaaa-1234-aaaa-006d3f739b80
+                      amount: 100
+                      currency: EUR
+                      description: Payment from John Smith
+                      balance: 1
+                card_chargeback:
+                  summary: Card chargeback
+                  value:
+                    id: 6409e928-aaaa-1234-aaaa-872a41309af1
+                    type: card_chargeback
+                    state: completed
+                    request_id: CARD_CHARGEBACK_eabeb099-aaaa-1234-aaaa-ce72583866bb_0
+                    created_at: '2023-03-09T14:11:52.453528Z'
+                    updated_at: '2023-03-09T14:11:52.453528Z'
+                    completed_at: '2023-03-09T14:11:52.453740Z'
+                    legs:
+                    - leg_id: 6409e928-aaaa-1234-aaaa-872a41309af1
+                      account_id: 0d1848dc-aaaa-1234-aaaa-cae53cbd4baf
+                      amount: 4.68
+                      currency: GBP
+                      description: Card chargeback for Rev*www.revolut.com
+                      balance: 13.08
+                refund:
+                  summary: Refund
+                  value:
+                    id: 172884ea-a529-4d5f-8a81-8ebab9f23e33
+                    type: refund
+                    state: completed
+                    request_id: 79fb7626-df83-46eb-b89a-b31b1e1ae2d7
+                    created_at: '2024-03-17T06:05:10.575740Z'
+                    updated_at: '2024-03-17T06:05:10.575740Z'
+                    completed_at: '2024-03-17T06:05:10.575740Z'
+                    related_transaction_id: 640c1963-aaaa-1234-aaaa-a6b451197c6a
+                    legs:
+                    - leg_id: 172884ea-a529-4d5f-8a81-8ebab9f23e33
+                      account_id: 74d4d6cb-aaaa-1234-aaaa-9604b94e3019
+                      amount: 100
+                      currency: GBP
+                      description: A sample refund description
+                      balance: 109.74
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Transactions
+  /accounts/{AccountId}/direct-debits:
+    get:
+      tags:
+      - Transactions
+      summary: Retrieve all account's direct debits
+      security:
+      - AccessToken:
+        - accounts
+      description: 'Get a list of all the direct debits for a specific user account.
+
+
+        :::note
+
+        In compliance with PSD2 SCA regulations, access to this endpoint is only allowed within the first 5 minutes after the Revolut user has authorised the consent.
+
+        After those 5 minutes, access to this endpoint is denied, and an HTTP `403` error is returned.
+
+        :::
+
+
+        See also [Tutorials: Get account and transaction information](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/get-account-and-transaction-information).'
+      operationId: GetAccountsAccountIdDirectDebits
+      parameters:
+      - name: AccountId
+        in: path
+        description: The ID of the account.
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-financial-id
+        in: header
+        description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
+
+          The ID of Revolut is `001580000103UAvAAM`.'
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-customer-last-logged-time
+        in: header
+        description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+
+
+          All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
+
+          For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
+        schema:
+          pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
+          type: string
+      - name: x-fapi-customer-ip-address
+        in: header
+        description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        schema:
+          type: string
+      - name: x-fapi-interaction-id
+        in: header
+        description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: 'The access token that you''ve generated.
+
+          For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/get-account-and-transaction-information).'
+        required: true
+        schema:
+          type: string
+      - name: x-customer-user-agent
+        in: header
+        description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Direct Debits Read
+          headers:
+            x-fapi-interaction-id:
+              description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBReadDirectDebit1'
+              example:
+                Data:
+                  DirectDebit:
+                  - AccountId: d48e9496-xxxx-4af1-xxxx-8b20fc362bd3
+                    DirectDebitId: 631b8ea1-5678-48d1-1234-25ccba25eb40
+                    MandateIdentification: a028-45ee
+                    DirectDebitStatusCode: Active
+                    Name: DirectDebit name
+                    PreviousPaymentAmount:
+                      Amount: '50.00'
+                      Currency: EUR
+                Links:
+                  Self: https://oba-auth.revolut.com/accounts/d48e9496-xxxx-4af1-xxxx-8b20fc362bd3/direct-debits
+                Meta:
+                  TotalPages: 1
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '401':
+          description: 'Unauthorized
+
+
+            Returned, for instance, when the access token has expired or is invalid, for example, when the consent has been revoked, or when the consent lacks necessary permissions.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+              examples:
+                consent_revoked:
+                  $ref: '#/components/examples/Error401InvalidRevokedOrExpiredToken'
+                no_permissions:
+                  $ref: '#/components/examples/Error401ConsentLacksPermissions'
+        '403':
+          description: 'Forbidden
+
+
+            Returned, for example, when the 5-minute [SCA](https://www.openbanking.org.uk/glossary/strong-customer-authentication/) session has expired.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+              examples:
+                sca_expired:
+                  $ref: '#/components/examples/Error403ForbiddenAccess'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              description: Time in seconds to wait before you make a new request.
+              schema:
+                type: integer
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+  /accounts/{AccountId}/standing-orders:
+    get:
+      tags:
+      - Transactions
+      summary: Retrieve all account's standing orders
+      security:
+      - AccessToken:
+        - accounts
+      description: 'Get a list of all the standing orders for a specific user account.
+
+
+        :::note
+
+        In compliance with PSD2 SCA regulations, access to this endpoint is only allowed within the first 5 minutes after the Revolut user has authorised the consent.
+
+        After those 5 minutes, access to this endpoint is denied, and an HTTP `403` error is returned.
+
+        :::
+
+
+        See also [Tutorials: Get account and transaction information](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/get-account-and-transaction-information).'
+      operationId: GetAccountsAccountIdStandingOrders
+      parameters:
+      - name: AccountId
+        in: path
+        description: The ID of the account.
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-financial-id
+        in: header
+        description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
+
+          The ID of Revolut is `001580000103UAvAAM`.'
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-customer-last-logged-time
+        in: header
+        description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+
+
+          All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
+
+          For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
+        schema:
+          pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
+          type: string
+      - name: x-fapi-customer-ip-address
+        in: header
+        description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        schema:
+          type: string
+      - name: x-fapi-interaction-id
+        in: header
+        description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: 'The access token that you''ve generated.
+
+          For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).'
+        required: true
+        schema:
+          type: string
+      - name: x-customer-user-agent
+        in: header
+        description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Standing Orders Read
+          headers:
+            x-fapi-interaction-id:
+              description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBReadStandingOrder4'
+              example:
+                Data:
+                  StandingOrder:
+                  - AccountId: d48e9496-xxxx-4af1-xxxx-8b20fc362bd3
+                    StandingOrderId: fb02306c-1234-4260-5678-371ea6dc6ea3
+                    Frequency: EvryDay
+                    Reference: Reference1234
+                    FirstPaymentAmount:
+                      Amount: 3.48
+                      Currency: GBP
+                    FirstPaymentDateTime: 2023-09-24T00:00
+                    NextPaymentAmount:
+                      Amount: 3.48
+                      Currency: GBP
+                    StandingOrderStatusCode: Active
+                    CreditorAccount:
+                      SchemeName: UK.OBIE.SortCodeAccountNumber
+                      Identification: '11223321325698'
+                      Name: Receiver Co.
+                Links:
+                  Self: https://oba-auth.revolut.com/accounts/d48e9496-xxxx-4af1-xxxx-8b20fc362bd3/standing-orders
+                Meta:
+                  TotalPages: 1
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '401':
+          description: 'Unauthorized
+
+
+            Returned, for instance, when the access token has expired or is invalid, for example, when the consent has been revoked, or when the consent lacks necessary permissions.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+              examples:
+                consent_revoked:
+                  $ref: '#/components/examples/Error401InvalidRevokedOrExpiredToken'
+                no_permissions:
+                  $ref: '#/components/examples/Error401ConsentLacksPermissions'
+        '403':
+          description: 'Forbidden
+
+
+            Returned, for example, when the 5-minute [SCA](https://www.openbanking.org.uk/glossary/strong-customer-authentication/) session has expired.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+              examples:
+                sca_expired:
+                  $ref: '#/components/examples/Error403ForbiddenAccess'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              description: Time in seconds to wait before you make a new request.
+              schema:
+                type: integer
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+  /accounts/{AccountId}/transactions:
+    get:
+      tags:
+      - Transactions
+      summary: Retrieve all transactions
+      security:
+      - AccessToken:
+        - accounts
+      description: 'Get all the recent transactions for an account.
+
+
+        :::note
+
+        In compliance with PSD2 SCA regulations, full transaction history can only be accessed within the first 5 minutes after the Revolut user has authorised the consent.
+
+        After those 5 minutes, transaction history is restricted to the last 90 days counting from the moment the API request is made, and older transactions are not returned.
+
+
+        Additionally, after those 5 minutes, unless the user is present and actively requesting data, you should not retrieve transaction data of an individual account more than 4 times within a 24-hour period.
+
+        :::
+
+
+        See also [Tutorials: Get account and transaction information](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/get-account-and-transaction-information).
+
+        '
+      operationId: GetAccountsAccountIdTransactions
+      parameters:
+      - name: AccountId
+        in: path
+        description: The ID of the account.
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-financial-id
+        in: header
+        description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
+
+          The ID of Revolut is `001580000103UAvAAM`.'
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-customer-last-logged-time
+        in: header
+        description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+
+
+          All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
+
+          For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
+        schema:
+          pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
+          type: string
+      - name: x-fapi-customer-ip-address
+        in: header
+        description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        schema:
+          type: string
+      - name: x-fapi-interaction-id
+        in: header
+        description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: 'The access token that you''ve generated.
+
+          For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).'
+        required: true
+        schema:
+          type: string
+      - name: fromBookingDateTime
+        in: query
+        $ref: '#/components/parameters/FromBookingDateTimeParam'
+      - name: toBookingDateTime
+        in: query
+        $ref: '#/components/parameters/ToBookingDateTimeParam'
+      - name: x-customer-user-agent
+        in: header
+        description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Transactions Read
+          headers:
+            x-fapi-interaction-id:
+              description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBReadTransaction4'
+              examples:
+                transfer-out:
+                  summary: Outgoing Transfers
+                  value:
+                    Data:
+                      Transaction:
+                      - AccountId: c362263a-xxxx-xxxx-xxxx-70ee3d4fede9
+                        Amount:
+                          Amount: '20.54'
+                          Currency: GBP
+                        Balance:
+                          Amount:
+                            Amount: '2088.55'
+                            Currency: GBP
+                          CreditDebitIndicator: Credit
+                          Type: InterimBooked
+                        BookingDateTime: '2024-12-27T06:05:20.625880Z'
+                        ValueDateTime: '2024-12-27T06:05:21.162872Z'
+                        CreditDebitIndicator: Debit
+                        CurrencyExchange:
+                          InstructedAmount:
+                            Amount: '20.54'
+                            Currency: GBP
+                          SourceCurrency: GBP
+                          TargetCurrency: EUR
+                          UnitCurrency: GBP
+                          ExchangeRate: '1.07123405660663439638574742941974304'
+                        CreditorAccount:
+                          SchemeName: UK.OBIE.IBAN
+                          Identification: LT111111111111111111
+                          Name: Receiver Co.
+                        DebtorAccount:
+                          SchemeName: UK.OBIE.IBAN
+                          Identification: GB95REVO00997053872360
+                          Name: John Doe
+                        ProprietaryBankTransactionCode:
+                          Code: TRANSFER
+                          Issuer: Revolut
+                        Status: Booked
+                        TransactionId: 676e43a0-a0e9-ad9a-xxxx-a0e99aea6678
+                        TransactionInformation: To Receiver Co.
+                        SupplementaryData:
+                          UserComments: test
+                      - AccountId: c362263a-xxxx-xxxx-xxxx-70ee3d4fede9
+                        Amount:
+                          Amount: '11.00'
+                          Currency: GBP
+                        Balance:
+                          Amount:
+                            Amount: '2109.09'
+                            Currency: GBP
+                          CreditDebitIndicator: Credit
+                          Type: InterimBooked
+                        BookingDateTime: '2024-12-27T06:01:57.925579Z'
+                        ValueDateTime: '2024-12-27T06:01:58.958920Z'
+                        CreditDebitIndicator: Debit
+                        CreditorAccount:
+                          SchemeName: UK.OBIE.SortCodeAccountNumber
+                          Identification: '11223300000000'
+                          Name: Receiver Co.
+                        DebtorAccount:
+                          SchemeName: UK.OBIE.IBAN
+                          Identification: GB95REVO00997053872360
+                          Name: John Doe
+                        ProprietaryBankTransactionCode:
+                          Code: TRANSFER
+                          Issuer: Revolut
+                        Status: Booked
+                        TransactionId: 67972281-bed3-a4dc-xxxx-81447ebe5717
+                        TransactionInformation: To Water Company LIMITED
+                        SupplementaryData:
+                          UserComments: Some other test 2
+                    Links:
+                      Self: https://oba-auth.revolut.com/accounts/c362263a-xxxx-xxxx-xxxx-70ee3d4fede9/transactions?toBookingDateTime=2024-12-27T06:05:21.259576Z'
+                      Next: https://oba-auth.revolut.com/accounts/c362263a-xxxx-xxxx-xxxx-70ee3d4fede9/transactions?fromBookingDateTime=2024-10-30T15:28:17.173&toBookingDateTime=2024-12-25T06:09:34.558291'
+                    Meta: {}
+                transfer-in:
+                  summary: Incoming Transfer
+                  value:
+                    Data:
+                      Transaction:
+                      - AccountId: c362263a-xxxx-xxxx-xxxx-70ee3d4fede9
+                        Amount:
+                          Amount: '12.00'
+                          Currency: GBP
+                        Balance:
+                          Amount:
+                            Amount: '10122.55'
+                            Currency: GBP
+                          CreditDebitIndicator: Credit
+                          Type: InterimBooked
+                        BookingDateTime: '2024-12-27T06:05:20.625880Z'
+                        ValueDateTime: '2024-12-27T06:05:21.162872Z'
+                        CreditDebitIndicator: Credit
+                        CreditorAccount:
+                          SchemeName: UK.OBIE.IBAN
+                          Identification: GB95REVO00997053872360
+                          Name: John Doe
+                        DebtorAccount:
+                          SchemeName: UK.OBIE.IBAN
+                          Identification: LT111111111111111111
+                          Name: World Co.
+                        ProprietaryBankTransactionCode:
+                          Code: TRANSFER
+                          Issuer: Revolut
+                        Status: Booked
+                        TransactionId: 677fca51-9299-add5-xxxx-e8d5492991ac
+                        TransactionInformation: From World Co.
+                        SupplementaryData:
+                          UserComments: Reference A11002D
+                    Links:
+                      Self: https://oba-auth.revolut.com/accounts/c362263a-xxxx-xxxx-xxxx-70ee3d4fede9/transactions?toBookingDateTime=2024-12-27T06:05:21.259576Z'
+                      Next: https://oba-auth.revolut.com/accounts/c362263a-xxxx-xxxx-xxxx-70ee3d4fede9/transactions?fromBookingDateTime=2024-10-30T15:28:17.173&toBookingDateTime=2024-12-25T06:09:34.558291'
+                    Meta: {}
+                exchange:
+                  summary: Foreign Exchange
+                  value:
+                    Data:
+                      Transaction:
+                      - AccountId: c362263a-xxxx-xxxx-xxxx-70ee3d4fede9
+                        Amount:
+                          Amount: '2.21'
+                          Currency: EUR
+                        Balance:
+                          Amount:
+                            Amount: '24.48'
+                            Currency: EUR
+                          CreditDebitIndicator: Credit
+                          Type: InterimBooked
+                        BookingDateTime: '2024-12-27T06:05:20.625880Z'
+                        ValueDateTime: '2024-12-27T06:05:21.162872Z'
+                        CreditDebitIndicator: Credit
+                        CurrencyExchange:
+                          InstructedAmount:
+                            Amount: '2.21'
+                            Currency: EUR
+                          SourceCurrency: GBP
+                          TargetCurrency: EUR
+                          UnitCurrency: GBP
+                          ExchangeRate: '1.1072646654'
+                        ProprietaryBankTransactionCode:
+                          Code: EXCHANGE
+                          Issuer: Revolut
+                        Status: Booked
+                        TransactionId: 12345678-af30-a241-xxxx-ad09076be3b1
+                        TransactionInformation: To EUR
+                    Links:
+                      Self: https://oba-auth.revolut.com/accounts/c362263a-xxxx-xxxx-xxxx-70ee3d4fede9/transactions?toBookingDateTime=2024-12-27T06:05:21.259576Z'
+                      Next: https://oba-auth.revolut.com/accounts/c362263a-xxxx-xxxx-xxxx-70ee3d4fede9/transactions?fromBookingDateTime=2024-10-30T15:28:17.173&toBookingDateTime=2024-12-25T06:09:34.558291'
+                    Meta: {}
+                card-payment:
+                  summary: Card payment
+                  value:
+                    Data:
+                      Transaction:
+                      - AccountId: dab95f8b-xxxx-xxxx-xxxx-8129e75c789f
+                        Amount:
+                          Amount: '12.34'
+                          Currency: GBP
+                        BookingDateTime: '2024-12-26T09:32:15.111112Z'
+                        CreditDebitIndicator: Debit
+                        MerchantDetails:
+                          MerchantName: John-Lewis Direct
+                        ProprietaryBankTransactionCode:
+                          Code: CARD_PAYMENT
+                          Issuer: Revolut
+                        Status: Pending
+                        TransactionId: 67a4819f-f349-a1a3-xxxx-e2835336f69c
+                        TransactionInformation: John-Lewis Direct
+                        SupplementaryData:
+                          StartedDate: '2024-12-25T11:23:04.322739Z'
+                        CardInstrument:
+                          Identification: '2252'
+                          CardSchemeName: MASTERCARD
+                          Name: Anna Gloss
+                    Links:
+                      Self: https://oba-auth.revolut.com/accounts/c362263a-xxxx-xxxx-xxxx-70ee3d4fede9/transactions?toBookingDateTime=2024-12-27T06:05:21.259576Z'
+                      Next: https://oba-auth.revolut.com/accounts/c362263a-xxxx-xxxx-xxxx-70ee3d4fede9/transactions?fromBookingDateTime=2024-10-30T15:28:17.173&toBookingDateTime=2024-12-25T06:09:34.558291'
+                    Meta: {}
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '401':
+          description: 'Unauthorized
+
+
+            Returned, for instance, when the access token has expired or is invalid, for example, when the consent has been revoked, or when the consent lacks necessary permissions.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+              examples:
+                consent_revoked:
+                  $ref: '#/components/examples/Error401InvalidRevokedOrExpiredToken'
+                no_permissions:
+                  $ref: '#/components/examples/Error401ConsentLacksPermissions'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              description: Time in seconds to wait before you make a new request.
+              schema:
+                type: integer
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+components:
+  schemas:
+    OBMerchantDetails1:
+      type: object
+      properties:
+        MerchantName:
+          maxLength: 350
+          minLength: 1
+          type: string
+          description: The name of the merchant.
+      description: The details of the merchant involved in the transaction.
+    OBReadTransaction4:
+      required:
+      - Data
+      - Links
+      - Meta
+      type: object
+      properties:
+        Data:
+          type: object
+          properties:
+            Transaction:
+              type: array
+              description: The details about the transaction.
+              items:
+                $ref: '#/components/schemas/OBTransaction4'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+    OBExternalDirectDebitStatus1Code:
+      type: string
+      description: The status of the direct debit.
+      enum:
+      - Active
+      - Inactive
+    OBSupplementaryData1:
+      maxLength: 40
+      minLength: 1
+      type: object
+      additionalProperties:
+        type: string
+        description: 'The additional information that cannot be captured in the structured fields and/or any other specific block.
+
+
+          **`< * >`** acts as a placeholder here, and it represents an optional property (or multiple such properties) with an arbitrary name and data.
+
+
+          To see an example, check the response body samples.'
+      description: The additional information that cannot be captured in the structured fields and/or any other specific block.
+    Meta:
+      title: MetaData
+      type: object
+      properties:
+        TotalPages:
+          type: integer
+          description: Used for pagination. Indicates how many pages of results are available.
+          format: int32
+      description: Meta data relevant to the payload.
+    OBActiveOrHistoricCurrencyAndAmount:
+      required:
+      - Amount
+      - Currency
+      type: object
+      properties:
+        Amount:
+          $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
+        Currency:
+          pattern: ^[A-Z]{3,3}$
+          type: string
+          description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+      description: The amount of the cash balance after a transaction entry is applied to the account.
+    OBDirectDebit1:
+      required:
+      - AccountId
+      - MandateIdentification
+      - Name
+      type: object
+      properties:
+        AccountId:
+          $ref: '#/components/schemas/AccountId'
+        DirectDebitId:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: 'The unique and immutable ID to identify the direct debit resource.
+
+            This ID has no meaning to the account owner.'
+        MandateIdentification:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: 'The direct debit reference.
+
+
+            - For AUDDIS (Automated Direct Debit Instruction Service), users provide core reference.
+
+            - For non AUDDIS, users provide core reference if possible, or last used reference.'
+        DirectDebitStatusCode:
+          $ref: '#/components/schemas/OBExternalDirectDebitStatus1Code'
+        Name:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: The name of service user.
+        PreviousPaymentAmount:
+          $ref: '#/components/schemas/OBActiveOrHistoricCurrencyAndAmount'
+      description: The account that a cash entry is made to or from.
+    AccountId:
+      maxLength: 40
+      minLength: 1
+      type: string
+      description: 'The unique and immutable ID to identify the account resource.
+
+        This ID has no meaning to the account owner.'
+    TransactionState:
+      enum:
+      - created
+      - pending
+      - completed
+      - declined
+      - failed
+      - reverted
+      description: "Indicates the transaction state. Possible values:\n  - `created`: The transaction has been created and is either processed asynchronously or scheduled for a later time.\n  - `pending`: The transaction is pending until it's being processed. If the transfer is made between Revolut accounts, this state is skipped and the transaction is executed instantly.\n  - `completed`: The transaction was successful.\n  - `declined`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, insufficient account balance, wrong receiver information, etc.\n  - `failed`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, invalid API calls, blocked payments, etc.\n  - `reverted`: The transaction was reverted. This can happen for a variety of reasons, for example, the receiver being inaccessible."
+      type: string
+    OBEntryStatus1Code:
+      type: string
+      description: The status of a transaction entry on the books of the account servicer.
+      enum:
+      - Booked
+      - Pending
+    Currency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    OBReadDirectDebit1:
+      required:
+      - Data
+      - Links
+      - Meta
+      type: object
+      properties:
+        Data:
+          type: object
+          properties:
+            DirectDebit:
+              type: array
+              description: The account that a cash entry is made to or from.
+              items:
+                $ref: '#/components/schemas/OBDirectDebit1'
+          description: A list of direct debits.
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
+    OBCashAccount5:
+      required:
+      - Identification
+      - SchemeName
+      type: object
+      properties:
+        SchemeName:
+          $ref: '#/components/schemas/OBRevolutAccountIdentificationCode'
+        Identification:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: 'The identification of the account.
+
+
+            :::warning[Unique account identifier]
+
+            This field will typically contain an account number or an IBAN which must not be considered as a unique identifier for the account. Several currency subacounts can share this same identifier.
+
+
+            If you need a unique identifier for each account, ensure you use the `Data.Account.AccountId` instead.
+
+            :::
+
+            '
+        Name:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: 'The account name that the account servicing institution assigns.
+
+
+            The account name is the name or names of the account owner(s) represented at an account level.
+
+
+            The account name is not the product name or the nickname of the account.'
+        SecondaryIdentification:
+          maxLength: 34
+          minLength: 1
+          type: string
+          description: 'The secondary account ID that the account servicing institution assigns.
+
+
+            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
+      description: The details to identify the account.
+    OBExternalStandingOrderStatus1Code:
+      type: string
+      description: The status of the standing order.
+      enum:
+      - Active
+      - Inactive
+    OBStandingOrder4:
+      required:
+      - AccountId
+      - Frequency
+      type: object
+      properties:
+        AccountId:
+          $ref: '#/components/schemas/AccountId'
+        StandingOrderId:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: 'The unique and immutable ID to identify the standing order resource.
+
+            This ID has no meaning to the account owner.'
+        Frequency:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: 'The frequency of the standing order:
+
+            - `EvryDay`: Every day
+
+            - `IntrvlWkDay`: Only one week interval is supported (01) and any day within the week (01 to 07)
+
+            - `IntrvlMnthDay`: Only one month interval is supported (01) and any day within the month (1 to 31)
+
+
+            Example values:
+
+            - `EvryDay`
+
+            - `IntrvlWkDay:01:0[1-7]`
+
+            - `IntrvlMnthDay:01:(0[1-9]|[12][0-9]|3[01])`'
+        Reference:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: 'The unique reference that the creditor assigns to refer to the payment transaction.
+
+
+            If available, the initiating party should provide this reference in the structured remittance information to enable reconciliation by the creditor upon receipt of the amount of money.
+
+
+            If the business context requires the use of a creditor reference or a payment remit identification, and only one identifier can be passed through the end-to-end chain, the creditor''s reference or payment remittance identification should be quoted in the end-to-end transaction identification.'
+        FirstPaymentAmount:
+          required:
+          - Amount
+          - Currency
+          type: object
+          properties:
+            Amount:
+              $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
+            Currency:
+              pattern: ^[A-Z]{3,3}$
+              type: string
+              description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+          description: The amount of the first standing order payment.
+        FirstPaymentDateTime:
+          type: string
+          description: 'The date the first payment for a standing order schedule is made.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        NextPaymentAmount:
+          required:
+          - Amount
+          - Currency
+          type: object
+          properties:
+            Amount:
+              $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
+            Currency:
+              pattern: ^[A-Z]{3,3}$
+              type: string
+              description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+          description: The amount of the next standing order payment.
+        StandingOrderStatusCode:
+          $ref: '#/components/schemas/OBExternalStandingOrderStatus1Code'
+        CreditorAccount:
+          $ref: '#/components/schemas/OBCashAccount5'
+      description: A list of standing orders.
+    OBCurrencyExchange5:
+      required:
+      - ExchangeRate
+      - SourceCurrency
+      type: object
+      properties:
+        SourceCurrency:
+          pattern: ^[A-Z]{3,3}$
+          type: string
+          description: The currency that is exchanged from.
+        TargetCurrency:
+          pattern: ^[A-Z]{3,3}$
+          type: string
+          description: The currency that is exchanged to.
+        UnitCurrency:
+          pattern: ^[A-Z]{3,3}$
+          type: string
+          description: 'The currency that the exchange rate is expressed in.
+
+            For example, for 1 GBP = xxx EUR, the `UnitCurrency` value is GBP.'
+        ExchangeRate:
+          type: string
+          description: 'The exchange rate used to convert an amount of money from one currency into another.
+
+
+            This reflects the price that one currency was bought at with another currency.
+
+
+            :::note
+
+            `ExchangeRate` expresses the ratio between `UnitCurrency` and `QuotedCurrency`:
+
+            **`ExchangeRate` = `UnitCurrency`/`QuotedCurrency`**.
+
+            :::'
+        InstructedAmount:
+          required:
+          - Amount
+          - Currency
+          type: object
+          properties:
+            Amount:
+              $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
+            Currency:
+              $ref: '#/components/schemas/Currency'
+          description: Amount of money to be moved between the debtor and creditor, before deduction of charges, expressed in the currency as ordered by the initiating party.
+      description: A list of elements to provide details on the currency exchange.
+    CardReference:
+      description: "Reference for the card.\nOne of the name-value pairs assigned to the card for tracking.\n\n:::info\nEach time the card is used, the references are recorded in the [transaction details](https://developer.revolut.com/docs/api/business#get-transaction#response) (`card.references`), helping track transactions made with this card.\n:::\n\nThe names must be unique.\nThe references can be [amended](https://developer.revolut.com/docs/api/business#update-card-references) up to 10 times.\nReferences are only supported for cards owned by the business (i.e. [company](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) or [auto-issued cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards)).\nThey are **not** supported for [team member cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) (i.e. with `holder_id` present). \n\n:::note\nThe references recorded on a transaction are those assigned to the card at the time the transaction took place.\nIf the references are amended, the new references are only applied to future transactions.\nExisting transaction are not affected.\n:::"
+      type: object
+      required:
+      - name
+      - value
+      properties:
+        name:
+          description: 'The name of the card reference.
+
+            Must be unique.'
+          type: string
+          minLength: 1
+          maxLength: 30
+        value:
+          description: The value for this reference.
+          type: string
+          minLength: 1
+          maxLength: 30
+      example:
+        name: PNR
+        value: RT12345
+    TransactionType:
+      enum:
+      - atm
+      - card_payment
+      - card_refund
+      - card_chargeback
+      - card_credit
+      - charge
+      - charge_refund
+      - exchange
+      - transfer
+      - loan
+      - fee
+      - refund
+      - topup
+      - topup_return
+      - tax
+      - tax_refund
+      - rev_payment
+      description: Indicates the transaction type.
+      type: string
+    OBActiveCurrencyAndAmount_SimpleType:
+      pattern: ^\d{1,13}\.\d{1,5}$
+      type: string
+      description: The amount of money where the unit of currency is explicit and compliant with [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217).
+    OBTransactionCashBalance:
+      required:
+      - Amount
+      - CreditDebitIndicator
+      - Type
+      type: object
+      properties:
+        CreditDebitIndicator:
+          type: string
+          description: 'Indicates whether the balance is a credit or a debit balance.
+
+
+            :::note
+
+            A zero balance is considered a credit balance.
+
+            :::'
+          enum:
+          - Credit
+          - Debit
+        Type:
+          $ref: '#/components/schemas/OBBalanceType1Code'
+        Amount:
+          $ref: '#/components/schemas/OBActiveOrHistoricCurrencyAndAmount'
+      description: A list of elements used to define the balance as a numerical representation of the net increases and decreases in an account after a transaction entry is applied to the account.
+    CountryCodeMerchant:
+      type: string
+      pattern: ^[A-Z]{2,3}$
+      description: 'The bank country of the merchant, provided as an [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+
+        Typically 3 letters, though in some cases, card networks might provide it as a 2-letter code.'
+    TransactionMerchant:
+      type: object
+      description: The information about the merchant (only for card transactions).
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the merchant.
+        name:
+          type: string
+          description: The name of the merchant.
+        city:
+          type: string
+          description: The city of the merchant.
+        category_code:
+          type: string
+          description: The category code of the merchant.
+        country:
+          $ref: '#/components/schemas/CountryCodeMerchant'
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the transaction.
+        type:
+          $ref: '#/components/schemas/TransactionType'
+        request_id:
+          type: string
+          description: The request ID that you provided previously.
+        state:
+          $ref: '#/components/schemas/TransactionState'
+        reason_code:
+          type: string
+          description: The reason code when the transaction `state` is `declined` or `failed`.
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the transaction was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the transaction was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        completed_at:
+          type: string
+          format: date-time
+          description: "The date and time the transaction was completed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. \nThis is required when the transaction `state` is `completed`."
+        scheduled_for:
+          type: string
+          format: date
+          description: 'The scheduled date of the payment, if applicable.
+
+            Provided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.'
+        related_transaction_id:
+          type: string
+          format: uuid
+          description: "The ID of the original transaction to which this transaction is related. \nReturned, for example, when this transaction is a refund of the related transaction, or for transactions related to cashback."
+        merchant:
+          $ref: '#/components/schemas/TransactionMerchant'
+        reference:
+          type: string
+          description: The payment reference.
+        legs:
+          type: array
+          description: 'The legs of the transaction:
+
+            - For transactions between your Revolut accounts, there can be 2 legs, for example, an internal transfer made out of the GBP account and into the EUR account.
+
+            - For transactions in other cases, there is only 1 leg.'
+          items:
+            $ref: '#/components/schemas/TransactionLeg'
+        card:
+          $ref: '#/components/schemas/TransactionCard'
+      required:
+      - id
+      - type
+      - state
+      - created_at
+      - updated_at
+      - legs
+    TransactionCounterpartyAccountType:
+      enum:
+      - self
+      - revolut
+      - external
+      description: Indicates the type of the account.
+      type: string
+    OBBalanceType1Code:
+      type: string
+      description: The balance type.
+      enum:
+      - InterimAvailable
+      - InterimBooked
+      - ClosingAvailable
+      - ClosingBooked
+      - ClosingCleared
+      - Expected
+      - ForwardAvailable
+      - Information
+      - InterimAvailable
+      - InterimBooked
+      - InterimCleared
+      - OpeningAvailable
+      - OpeningBooked
+      - OpeningCleared
+      - PreviouslyClosedBooked
+    Transactions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Transaction'
+    OBErrorResponse1:
+      required:
+      - Code
+      - Errors
+      - Message
+      type: object
+      properties:
+        Code:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The error code in high level that helps categorize the error.
+        Id:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'The error message.
+
+            For example, `There is something wrong with the request parameters provided`.'
+        Errors:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OBError1'
+      description: The detailed information about the error to help troubleshooting.
+    Links:
+      required:
+      - Self
+      type: object
+      properties:
+        Self:
+          type: string
+          description: The absolute URI to the resource.
+          format: uri
+        Next:
+          type: string
+          description: The absolute URI to the next pagination resource.
+          format: uri
+        Prev:
+          type: string
+          description: The absolute URI to the previous pagination resource.
+          format: uri
+      description: Links relevant to the payload.
+    OBCashAccount6:
+      type: object
+      properties:
+        SchemeName:
+          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
+        Identification:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The account ID that the institution assigns to identify an account, which is known by the account owner.
+        Name:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: 'The account name that the account servicing institution assigns.
+
+
+            The account name is the name or names of the account owner(s) represented at an account level.
+
+
+            The account name is not the product name or the nickname of the account.'
+        SecondaryIdentification:
+          maxLength: 34
+          minLength: 1
+          type: string
+          description: 'The secondary account ID that the account servicing institution assigns.
+
+
+            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
+      description: The unique ID of the account in the case of a transaction.
+    OBReadStandingOrder4:
+      required:
+      - Data
+      - Links
+      - Meta
+      type: object
+      properties:
+        Data:
+          type: object
+          properties:
+            StandingOrder:
+              type: array
+              items:
+                $ref: '#/components/schemas/OBStandingOrder4'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+    TransactionInformation:
+      maxLength: 500
+      minLength: 1
+      type: string
+      description: The additional information of the transaction, which is unstructured text.
+    TransactionCard:
+      type: object
+      description: The details of the card associated with the transaction.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the card.
+        card_number:
+          type: string
+          description: The masked card number.
+        first_name:
+          type: string
+          description: The first name of the cardholder.
+        last_name:
+          type: string
+          description: The last name of the cardholder.
+        phone:
+          type: string
+          description: The phone number of the cardholder in [E.164](https://en.wikipedia.org/wiki/E.164) format.
+        references:
+          type: array
+          description: 'Card references ([`references`](https://developer.revolut.com/docs/api/business#get-card#response)).
+
+
+            :::note
+
+            These are the references that were assigned to the card at the time the transaction was made.
+
+            Any [update](https://developer.revolut.com/docs/api/business#update-card-references) to card references does not affect existing transactions.
+
+            :::'
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/CardReference'
+          required:
+          - id
+          - card_number
+    OBExternalAccountIdentification4Code:
+      type: string
+      description: The name of the identification scheme.
+      enum:
+      - UK.OBIE.IBAN
+      - UK.OBIE.SortCodeAccountNumber
+      - US.RoutingNumberAccountNumber
+      - US.BranchCodeAccountNumber
+      example: UK.OBIE.IBAN
+    OBError1:
+      required:
+      - ErrorCode
+      - Message
+      type: object
+      properties:
+        ErrorCode:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The error code in low level, for example, `UK.OBIE.Field.Missing`.
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'The description of the error that occurred.
+
+            For example, `A mandatory field isn''t supplied`, `RequestedExecutionDateTime must be in future`, and `OBIE doesn''t standardise this field`.'
+    TransactionCounterparty:
+      type: object
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          description: The ID of the counterparty account.
+        account_type:
+          $ref: '#/components/schemas/TransactionCounterpartyAccountType'
+        id:
+          type: string
+          format: uuid
+          description: The ID of the counterparty.
+      required:
+      - account_type
+    TransactionLeg:
+      type: object
+      description: 'The legs of the transaction:
+
+        - For transactions between your Revolut accounts, there can be 2 legs, for example, an internal transfer made out of the BGP account and into the EUR account.
+
+        - For transactions in other cases, there is only 1 leg.'
+      properties:
+        leg_id:
+          type: string
+          format: uuid
+          description: The ID of the leg.
+        amount:
+          type: number
+          format: double
+          description: The amount of the transaction.
+        fee:
+          type: number
+          format: double
+          description: The amount of the transaction fee.
+        currency:
+          $ref: '#/components/schemas/Currency'
+        bill_amount:
+          type: number
+          format: double
+          description: The billing amount for cross-currency payments.
+        bill_currency:
+          $ref: '#/components/schemas/Currency'
+        account_id:
+          type: string
+          format: uuid
+          description: The ID of the account that the transaction is associated with.
+        counterparty:
+          $ref: '#/components/schemas/TransactionCounterparty'
+        description:
+          type: string
+          description: The transaction leg purpose.
+        balance:
+          type: number
+          format: double
+          description: The total balance of the account that the transaction is associated with.
+      required:
+      - leg_id
+      - amount
+      - currency
+      - account_id
+    OBRevolutAccountIdentificationCode:
+      type: string
+      description: 'The name of the identification scheme.
+
+
+        Note the scheme `UK.Revolut.InternalAccountId` is an internal account identifier for those accounts which don''t have externally available identifiers.
+
+        It cannot be used to send or receive funds.
+
+        '
+      enum:
+      - UK.OBIE.IBAN
+      - UK.OBIE.SortCodeAccountNumber
+      - US.RoutingNumberAccountNumber
+      - US.BranchCodeAccountNumber
+      - UK.Revolut.InternalAccountId
+      example: UK.OBIE.IBAN
+    OBTransaction4:
+      title: ''
+      required:
+      - AccountId
+      - Amount
+      - BookingDateTime
+      - CreditDebitIndicator
+      - Status
+      type: object
+      properties:
+        AccountId:
+          $ref: '#/components/schemas/AccountId'
+        TransactionId:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The unique and immutable ID to identify the transaction within an servicing institution.
+        CreditDebitIndicator:
+          type: string
+          description: Indicates whether the transaction is a credit or a debit entry.
+          enum:
+          - Credit
+          - Debit
+        Status:
+          $ref: '#/components/schemas/OBEntryStatus1Code'
+        BookingDateTime:
+          type: string
+          description: "The date and time when the transaction entry is created in Revolut's systems.\nRepresented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format including timezone.            \n\n:::note[Offline transactions]\nFor offline transactions, this value reflects when the transaction is recorded by Revolut, not when the transaction was originally initiated.\nThe original transaction date is available in `SupplementaryData.StartedDate`.\n:::"
+          example: '2017-04-05T10:43:07.758260Z'
+          format: date-time
+        ValueDateTime:
+          type: string
+          description: 'The date and time when the transaction is completed.
+
+            Returned only for transactions with `Status=Booked`.
+
+
+            Represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format including timezone.'
+          example: '2017-04-05T10:43:07.758260Z'
+          format: date-time
+        Amount:
+          required:
+          - Amount
+          - Currency
+          type: object
+          properties:
+            Amount:
+              $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
+            Currency:
+              $ref: '#/components/schemas/Currency'
+          description: Amount of money in the cash transaction entry. This amount includes the amount in `ChargeAmount`.
+        ChargeAmount:
+          required:
+          - Amount
+          - Currency
+          type: object
+          properties:
+            Amount:
+              $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
+            Currency:
+              $ref: '#/components/schemas/Currency'
+          description: Transaction charges to be paid by the charge bearer.
+        CurrencyExchange:
+          $ref: '#/components/schemas/OBCurrencyExchange5'
+        ProprietaryBankTransactionCode:
+          required:
+          - Code
+          type: object
+          properties:
+            Code:
+              maxLength: 35
+              minLength: 1
+              type: string
+              description: The proprietary bank transaction code to identify the underlying transaction.
+            Issuer:
+              maxLength: 35
+              minLength: 1
+              type: string
+              description: The identification of the issuer of the proprietary bank transaction code.
+          description: A list of elements to fully identify a proprietary bank transaction code.
+        SupplementaryData:
+          description: Additional information that cannot be captured in the structured fields and/or any other specific block.
+          allOf:
+          - $ref: '#/components/schemas/OBSupplementaryData1'
+          - type: object
+            properties:
+              StartedDate:
+                readOnly: true
+                type: string
+                format: date-time
+                example: '2017-04-05T10:43:07.275221Z'
+                description: 'The date and time the transaction started in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+
+
+                  Returned if it is different from `BookingDateTime`.
+
+
+                  For example, if the transaction was an offline card transaction made during a flight and would be booked at a later time or date, this field indicates the actual date and time the transaction took place, as provided by the merchant.'
+        TransactionInformation:
+          $ref: '#/components/schemas/TransactionInformation'
+        Balance:
+          $ref: '#/components/schemas/OBTransactionCashBalance'
+        MerchantDetails:
+          $ref: '#/components/schemas/OBMerchantDetails1'
+        CreditorAccount:
+          $ref: '#/components/schemas/OBCashAccount6'
+        DebtorAccount:
+          $ref: '#/components/schemas/OBCashAccount6'
+        CardInstrument:
+          required:
+          - CardSchemeName
+          type: object
+          description: The set of elements to describe the card instrument used in the transaction.
+          properties:
+            CardSchemeName:
+              type: string
+              description: The brand of the payment card. Possible values include `VISA`, `MASTERCARD`, and `MAESTRO`.
+            Identification:
+              type: string
+              description: The last four digits of the card's PAN (Primary Account Number).
+            Name:
+              type: string
+              description: The name of the cardholder.
+      description: The details of the transaction.
+  parameters:
+    ToBookingDateTimeParam:
+      name: toBookingDateTime
+      in: query
+      description: "The UTC [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) Date Time to filter transactions.\n\nIf the parameter is provided, only transactions with `BookingDateTime < toBookingDateTime` will be returned.\nUsed for pagination: to fetch the next page of results, use the `BookingDateTime` of the last transaction from the current page as the new `toBookingDateTime` value. \n\nIf not provided, the most recent transactions will be returned.\n\n:::note\nIf you provide this parameter, both the date and time components are required.\nIf you don't need to filter by time, you can set the time part to `00:00:00`. \nFor example, to fetch transactions with `BookingDateTime` older than 13 Feb 2026, set this value to `2026-02-13T00:00:00Z`.\n:::"
+      schema:
+        type: string
+        format: date-time
+        example: '2026-02-13T00:00:00Z'
+    FromBookingDateTimeParam:
+      name: fromBookingDateTime
+      in: query
+      description: "The UTC [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) Date Time to filter transactions.\nIf the parameter is provided, only transactions with `BookingDateTime >= fromBookingDateTime` will be returned.\nNote that the results are paginated.\n\n:::note\nIf you provide this parameter, both the date and time components are required.\nIf you don't need to filter by time, you can set the time part to `00:00:00`. \nFor example, to fetch transactions with `BookingDateTime` equal to or after 09 Oct 2025, set this value to `2025-10-09T00:00:00Z`.\n:::"
+      schema:
+        type: string
+        format: date-time
+        example: '2025-10-09T00:00:00Z'
+  examples:
+    Error401ConsentLacksPermissions:
+      summary: Consent lacks permissions
+      value:
+        Code: 401 Unauthorized
+        Message: Consent has no permissions
+        Id: XXXXXXXXXXXX
+        Errors:
+        - ErrorCode: UK.OBIE.Resource.Unauthorized
+          Message: Consent has no permissions
+    Error401InvalidRevokedOrExpiredToken:
+      summary: Token invalid, revoked or expired
+      value:
+        Code: 401 Unauthorized
+        Message: Access token is invalid or expired
+        Id: XXXXXXXXXXXX
+        Errors:
+        - ErrorCode: UK.OBIE.Resource.Unauthorized
+          Message: Access token is invalid or expired
+    Error403ForbiddenAccess:
+      summary: SCA 5 minutes expired
+      value:
+        Code: 403 Forbidden
+        Message: Access forbidden
+        Id: XXXXXXXXXXXX
+        Errors:
+        - ErrorCode: UK.OBIE.Resource.Forbidden
+          Message: Access forbidden
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

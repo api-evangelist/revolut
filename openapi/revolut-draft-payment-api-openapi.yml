@@ -1,0 +1,699 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Draft payment API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Draft payment
+  description: 'You can create a draft payment to initiate a payment on behalf of a user, and request the approval for the draft payment in the user account.
+
+
+    Then, you can retrieve or delete a draft payment.
+
+
+    :::note
+
+    The draft payments API is available only for Revolut Business customers.
+
+    If you''d like to use this endpoint, reach out to us.
+
+    :::
+
+
+    For more information, see [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments).'
+paths:
+  /draft-payments:
+    get:
+      tags:
+      - Draft payment
+      summary: List draft payments
+      security:
+      - AccessToken:
+        - draftpayments
+      description: 'Get draft payments list sorted by creation time in descending order.
+
+
+        See also [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments) and [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment#6-get-list-of-draft-payments).'
+      servers:
+      - url: https://apis.revolut.com
+        description: Production server (uses live data)
+      - url: https://sandbox-apis.revolut.com
+        description: Sandbox server (uses test data)
+      operationId: listDraftPayment
+      parameters:
+      - name: from
+        in: query
+        description: Creation time inclusive lower bound in UTC [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) Date Time format YYYY-MM-DDThh:mm:ssZ
+        schema:
+          type: string
+          format: date-time
+      - name: to
+        in: query
+        description: Creation time exclusive upper bound in UTC [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) Date Time format YYYY-MM-DDThh:mm:ssZ
+        schema:
+          type: string
+          format: date-time
+      - name: limit
+        in: query
+        description: Maximum number of items
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Draft Payment List
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftPaymentListResponse'
+              example:
+                Items:
+                - Id: 27d92ade-xxxx-438c-xxxx-06d63a411d67
+                  CreatedAt: '2022-09-29T12:24:31.985323Z'
+                  Status: Awaiting
+                Links: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - Draft payment
+      summary: Create a draft payment
+      security:
+      - AccessToken:
+        - draftpayments
+      description: 'Before you begin, ensure that you''ve got an access token.
+
+        For information about getting the access token, see [Tutorial: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment).
+
+        Then, you can use the `/draft_payments` endpoint to create a draft payment on behalf of a user, and the draft payment appears in the user account where they can approve or reject.
+
+
+        In addition, you can use this endpoint to make multiple draft payments by creating new rows for new drafts with the supported CSV format shown in the following tables.
+
+
+        For each draft payment request you make, ensure that the same currency is used.
+
+        Upon a successful request for multiple draft payments, you receive a `DraftPaymentID` that represents all the draft payments associated with this request.
+
+
+        Please note that the maximum number of rows in a CSV file is 50 and all the payments must be in the same currency.
+
+
+        :::note
+
+        Download an [example CSV file](https://assets.revolut.com/api-docs/oba-api/draft_payments.csv).
+
+        :::
+
+
+        For the format of the CSV file, check the request body details.
+
+
+        See also [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments).'
+      servers:
+      - url: https://apis.revolut.com
+        description: Production server (uses live data)
+      - url: https://sandbox-apis.revolut.com
+        description: Sandbox server (uses test data)
+      operationId: createDraftPayment
+      parameters:
+      - name: scheduledDate
+        in: query
+        description: 'The date and time when the draft payment is executed.
+
+
+          :::note
+
+          Any draft payment in the CSV file is created as a scheduled payment.
+
+          :::'
+        schema:
+          type: string
+          format: YYYY-MM-DD
+      - name: title
+        in: query
+        description: The title of draft payment
+        schema:
+          type: string
+      - name: x-idempotency-key
+        in: header
+        description: Idempotency key in UUID format.
+        required: true
+        schema:
+          type: string
+          format: UUID
+      requestBody:
+        description: For the format of the CSV file, check the table in the body description.
+        content:
+          text/csv:
+            schema:
+              type: string
+              description: 'The CSV payment file.
+
+                Provided as CSV-formatted text representing file payments, or as the path to the CSV payments file preceded by `@`.
+
+                For the format of the CSV file, check the details below.
+
+
+                <details><summary>The format of the draft payment CSV file:</summary>
+
+
+                |FIELD |REQUIRED|DESCRIPTION|
+
+                |---|---|---|
+
+                |`Name`|Yes|Can contain up to 80 characters. If `recipient type` is `INDIVIDUAL`, this field must contain a first and a last name, separated by a space.|
+
+                |`Recipient type`|Yes| Can be either `INDIVIDUAL` or `COMPANY`.|
+
+                |`Account number` |For non-IBAN accounts| Must contain a valid account number if provided.|
+
+                |`Sort code`| For UK transfers| Must contain valid sort code if provided.|
+
+                |`Routing number`| For US transfers| Must contain valid routing number if provided.|
+
+                |`IBAN` |For IBAN accounts| Must contain a valid IBAN if provided.|
+
+                |`BIC` |All the countries except for UK/US local| Must contain a valid BIC if provided.|
+
+                |`Recipient bank country` |Yes| Must contain a valid [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) country code.|
+
+                |`Currency`| Yes |Must contain a valid [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code.|
+
+                |`Amount` |Yes| Match the pattern: `[0-9]*(\\.[0-9]*)?`|
+
+                |`Payment reference` |Yes| Can contain up to 100 characters.|
+
+                |`Recipient country` |No |Must contain a valid [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) country code if provided.|
+
+                |`State or province`| No| Can contain up to 50 characters.|
+
+                |`Address line 1` |No| Can contain up to 50 characters.|
+
+                |`Address line 2`| No |Can contain up to 50 characters.|
+
+                |`City` |No| Can contain up to 50 characters.|
+
+                |`Postal code` |No| Can contain up to 50 characters.|
+
+
+                </details>'
+            examples:
+              CSV file:
+                summary: Path to a CSV file
+                value: '@draft_payments.csv'
+              CSV-formatted text-UK:
+                summary: 'CSV-formatted text: UK local transfer'
+                value: 'Name,Recipient type,Account number,Sort code,Recipient bank country,Currency,Amount,Payment reference,Payment reference,Recipient country,State or province,Address line 1,Address line 2,City,Postal code
+
+                  John Smith,INDIVIDUAL,40513598,207409,GB,GBP,10,User comment,GB,,Revolutest LTD,Somewhere in London,London,E14 5AB
+
+                  John Doe,INDIVIDUAL,90352556,600001,GB,GBP,10,Second comment,,,,,,'
+              CSV-formatted text-US:
+                summary: 'CSV-formatted text: US local transfer'
+                value: 'Name,Recipient type,Account number,Routing number,Recipient bank country,Currency,Amount,Payment reference,Recipient country,State or province,Address line 1,Address line 2,City,Postal code
+
+                  John Smith,INDIVIDUAL,531782059505,024600402,US,USD,10,First comment,US,California,Revolutest LTD,2340 Marietta Street,Oakland,94612
+
+                  John Doe,INDIVIDUAL,356972945639,118677794,US,USD,10,Second comment,US,Arkansas,Revolutest LTD,3243 Midway Road,Portland,71654'
+              CSV-formatted text-IBAN:
+                summary: 'CSV-formatted text: IBAN transfer'
+                value: 'Name,Recipient type,IBAN,BIC,Recipient bank country,Currency,Amount,Payment reference,Recipient country,State or province,Address line 1,Address line 2,City,Postal code
+
+                  Jaques Martin,INDIVIDUAL,FR0514508000305251415643Y69,SOGEFRPP,FR,EUR,10,First comment,FR,Bretagne,Revolutest LTD,82 rue Lenotre,RENNES,35000
+
+                  Michel Dupont,INDIVIDUAL,FR3210057000308845567335Q88,BNPAFRPP,FR,EUR,10,Second comment,FR,Aquitaine,Revolutest LTD,52 rue Jean Vilar,BERGERAC,24100'
+        required: true
+      responses:
+        '201':
+          description: Draft Payment Details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftPaymentResponse'
+              example:
+                DraftPaymentId: 27d92ade-xxxx-438c-xxxx-06d63a411d67
+                Status: Awaiting
+                Transfers:
+                - Id: a1265ecc-1234-4cb2-bec8-1234b9c32f01
+                  InstructedAmount:
+                    Amount: '10.00'
+                    Currency: GBP
+                  Reference: reference1234
+                  Status: Created
+                  Index: 1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CsvError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /draft-payments/{DraftPaymentId}/transfers/{DraftPaymentTransferId}:
+    delete:
+      tags:
+      - Draft payment
+      summary: Delete a draft payment transfer
+      security:
+      - AccessToken:
+        - draftpayments
+      description: 'Delete a specific draft payment transfer with the given draft payment transfer ID.
+
+        A draft payment transfer can be deleted only if the user hasn''t taken any action upon it, for example, approved or executed the draft payment.
+
+
+        See also [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments) and [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment).'
+      servers:
+      - url: https://apis.revolut.com
+        description: Production server (uses live data)
+      - url: https://sandbox-apis.revolut.com
+        description: Sandbox server (uses test data)
+      operationId: deleteDraftPaymentTransfer
+      parameters:
+      - name: DraftPaymentId
+        in: path
+        description: The id of the draft payment
+        required: true
+        schema:
+          type: string
+          format: UUID
+      - name: DraftPaymentTransferId
+        in: path
+        description: The id of the draft payment transfer
+        required: true
+        schema:
+          type: string
+          format: UUID
+      responses:
+        '204':
+          description: No content
+          content:
+            text/plain:
+              example: ''
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /draft-payments/{DraftPaymentId}:
+    get:
+      tags:
+      - Draft payment
+      summary: Retrieve a draft payment
+      security:
+      - AccessToken:
+        - draftpayments
+      description: 'Get the details about a specific draft payment with the given draft payment ID.
+
+
+        See also [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment#5-get-a-draft-payment) and [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments).'
+      servers:
+      - url: https://apis.revolut.com
+        description: Production server (uses live data)
+      - url: https://sandbox-apis.revolut.com
+        description: Sandbox server (uses test data)
+      operationId: findDraftPayment
+      parameters:
+      - name: DraftPaymentId
+        in: path
+        description: The ID of the draft payment.
+        required: true
+        schema:
+          type: string
+          format: UUID
+      responses:
+        '200':
+          description: Draft Payment Details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftPaymentResponse'
+              example:
+                DraftPaymentId: 27d92ade-xxxx-438c-xxxx-06d63a411d67
+                Status: Awaiting
+                Transfers:
+                - Id: a1265ecc-1234-4cb2-bec8-1234b9c32f01
+                  InstructedAmount:
+                    Amount: '10.00'
+                    Currency: GBP
+                  Reference: reference1234
+                  Status: Created
+                  Index: 1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+      - Draft payment
+      summary: Delete a draft payment
+      security:
+      - AccessToken:
+        - draftpayments
+      description: 'Delete a specific draft payment with the given draft payment ID.
+
+        A draft payment can be deleted only if the user hasn''t taken any action upon it, for example, approved or executed the draft payment.
+
+
+        See also [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments) and [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment).'
+      servers:
+      - url: https://apis.revolut.com
+        description: Production server (uses live data)
+      - url: https://sandbox-apis.revolut.com
+        description: Sandbox server (uses test data)
+      operationId: deleteDraftPayment
+      parameters:
+      - name: DraftPaymentId
+        in: path
+        description: The ID of the draft payment.
+        required: true
+        schema:
+          type: string
+          format: UUID
+      responses:
+        '204':
+          description: No content
+          content:
+            text/plain:
+              example: ''
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    DraftPaymentTransfers:
+      type: array
+      items:
+        $ref: '#/components/schemas/DraftPaymentTransfer'
+    DraftPaymentTransferStatus:
+      type: string
+      description: The status of the draft payment.
+      enum:
+      - Created
+      - Pending
+      - Completed
+      - Failed
+      - Deleted
+    InstructedAmount:
+      required:
+      - Amount
+      - Currency
+      type: object
+      properties:
+        Amount:
+          $ref: '#/components/schemas/Amount'
+        Currency:
+          $ref: '#/components/schemas/Currency'
+    ErrorDetails:
+      type: array
+      description: The  details of the error.
+      items:
+        $ref: '#/components/schemas/ErrorDetail'
+    ErrorDetail:
+      required:
+      - Errors
+      - Row
+      type: object
+      properties:
+        Row:
+          type: integer
+          description: The number of the row.
+        Errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldError'
+    FieldError:
+      required:
+      - Code
+      - Message
+      type: object
+      properties:
+        Message:
+          type: string
+          description: The error message for the field.
+        Code:
+          type: integer
+          description: The error code in high level that helps categorize the error.
+        Field:
+          type: string
+          description: The name of the field.
+    DraftPaymentTransfer:
+      required:
+      - Id
+      - InstructedAmount
+      - Reference
+      - Status
+      type: object
+      properties:
+        Id:
+          type: string
+          description: The ID of the transfer.
+          format: uuid
+        InstructedAmount:
+          $ref: '#/components/schemas/InstructedAmount'
+        Reference:
+          type: string
+          description: The reference of the draft payment.
+        Status:
+          $ref: '#/components/schemas/DraftPaymentTransferStatus'
+        Index:
+          type: integer
+          description: The row number the draft payment represents in the CSV file.
+        FailedReason:
+          type: string
+          description: The reason of the `failed` draft payment.
+        FailedReasonCode:
+          type: integer
+          description: The reason code for the `failed` draft payment.
+    DraftPaymentResponse:
+      required:
+      - DraftPaymentId
+      - Status
+      - Transfers
+      type: object
+      properties:
+        DraftPaymentId:
+          type: string
+          description: The ID of the draft payment.
+          format: uuid
+        RequestedExecutionDate:
+          type: string
+          description: The execution date the draft payment is requested.
+          format: YYYY-MM-DD
+        Status:
+          $ref: '#/components/schemas/DraftPaymentStatus'
+        Transfers:
+          $ref: '#/components/schemas/DraftPaymentTransfers'
+    DraftPaymentListResponse:
+      required:
+      - Items
+      - Links
+      type: object
+      properties:
+        Items:
+          type: array
+          items:
+            required:
+            - CreatedAt
+            - Id
+            - Status
+            type: object
+            properties:
+              Id:
+                type: string
+                description: The ID of the draft payment.
+                format: UUID
+              CreatedAt:
+                type: string
+                description: Date time when the draft payment was created.
+                format: date-time
+              Status:
+                $ref: '#/components/schemas/DraftPaymentStatus'
+              RequestedExecutionDate:
+                type: string
+                description: The execution date the draft payment is requested.
+                format: YYYY-MM-DD
+              Title:
+                type: string
+                description: Title of the draft payment.
+        Links:
+          type: object
+          properties:
+            Next:
+              type: string
+              description: Relative URI to the next page.
+              format: uri
+          description: Links relevant to the payload.
+    Error:
+      required:
+      - Code
+      - Id
+      - Message
+      type: object
+      properties:
+        Code:
+          type: integer
+          description: The error code in high level that helps categorize the error.
+        Id:
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        Message:
+          type: string
+          description: The error message.
+    Currency:
+      pattern: ^[A-Z]{3}$
+      type: string
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    Amount:
+      pattern: ^\d{1,13}\.\d{1,5}$
+      type: string
+      description: The amount of money.
+    DraftPaymentStatus:
+      type: string
+      description: The status of the draft payment.
+      enum:
+      - Awaiting
+      - Processed
+      - Approved
+      - Deleted
+    CsvError:
+      required:
+      - Code
+      - Id
+      - Message
+      type: object
+      properties:
+        Code:
+          type: integer
+          description: The error code in high level that helps categorize the error.
+        Id:
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        Message:
+          type: string
+          description: The error message.
+        Errors:
+          $ref: '#/components/schemas/ErrorDetails'
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

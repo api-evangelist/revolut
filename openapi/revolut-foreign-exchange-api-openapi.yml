@@ -1,0 +1,480 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Foreign exchange API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Foreign exchange
+  description: 'Retrieve information on exchange rates between currencies, buy and sell currencies.
+
+
+    For more information, see the guides: [Exchange money](https://developer.revolut.com/docs/guides/manage-accounts/exchange-money).'
+paths:
+  /rate:
+    get:
+      summary: Get an exchange rate
+      operationId: getRate
+      description: 'Get the sell exchange rate between two currencies.
+
+
+        You can check the [currencies supported in Production](https://help.revolut.com/business/help/receiving-payments/currency-exchanges/which-currencies-can-i-exchange-and-keep-in-my-account/) in the Revolut Help Centre.
+
+        Some of these currencies might not be available in Sandbox.
+
+
+        For more information, see the guides: [Exchange money](https://developer.revolut.com/docs/guides/manage-accounts/exchange-money).'
+      security:
+      - AccessToken:
+        - READ
+      tags:
+      - Foreign exchange
+      parameters:
+      - name: from
+        in: query
+        required: true
+        description: The currency that you exchange from in [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) format.
+        schema:
+          $ref: '#/components/schemas/Currency'
+      - name: amount
+        in: query
+        required: false
+        description: The amount of the currency to exchange **from**. The default value is `1.00`.
+        schema:
+          type: number
+          format: double
+          default: '1.00'
+      - name: to
+        in: query
+        required: true
+        description: The currency that you exchange to in [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) format.
+        schema:
+          $ref: '#/components/schemas/Currency'
+      responses:
+        '200':
+          description: The exchange rate information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExchangeRateResponse'
+              example:
+                from:
+                  amount: 1
+                  currency: EUR
+                to:
+                  amount: 1
+                  currency: USD
+                rate: 1.0044090351
+                fee:
+                  amount: 0
+                  currency: EUR
+                rate_date: '2022-08-31T17:30:34Z'
+        '404':
+          description: 'Not found
+
+
+            Returned, for example, when the exchange rate is unknown'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Exchange rate unknown
+                code: 3472
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /exchange:
+    post:
+      summary: Exchange money
+      operationId: exchangeMoney
+      description: "Exchange money using one of these methods: \n\n- **Sell currency**: You know the amount of currency to sell. \n  For example, you want to exchange 135.5 USD to some EUR. \n\n  Specify the amount in the `from` object.\n- **Buy currency**: You know the amount of currency to buy. \n  For example, you want to exchange some USD to 200 EUR. \n\n  Specify the amount in the `to` object.\n\n:::note\nYou must specify the `amount` field only once, either in the `from` object or in the `to` object.\n:::\n\nYou can check the [currencies supported in Production](https://help.revolut.com/business/help/receiving-payments/currency-exchanges/which-currencies-can-i-exchange-and-keep-in-my-account/) in the Revolut Help Centre.\nSome of these currencies might not be available in Sandbox.\n\nFor more information, see the guides: [Exchange money](https://developer.revolut.com/docs/guides/manage-accounts/exchange-money)."
+      security:
+      - AccessToken:
+        - READ
+        - PAY
+      tags:
+      - Foreign exchange
+      requestBody:
+        description: Specify the exchange information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExchangeRequest'
+            examples:
+              sell:
+                summary: Sell
+                value:
+                  from:
+                    account_id: af98333c-ea53-482b-93c2-1fa5e4eae671
+                    currency: USD
+                    amount: 135.5
+                  to:
+                    account_id: b7ec67d3-5af1-42c8-bece-3d285774894d
+                    currency: EUR
+                  reference: exchange
+                  request_id: A1pH4num3ric2
+              buy:
+                summary: Buy
+                value:
+                  from:
+                    account_id: af98333c-ea53-482b-93c2-1fa5e4eae671
+                    currency: USD
+                  to:
+                    account_id: b7ec67d3-5af1-42c8-bece-3d285774894d
+                    currency: EUR
+                    amount: 200
+                  reference: exchange
+                  request_id: A1pH4num3ric2
+      responses:
+        '200':
+          description: Exchange operation details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExchangeResponse'
+              example:
+                id: 630f9c2e-2e74-a06d-ab61-deb7ggkkd6cb
+                state: completed
+                created_at: '2022-08-31T17:36:46.656876Z'
+                completed_at: '2022-08-31T17:36:46.657239Z'
+        '400':
+          description: 'Bad request
+
+
+            For example, the exchange reason is required.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 3448
+                message: Exchange reason is required
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /exchange-reasons:
+    get:
+      summary: Get exchange reasons
+      description: "Depending on the country and the amount of funds to be exchanged, you might be required to provide an exchange reason. \nWith this endpoint, you can retrieve all exchange reasons available to your business account.\n\nAfter you retrieve the results, use the appropriate reason code in the `exchange_reason_code` field when [exchanging money](https://developer.revolut.com/docs/api/business#exchange-money) or [making a payment](https://developer.revolut.com/docs/api/business#create-payment) that involves foreign currency exchange."
+      operationId: getExchangeReasons
+      security:
+      - AccessToken:
+        - READ
+      tags:
+      - Foreign exchange
+      responses:
+        '200':
+          description: List of exchange reasons
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExchangeReasons'
+              example:
+              - code: business_expense_and_claims
+                name: Business expense and claims
+              - code: fees_and_charges
+                name: Fees and charges
+              - code: fund_transfer_and_intracompany_payment
+                name: Fund transfer and intracompany payment
+              - code: gifts_and_donations
+                name: Gifts and donations
+              - code: government_services_and_tax
+                name: Government services and tax
+              - code: insurance
+                name: Insurance
+              - code: inventory
+                name: Inventory
+              - code: investment_dividend_and_interest
+                name: Investment, dividend and interest
+              - code: loan_and_loan_repayment
+                name: Loan and loan repayment
+              - code: marketing
+                name: Marketing
+              - code: payment_for_goods_and_services
+                name: Payment for goods and services
+              - code: payroll
+                name: Payroll
+              - code: refund
+                name: Refund
+              - code: rental_and_property
+                name: Rental and property
+              - code: sales
+                name: Sales
+              - code: service_provider_and_software
+                name: Service provider and software
+              - code: travel_and_transportation
+                name: Travel and transportation
+              - code: utilities
+                name: Utilities
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    ExchangePartFrom:
+      type: object
+      description: The details of the currency to exchange from.
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          description: The ID of the account to sell currency from.
+        currency:
+          $ref: '#/components/schemas/Currency'
+        amount:
+          type: number
+          format: double
+          description: 'The amount of currency.
+
+            Specify **only** if you want to sell currency.'
+      required:
+      - account_id
+      - currency
+    ExchangeResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the created transaction.
+        type:
+          type: string
+          description: The type of the transaction. For money exchange, it is `exchange`.
+        reason_code:
+          type: string
+          description: 'The reason why the transaction was failed or declined.
+
+
+            Present only when the `state` parameter of the transaction is `declined` or `failed`.'
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the transaction was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        completed_at:
+          type: string
+          format: date-time
+          description: The date and time the transaction was completed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        state:
+          $ref: '#/components/schemas/TransactionState'
+    ExchangeReasonCode:
+      type: string
+      description: "The reason code for the exchange.\nDepending on the country and the amount of funds to be exchanged, you might be required to provide an exchange reason. \nYou can check available reason codes with the [`GET /exchange-reasons` operation](https://developer.revolut.com/docs/api/business#get-exchange-reasons).\n\nIf an exchange reason is not required, this field is ignored."
+      example: fund_transfer_and_intracompany_payment
+    ExchangeRequest:
+      type: object
+      description: The exchange information.
+      properties:
+        from:
+          $ref: '#/components/schemas/ExchangePartFrom'
+        to:
+          $ref: '#/components/schemas/ExchangePartTo'
+        reference:
+          type: string
+          description: 'The reference for the exchange transaction, provided by you.
+
+            It helps you to identify the transaction if you want to look it up later.'
+        request_id:
+          type: string
+          description: 'The ID of the request, provided by you.
+
+            It helps you identify the transaction in your system.
+
+
+            :::warning
+
+            To ensure that an exchange transaction is not processed multiple times if there are network or system errors,
+
+            the same `request_id` should be used for requests related to the same transaction.
+
+            :::'
+          maxLength: 40
+        exchange_reason_code:
+          $ref: '#/components/schemas/ExchangeReasonCode'
+      required:
+      - from
+      - to
+      - request_id
+    ExchangeRateResponse:
+      type: object
+      properties:
+        from:
+          description: The money to sell.
+          $ref: '#/components/schemas/AmountWithCurrency'
+        to:
+          description: The money to receive.
+          $ref: '#/components/schemas/AmountWithCurrency'
+        rate:
+          type: number
+          format: double
+          description: The proposed exchange rate.
+        fee:
+          description: The expected fee for the transaction.
+          $ref: '#/components/schemas/Fee'
+        rate_date:
+          type: string
+          format: date-time
+          description: The date of the proposed exchange rate in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+      required:
+      - from
+      - to
+      - rate
+      - fee
+      - rate_date
+    Fee:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: double
+          description: The fee amount.
+        currency:
+          $ref: '#/components/schemas/Currency'
+    ExchangeReason:
+      type: object
+      required:
+      - code
+      - name
+      properties:
+        code:
+          type: string
+          enum:
+          - business_expense_and_claims
+          - fees_and_charges
+          - fund_transfer_and_intracompany_payment
+          - gifts_and_donations
+          - government_services_and_tax
+          - insurance
+          - inventory
+          - investment_dividend_and_interest
+          - loan_and_loan_repayment
+          - marketing
+          - payment_for_goods_and_services
+          - payroll
+          - refund
+          - rental_and_property
+          - sales
+          - service_provider_and_software
+          - travel_and_transportation
+          - utilities
+          description: Category code of the reason for the exchange.
+        name:
+          type: string
+          description: Category name of the reason for the exchange.
+    ExchangePartTo:
+      type: object
+      description: The details of the currency to exchange to.
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          description: The ID of the account to receive exchanged currency into.
+        currency:
+          $ref: '#/components/schemas/Currency'
+        amount:
+          type: number
+          format: double
+          description: 'The amount of currency.
+
+            Specify **only** if you want to buy currency.'
+      required:
+      - account_id
+      - currency
+    ExchangeReasons:
+      type: array
+      items:
+        $ref: '#/components/schemas/ExchangeReason'
+      description: The list of available exchange reasons.
+      example:
+      - code: business_expense_and_claims
+        name: Business expense and claims
+      - code: fees_and_charges
+        name: Fees and charges
+      - code: fund_transfer_and_intracompany_payment
+        name: Fund transfer and intracompany payment
+      - code: gifts_and_donations
+        name: Gifts and donations
+      - code: government_services_and_tax
+        name: Government services and tax
+      - code: insurance
+        name: Insurance
+      - code: inventory
+        name: Inventory
+      - code: investment_dividend_and_interest
+        name: Investment, dividend and interest
+      - code: loan_and_loan_repayment
+        name: Loan and loan repayment
+      - code: marketing
+        name: Marketing
+      - code: payment_for_goods_and_services
+        name: Payment for goods and services
+      - code: payroll
+        name: Payroll
+      - code: refund
+        name: Refund
+      - code: rental_and_property
+        name: Rental and property
+      - code: sales
+        name: Sales
+      - code: service_provider_and_software
+        name: Service provider and software
+      - code: travel_and_transportation
+        name: Travel and transportation
+      - code: utilities
+        name: Utilities
+    TransactionState:
+      enum:
+      - created
+      - pending
+      - completed
+      - declined
+      - failed
+      - reverted
+      description: "Indicates the transaction state. Possible values:\n  - `created`: The transaction has been created and is either processed asynchronously or scheduled for a later time.\n  - `pending`: The transaction is pending until it's being processed. If the transfer is made between Revolut accounts, this state is skipped and the transaction is executed instantly.\n  - `completed`: The transaction was successful.\n  - `declined`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, insufficient account balance, wrong receiver information, etc.\n  - `failed`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, invalid API calls, blocked payments, etc.\n  - `reverted`: The transaction was reverted. This can happen for a variety of reasons, for example, the receiver being inaccessible."
+      type: string
+    AmountWithCurrency:
+      type: object
+      description: ''
+      properties:
+        amount:
+          type: number
+          format: double
+          description: The amount of the transaction.
+        currency:
+          $ref: '#/components/schemas/Currency'
+    Currency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

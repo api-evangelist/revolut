@@ -1,0 +1,297 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Terminals API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Terminals
+  description: 'Operations for managing Revolut Terminal devices and push payment integrations with Point of Sale (POS) systems.
+
+
+    The Terminals API enables POS software providers to integrate with Revolut Terminal devices for accepting in-person payments through a **push payments** model. This server-to-server integration allows your POS system to:
+
+
+    - Discover available terminals at specific locations
+
+    - Push payment requests to physical terminal devices
+
+    - Track payment intent and payment status in real-time
+
+    - Cancel pending payment requests when needed
+
+
+    ## Push payments workflow
+
+
+    1. **Terminal discovery:** Use the [Retrieve terminal list](https://developer.revolut.com/docs/api/merchant#retrieve-terminal-list) endpoint to find available terminals at a location (filtered by `operation_mode=pos`)
+
+    1. **Payment intent creation:** Push a payment request to a specific terminal using [Create a payment intent](https://developer.revolut.com/docs/api/merchant#create-payment-intent)
+
+    1. **Status tracking:** Poll the payment intent status until completion using [Retrieve a payment intent](https://developer.revolut.com/docs/api/merchant#retrieve-payment-intent) endpoint
+
+    1. **Payment confirmation:** Once the payment intent reaches `completed` state, [retrieve the final payment status](https://developer.revolut.com/docs/api/merchant#retrieve-payment-details) using the returned `payment_id`
+
+
+    :::info
+
+    For detailed implementation guidance, see: [Push payments to Revolut Terminal](https://developer.revolut.com/docs/guides/merchant/accept-payments/in-person-payments/terminal/push-payments).
+
+    :::'
+paths:
+  /api/terminals:
+    parameters:
+    - $ref: '#/components/parameters/Authorization'
+    - $ref: '#/components/parameters/Revolut-Api-Version-Optional'
+    get:
+      summary: Retrieve terminal list
+      operationId: retrieveTerminalList
+      description: 'Retrieve a list of Revolut Terminal devices available to the merchant.
+
+
+        This endpoint is primarily used for push payments to Revolut Terminal integration, allowing POS systems to discover available terminals at a specific location and in the correct operation mode.
+
+
+        :::tip
+
+        For push payments integration, use the `operation_mode=pos` query parameter to filter only terminals in **Pay at Counter** mode that are ready to receive payment intents.
+
+        :::
+
+
+        :::info
+
+        For more information about integration, see: [Push payments to Revolut Terminal](https://developer.revolut.com/docs/guides/merchant/accept-payments/in-person-payments/terminal/push-payments).
+
+        :::'
+      parameters:
+      - $ref: '#/components/parameters/Operation-Mode'
+      - $ref: '#/components/parameters/Location-Id-Query'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Terminals-Response'
+              examples:
+                terminals_list:
+                  $ref: '#/components/examples/Res-Terminals-List'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+      tags:
+      - Terminals
+components:
+  schemas:
+    Terminal-Serial-Number:
+      title: Terminal serial number
+      type: string
+      description: The serial number of the terminal device.
+      example: RT-00123456
+    Terminal:
+      title: Terminal
+      type: object
+      description: Represents a Revolut Terminal device.
+      properties:
+        id:
+          $ref: '#/components/schemas/Terminal-Id'
+        name:
+          $ref: '#/components/schemas/Terminal-Name'
+        type:
+          $ref: '#/components/schemas/Terminal-Type'
+        serial_number:
+          $ref: '#/components/schemas/Terminal-Serial-Number'
+        battery_level:
+          $ref: '#/components/schemas/Terminal-Battery-Level'
+        online:
+          $ref: '#/components/schemas/Terminal-Online'
+        last_online_at:
+          $ref: '#/components/schemas/Terminal-Last-Online-At'
+      required:
+      - id
+      - name
+      - type
+      - serial_number
+      - battery_level
+      - online
+      - last_online_at
+    Terminal-Id:
+      title: Terminal ID
+      type: string
+      format: uuid
+      description: The unique identifier of the terminal.
+    Terminal-Online:
+      title: Terminal online status
+      type: boolean
+      description: 'Indicates whether the terminal is currently online and connected.
+
+
+        | Value | Description |
+
+        |-------|-------------|
+
+        | `true` | Terminal is online and available |
+
+        | `false` | Terminal is offline |'
+    Terminal-Operation-Mode:
+      title: Terminal operation mode
+      type: string
+      description: "The operation mode of the terminal.\n\n  | Value | Description |\n|-------|-------------|\n| `pos` | Returns only terminals in Pay at Counter mode |\n| `payment_acceptance` | Returns only terminals in standard checkout mode |"
+      enum:
+      - pos
+      - payment_acceptance
+    Terminal-Type:
+      title: Terminal type
+      type: string
+      description: The hardware type/model of the terminal device.
+      enum:
+      - youtransactor_ucube_touch
+      - newland_n950
+      - newland_n750
+      - newland_r25p
+    Terminal-Last-Online-At:
+      title: Terminal last online timestamp
+      type: string
+      format: date-time
+      description: The date and time when the terminal was last seen online.
+    Terminal-Name:
+      title: Terminal name
+      type: string
+      description: The name of the terminal device.
+    Terminal-Battery-Level:
+      title: Terminal battery level
+      type: integer
+      description: The current battery level of the terminal as a percentage (0-100).
+      minimum: 0
+      maximum: 100
+    Terminals-Response:
+      title: Terminals response
+      type: object
+      description: Response containing a list of terminals.
+      properties:
+        terminals:
+          $ref: '#/components/schemas/Terminals'
+      required:
+      - terminals
+    Terminals:
+      type: array
+      description: List of terminal devices.
+      items:
+        $ref: '#/components/schemas/Terminal'
+    Error-v2:
+      title: Error
+      type: object
+      properties:
+        code:
+          type: string
+          description: 'An identifier that can be used to determine what went wrong.
+
+
+            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
+        message:
+          type: string
+          description: Some human readable text describing what went wrong.
+        timestamp:
+          type: integer
+          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
+  examples:
+    Res-Terminals-List:
+      summary: List of terminals at a location
+      value:
+        terminals:
+        - id: 0e53f673-7705-473a-a263-89a3e7647c3d
+          name: Terminal 1
+          type: newland_n950
+          serial_number: RT-00123456
+          battery_level: 85
+          online: true
+          last_online_at: '2025-01-15T14:30:00Z'
+        - id: a7b2c8d1-4e5f-6a7b-8c9d-0e1f2a3b4c5d
+          name: Terminal 2
+          type: newland_n950
+          serial_number: RT-00123457
+          battery_level: 92
+          online: true
+          last_online_at: '2025-01-15T14:32:00Z'
+  parameters:
+    Revolut-Api-Version-Optional:
+      name: Revolut-Api-Version
+      in: header
+      schema:
+        type: string
+        format: date
+        example: '2026-04-20'
+        enum:
+        - '2023-09-01'
+        - '2024-05-01'
+        - '2024-09-01'
+        - '2025-10-16'
+        - '2025-12-04'
+        - '2026-03-12'
+        - '2026-04-20'
+      description: 'The version of the Merchant API, specified in `YYYY-MM-DD` format.
+
+
+        :::info
+
+        For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).
+
+        :::'
+      x-config-always-visible-in-example: true
+    Authorization:
+      name: Authorization
+      in: header
+      schema:
+        type: string
+        format: Bearer <yourSecretApiKey>
+        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
+      required: true
+      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
+    Operation-Mode:
+      name: operation_mode
+      in: query
+      required: false
+      explode: true
+      description: 'Filter terminals by operation mode.
+
+
+        | Value | Description |
+
+        |-------|-------------|
+
+        | `pos` | Returns only terminals in Pay at Counter mode |
+
+        | `payment_acceptance` | Returns only terminals in standard checkout mode |'
+      schema:
+        $ref: '#/components/schemas/Terminal-Operation-Mode'
+    Location-Id-Query:
+      name: location_id
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      in: query
+      required: false
+      description: Filter results by location ID.
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

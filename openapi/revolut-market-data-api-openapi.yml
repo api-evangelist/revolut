@@ -1,0 +1,622 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Market Data API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Market Data
+  description: Retrieve real-time and historical market data for Revolut X.
+paths:
+  /order-book/{symbol}:
+    get:
+      tags:
+      - Market Data
+      summary: Get order book snapshot
+      operationId: getOrderBook
+      description: Retrieve the current order book snapshot (bids and asks) for a specific trading pair.
+      parameters:
+      - $ref: '#/components/parameters/XRevxTimestamp'
+      - $ref: '#/components/parameters/XRevxSignature'
+      - name: symbol
+        in: path
+        required: true
+        description: The trading pair symbol (e.g., BTC-USD).
+        schema:
+          type: string
+        example: BTC-USD
+      - name: limit
+        in: query
+        description: Depth of the order book to return (number of levels).
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 50
+          default: 20
+          example: 20
+      responses:
+        '200':
+          description: 'OK
+
+
+            The Order Book snapshot for the given trading pair.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderBook'
+              examples:
+                OrderBookResponse:
+                  summary: Order book response
+                  $ref: '#/components/examples/OrderBook'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        5XX:
+          $ref: '#/components/responses/ServerError'
+  /candles/{symbol}:
+    get:
+      tags:
+      - Market Data
+      summary: Get historical OHLCV candles
+      operationId: getCandles
+      description: 'Retrieve historical market data (Open, High, Low, Close, Volume) for a specific symbol.
+
+        If there is trading volume, the view is based on recent trades.
+
+        If there is no volume, the view is based on the Mid Price (Bid/Ask average).'
+      parameters:
+      - $ref: '#/components/parameters/XRevxTimestamp'
+      - $ref: '#/components/parameters/XRevxSignature'
+      - name: symbol
+        in: path
+        required: true
+        description: The trading pair symbol (e.g., BTC-USD).
+        example: BTC-USD
+        schema:
+          type: string
+      - name: interval
+        in: query
+        description: Time interval between candles in minutes.
+        schema:
+          type: integer
+          format: int32
+          default: 5
+          enum:
+          - 1
+          - 5
+          - 15
+          - 30
+          - 60
+          - 240
+          - 1440
+          - 2880
+          - 5760
+          - 10080
+          - 20160
+          - 40320
+          example: 5
+      - name: since
+        in: query
+        description: 'Start timestamp for the query in Unix epoch milliseconds.
+
+
+          :::note
+
+          If omitted, up to 5000 candles leading up to the `until` parameter will be returned.
+
+          :::'
+        schema:
+          type: integer
+          format: int64
+          example: 3318215482991
+      - name: until
+        in: query
+        description: 'End timestamp for the query in Unix epoch milliseconds.
+
+
+          :::note
+
+          If omitted, this defaults to the current timestamp.
+
+          :::'
+        schema:
+          type: integer
+          format: int64
+          example: 3318215482991
+      responses:
+        '200':
+          description: 'OK
+
+
+            List of OHLCV candles.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Candle'
+                required:
+                - data
+              examples:
+                CandlesResponse:
+                  summary: Candles response
+                  $ref: '#/components/examples/CandlesResponseExample'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        5XX:
+          $ref: '#/components/responses/ServerError'
+  /tickers:
+    get:
+      tags:
+      - Market Data
+      summary: Get all tickers
+      operationId: getTicker
+      description: 'Retrieves the latest market data snapshots for all supported currency pairs.
+
+        The response includes the current best bid and ask prices, the calculated mid-price, and the last traded price for each active symbol.'
+      parameters:
+      - $ref: '#/components/parameters/XRevxTimestamp'
+      - $ref: '#/components/parameters/XRevxSignature'
+      - name: symbols
+        in: query
+        description: Filter tickers by specific currency pairs (comma-separated).
+        schema:
+          type: array
+          items:
+            type: string
+        style: form
+        explode: false
+        example: BTC-USD,ETH-USD
+      responses:
+        '200':
+          description: 'OK
+
+
+            The list of tickers.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TickersResponse'
+              examples:
+                TickersResponse:
+                  summary: Tickers response
+                  $ref: '#/components/examples/TickersResponseExample'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        5XX:
+          $ref: '#/components/responses/ServerError'
+components:
+  schemas:
+    TickersResponse:
+      type: object
+      description: Response containing ticker information for currency pairs.
+      required:
+      - data
+      - metadata
+      properties:
+        data:
+          type: array
+          description: List of ticker information for currency pairs.
+          items:
+            $ref: '#/components/schemas/Ticker'
+        metadata:
+          type: object
+          description: Metadata about the response.
+          required:
+          - timestamp
+          properties:
+            timestamp:
+              type: integer
+              format: int64
+              description: The time the data was captured in Unix epoch milliseconds.
+              example: 1770201294631
+    OrderBookPriceLevel:
+      type: object
+      description: A single order book price level.
+      properties:
+        aid:
+          type: string
+          description: Crypto-asset ID code.
+          example: ETH
+        anm:
+          type: string
+          description: Crypto-asset full name.
+          example: Ethereum
+        s:
+          type: string
+          description: The side of the price level.
+          enum:
+          - SELL
+          - BUYI
+          example: SELL
+        p:
+          type: string
+          description: Price in major currency units. For example, for USD, 4600 represents 4600 dollars.
+          example: '4600'
+        pc:
+          type: string
+          description: Price currency.
+          example: USD
+        pn:
+          type: string
+          description: Price notation.
+          example: MONE
+        q:
+          type: string
+          description: Aggregated quantity at this price level.
+          example: '17'
+        qc:
+          type: string
+          description: Quantity currency.
+          example: ETH
+        qn:
+          type: string
+          description: Quantity notation.
+          example: UNIT
+        ve:
+          type: string
+          description: Venue of execution. Always equals `REVX`.
+          example: REVX
+        'no':
+          type: string
+          description: Number of orders at the price level.
+          example: '3'
+        ts:
+          type: string
+          description: Trading system. Always equals `CLOB` (Central Limit Order Book).
+          example: CLOB
+        pdt:
+          type: integer
+          format: int64
+          description: Publication date and time, returned in Unix epoch milliseconds
+          example: 3318215482991
+      required:
+      - aid
+      - anm
+      - s
+      - p
+      - pc
+      - pn
+      - q
+      - qc
+      - qn
+      - ve
+      - 'no'
+      - ts
+      - pdt
+    OrderBook:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            asks:
+              type: array
+              description: The list of asks (sell orders), sorted by price in descending order.
+              items:
+                $ref: '#/components/schemas/OrderBookPriceLevel'
+            bids:
+              type: array
+              description: The list of bids (buy orders), sorted by price in descending order.
+              items:
+                $ref: '#/components/schemas/OrderBookPriceLevel'
+          required:
+          - asks
+          - bids
+        metadata:
+          type: object
+          properties:
+            timestamp:
+              type: integer
+              format: int64
+              description: Timestamp when the order book snapshot was generated, returned in Unix epoch milliseconds.
+              example: 3318215482991
+          required:
+          - timestamp
+      required:
+      - data
+      - metadata
+    Candle:
+      type: object
+      required:
+      - start
+      - open
+      - high
+      - low
+      - close
+      - volume
+      properties:
+        start:
+          type: integer
+          format: int64
+          description: Start timestamp of the candle in Unix epoch milliseconds.
+        open:
+          type: string
+          format: decimal
+          description: Opening price.
+        high:
+          type: string
+          format: decimal
+          description: Highest price during the interval.
+        low:
+          type: string
+          format: decimal
+          description: Lowest price during the interval.
+        close:
+          type: string
+          format: decimal
+          description: Closing price.
+        volume:
+          type: string
+          format: decimal
+          description: Total trading volume during the interval.
+    ErrorResponse:
+      type: object
+      description: Standard error response structure
+      required:
+      - error_id
+      - message
+      - timestamp
+      properties:
+        error_id:
+          type: string
+          format: uuid
+          description: Unique identifier for this specific error occurrence.
+        message:
+          type: string
+          description: Human-readable description of the error.
+        timestamp:
+          type: integer
+          format: int64
+          description: The time the error occurred in Unix epoch milliseconds.
+    Ticker:
+      type: object
+      description: 'Real-time market data snapshot for a specific trading pair.
+
+        Includes the current best bid/ask prices and the most recent trade price.'
+      required:
+      - symbol
+      - bid
+      - ask
+      - mid
+      - last_price
+      properties:
+        symbol:
+          type: string
+          description: The unique identifier for the currency pair (e.g., `BTC/USD`).
+          example: BTC/USD
+        bid:
+          type: string
+          format: decimal
+          description: 'The current highest price a buyer is willing to pay.
+
+            Represents the top price in the buy order book.'
+          example: '65100.50'
+        ask:
+          type: string
+          format: decimal
+          description: 'The current lowest price a seller is willing to accept.
+
+            Represents the top price in the sell order book.'
+          example: '65101.00'
+        mid:
+          type: string
+          format: decimal
+          description: 'The arithmetic midpoint between the best bid and best ask prices.
+
+            Calculated as `(bid + ask) / 2`.'
+          example: '65100.75'
+        last_price:
+          type: string
+          format: decimal
+          description: The price at which the most recent trade was successfully executed.
+          example: '65101.00'
+  responses:
+    ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Something went wrong!
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: API key can only be used for authentication from whitelisted IP
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Request timestamp is in the future
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Forbidden
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: 'No such pair: BTC-BTC'
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    RateLimitExceeded:
+      description: Rate Limit Exceeded
+      headers:
+        Retry-After:
+          description: The number of milliseconds to wait before making a new request.
+          schema:
+            type: integer
+            example: 5000
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Rate Limit Exceeded
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+  parameters:
+    XRevxTimestamp:
+      in: header
+      name: X-Revx-Timestamp
+      required: true
+      description: "Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers."
+      schema:
+        type: integer
+        example: 1746007718237
+    XRevxSignature:
+      in: header
+      name: X-Revx-Signature
+      required: true
+      description: "The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::"
+      schema:
+        type: string
+        example: 2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+
+  examples:
+    OrderBook:
+      value:
+        data:
+          asks:
+          - aid: ETH
+            anm: Ethereum
+            s: SELL
+            p: '4600'
+            pc: USD
+            pn: MONE
+            q: '17'
+            qc: ETH
+            qn: UNIT
+            ve: REVX
+            'no': '3'
+            ts: CLOB
+            pdt: 3318215482991
+          - aid: ETH
+            anm: Ethereum
+            s: SELL
+            p: '4555'
+            pc: USD
+            pn: MONE
+            q: '2.1234'
+            qc: ETH
+            qn: UNIT
+            ve: REVX
+            'no': '2'
+            ts: CLOB
+            pdt: 3318215482991
+          bids:
+          - aid: ETH
+            anm: Ethereum
+            s: BUYI
+            p: '4550'
+            pc: USD
+            pn: MONE
+            q: '0.25'
+            qc: ETH
+            qn: UNIT
+            ve: REVX
+            'no': '1'
+            ts: CLOB
+            pdt: 3318215482991
+          - aid: ETH
+            anm: Ethereum
+            s: BUYI
+            p: '4500'
+            pc: USD
+            pn: MONE
+            q: '24.42'
+            qc: ETH
+            qn: UNIT
+            ve: REVX
+            'no': '5'
+            ts: CLOB
+            pdt: 3318215482991
+        metadata:
+          timestamp: 3318215482991
+    CandlesResponseExample:
+      value:
+        data:
+        - start: 3318215482991
+          open: '92087.81'
+          high: '92133.89'
+          low: '92052.39'
+          close: '92067.31'
+          volume: '0.00067964'
+        - start: 3318215782991
+          open: '90390.46'
+          high: '90395'
+          low: '90358.84'
+          close: '90395'
+          volume: '0.00230816'
+    TickersResponseExample:
+      value:
+        data:
+        - symbol: BTC/USD
+          bid: '0.02'
+          ask: '0.02'
+          mid: '0.02'
+          last_price: '0.02'
+        - symbol: ETH/USD
+          bid: '0.02'
+          ask: '0.02'
+          mid: '0.02'
+          last_price: '0.02'
+        metadata:
+          timestamp: 1770201294631
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

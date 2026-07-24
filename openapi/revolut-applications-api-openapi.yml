@@ -1,0 +1,453 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Applications API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Applications
+  description: 'These endpoints let you manage your applications.
+
+
+    Applications can also be created in the [Developer Portal](https://developer.revolut.com/portal/).
+
+
+    For more information, see:
+
+    - [Register your application using DCR](https://developer.revolut.com/docs/guides/build-banking-apps/register-your-application-using-dcr/)
+
+    - [Manage your applications](https://developer.revolut.com/docs/guides/build-banking-apps/manage-your-applications/get-an-application)'
+paths:
+  /distinguished-name:
+    servers:
+    - url: https://oba-auth.revolut.com
+      description: Production server (uses live data)
+    - url: https://sandbox-oba-auth.revolut.com
+      description: Sandbox server (uses test data)
+    get:
+      tags:
+      - Applications
+      summary: Get a distinguished name (DN)
+      description: 'Get the distinguished name (DN) of your transport certificate which is used to identify your requests.
+
+
+        This parameter is needed in order to [register or update your application via DCR](https://developer.revolut.com/docs/guides/build-banking-apps/register-your-application-using-dcr/).'
+      operationId: getDistinguishedName
+      responses:
+        '200':
+          description: Distinguished name
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - tls_client_auth_dn
+                properties:
+                  tls_client_auth_dn:
+                    type: string
+                    description: The distinguished name (DN) of your transport certificate.
+              example:
+                tls_client_auth_dn: organizationIdentifier=PSDUK-REVCA-95248b85-bc39-413a-8a16-b5abbf6202cb,CN=2kiXQyo0tedjW2somjSgH7,OU=001580000103UAvAAM,O=Revolut,C=GB
+        '401':
+          description: Unauthorized
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+  /register:
+    servers:
+    - url: https://oba-auth.revolut.com
+      description: Production server (uses live data)
+    - url: https://sandbox-oba-auth.revolut.com
+      description: Sandbox server (uses test data)
+    post:
+      tags:
+      - Applications
+      security:
+      - AccessToken:
+        - openid
+      summary: Register an application
+      description: 'Register an application via DCR.
+
+        This endpoint accepts only JWT, which needs to be precalculated.
+
+
+        For more information, see [Register your application using DCR: Create a JWT](https://developer.revolut.com/docs/guides/build-banking-apps/register-your-application-using-dcr/create-a-jwt).'
+      operationId: registerApplication
+      requestBody:
+        required: true
+        description: Provide a JWT signed with a valid signing key
+        content:
+          text/plain:
+            schema:
+              type: string
+              description: A JWT [calculated](https://developer.revolut.com/docs/guides/build-banking-apps/register-your-application-using-dcr/create-a-jwt) for your application, signed with a valid signing key.
+            examples:
+              testJwt:
+                summary: Sample JWT
+                value: eyJhbGciOiJQUzI1NiIsImtpZCI6ImFwcDIwMjMwNTE2In0.eyJpc3MiOiJleGFtcGxlLmNvbSIsImF1ZCI6InJldm9sdXQiLCJleHAiOjE4OTk3OTYyNTQsImlhdCI6MTcwNTMyMDk5MCwiaWRfdG9rZW5fc2lnbmVkX3Jlc3BvbnNlX2FsZyI6IlBTMjU2IiwicmVxdWVzdF9vYmplY3Rfc2lnbmluZ19hbGciOiJQUzI1NiIsInRva2VuX2VuZHBvaW50X2F1dGhfbWV0aG9kIjoidGxzX2NsaWVudF9hdXRoIiwiYXBwbGljYXRpb25fdHlwZSI6IndlYiIsInJlZGlyZWN0X3VyaXMiOlsiaHR0cHM6Ly9leGFtcGxlLmNvbSJdLCJzY29wZSI6Im9wZW5pZCBwYXltZW50cyBhY2NvdW50cyIsInRsc19jbGllbnRfYXV0aF9kbiI6Im9yZ2FuaXphdGlvbklkZW50aWZpZXI9UFNEVUstUkVWQ0EtOTUyNDhiODUtYmMzOS00MTNhLThhMTYtYjVhYmJmNjIwMmNiLENOPTJraVhReW8wdGVkalcyc29talNnSDcsT1U9MDAxNTgwMDAwMTAzVUF2QUFNLE89UmV2b2x1dCxDPUdCIiwic29mdHdhcmVfc3RhdGVtZW50IjoiZXlKaGJHY2lPaUp1YjI1bEluMD0uZXlKemIyWjBkMkZ5WlY5amJHbGxiblJmYm1GdFpTSTZJa1JEVWlCQmNIQnNhV05oZEdsdmJpQXhOekExTXpJd09Ua3dJaXdpYjNKblgycDNhM05mWlc1a2NHOXBiblFpT2lKb2RIUndjem92TDJWNFlXMXdiR1V1WTI5dEwyMTVhbmRyY3k1cWMyOXVJaXdpYzI5bWRIZGhjbVZmY21Wa2FYSmxZM1JmZFhKcGN5STZXeUpvZEhSd2N6b3ZMMlY0WVcxd2JHVXVZMjl0SWwxOS4ifQ.6XAf_Vy7R7ihta_dS91ISFhTsL5ro8UrLVSw2md_IyviGK1HKf-Ua6QwZJxVnyIkJO-Ik9Nqr20v8CA7v0i1Apr6iqy5IvsKP3md6xjAPdrqYrLHqlL0MCycyCpu-9mo53LHxR32uJ2lEz8ITx84_zjeiHVMCsH-7u386uA8HhA7WEii9OlYfp6AOnSQIRBmIcdYWE9RPdAKfnzVJ8FiEnxxBnebIrkhD1Eacx_BqhfqafJHO3DUuCNNIt08L9NgRMMABXxjiA0zS_qXCSgCGhxbFQMdLXNSIgbDEXx7ET3sNTwmu_U14Yh5qJ_uGSkNhWB7qae5uq2dQCO63d7I43
+      responses:
+        '200':
+          description: Successfully created application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterApplicationResponse'
+              example:
+                iss: example.com
+                iat: 1705330836
+                exp: 1899796254
+                application_type: web
+                client_id: e63d14ae-3b0b-4b6b-85e3-0b221e245c4e
+                token_endpoint_auth_method: tls_client_auth
+                tls_client_auth_dn: organizationIdentifier=PSDUK-REVCA-95248b85-bc39-413a-8a16-b5abbf6202cb,CN=2kiXQyo0tedjW2somjSgH7,OU=001580000103UAvAAM,O=Revolut,C=GB
+                software_statement: eyJhbGciOiJub25lIn0=.eyJzb2Z0d2FyZV9jbGllbnRfbmFtZSI6IkRDUiBBcHBsaWNhdGlvbiAxNzA1MzIwOTkwIiwib3JnX2p3a3NfZW5kcG9pbnQiOiJodHRwczovL2V4YW1wbGUuY29tL215andrcy5qc29uIiwic29mdHdhcmVfcmVkaXJlY3RfdXJpcyI6WyJodHRwczovL2V4YW1wbGUuY29tIl19.
+                id_token_signed_response_alg: PS256
+                request_object_signing_alg: PS256
+                redirect_uris:
+                - https://example.com
+                org_jwks_endpoint: https://example.com/
+                grant_types: []
+                scope: openid payments accounts
+        '400':
+          description: Unreachable JWKS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+              example:
+                Code: 400 Bad Request
+                Message: Invalid request parameters
+                Id: 126S23QGPZ8HG
+                Errors:
+                - ErrorCode: UK.OBIE.Field.Invalid
+                  Message: Failed to fetch public key from https://example.com/myjwks.json
+  /register/{ClientId}:
+    servers:
+    - url: https://oba-auth.revolut.com
+      description: Production server (uses live data)
+    - url: https://sandbox-oba-auth.revolut.com
+      description: Sandbox server (uses test data)
+    get:
+      tags:
+      - Applications
+      summary: Get an application
+      security:
+      - AccessToken:
+        - openid
+      description: Retrieve an already registered application.
+      operationId: getApplication
+      parameters:
+      - $ref: '#/components/parameters/ClientId'
+      responses:
+        '200':
+          description: Application data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApplicationResponse'
+              examples:
+                appData:
+                  summary: Sample application data
+                  value:
+                    client_id: 6136922a-6163-4c66-a4be-9059bf6a1730
+                    token_endpoint_auth_method: tls_client_auth
+                    tls_client_auth_dn: organizationIdentifier=PSDUK-REVCA-95248b85-bc39-413a-8a16-b5abbf6202cb,CN=2kiXQyo0tedjW2somjSgH7,OU=001580000103UAvAAM,O=Revolut,C=GB
+                    id_token_signed_response_alg: PS256
+                    request_object_signing_alg: PS256
+                    redirect_uris:
+                    - https://example.com
+                    org_jwks_endpoint: https://example.com/myjwks.json
+                    org_name: ACME Payments Ltd
+                    scope: openid payments accounts
+        '403':
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+              example:
+                Code: 403 Forbidden
+                Message: Access forbidden
+                Id: EE2Q9YDN2OE7
+                Errors:
+                - ErrorCode: UK.OBIE.Resource.Forbidden
+                  Message: Access forbidden
+    put:
+      tags:
+      - Applications
+      summary: Update an application
+      security:
+      - AccessToken:
+        - openid
+      description: 'Update an existing application.
+
+
+        This endpoint only accepts JWT, which must be precalculated as described in [Create a JWT](https://developer.revolut.com/docs/guides/build-banking-apps/register-your-application-using-dcr/create-a-jwt).'
+      operationId: updateApplication
+      parameters:
+      - $ref: '#/components/parameters/ClientId'
+      requestBody:
+        required: true
+        description: Provide a JWT signed with a valid signing key
+        content:
+          text/plain:
+            schema:
+              type: string
+              description: A new JWT [calculated](https://developer.revolut.com/docs/guides/build-banking-apps/register-your-application-using-dcr/create-a-jwt) for your application, signed with a valid signing key.
+            examples:
+              testJwt:
+                summary: Sample JWT
+                value: eyJhbGciOiJQUzI1NiIsImtpZCI6ImFwcDIwMjMwNTE2In0.eyJpc3MiOiJleGFtcGxlLmNvbSIsImF1ZCI6InJldm9sdXQiLCJleHAiOjE4OTk3OTYyNTQsImlhdCI6MTcwNTMyMDk5MCwiaWRfdG9rZW5fc2lnbmVkX3Jlc3BvbnNlX2FsZyI6IlBTMjU2IiwicmVxdWVzdF9vYmplY3Rfc2lnbmluZ19hbGciOiJQUzI1NiIsInRva2VuX2VuZHBvaW50X2F1dGhfbWV0aG9kIjoidGxzX2NsaWVudF9hdXRoIiwiYXBwbGljYXRpb25fdHlwZSI6IndlYiIsInJlZGlyZWN0X3VyaXMiOlsiaHR0cHM6Ly9leGFtcGxlLmNvbSJdLCJzY29wZSI6Im9wZW5pZCBwYXltZW50cyBhY2NvdW50cyIsInRsc19jbGllbnRfYXV0aF9kbiI6Im9yZ2FuaXphdGlvbklkZW50aWZpZXI9UFNEVUstUkVWQ0EtOTUyNDhiODUtYmMzOS00MTNhLThhMTYtYjVhYmJmNjIwMmNiLENOPTJraVhReW8wdGVkalcyc29talNnSDcsT1U9MDAxNTgwMDAwMTAzVUF2QUFNLE89UmV2b2x1dCxDPUdCIiwic29mdHdhcmVfc3RhdGVtZW50IjoiZXlKaGJHY2lPaUp1YjI1bEluMD0uZXlKemIyWjBkMkZ5WlY5amJHbGxiblJmYm1GdFpTSTZJa1JEVWlCQmNIQnNhV05oZEdsdmJpQXhOekExTXpJd09Ua3dJaXdpYjNKblgycDNhM05mWlc1a2NHOXBiblFpT2lKb2RIUndjem92TDJWNFlXMXdiR1V1WTI5dEwyMTVhbmRyY3k1cWMyOXVJaXdpYzI5bWRIZGhjbVZmY21Wa2FYSmxZM1JmZFhKcGN5STZXeUpvZEhSd2N6b3ZMMlY0WVcxd2JHVXVZMjl0SWwxOS4ifQ.6XAf_Vy7R7ihta_dS91ISFhTsL5ro8UrLVSw2md_IyviGK1HKf-Ua6QwZJxVnyIkJO-Ik9Nqr20v8CA7v0i1Apr6iqy5IvsKP3md6xjAPdrqYrLHqlL0MCycyCpu-9mo53LHxR32uJ2lEz8ITx84_zjeiHVMCsH-7u386uA8HhA7WEii9OlYfp6AOnSQIRBmIcdYWE9RPdAKfnzVJ8FiEnxxBnebIrkhD1Eacx_BqhfqafJHO3DUuCNNIt08L9NgRMMABXxjiA0zS_qXCSgCGhxbFQMdLXNSIgbDEXx7ET3sNTwmu_U14Yh5qJ_uGSkNhWB7qae5uq2dQCO63d7I43
+      responses:
+        '200':
+          description: Application data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApplicationResponse'
+              examples:
+                appData:
+                  summary: Sample app data
+                  value:
+                    client_id: 6136922a-6163-4c66-a4be-9059bf6a1730
+                    token_endpoint_auth_method: tls_client_auth
+                    tls_client_auth_dn: organizationIdentifier=PSDUK-REVCA-95248b85-bc39-413a-8a16-b5abbf6202cb,CN=2kiXQyo0tedjW2somjSgH7,OU=001580000103UAvAAM,O=Revolut,C=GB
+                    id_token_signed_response_alg: PS256
+                    request_object_signing_alg: PS256
+                    redirect_uris:
+                    - https://example.com
+                    org_jwks_endpoint: https://example.com/myjwks.json
+                    org_name: ACME Payments Ltd
+                    scope: openid payments accounts
+        '403':
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+              example:
+                Code: 403 Forbidden
+                Message: Access forbidden
+                Id: EE2Q9YDN2OE7
+                Errors:
+                - ErrorCode: UK.OBIE.Resource.Forbidden
+                  Message: Access forbidden
+    delete:
+      tags:
+      - Applications
+      summary: Delete an application
+      security:
+      - AccessToken:
+        - openid
+      description: Delete an existing application.
+      operationId: deleteApplication
+      parameters:
+      - $ref: '#/components/parameters/ClientId'
+      responses:
+        '204':
+          description: No content
+          content: {}
+        '403':
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+              example:
+                Code: 403 Forbidden
+                Message: Access forbidden
+                Id: EE2Q9YDN2OE7
+                Errors:
+                - ErrorCode: UK.OBIE.Resource.Forbidden
+                  Message: Access forbidden
+components:
+  schemas:
+    OBErrorResponse1:
+      required:
+      - Code
+      - Errors
+      - Message
+      type: object
+      properties:
+        Code:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The error code in high level that helps categorize the error.
+        Id:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'The error message.
+
+            For example, `There is something wrong with the request parameters provided`.'
+        Errors:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OBError1'
+      description: The detailed information about the error to help troubleshooting.
+    OBError1:
+      required:
+      - ErrorCode
+      - Message
+      type: object
+      properties:
+        ErrorCode:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The error code in low level, for example, `UK.OBIE.Field.Missing`.
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'The description of the error that occurred.
+
+            For example, `A mandatory field isn''t supplied`, `RequestedExecutionDateTime must be in future`, and `OBIE doesn''t standardise this field`.'
+    GetApplicationResponse:
+      type: object
+      properties:
+        client_id:
+          type: string
+          description: The Client ID used to identify the application.
+        token_endpoint_auth_method:
+          type: string
+          description: 'Specifies the authentication method for the `/token` endpoint.
+
+
+            Currently, only `tls_client_auth` is supported.'
+          enum:
+          - tls_client_auth
+        tls_client_auth_dn:
+          type: string
+          description: Distinguished name (DN) of the transport certificate used by the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        id_token_signed_response_alg:
+          type: string
+          description: The signing algorithm used to sign the `id_token` JWTs. Currently, only `PS256` is supported.
+          enum:
+          - tls_client_auth
+        request_object_signing_alg:
+          type: string
+          description: The signing algorithm used to sign request objects. Currently, only `PS256` is supported.
+          enum:
+          - tls_client_auth
+        redirect_uris:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: List of the registered URIs that the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) will use to interact with the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        org_jwks_endpoint:
+          type: string
+          format: uri
+          description: Public URI endpoint where the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) has uploaded their JWKS in JSON format.
+        org_name:
+          type: string
+          description: Legal Entity Identifier or other known organisation name.
+        scope:
+          type: string
+          description: 'List of scopes that the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) has access to, provided as a **space-separated string**.
+
+            For example, `"openid accounts payments"`.
+
+            Possible scopes to list: `openid`, `accounts`, `payments`, `fundsconfirmation`.'
+          example: openid payments
+    RegisterApplicationResponse:
+      type: object
+      properties:
+        iss:
+          type: string
+          description: The principal that issued the JWT.
+        iat:
+          type: integer
+          description: 'The time the JWT was issued, which is used to determine the age of the JWT.
+
+            Provided in seconds in Unix timestamp format.'
+        exp:
+          type: integer
+          description: 'The expiration time starting from which the JWT must not be accepted for processing.
+
+            Provided in seconds in Unix timestamp format.'
+        application_type:
+          type: string
+          description: The type of application. Either `web` or `mobile`.
+          enum:
+          - web
+          - mobile
+        client_id:
+          type: string
+          description: The Client ID used to identify the application.
+        token_endpoint_auth_method:
+          type: string
+          description: 'Specifies the authentication method for the `/token` endpoint.
+
+            Currently, only `tls_client_auth` is supported.'
+          enum:
+          - tls_client_auth
+        tls_client_auth_dn:
+          type: string
+          description: Distinguished name of the transport certificate used by the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        software_statement:
+          type: string
+          description: 'Software statement assertion issued by the issuer.
+
+
+            The data model for the software statements issued by the Open Banking directory are documented as part of the Directory Specification.'
+        id_token_signed_response_alg:
+          type: string
+          description: The signing algorithm used to sign the `id_token` JWTs. Currently, only `PS256` is supported.
+          enum:
+          - PS256
+        request_object_signing_alg:
+          type: string
+          description: The signing algorithm used to sign request objects. Currently, only `PS256` is supported.
+          enum:
+          - PS256
+        redirect_uris:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: List of registered URIs that the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) will use to interact with the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        org_jwks_endpoint:
+          type: string
+          format: uri
+          description: Public URI endpoint where the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) has uploaded their JWKS in JSON format.
+        grant_types:
+          type: array
+          description: 'Accepted grant types.
+
+            A JSON array specifying what the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) can request to be supplied to the `/token` endpoint in exchange for an access token.'
+          items:
+            type: string
+        scope:
+          type: string
+          description: List of scopes that the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) has access to, separated by spaces.
+  parameters:
+    ClientId:
+      name: ClientId
+      in: path
+      description: The Client ID of the application.
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

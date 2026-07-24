@@ -1,0 +1,960 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Accounting categories API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Accounting categories
+  description: 'Manage accounting categories for your business.
+
+    You can create, retrieve, and delete accounting categories that can be assigned to your financial records such as [expenses](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses) or bills.
+
+
+    For more information, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).
+
+
+    See also the Revolut Help Centre: [Expenses](https://help.revolut.com/business/help/managing-my-business/expenses/) and [BillPay](https://help.revolut.com/business/help/integrating-with-external-apps/introduction-to-billpay/).'
+paths:
+  /accounting-categories:
+    post:
+      summary: Create an accounting category
+      operationId: createAccountingCategory
+      description: 'Add a new accounting category to the list of accounting categories that can be assigned to your financial records, such as expenses.
+
+
+        :::note
+
+        This operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).
+
+        :::
+
+
+        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).'
+      security:
+      - AccessToken:
+        - WRITE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAccountingCategoryRequest'
+            examples:
+              category_with_default_tax_rate:
+                summary: Accounting category with default tax rate
+                value:
+                  name: Transportation
+                  code: '400'
+                  default_tax_rate_id: e6b84ddb-a127-466b-9a0a-501bda07773f
+              category_without_default_tax_rate:
+                summary: Accounting category without default tax rate
+                value:
+                  name: Office supplies
+                  code: '410'
+      responses:
+        '201':
+          description: 'Resource created
+
+
+            On successful creation, the response returns only the ID of the new resource (i.e. the accounting category), even if the resource has more properties.
+
+            To get all the details of the accounting category, use the returned resource ID with a [GET request](https://developer.revolut.com/docs/api/business#get-accounting-category).'
+          $ref: '#/components/responses/ResourceCreatedResponse'
+        '400':
+          description: 'Bad Request
+
+
+            Returned, for example, when a required parameter is missing or malformatted.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                param_required:
+                  summary: Required parameter(s) missing
+                  value:
+                    error_id: fa12f45e-0ebf-4f7c-88e0-ebb7a1441a18
+                    code: 2101
+                    message: '''code'' is required, ''name'' is required'
+                bad_param_type:
+                  summary: Incorrect parameter type
+                  value:
+                    error_id: 29146977-8042-446f-b362-675e2921d71c
+                    code: 2101
+                    message: '''code'' must be a string, ''name'' must be a string'
+                invalid_json:
+                  summary: Invalid JSON
+                  value:
+                    error_id: df7b76b2-1313-42f0-8c0b-3673c665f135
+                    code: 2101
+                    message: Request body is not valid JSON
+                param_value_too_short:
+                  summary: Parameter value too short
+                  value:
+                    error_id: 7acc6073-5290-45f8-8956-c79d487ef1e5
+                    code: 2101
+                    message: '''name'' must be at least 1 character'
+                param_value_too_long:
+                  summary: Parameter value too long
+                  value:
+                    error_id: c4da2d3c-1cd8-4bbc-ac43-233575e471b7
+                    code: 2101
+                    message: '''name'' must be at most 60 characters'
+                bad_param_format:
+                  summary: Incorrect parameter format
+                  value:
+                    error_id: f70973ea-c939-41f8-a106-1656ab5fae2f
+                    code: 2101
+                    message: '''default_tax_rate_id'' must be a valid UUID'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: 'Conflict
+
+
+            Request conflicts with the current state of the resource.
+
+            Returned, for example, when an accounting category with the provided name already exists.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                category_with_name_exists:
+                  summary: Name must be unique
+                  value:
+                    error_id: 8c08b656-ab6e-4768-4e57-f281da25aa2b
+                    code: 3503
+                    message: Category with name My Unique Accounting Category already exists
+                category_with_code_exists:
+                  summary: Code must be unique
+                  value:
+                    error_id: 8c08b656-ab6e-4768-4e57-f281da25aa2b
+                    code: 3504
+                    message: Category with code MUAC already exists
+        '422':
+          description: "Unprocessable entity - accounting category cannot be created due to business rules \n\nReturned, for example, when you have an accounting software integration connected to your Revolut Business account, and accounting categories are managed by that integration.\n\nThe request is well-formed and the server understands it, but the operation cannot be performed because the resource state doesn't permit it.\nRetrying the same request won't succeed."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                cannot_modify_externally_managed_resource:
+                  summary: Accounting categories are managed by integration, cannot be created manually
+                  value:
+                    error_id: e950c41e-cfd6-4e04-bd79-2d57a3951774
+                    code: 3514
+                    message: Accounting categories are managed by your connected accounting integration and cannot be modified manually
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+      tags:
+      - Accounting categories
+    get:
+      summary: Retrieve a list of accounting categories
+      operationId: getAccountingCategories
+      description: "Get available accounting categories based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 accounting categories per request. \nThe default page size is 100.\n:::\n\nThe accounting categories are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of accounting categories returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.        \n  To get the next page of results, make a new request using that `next_page_token` value in `page_token`.\n- If the number of results is smaller than the page size, `next_page_token` is not returned.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories)."
+      security:
+      - AccessToken:
+        - READ
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        description: 'The page size, that is, the maximum number of accounting categories to return per page.
+
+
+          To get the next page of results, use `page_token`.'
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 500
+          default: 100
+          example: 10
+      - $ref: '#/components/parameters/PageToken'
+      responses:
+        '200':
+          description: List of accounting categories and the next page token if the number of results exceeds the page size
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  next_page_token:
+                    $ref: '#/components/schemas/PageToken'
+                  accounting_categories:
+                    type: array
+                    description: The list of accounting categories.
+                    items:
+                      $ref: '#/components/schemas/AccountingCategoryResponse'
+                required:
+                - accounting_categories
+              examples:
+                results_with_next_page:
+                  summary: Results exceed page size (when limit=5) & next page available
+                  value:
+                    next_page_token: MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA
+                    accounting_categories:
+                    - id: 8d831292-f950-4c5a-83f9-030df8cacd3f
+                      name: Transportation
+                      code: '400'
+                      created_at: '2026-03-11T17:03:25.570942Z'
+                      updated_at: '2026-03-11T17:03:25.570942Z'
+                      default_tax_rate_id: d8f6bf6c-5b70-4c16-9549-5943e67ab009
+                    - id: 8d749b93-4a2e-4f28-8b5b-9d64fe2e1d62
+                      name: Office Supplies
+                      code: '410'
+                      created_at: '2026-03-11T17:03:25.570940Z'
+                      updated_at: '2026-03-11T17:03:25.570940Z'
+                      default_tax_rate_id: 2a3520af-e6f7-416c-821e-0e83ffac1dfa
+                    - id: 3726661e-0e93-4822-8bda-4d1a4c6e7dff
+                      name: Software & Subscriptions
+                      code: '420'
+                      created_at: '2026-03-11T17:03:25.570937Z'
+                      updated_at: '2026-03-11T17:03:25.570937Z'
+                      default_tax_rate_id: 6a83d8d8-f5a5-405d-aafd-729786569c2d
+                    - id: b37c42c8-1d42-4ee1-aa7e-348dd06ea69f
+                      name: General Expenses
+                      code: '429'
+                      created_at: '2026-03-11T17:03:25.570927Z'
+                      updated_at: '2026-03-11T17:03:25.570927Z'
+                      default_tax_rate_id: 5781063b-d140-4c72-bde9-b8b21e64e3e0
+                    - id: c729ea95-3ae7-4d21-91f7-1a69844175f2
+                      name: Travel & Lodging
+                      code: '460'
+                      created_at: '2026-03-11T17:03:25.570924Z'
+                      updated_at: '2026-03-11T17:03:25.570924Z'
+                      default_tax_rate_id: f2519604-b04a-4a82-9b01-68235c4ad000
+                results_single_page:
+                  summary: Results fit within page size, no more pages available
+                  value:
+                    accounting_categories:
+                    - id: 8d831292-f950-4c5a-83f9-030df8cacd3f
+                      name: Transportation
+                      code: '400'
+                      created_at: '2026-03-11T17:03:25.570942Z'
+                      updated_at: '2026-03-11T17:03:25.570942Z'
+                      default_tax_rate_id: d8f6bf6c-5b70-4c16-9549-5943e67ab009
+                    - id: 8d749b93-4a2e-4f28-8b5b-9d64fe2e1d62
+                      name: Office Supplies
+                      code: '410'
+                      created_at: '2026-03-11T17:03:25.570940Z'
+                      updated_at: '2026-03-11T17:03:25.570940Z'
+                      default_tax_rate_id: 2a3520af-e6f7-416c-821e-0e83ffac1dfa
+                    - id: 3726661e-0e93-4822-8bda-4d1a4c6e7dff
+                      name: Software & Subscriptions
+                      code: '420'
+                      created_at: '2026-03-11T17:03:25.570937Z'
+                      updated_at: '2026-03-11T17:03:25.570937Z'
+                      default_tax_rate_id: 6a83d8d8-f5a5-405d-aafd-729786569c2d
+                    - id: b37c42c8-1d42-4ee1-aa7e-348dd06ea69f
+                      name: General Expenses
+                      code: '429'
+                      created_at: '2026-03-11T17:03:25.570927Z'
+                      updated_at: '2026-03-11T17:03:25.570927Z'
+                      default_tax_rate_id: 5781063b-d140-4c72-bde9-b8b21e64e3e0
+                    - id: c729ea95-3ae7-4d21-91f7-1a69844175f2
+                      name: Travel & Lodging
+                      code: '460'
+                      created_at: '2026-03-11T17:03:25.570924Z'
+                      updated_at: '2026-03-11T17:03:25.570924Z'
+                      default_tax_rate_id: f2519604-b04a-4a82-9b01-68235c4ad000
+                    - id: 846b4cad-462d-4b4e-b96c-fc4e14de564d
+                      name: Utilities
+                      code: '499'
+                      created_at: '2026-03-11T17:03:25.570919Z'
+                      updated_at: '2026-03-11T17:03:25.570919Z'
+                      default_tax_rate_id: fa95a4ae-a7d2-4ea6-bf42-2af1aead8ca4
+                    - id: 2f76152a-2b14-4390-aa32-bbab02a1e98c
+                      name: Meals & Entertainment
+                      code: '500'
+                      created_at: '2026-03-11T17:03:25.570919Z'
+                      updated_at: 2026-03-11T17:03:25.570919Zs
+        '400':
+          description: 'Bad Request
+
+
+            Returned, for example, when a required parameter is missing or malformatted.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                bad_param_type:
+                  summary: Incorrect query parameter type
+                  value:
+                    error_id: 29146977-8042-0ebf-b362-af224b14c830
+                    code: 2101
+                    message: Query parameter 'limit' must be an integer
+                param_value_too_low:
+                  summary: Query parameter value too low
+                  value:
+                    error_id: b5a51cd1-4f78-4074-adae-675e2921d71c
+                    code: 2101
+                    message: Query parameter 'limit' must be at least 1
+                param_value_too_high:
+                  summary: Query parameter value too high
+                  value:
+                    error_id: fa12f45e-4633-446f-8d40-42dadc380511
+                    code: 2101
+                    message: Query parameter 'limit' must be at most 500
+                multiple_values_not_allowed:
+                  summary: Multiple values provided for a single-value query parameter
+                  value:
+                    error_id: c4da2d3c-1cd8-4bbc-ac43-233575e471b7
+                    code: 2101
+                    message: Query parameter 'limit' must have a single value
+                param_cannot_be_empty:
+                  summary: Query parameter provided without a value
+                  value:
+                    error_id: fa12f45e-0ebf-4f7c-88e0-3673c665f135
+                    code: 2101
+                    message: Query parameter 'limit' must not be empty, Query parameter 'page_token' must not be empty
+                bad_page_token:
+                  summary: Incorrect page token
+                  value:
+                    error_id: 69772914-8042-0ebf-b362-14c830af224b
+                    code: 2101
+                    message: Query parameter 'page_token' is invalid. Use a value from a previous response's next_page_token field.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+      tags:
+      - Accounting categories
+  /accounting-categories/{accounting_category_id}:
+    get:
+      summary: Retrieve accounting category details
+      operationId: getAccountingCategory
+      description: 'Get the details of a specific accounting category based on its ID.
+
+
+        The details include the accounting category name, code, and default tax rate, as well as when the accounting category was added to your settings, and when it was last updated.
+
+
+        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).'
+      security:
+      - AccessToken:
+        - READ
+      parameters:
+      - name: accounting_category_id
+        in: path
+        required: true
+        description: The ID of the accounting category to retrieve.
+        schema:
+          type: string
+          format: uuid
+          example: 64a2d310-e2a0-43c2-872f-969098141ebb
+      responses:
+        '200':
+          description: Accounting category details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountingCategoryResponse'
+              examples:
+                category_with_default_tax_rate:
+                  summary: Accounting category with default tax rate
+                  value:
+                    id: 8d831292-f950-4c5a-83f9-030df8cacd3f
+                    name: Transportation
+                    code: '400'
+                    created_at: '2026-03-11T17:03:25.570942Z'
+                    updated_at: '2026-03-11T17:03:25.570942Z'
+                    default_tax_rate_id: e6b84ddb-a127-466b-9a0a-501bda07773f
+                category_without_default_tax_rate:
+                  summary: Accounting category without default tax rate
+                  value:
+                    id: 6a37383e-cfd3-4a2f-aa81-e3a6e6939efa
+                    name: Office supplies
+                    code: '410'
+                    created_at: '2026-03-11T17:03:25.570942Z'
+                    updated_at: '2026-03-11T17:03:25.570942Z'
+        '400':
+          description: 'Bad Request
+
+
+            Returned, for example, when the required path parameter is missing or malformatted.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              example:
+                error_id: 36e1a581-b05e-4018-b202-6b371092a19a
+                code: 2101
+                message: Path parameter 'id' must be a valid UUID
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: 'Not found
+
+
+            Returned when the accounting category that you''re trying to retrieve cannot be found.
+
+            This can happen, for example, when the accounting category doesn''t exist, or the provided accounting category ID is incorrect.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              example:
+                error_id: cbb15721-5f51-4588-a959-7494bb7ba827
+                code: 3006
+                message: Accounting category with id 8945879d-6854-4e10-88d6-ce92c5f010ac not found
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+      tags:
+      - Accounting categories
+    patch:
+      summary: Update accounting category settings
+      operationId: updateAccountingCategory
+      description: 'Update settings for a specific accounting category, based on its ID.
+
+
+        :::note
+
+        This operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).
+
+        :::
+
+
+        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).'
+      security:
+      - AccessToken:
+        - WRITE
+      parameters:
+      - name: accounting_category_id
+        in: path
+        required: true
+        description: The ID of the accounting category to update.
+        schema:
+          type: string
+          format: uuid
+          example: 64a2d310-e2a0-43c2-872f-969098141ebb
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAccountingCategoryRequest'
+            examples:
+              update_all_props:
+                summary: Update all properties
+                value:
+                  name: Custom with tax rate
+                  code: '998'
+                  default_tax_rate_id: e6b84ddb-a127-466b-9a0a-501bda07773f
+              update_category_name:
+                summary: Update accounting category name
+                value:
+                  name: Marketing
+              update_category_code:
+                summary: Update accounting category code
+                value:
+                  code: '998'
+              update_default_tax_rate:
+                summary: Update default tax rate
+                value:
+                  default_tax_rate_id: 6a6399c3-4a3b-4b21-b710-57aa03aae58f
+      responses:
+        '204':
+          description: Accounting category updated
+        '400':
+          description: 'Bad Request
+
+
+            Returned, for example, when a required parameter is missing or malformatted.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                param_required:
+                  summary: Body is empty
+                  value:
+                    error_id: f1059c4b-4278-45d3-a17f-bd433ab33c15
+                    code: 2101
+                    message: Request body must not be empty
+                bad_param_type:
+                  summary: Incorrect parameter format
+                  value:
+                    error_id: a79a73ea-7dk4-41f8-a106-1656ab5f1234
+                    code: 2101
+                    message: '''name'' must be a string'
+                bad_param_format:
+                  summary: Incorrect parameter format
+                  value:
+                    error_id: f70973ea-c939-41f8-a106-1656ab5fae2f
+                    code: 2101
+                    message: Path parameter 'id' must be a valid UUID
+                invalid_json:
+                  summary: Invalid JSON
+                  value:
+                    error_id: 36f3cec5-b4b9-431f-9c28-afd3899bc64f
+                    code: 2101
+                    message: Request body is not valid JSON
+                param_value_too_short:
+                  summary: Parameter value too short
+                  value:
+                    error_id: 32fd0697-2f3f-4308-b25d-c9230f99c589
+                    code: 2101
+                    message: '''name'' must be at least 1 character'
+                param_value_too_long:
+                  summary: Parameter value too long
+                  value:
+                    error_id: d8d919b5-d667-4058-9bb3-17b6f7bcd6c8
+                    code: 2101
+                    message: '''name'' must be at most 60 characters'
+                param_value_too_long2:
+                  summary: Parameter value too long
+                  value:
+                    error_id: b4d919b5-d667-4058-9bb3-17b6f7bcdd03
+                    code: 2101
+                    message: '''code'' must be at most 50 characters'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: 'Not found
+
+
+            Returned when the accounting category that you''re trying to modify cannot be found.
+
+            This can happen, for example, when the accounting category doesn''t exist, or the provided category ID is incorrect.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              example:
+                error_id: be6c9d90-df25-458a-b559-be61896c94b8
+                code: 3006
+                message: Accounting category with id b656d8a4-a5cb-4f03-9a95-f281da25aa2b not found
+        '409':
+          description: 'Conflict
+
+
+            Request conflicts with the current state of the resource.
+
+            Returned, for example, when an accounting category with the provided name and/or code already exists.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                category_with_name_exists:
+                  summary: Name must be unique
+                  value:
+                    error_id: 8c08b656-ab6e-4768-4e57-f281da25aa2b
+                    code: 3503
+                    message: Category with name My Unique Accounting Category already exists
+                category_with_code_exists:
+                  summary: Code must be unique
+                  value:
+                    error_id: d8a48c08-4e57-4768-ab6e-4d53aa1731b0
+                    code: 3504
+                    message: Category with code MUAC already exists
+        '422':
+          description: "Unprocessable entity - accounting category cannot be updated due to business rules \n\nReturned, for example, when you have an accounting software integration connected to your Revolut Business account, and accounting categories are managed by that integration.\nMay also be returned if you try to modify a category that has already been deleted, or when you try to clear `name` and/or `code` values using `null`. \n\nThe request is well-formed and the server understands it, but the operation cannot be performed because the resource state doesn't permit it.\nRetrying the same request won't succeed."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                cannot_update_externally_managed_resource:
+                  summary: Accounting category managed by integration, cannot be updated
+                  value:
+                    error_id: 9c4be950c-cfd6-4e04-bd79-bd433ab33c15
+                    code: 3514
+                    message: Accounting categories are managed by your connected accounting integration and cannot be modified manually
+                state_mismatch:
+                  summary: Accounting category is no longer available
+                  value:
+                    error_id: 41ef105-4278-cfd6-a17f-2d57a3951774
+                    code: 3100
+                    message: Invalid request
+                null_name:
+                  summary: Name cannot be null
+                  value:
+                    error_id: 41ef105-4278-cfd6-a17f-2d57a3951774
+                    code: 3100
+                    message: Invalid request
+                null_code:
+                  summary: Code cannot be null
+                  value:
+                    error_id: 41ef105-4278-cfd6-a17f-2d57a3951774
+                    code: 3100
+                    message: Invalid request
+                null_name_and_code:
+                  summary: Name or code cannot be null
+                  value:
+                    error_id: 41ef105-4278-cfd6-a17f-2d57a3951774
+                    code: 3100
+                    message: Invalid request
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+      tags:
+      - Accounting categories
+    delete:
+      summary: Delete an accounting category
+      operationId: deleteAccountingCategory
+      description: "Delete a specific accounting category, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).\n:::\n\nOnce the accounting category is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to assign it to new financial records (e.g. expenses). \n- Existing records assigned to this category that have not been completed will be marked as invalid, and you'll need to reassign them to another category.\n- Completed records will not be affected by the change. \n\nA successful response does not get any content in return.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories)."
+      security:
+      - AccessToken:
+        - WRITE
+      parameters:
+      - name: accounting_category_id
+        in: path
+        required: true
+        description: The ID of the accounting category to delete.
+        schema:
+          type: string
+          format: uuid
+          example: 64a2d310-e2a0-43c2-872f-969098141ebb
+      responses:
+        '204':
+          description: Accounting category deleted
+        '400':
+          description: 'Bad Request
+
+
+            Returned, for example, when a required parameter is missing or malformatted.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                bad_param_format:
+                  summary: Incorrect path parameter format
+                  value:
+                    error_id: f70973ea-c939-41f8-a106-1656ab5fae2f
+                    code: 2101
+                    message: Path parameter 'id' must be a valid UUID
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: 'Not found
+
+
+            Returned when the accounting category that you''re trying to delete doesn''t exist.
+
+            This can happen when, for example, the accounting category has already been deleted, or the provided category ID is incorrect.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              example:
+                error_id: 69bca351a-22a7-ac4d-af05-21032f9080ec
+                code: 3006
+                message: Accounting category with id d6c034a8-b302-4741-b66f-cc0f0a19642e not found
+        '422':
+          description: "Unprocessable entity - accounting category cannot be deleted due to business rules \n\nReturned, for example, when you have an accounting software integration connected to your Revolut Business account, and accounting category are managed by that integration.\n\nThe request is well-formed and the server understands it, but the operation cannot be performed because the resource state doesn't permit it.\nRetrying the same request won't succeed."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                cannot_delete_externally_managed_resource:
+                  summary: Accounting categories managed by integration, cannot be deleted
+                  value:
+                    error_id: e950c41e-cfd6-4e04-bd79-2d57a3951774
+                    code: 3514
+                    message: Accounting categories are managed by your connected accounting integration and cannot be modified manually
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+      tags:
+      - Accounting categories
+components:
+  responses:
+    ServiceUnavailable:
+      description: 'Service Unavailable
+
+
+        The system is temporarily unavailable.
+
+        If the response includes the `Retry-After` header instruction, please respect it and refrain from earlier retry attempts.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          examples:
+            service_unavailable:
+              summary: System temporarily unavailable
+              value:
+                error_id: 201768bc-c5cd-4db8-8898-7ae96b9d89ab
+                code: 5003
+                message: The service is temporarily unavailable. Try again in a few moments. If the issue persists, please contact support
+    Unauthorized:
+      description: 'Unauthorized – authentication credentials are missing or invalid
+
+
+        Returned when the request was not fulfilled because authentication has failed or has not been provided.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          examples:
+            access_token_invalid_or_expired:
+              summary: Access token invalid or expired
+              value:
+                error_id: 9d66499d-3fc5-45e9-92f6-3ddcad4793c6
+                code: 1000
+                message: Access token is invalid or has expired. Please refresh your access token or generate a new one following the 'Get a new access token' guide in the Revolut API docs.
+            invalid_token:
+              summary: Invalid token
+              value:
+                error_id: 7835beae-98ed-42dc-b993-95f4ded951a1
+                code: 1000
+                message: Invalid token. The authorization header must follow the 'Bearer <token>' format.
+    TooManyRequests:
+      description: 'Too many requests
+
+
+        Returned, for example, when the rate limit has been exceeded.
+
+        If the response includes the `Retry-After` instruction, please respect it and refrain from earlier retry attempts.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          examples:
+            rateLimitExceededNoRetryAfter:
+              summary: Rate limit exceeded (no Retry-After)
+              value:
+                error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
+                code: 3162
+                message: Request rate limit has been reached. Try again later.
+            rateLimitExceededWithRetryAfter:
+              summary: Rate limit exceeded (with Retry-After)
+              value:
+                error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
+                code: 3162
+                message: Request rate limit has been reached. Try again after 30 seconds.
+    InternalServerError:
+      description: 'Internal server error
+
+
+        An unexpected application error occurred.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          example:
+            error_id: 7f96652e-7518-4229-872b-4e4c867fb4da
+            code: 5000
+            message: An unexpected error occurred while processing your request. If the issue persists, please contact support
+    Forbidden:
+      description: 'Action forbidden - insufficient permissions to perform this action
+
+
+        Returned, for example, when you don''t have permissions necessary to perform this action.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          example:
+            error_id: c5deadcc-1934-4438-818a-3c7ca1e6c01c
+            code: 9002
+            message: This action is forbidden
+    ResourceCreatedResponse:
+      description: 'Resource created
+
+
+        On successful creation, the response returns only the ID of the new resource, even if the resource has more properties.
+
+        To get all details, use the returned resource ID with a GET request.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResourceCreatedResponse'
+          examples:
+            resource_created:
+              summary: Resource created
+              value:
+                id: 6a37383e-cfd3-4a2f-aa81-e3a6e6939efa
+  schemas:
+    AccountingCategoryResponse:
+      type: object
+      required:
+      - id
+      - name
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique ID of the accounting category.
+          example: 8d831292-f950-4c5a-83f9-030df8cacd3f
+        name:
+          type: string
+          description: The name of the accounting category.
+          example: Transportation
+        code:
+          type: string
+          description: The code of the accounting category.
+          example: '305'
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the accounting category was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          example: '2025-10-20T15:09:24Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the accounting category was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          example: '2025-10-20T15:09:24Z'
+        default_tax_rate_id:
+          type: string
+          format: uuid
+          description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) applied to items in this accounting category unless overridden for a specific item.
+          example: 2a3520af-e6f7-416c-821e-0e83ffac1dfa
+    ResourceCreatedResponse:
+      description: Successfully created resource.
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the created resource.
+    ErrorWithId:
+      required:
+      - code
+      - message
+      - error_id
+      type: object
+      properties:
+        error_id:
+          type: string
+          description: The ID of the specific error instance. Used for traceability.
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+    PageToken:
+      type: string
+      format: byte
+      description: "Cursor for the next page. \nUsed for pagination when the total number of results exceeds the maximum number per page.\n\nTo get the next page of results, make a new request and set `page_token` to the `next_page_token` value returned in the previous response.\n:::note\nIf there are no more results to fetch, `next_page_token` is not returned in the response.\n:::"
+      example: MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA
+    UpdateAccountingCategoryRequest:
+      type: object
+      description: The new settings for the accounting category.
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          description: The new full name for the accounting category.
+          minLength: 1
+          maxLength: 60
+          example: Work From Home equipment
+        code:
+          type: string
+          description: The new code name for the accounting category.
+          minLength: 1
+          maxLength: 50
+          example: WFH
+        default_tax_rate_id:
+          type: string
+          format: uuid
+          description: The ID of the new default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
+          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
+    CreateAccountingCategoryRequest:
+      type: object
+      description: The accounting category to create.
+      required:
+      - name
+      - code
+      properties:
+        name:
+          type: string
+          description: The full name for the accounting category.
+          minLength: 1
+          maxLength: 60
+          example: Work From Home equipment
+        code:
+          type: string
+          description: The code name for the accounting category.
+          minLength: 1
+          maxLength: 50
+          example: WFH
+        default_tax_rate_id:
+          type: string
+          format: uuid
+          description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
+          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
+  parameters:
+    PageToken:
+      in: query
+      name: page_token
+      required: false
+      schema:
+        $ref: '#/components/schemas/PageToken'
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

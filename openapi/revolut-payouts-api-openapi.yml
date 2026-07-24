@@ -1,0 +1,329 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Payouts API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Payouts
+  description: 'Endpoints for retrieving information about payouts, allowing merchants to access details of funds withdrawn from their Merchant account to external bank accounts.
+
+
+    Merchants can use these endpoints to retrieve a list of payouts and specific payout details. The payout IDs obtained can be used to [generate detailed reports](https://developer.revolut.com/docs/api/merchant#tag-report-runs) that provide comprehensive breakdowns of all transactions contributing to the payout amounts.
+
+
+    Payout information, including IDs, can be retrieved via the [Retrieve payout list](https://developer.revolut.com/docs/api/merchant#retrieve-payout-list) endpoint or from [webhook events related to payouts](https://developer.revolut.com/docs/api/merchant#create-webhook#callbacks).'
+paths:
+  /api/payouts:
+    parameters:
+    - $ref: '#/components/parameters/Authorization'
+    - $ref: '#/components/parameters/Revolut-Api-Version'
+    get:
+      summary: Retrieve a payout list
+      operationId: retrievePayoutList
+      description: "Retrieve all the payouts you made from your Merchant account. You can also use the query parameters for:\n\n  | Filtering | Pagination |\n  | --------- | ---------- |\n  | Filter the orders that you want to retrieve, for example, only retrieve the orders that have a specific email. <br/><br/>Parameters used for filtering:<br/><ul><li>`from_created_date`</li><li>`to_created_date`</li><li>`currency`</li><li>`state`</li></ul> | View the orders without loading all of them at once, for example, return a specified number of orders per page. <br/><br/>Parameters used for pagination: <br/><ul><li>`limit`</li></ul> |"
+      parameters:
+      - name: currency
+        in: query
+        schema:
+          type: string
+          minLength: 3
+          maxLength: 3
+        description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
+
+
+          :::info
+
+          For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
+
+          :::'
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 500
+        description: The maximum number of payouts returned per page. Used for **pagination**.
+      - name: from_created_date
+        in: query
+        schema:
+          type: string
+          format: date-time
+        description: 'Retrieve all payouts with a `created_date` ≥ `from_created_date`. Used for **filtering**.
+
+
+          Use the [ISO date format](https://en.wikipedia.org/wiki/ISO_8601): `yyyy-MM-ddTHH:mm:ss[.SSSSSS]Z`. For example, `2021-02-10T16:59:50.886826Z`.'
+      - name: to_created_date
+        in: query
+        schema:
+          type: string
+          format: date-time
+        description: 'Retrieve all payouts with a `created_date` ≤ `to_created_date`. Used for **filtering**.
+
+
+          Use the [ISO date format](https://en.wikipedia.org/wiki/ISO_8601): `yyyy-MM-ddTHH:mm:ss[.SSSSSS]Z`. For example, `2021-02-10T16:59:50.886826Z`.'
+      - name: state
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - processing
+            - completed
+            - failed
+        style: form
+        explode: true
+        description: "Retrieve all payouts with specific states. You can pass several states. Used for **filtering**.\n\nIf multiple states are selected, for example `completed` and `processing`, payouts with either of the selected values are returned. See this example of such a request URL: \n\n```curl\nhttps://merchant.revolut.com/api/payouts?state=completed&state=processing\n```\n\nThe parameter is case sensitive."
+      responses:
+        '201':
+          description: Payouts retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payout'
+              example:
+              - id: a830020e-090c-4717-836d-37941a27ad12
+                state: completed
+                created_at: '2024-02-27T00:16:39.079285Z'
+                destination_type: current_pocket
+                amount: 50000
+                currency: GBP
+              - id: 66ffee42-7c4a-a15c-9a47-5dc67150386f
+                state: processing
+                created_at: '2024-02-26T17:16:39.079285Z'
+                destination_type: external_beneficiary
+                amount: 10000
+                currency: GBP
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+              example:
+                code: bad_request
+                message: Could not parse JSON
+                timestamp: 1721049596461
+          headers: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+              example:
+                code: unauthenticated
+                message: Authentication failed
+                timestamp: 1721049596461
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+      tags:
+      - Payouts
+  /api/payouts/{payout_id}:
+    parameters:
+    - $ref: '#/components/parameters/Authorization'
+    - $ref: '#/components/parameters/Revolut-Api-Version'
+    - $ref: '#/components/parameters/Payout-Id'
+    get:
+      summary: Retrieve a payout
+      operationId: retrievePayout
+      description: Retrieve the details of a payout. Provide the unique payout ID, and the corresponding payout information is returned.
+      responses:
+        '200':
+          description: Payout retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payout'
+              example:
+                id: a830020e-090c-4717-836d-37941a27ad12
+                state: completed
+                created_at: '2024-02-27T00:16:39.079285Z'
+                destination_type: current_pocket
+                amount: 50000
+                currency: GBP
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+              example:
+                code: bad_request
+                message: Missing Revolut-Api-Version header
+                timestamp: 1721049596461
+          headers: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+              example:
+                code: unauthenticated
+                message: Authentication failed
+                timestamp: 1721049596461
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+              example:
+                code: not_found
+                message: The requested resource is not found
+                timestamp: 1721050063886
+      security:
+      - Api-Key: []
+      tags:
+      - Payouts
+components:
+  schemas:
+    Currency:
+      type: string
+      format: ISO 4217
+      minLength: 3
+      maxLength: 3
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
+
+
+        :::info
+
+        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
+
+        :::'
+    Payout-Amount:
+      type: integer
+      minimum: 1
+      description: The total amount of the payout in minor currency units. For example, `7034` represents €70.34.
+    Payout-Destination-Type:
+      type: string
+      enum:
+      - current_pocket
+      - external_beneficiary
+      description: 'The destination of the payout funds when a merchant initiates a withdrawal from their merchant account.
+
+
+        | Destination type | Description |
+
+        | ---------------- | ----------- |
+
+        | `current_pocket` | The funds were moved from the merchant account to the business account within the platform. This indicates an **internal transfer**, allowing the merchant to access the funds within their own business account. |
+
+        | `external_beneficiary` | The funds were transferred to an external bank account or beneficiary outside the platform. This indicates a **transfer to an external account**, enabling the merchant to withdraw funds to external financial institutions. |'
+    Payout-Id:
+      type: string
+      format: uuid
+      description: Permanent payout ID used for payouts operations.
+    Payout:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Payout-Id'
+        state:
+          $ref: '#/components/schemas/Payout-State'
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the payout was created.
+        destination_type:
+          $ref: '#/components/schemas/Payout-Destination-Type'
+        amount:
+          $ref: '#/components/schemas/Payout-Amount'
+        currency:
+          $ref: '#/components/schemas/Currency'
+      required:
+      - id
+      - state
+      - created_at
+      - destination_type
+    Payout-State:
+      type: string
+      enum:
+      - processing
+      - completed
+      - failed
+      description: The state of the payout.
+    Error-v2:
+      title: Error
+      type: object
+      properties:
+        code:
+          type: string
+          description: 'An identifier that can be used to determine what went wrong.
+
+
+            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
+        message:
+          type: string
+          description: Some human readable text describing what went wrong.
+        timestamp:
+          type: integer
+          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
+  parameters:
+    Revolut-Api-Version:
+      name: Revolut-Api-Version
+      in: header
+      schema:
+        type: string
+        format: date
+        example: '2026-04-20'
+        enum:
+        - '2023-09-01'
+        - '2024-05-01'
+        - '2024-09-01'
+        - '2025-10-16'
+        - '2025-12-04'
+        - '2026-03-12'
+        - '2026-04-20'
+      required: true
+      description: 'The version of the Merchant API, specified in `YYYY-MM-DD` format.
+
+
+        If not specified, you will receive an error.
+
+
+
+        :::info
+
+        For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).
+
+        :::'
+      x-config-always-visible-in-example: true
+    Authorization:
+      name: Authorization
+      in: header
+      schema:
+        type: string
+        format: Bearer <yourSecretApiKey>
+        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
+      required: true
+      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
+    Payout-Id:
+      name: payout_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the `Payout` object.
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

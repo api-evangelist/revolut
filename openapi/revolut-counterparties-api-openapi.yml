@@ -1,0 +1,2086 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Counterparties API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Counterparties
+  description: "Manage counterparties that you intend to transact with.\n\nRequest and response examples can vary based on the account provider's location and type of the counterparty. \nFor more information, see the guides: [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty), [Retrieve counterparties](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/retrieve-counterparties), and [Update a counterparty's payment method](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/update-counterparty-payment-method).\n\n:::note\nIn the Sandbox environment, you cannot add real people and businesses as Revolut counterparties. \nTherefore, to help you simulate [Create a counterparty](https://developer.revolut.com/docs/api/business#add-counterparty) requests, we have created some test accounts for counterparties of profile type `personal`.\n\nTo add a counterparty via Revtag, use one of these pairs for the `name` and `revtag` fields respectively: \n- `Test User 1` & `john1pvki`\n- `Test User 2` & `john2pvki`\n-    ...\n- `Test User 9` & `john9pvki`\n:::"
+paths:
+  /account-name-validation:
+    post:
+      summary: Validate an account name (CoP/VoP)
+      operationId: validateAccountName
+      description: "Validate a counterparty's account name against their account details when [adding a counterparty](https://developer.revolut.com/docs/api/business#add-counterparty) or [making a transfer](https://developer.revolut.com/docs/api/business#create-payment) to a new or existing counterparty.\n\n:::warning\nThe CoP check is **not** a complete fraud-prevention tool, and it does **not** guarantee the person is who they claim to be.\nIt only confirms that the name and account details your provide match the bank's records.\n\nEven if the counterparty's details match, you should still exercise due caution when transferring funds.\n:::\n\n:::note[Availability & Sandbox behaviour]\n- This feature is only available to businesses in the [supported regions](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/confirmation-of-payee#supported-regions-and-services).\n  Additionally, to get access to CoP in the UK, eligible businesses must contact [Revolut API Support](mailto:api-requests@revolut.com).\n- In Sandbox, this feature is only available for **testing**.\n  While **incomplete or invalid requests** will return production-like error responses, **complete and valid requests** in Sandbox do **not** undergo real validation and will always return `cannot_be_checked`.\n:::\n\nThe validation relies on different underlying services, depending on the recipient's payment scheme (region and currency).\nThese factors determine which fields you must provide and what response you get.\n- For examples, refer to the request body samples.\n- For more information, see the guides: [Validate an account name (CoP/VoP)](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/confirmation-of-payee)."
+      security:
+      - AccessToken:
+        - WRITE
+      requestBody:
+        description: Counterparty account details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateAccountNameRequest'
+            examples:
+              uk_individual:
+                summary: UK individual counterparty (personal account)
+                value:
+                  sort_code: 54-01-05
+                  account_no: '12345678'
+                  individual_name:
+                    first_name: John
+                    last_name: Smith
+              uk_company:
+                summary: UK company (business account)
+                value:
+                  sort_code: 54-01-05
+                  account_no: '12345678'
+                  company_name: John Smith Co.
+              eu_individual:
+                summary: EUR individual counterparty (personal account)
+                value:
+                  iban: LT479258808892168739
+                  recipient_country: LT
+                  recipient_currency: EUR
+                  individual_name:
+                    first_name: Petras
+                    last_name: Petrauskas
+              eu_company:
+                summary: EUR company (business account)
+                value:
+                  iban: LT479258808892168739
+                  recipient_country: LT
+                  recipient_currency: EUR
+                  company_name: Petras Petrauskas UAB
+              ro_individual:
+                summary: RO individual counterparty (personal account)
+                value:
+                  iban: RO1598536106002528374911
+                  recipient_country: RO
+                  recipient_currency: RON
+                  individual_name:
+                    first_name: Alexandru
+                    last_name: Ionescu
+              ro_company:
+                summary: RO company (business account)
+                value:
+                  iban: RO1598536106002528374911
+                  recipient_country: RO
+                  recipient_currency: RON
+                  company_name: Alexandru Ionescu SRL
+              au_individual:
+                summary: AU individual counterparty (personal account)
+                value:
+                  account_no: '486196918'
+                  bsb: '159517'
+                  individual_name:
+                    first_name: Joseph
+                    last_name: Bloggs
+              au_company:
+                summary: AU company (business account)
+                value:
+                  account_no: '486196918'
+                  bsb: '159517'
+                  company_name: Joseph Bloggs Pty Ltd
+      responses:
+        '200':
+          description: "Account name validation result\n\n:::note\n- The actual results returned in the response come from the CoP services, not from Revolut.\n  The Business API passes them on as received.\n\n  Because of this, the descriptions below should be treated as an approximation rather than complete documentation.\n- The responses differ depending on the CoP service, even when the schema appears the same.\n  Make sure that you refer to the appropriate response variant.\n:::"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidateAccountNameResponse'
+              examples:
+                match_individual_uk:
+                  summary: (UK) Individual account name and number match
+                  value:
+                    result_code: matched
+                    individual_name:
+                      first_name: John
+                      last_name: Smith
+                match_company_uk:
+                  summary: (UK) Company account name and number match
+                  value:
+                    result_code: matched
+                    company_name: John Smith Co.
+                match_but_individual_account_type_uk:
+                  summary: (UK) Names match but counterparty is an individual, not a company
+                  value:
+                    result_code: close_match
+                    reason:
+                      type: uk_cop
+                      code: individual_account_name_matched
+                    individual_name:
+                      first_name: John
+                      last_name: Smith
+                match_but_company_account_type_uk:
+                  summary: (UK) Names match but counterparty is a company, not an individual
+                  value:
+                    result_code: close_match
+                    reason:
+                      type: uk_cop
+                      code: company_account_name_matched
+                    company_name: John Smith Co.
+                close_match_individual_name_uk:
+                  summary: (UK) Individual account name is a close match
+                  value:
+                    result_code: close_match
+                    reason:
+                      type: uk_cop
+                      code: close_match
+                    individual_name:
+                      first_name: Joan
+                      last_name: Smith
+                close_match_company_name_uk:
+                  summary: (UK) Company account name is a close match
+                  value:
+                    result_code: close_match
+                    reason:
+                      type: uk_cop
+                      code: close_match
+                    company_name: Joan Smith Co.
+                close_match_individual_name_and_account_type_uk:
+                  summary: (UK) Names are similar and counterparty is an individual, not a company
+                  value:
+                    result_code: close_match
+                    reason:
+                      type: uk_cop
+                      code: individual_account_close_match
+                    individual_name:
+                      first_name: Joan
+                      last_name: Smith
+                close_match_company_name_and_account_type_uk:
+                  summary: (UK) Names are similar and counterparty is a company, not an individual
+                  value:
+                    result_code: close_match
+                    reason:
+                      type: uk_cop
+                      code: company_account_close_match
+                    company_name: Joan Smith Co.
+                account_does_not_match_individual_uk:
+                  summary: (UK) Provided details for individual do not match account details
+                  value:
+                    result_code: not_matched
+                    reason:
+                      type: uk_cop
+                      code: not_matched
+                    individual_name:
+                      first_name: John
+                      last_name: Smith
+                account_does_not_match_company_uk:
+                  summary: (UK) Provided details for company do not match account details
+                  value:
+                    result_code: not_matched
+                    reason:
+                      type: uk_cop
+                      code: not_matched
+                    company_name: John Smith Co.
+                account_does_not_exist_uk:
+                  summary: (UK) Account does not exist
+                  value:
+                    result_code: not_matched
+                    reason:
+                      type: uk_cop
+                      code: account_does_not_exist
+                account_switched_uk:
+                  summary: (UK) Account switched
+                  value:
+                    result_code: cannot_be_checked
+                    reason:
+                      type: uk_cop
+                      code: account_switched
+                cannot_be_checked_uk:
+                  summary: (UK) Account cannot be checked
+                  value:
+                    result_code: cannot_be_checked
+                    reason:
+                      type: uk_cop
+                      code: cannot_be_checked
+                    individual_name:
+                      first_name: Jane
+                      last_name: Doe
+                match_individual_au:
+                  summary: (AU) Individual account name and number match
+                  value:
+                    result_code: matched
+                    individual_name:
+                      first_name: Joseph
+                      last_name: Bloggs
+                match_company_au:
+                  summary: (AU) Company account name and number match
+                  value:
+                    result_code: matched
+                    company_name: Joseph Bloggs Pty Ltd
+                match_but_individual_account_type_au:
+                  summary: (AU) Names match but counterparty is an individual, not a company
+                  value:
+                    result_code: matched
+                    individual_name:
+                      first_name: Joseph
+                      last_name: Bloggs
+                match_but_company_account_type_au:
+                  summary: (AU) Names match but counterparty is a company, not an individual
+                  value:
+                    result_code: matched
+                    company_name: Joseph Bloggs Pty Ltd
+                close_match_company_name_au:
+                  summary: (AU) Company account name is a close match
+                  value:
+                    result_code: close_match
+                    reason:
+                      type: au_cop
+                      code: close_match
+                    company_name: Josef Bloggs Pty Ltd
+                account_does_not_match_individual_au:
+                  summary: (AU) Provided details for individual do not match account details
+                  value:
+                    result_code: not_matched
+                    reason:
+                      type: au_cop
+                      code: not_matched
+                    individual_name:
+                      first_name: Jane
+                      last_name: Bloggs
+                account_does_not_match_company_au:
+                  summary: (AU) Provided details for company do not match account details
+                  value:
+                    result_code: not_matched
+                    reason:
+                      type: uk_cop
+                      code: not_matched
+                    company_name: Jane Bloggs Pty Ltd
+                match_individual_eur:
+                  summary: (EUR) Individual account name and number match
+                  value:
+                    result_code: matched
+                    individual_name:
+                      first_name: Petras
+                      last_name: Petrauskas
+                match_company_eur:
+                  summary: (EUR) Company account name and number match
+                  value:
+                    result_code: matched
+                    company_name: Petras Petrauskas UAB
+                match_but_individual_account_type_eur:
+                  summary: (EUR) Names match, though counterparty is an individual, not a company
+                  value:
+                    result_code: matched
+                    company_name: Petras Petrauskas
+                match_but_company_account_type_eur:
+                  summary: (EUR) Names match, though counterparty is a company, not an individual
+                  value:
+                    result_code: matched
+                    individual_name:
+                      first_name: Petras
+                      last_name: Petrauskas UAB
+                close_match_individual_name_eur:
+                  summary: (EUR) Individual account name is a close match
+                  value:
+                    result_code: close_match
+                    reason:
+                      type: eu_cop
+                      code: close_match
+                    individual_name:
+                      first_name: Petras
+                      last_name: Petrauskas
+                close_match_company_name_eur:
+                  summary: (EUR) Company account name is a close match
+                  value:
+                    result_code: close_match
+                    reason:
+                      type: eu_cop
+                      code: close_match
+                    company_name: Petras Petrauskas UAB
+                account_does_not_match_individual_eur:
+                  summary: (EUR) Provided details for individual do not match account details
+                  value:
+                    result_code: not_matched
+                    reason:
+                      type: au_cop
+                      code: not_matched
+                    individual_name:
+                      first_name: Piter
+                      last_name: Petrauskas
+                account_does_not_match_company_eur:
+                  summary: (EUR) Provided details for company do not match account details
+                  value:
+                    result_code: not_matched
+                    reason:
+                      type: uk_cop
+                      code: not_matched
+                    company_name: Piter Petrauskas Ltd
+                match_individual_ro:
+                  summary: (RO) Account found, partial name returned for individual
+                  value:
+                    result_code: matched
+                    individual_name:
+                      first_name: Alexandru
+                      last_name: I.
+                match_company_ro:
+                  summary: (RO) Account found, partial name returned for company
+                  value:
+                    result_code: matched
+                    company_name: Rodri**** SA
+                cannot_be_checked_not_supported:
+                  summary: The specified currency+country combination is invalid or not supported for your region
+                  value:
+                    result_code: cannot_be_checked
+                    reason:
+                      code: not_supported
+                unavailable:
+                  summary: Temporarily unavailable
+                  value:
+                    result_code: temporarily_unavailable
+        '400':
+          description: 'Bad request
+
+
+            Returned, for example, when the data you provided is invalid or required data is missing.
+
+            '
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: The error code.
+                  message:
+                    type: string
+                    description: The description of the error.
+                required:
+                - code
+                - message
+              examples:
+                invalid_sort_code_uk:
+                  summary: Invalid sort code (UK)
+                  value:
+                    message: 'Invalid sort code: 54-01-050'
+                    code: 3000
+                invalid_iban_ro:
+                  summary: Invalid IBAN (RO)
+                  value:
+                    message: RO49AAAA1B31007593840000 is not a valid IBAN
+                    code: 3000
+                country_missing:
+                  summary: Country prefix is missing in IBAN
+                  value:
+                    message: Required 'country' is missing
+                    code: 3000
+                name_missing_eur:
+                  summary: Recipient's name is missing
+                  value:
+                    message: company_name or individual_name should be provided
+                    code: 3000
+                last_name_is_empty_ro:
+                  summary: Last name is required but was not provided
+                  value:
+                    message: last_name is empty
+                    code: 3000
+        '401':
+          description: 'Unauthorized
+
+
+            Returned, for example, when the credentials you used to make the request are invalid.
+
+            For more information, see the **Authorization** section.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: The description of the error.
+                  status:
+                    type: string
+                    description: The HTTP error code.
+                required:
+                - message
+              example:
+                message: The request should be authorized.
+                status: 401
+        '404':
+          description: 'Not found
+
+
+            Returned, for example, when your account does not have access to CoP.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Resource not found
+                code: 3006
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Counterparties
+  /counterparties:
+    get:
+      summary: Retrieve a list of counterparties
+      operationId: getCounterparties
+      description: "Get all the counterparties that you have created, or use the query parameters to filter the results. \n\nThe counterparties are sorted by the `created_at` date in reverse chronological order.\n\nThe returned counterparties are **paginated**. \nThe maximum number of counterparties returned per page is specified by the `limit` parameter.\nTo get to the next page, make a new request and use the `created_at` date of the last counterparty returned in the previous response.\n\nFor more information, see the guides: [Retrieve counterparties](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/retrieve-counterparties)."
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+        description: "The name of the counterparty to retrieve. It does not need to be an exact match, partial match is also supported. \n\n:::note\nSpecial characters must be properly URL-encoded.\n:::"
+      - in: query
+        name: account_no
+        schema:
+          type: string
+        description: The exact account number of the counterparty to retrieve.
+      - in: query
+        name: sort_code
+        schema:
+          type: string
+        description: "The exact sort code of the counterparty to retrieve. \nOnly allowed in combination with the `account_no` parameter."
+      - in: query
+        name: iban
+        schema:
+          type: string
+        description: The exact IBAN of the counterparty to retrieve.
+      - in: query
+        name: bic
+        schema:
+          type: string
+        description: "The exact BIC of the counterparty to retrieve. \nOnly allowed in combination with the `iban` parameter."
+      - in: query
+        name: created_before
+        schema:
+          type: string
+          format: date-time
+          default: the date-time at which the request is made
+        description: "Retrieves counterparties with `created_at` < `created_before`.\nThe default value is the current date and time at which you are calling the endpoint. \n\nProvide it in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 100
+        description: 'The maximum number of counterparties returned per page.
+
+
+          To get to the next page, make a new request and use the `created_at` date of the last counterparty returned in the previous response as the value for `created_before`.'
+      security:
+      - AccessToken:
+        - READ
+      responses:
+        '200':
+          description: List of your counterparties
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Counterparties'
+              examples:
+                all_counterparties:
+                  summary: A list of your counterparties
+                  value:
+                  - id: 239d6f1f-2222-4ae6-1111-5cc603341b4e
+                    name: Jane Doe Co.
+                    profile_type: business
+                    state: created
+                    created_at: '2022-09-14T14:47:12.273718Z'
+                    updated_at: '2022-09-14T14:47:12.273718Z'
+                    accounts:
+                    - iban: GB66REVO00996995908786
+                      bic: REVOGB21
+                      id: b209281b-aakk-9911-8d83-ac72469cef8f
+                      name: Jane Doe Co.
+                      bank_country: GB
+                      currency: EUR
+                      type: external
+                      address:
+                        street_line1: Revolut LTD
+                        street_line2: 1 Canada Square
+                        region: Greater London
+                        city: London
+                        country: GB
+                        postcode: E14 5AB
+                  - id: 8e0e9886-0af1-4b0c-acf4-111180d2892b
+                    name: John Smith
+                    revtag: johnsmith
+                    profile_type: personal
+                    country: GB
+                    state: created
+                    created_at: '2022-09-14T14:41:39.312017Z'
+                    updated_at: '2022-09-14T14:41:39.312017Z'
+                  - id: 11cae5ef-ec24-401d-98a3-e5baa0041671
+                    name: John Smith Co.
+                    revtag: jsmithco1
+                    profile_type: business
+                    country: GB
+                    state: created
+                    created_at: '2025-09-16T09:34:41.790401Z'
+                    updated_at: '2025-09-16T09:34:41.790401Z'
+                    accounts:
+                    - id: ad3c3b03-611e-461e-99b2-572f4785e44b
+                      name: Main GBP
+                      currency: GBP
+                      type: revolut
+                    - id: 67fe3eaa-c994-40c0-b3e0-7b6bfe0cedca
+                      name: Main EUR
+                      currency: EUR
+                      type: revolut
+                  - id: e7e36cce-2e9c-4e96-818e-1c2fed325852
+                    name: John Doe Co.
+                    profile_type: business
+                    state: created
+                    created_at: '2022-08-14T14:34:11.168340Z'
+                    updated_at: '2022-08-14T14:34:11.168340Z'
+                    accounts:
+                    - account_no: '12345674'
+                      sort_code: '540107'
+                      id: e277b2bd-3a6d-423b-933d-3d425094bb13
+                      name: John Doe Co.
+                      bank_country: GB
+                      currency: GBP
+                      type: external
+                      address:
+                        street_line1: 7 King's Road
+                        region: Greater London
+                        city: London
+                        country: GB
+                        postcode: SW3 4PQ
+                  - id: 239d6f1f-2222-4ae6-1111-5cc603341b4e
+                    name: Bleu Blanc Conseil SARL
+                    profile_type: business
+                    state: created
+                    created_at: '2022-09-14T14:47:12.273718Z'
+                    updated_at: '2022-09-14T14:47:12.273718Z'
+                    accounts:
+                    - iban: FR1420041010050500013M02606
+                      bic: PSSTFRPPLIL
+                      id: b209281b-aakk-9911-8d83-ac72469cef8f
+                      name: Bleu Blanc Conseil SARL
+                      bank_country: FR
+                      currency: EUR
+                      type: external
+                      address:
+                        street_line1: 12 Rue de la Paix
+                        city: Paris
+                        country: FR
+                        postcode: '75002'
+                  - id: b8ce3922-d518-4ae6-9426-e8cc117e5332
+                    name: Johann Meier Co.
+                    profile_type: business
+                    state: created
+                    created_at: '2023-08-10T12:43:20.273500Z'
+                    updated_at: '2026-01-30T12:43:20.273500Z'
+                    accounts:
+                    - iban: CH9300762011623852957
+                      bic: UBSWCHZH80A
+                      id: d95bc455-f495-4f18-95fa-32f99479318c
+                      name: Johann Meier Co.
+                      bank_country: CH
+                      currency: EUR
+                      type: external
+                      address:
+                        street_line1: Bahnhofstrasse 10
+                        city: Zurich
+                        country: CH
+                        postcode: '8001'
+                  - id: 173e6a6b-d955-465f-8f31-7f6f7c03927c
+                    name: Edelweiss Handel GmbH
+                    profile_type: business
+                    state: created
+                    created_at: '2023-08-10T12:43:20.273500Z'
+                    updated_at: '2026-01-32T10:54:03.350240Z'
+                    accounts:
+                    - iban: CH5604835012345678009
+                      bic: UBSWCHZH80A
+                      id: b3cc43e8-f141-459b-9bd5-3505cf9797f8
+                      name: Edelweiss Handel GmbH
+                      bank_country: CH
+                      currency: CHF
+                      type: external
+                      address:
+                        street_line1: Marktgasse 22
+                        city: Bern
+                        country: CH
+                        postcode: '3011'
+                  - id: 1d9013c8-84bf-474c-b3d9-690f2ae2e65c
+                    name: Jane Doe
+                    state: created
+                    created_at: '2024-01-10T15:32:10.172300Z'
+                    updated_at: '2024-01-10T15:32:10.172300Z'
+                    cards:
+                    - id: 0130f363-eeaf-4aa8-b77f-a6a629c603f5
+                      name: Jane Doe
+                      last_digits: 1234
+                      scheme: visa
+                      country: GB
+                      currency: GBP
+                    - id: fa05f2e5-d253-4661-85cc-bcff98b136ac
+                      name: Jane Doe
+                      last_digits: 5678
+                      scheme: mastercard
+                      country: GB
+                      currency: GBP
+                no_search_results:
+                  summary: No matching search results
+                  value: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                bad_limit:
+                  summary: Bad limit
+                  value:
+                    message: limit must be between 1 and 1000
+                    code: 2101
+                bic_only_allowed_with_iban:
+                  summary: BIC can be used only in combination with IBAN
+                  value:
+                    message: bic param can be used only combined with iban param
+                    code: 2101
+                sort_code_only_allowed_with_account_no:
+                  summary: Sort code can be used only in combination with account number
+                  value:
+                    message: sort_code param can be used only combined with account_no param
+                    code: 2101
+                invalid_timestamp:
+                  summary: Invalid timestamp
+                  value:
+                    message: Parameter created_before must be a valid timestamp
+                    code: 2101
+        '401':
+          description: Anauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: The request should be authorized.
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Counterparties
+  /counterparty:
+    post:
+      summary: Create a counterparty
+      operationId: addCounterparty
+      description: "Create a new counterparty to transact with.\n\n### Revtags in Sandbox\n\nIn the Sandbox environment, you cannot add real people and businesses as Revolut counterparties.\nTo help you simulate adding counterparties using Revtag, we created some test accounts of profile type `personal` that you can use.\n\n<details id='test-accounts-for-sandbox'>\n  <summary> \n  <b>Test accounts for Sandbox</b>\n  </summary>\n\n  To add a counterparty via Revtag, use one of these pairs for the `name` and `revtag` fields respectively:\n  - `Test User 1` & `john1pvki`\n  - `Test User 2` & `john2pvki`\n  -    ...\n  - `Test User 9` & `john9pvki`\n\n</details>\n\n### Address field recommendations\n\nSome payment rails may have stricter requirements regarding the `address` field – for example, by also requiring the `region` field.  \nThis is why we recommend that you use **all** available address fields (including `street_line1`, `region` and `city`) when creating a counterparty.\n\nThis significantly reduces the risk of any disruption to payments made via the API.\n\n### Multiple counterparties with the same details\n\nYou cannot create multiple counterparties with the same Revtag.\nThis restriction does not apply to other details. \nFor example:\n- **Revtag**: If you've already added `johnsmith` as a Revolut counterparty, you can't add another counterparty with the `johnsmith` Revtag.\n  If you try to do so, you'll get an error.\n- **Other details**: If you've added John Smith as an individual UK counterparty using GBP with `sort_code=54-01-05` and `account_no=12345678`, you can still use the same details to create another counterparty.\n\n### Counterparty name\n\nWhen creating a counterparty, ensure that you use the correct field to define the counterparty's name.\n\n<table>\n  <thead>\n    <tr>\n      <th rowSpan=\"2\"> Counterparty type</th>\n      <th colSpan=\"2\">Name field to use when added with:</th>\n    </tr>\n    <tr>\n      <th>Revtag</th>\n      <th>Other details</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>Individual</th>\n      <td><code>name</code> (string)</td>\n      <td><code>individual_name</code> (<b>object</b> with string subfields for first and last name)</td>\n    </tr>\n    <tr>\n      <th>Company</th>\n      <td><code>name</code> (string)</td>\n      <td><code>company_name</code> (string)</td>\n    </tr>\n  </tbody>\n</table>\n\n---\n\nFor more information, see the guides: [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty)."
+      security:
+      - AccessToken:
+        - READ
+        - WRITE
+      tags:
+      - Counterparties
+      requestBody:
+        description: Counterparty to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCounterpartyRequest'
+            examples:
+              revolut_counterparty_individual:
+                summary: Revolut individual counterparty
+                value:
+                  profile_type: personal
+                  name: John Smith
+                  revtag: johnsmith
+              revolut_counterparty_business:
+                summary: Revolut business counterparty
+                value:
+                  profile_type: business
+                  name: John Smith Co.
+                  revtag: jsmithco1
+              uk_individual:
+                summary: UK individual counterparty
+                value:
+                  individual_name:
+                    first_name: John
+                    last_name: Smith
+                  bank_country: GB
+                  currency: GBP
+                  sort_code: 54-01-05
+                  account_no: '12345678'
+              uk_individual_with_address:
+                summary: UK individual counterparty with address
+                value:
+                  individual_name:
+                    first_name: John
+                    last_name: Smith
+                  bank_country: GB
+                  currency: GBP
+                  sort_code: 54-01-05
+                  account_no: '12345678'
+                  address:
+                    city: London
+                    street_line1: 20 Upping St
+                    country: GB
+                    postcode: SW1A 2AB
+              uk_business:
+                summary: UK business counterparty
+                value:
+                  company_name: John Smith Co.
+                  bank_country: GB
+                  currency: GBP
+                  sort_code: 54-01-05
+                  account_no: '12345678'
+              uk_business_with_address:
+                summary: UK business counterparty with address
+                value:
+                  company_name: John Smith Co.
+                  bank_country: GB
+                  currency: GBP
+                  sort_code: 54-01-05
+                  account_no: '12345678'
+                  address:
+                    city: London
+                    street_line1: 20 Upping St
+                    country: GB
+                    postcode: SW1A 2AB
+              international_business_eurozone:
+                summary: International business counterparty (eurozone with EUR)
+                value:
+                  company_name: Bleu Blanc Conseil SARL
+                  bank_country: FR
+                  currency: EUR
+                  iban: FR1420041010050500013M02606
+              international_business_ch_eur:
+                summary: International business counterparty (outside eurozone, with EUR)
+                value:
+                  company_name: Johann Meier Co.
+                  bank_country: CH
+                  currency: EUR
+                  iban: CH9300762011623852957
+              international_business_ch_chf:
+                summary: International business counterparty (outside eurozone, non-EUR)
+                value:
+                  company_name: Edelweiss Handel GmbH
+                  bank_country: CH
+                  currency: CHF
+                  iban: CH5604835012345678009
+                  address:
+                    street_line1: Bahnhofstrasse 4a/8
+                    city: Zurich
+                    country: CH
+                    postcode: '8001'
+      responses:
+        '200':
+          description: Added counterparty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Counterparty'
+              examples:
+                revolut_counterparty_individual:
+                  summary: Revolut individual counterparty
+                  value:
+                    id: 54ee57d7-1234-abcd-1234-0e1f79164d5e
+                    name: John Smith
+                    revtag: johnsmith
+                    profile_type: personal
+                    country: GB
+                    state: created
+                    created_at: '2023-07-26T09:34:41.790401Z'
+                    updated_at: '2023-07-26T09:34:41.790401Z'
+                revolut_counterparty_business:
+                  summary: Revolut business counterparty
+                  value:
+                    id: 11cae5ef-ec24-401d-98a3-e5baa0041671
+                    name: John Smith Co.
+                    revtag: jsmithco1
+                    profile_type: business
+                    country: GB
+                    state: created
+                    created_at: '2025-09-16T09:34:41.790401Z'
+                    updated_at: '2025-09-16T09:34:41.790401Z'
+                uk_individual:
+                  summary: UK individual counterparty
+                  value:
+                    id: 19dcf5a2-110f-43f7-9d5f-98aaf4b8f0d6
+                    name: John Smith
+                    profile_type: personal
+                    state: created
+                    created_at: '2023-03-13T09:34:41.790401Z'
+                    updated_at: '2023-03-13T09:34:41.790401Z'
+                    accounts:
+                    - account_no: '12345678'
+                      sort_code: '540105'
+                      id: 6f45a49a-710c-4ef4-b42b-6c247c82af75
+                      name: John Doe
+                      bank_country: GB
+                      currency: GBP
+                      type: external
+                uk_business:
+                  summary: UK business counterparty
+                  value:
+                    id: b53fdd78-8d67-4f63-a103-eeeeef53cac8
+                    name: John Smith Co.
+                    profile_type: business
+                    state: created
+                    created_at: '2022-09-14T14:34:11.168340Z'
+                    updated_at: '2022-09-14T14:34:11.168340Z'
+                    accounts:
+                    - account_no: '12345678'
+                      sort_code: '540105'
+                      id: 5c9e171c-7e23-4d6a-b768-aaaaaba535f3
+                      name: John Smith Co.
+                      bank_country: GB
+                      currency: GBP
+                      type: external
+                international_business_eurozone:
+                  summary: International business counterparty (eurozone with EUR)
+                  value:
+                    id: 239d6f1f-2222-4ae6-1111-5cc603341b4e
+                    name: Bleu Blanc Conseil SARL
+                    profile_type: business
+                    state: created
+                    created_at: '2022-09-14T14:47:12.273718Z'
+                    updated_at: '2022-09-14T14:47:12.273718Z'
+                    accounts:
+                    - iban: FR1420041010050500013M02606
+                      bic: PSSTFRPPLIL
+                      id: b209281b-aakk-9911-8d83-ac72469cef8f
+                      name: Bleu Blanc Conseil SARL
+                      bank_country: FR
+                      currency: EUR
+                      type: external
+                international_business_ch_eur:
+                  summary: International business counterparty (outside eurozone, with EUR)
+                  value:
+                    id: b8ce3922-d518-4ae6-9426-e8cc117e5332
+                    name: Johann Meier Co.
+                    profile_type: business
+                    state: created
+                    created_at: '2026-01-30T12:43:20.273500Z'
+                    updated_at: '2026-01-30T12:43:20.273500Z'
+                    accounts:
+                    - iban: CH9300762011623852957
+                      bic: UBSWCHZH80A
+                      id: d95bc455-f495-4f18-95fa-32f99479318c
+                      name: Johann Meier Co.
+                      bank_country: CH
+                      currency: EUR
+                      type: external
+                international_business_ch_chf:
+                  summary: International business counterparty (outside eurozone, non-EUR)
+                  value:
+                    id: 173e6a6b-d955-465f-8f31-7f6f7c03927c
+                    name: Edelweiss Handel GmbH
+                    profile_type: business
+                    state: created
+                    created_at: '2023-08-10T12:43:20.273500Z'
+                    updated_at: '2023-08-10T12:43:20.273500Z'
+                    accounts:
+                    - iban: CH5604835012345678009
+                      bic: UBSWCHZH80A
+                      id: b3cc43e8-f141-459b-9bd5-3505cf9797f8
+                      name: Edelweiss Handel GmbH
+                      bank_country: CH
+                      currency: CHF
+                      type: external
+        '400':
+          description: 'Bad Request
+
+
+            Returned, for example, when the provided IBAN is invalid.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 3000
+                message: FR66995908786 is not a valid IBAN
+        '404':
+          description: 'Not Found
+
+
+            Returned, for example, when the counterparty that you''re trying to add doesn''t exist, or when the name that you provide for the Revtag counterparty doesn''t match the actual name on the account.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 3006
+                message: Resource not found
+        '422':
+          description: 'Unprocessable Content
+
+
+            Returned, for example, when the Revolut counterparty that you''re trying to add using Revtag already exists, or when the counterparty cannot be added.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CounterpartyError'
+              examples:
+                counterparty_exists:
+                  summary: Counterparty already exists
+                  value:
+                    message: This counterparty already exists
+                    code: 3012
+                    params:
+                      counterparty_id: 878029d4-5972-4424-ae8c-80fe5f59407b
+                counterparty_cannot_be_added:
+                  summary: Counterparty cannot be added
+                  value:
+                    message: Recipient can't be added
+                    code: 2101
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /counterparties/countries:
+    get:
+      summary: Check supported countries and currencies
+      operationId: getCounterpartyCountries
+      description: 'Retrieve all supported bank countries and their available currencies for counterparty creation.
+
+
+        :::note [Note]
+
+        This feature is not available in Sandbox.
+
+        :::
+
+
+        Use this endpoint to discover which country and currency combinations are supported before checking field requirements with the [Check counterparty field requirements endpoint](https://developer.revolut.com/docs/api/business#get-counterparty-requirements).
+
+
+        For more details, see the guide: **Check supported counterparty countries and currencies** section in [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty#check-supported-counterparty-countries-and-currencies).'
+      security:
+      - AccessToken:
+        - READ
+      responses:
+        '200':
+          description: The list of supported bank countries and their available currencies
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CounterpartyCountriesResponse'
+              example:
+                countries:
+                - country: GB
+                  currencies:
+                  - GBP
+                - country: US
+                  currencies:
+                  - USD
+                - country: DE
+                  currencies:
+                  - EUR
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+      tags:
+      - Counterparties
+  /counterparties/fields:
+    get:
+      summary: Check counterparty field requirements
+      operationId: getCounterpartyRequirements
+      description: 'Retrieve the list of conditionally required or applicable fields for creating a counterparty together with their constraints.
+
+
+        :::note [Note]
+
+        This feature is not available in Sandbox.
+
+        :::
+
+
+        When creating a counterparty via the [Create a counterparty endpoint](https://developer.revolut.com/docs/api/business#add-counterparty), certain fields (such as `first_name`, `last_name`, `company_name`, `tax_id`, `route`, or `account_type`) become required depending on the counterparty''s bank country, currency, and profile type.
+
+        This read-only endpoint allows you to discover these contextual fields dynamically, along with their validation rules and available options.
+
+
+        Only the fields relevant to the specific context are returned.
+
+        The input parameters (`country`, `currency`, and `recipient_type`) are intentionally excluded from the response.
+
+
+        For more details, see the guide: **Check counterparty field requirements** section in [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty#check-counterparty-field-requirements).'
+      security:
+      - AccessToken:
+        - READ
+      parameters:
+      - name: country
+        in: query
+        required: true
+        description: The country where the counterparty's bank account is located.
+        schema:
+          $ref: '#/components/schemas/BankCountryCode'
+      - name: currency
+        in: query
+        required: true
+        description: The currency of the counterparty's bank account.
+        schema:
+          $ref: '#/components/schemas/Currency'
+      - name: recipient_type
+        in: query
+        required: true
+        description: 'The type of the counterparty profile.
+
+          Indicates whether the counterparty is a personal or business account.'
+        schema:
+          type: string
+          enum:
+          - personal
+          - business
+      - name: route
+        in: query
+        required: false
+        description: "The routing method for the corridor. \nWhen omitted, the response includes fields for the default route.\nFor example, for USD to US, the default is `ach`."
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The applicable and conditionally required fields for creating the counterparty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CounterpartyRequirementsResponse'
+              examples:
+                gb_counterparty:
+                  summary: GB personal counterparty
+                  value:
+                    fields:
+                    - name: first_name
+                      required: true
+                      regex:
+                        pattern: ^[-'\p{L} ]{1,40}$
+                        description: Letters, hyphens and apostrophes only, up to 40 characters
+                    - name: last_name
+                      required: true
+                      regex:
+                        pattern: ^[-'\p{L} ]{1,40}$
+                        description: Letters, hyphens and apostrophes only, up to 40 characters
+                    - name: sort_code
+                      required: true
+                      regex:
+                        pattern: ^\d{6}$
+                        description: 6-digit number
+                    - name: account_no
+                      required: true
+                      regex:
+                        pattern: ^\d{8}$
+                        description: 8-digit number
+                    - name: address
+                      required: true
+                us_counterparty:
+                  summary: US business counterparty
+                  value:
+                    fields:
+                    - name: company_name
+                      required: true
+                      regex:
+                        pattern: ^.{1,140}$
+                        description: Up to 140 characters
+                    - name: route
+                      required: true
+                      options:
+                      - value: ach
+                        default: true
+                      - value: fedwire
+                    - name: routing_number
+                      required: true
+                      regex:
+                        pattern: ^\d{9}$
+                        description: 9-digit number
+                    - name: account_no
+                      required: true
+                      regex:
+                        pattern: ^\d{6,17}$
+                        description: 6 to 17 digits
+                    - name: address
+                      required: true
+        '400':
+          description: 'Bad request
+
+
+            For example:
+
+            - missing or invalid query parameters
+
+            - unsupported recipient type for country/currency combination'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                invalid_request:
+                  summary: Invalid request
+                  value:
+                    error_id: 40626b34-365b-43d0-b148-04dcbaeaf4df
+                    code: 2101
+                    message: Invalid request (missing or invalid query parameters)
+                unsupported_recipient:
+                  summary: Unsupported recipient type
+                  value:
+                    error_id: 015c2e86-30a5-404b-aa25-b68c25d97e69
+                    code: 3081
+                    message: Recipient type is not supported for the given country and currency
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                not_found:
+                  summary: Resource not found
+                  value:
+                    error_id: a29241ce-1f37-4ffb-8249-d09faec81aed
+                    code: 3006
+                    message: Resource not found
+        '422':
+          description: 'Unprocessable entity
+
+
+            For example:
+
+            - currency not supported for the given country'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                unsupported_currency:
+                  summary: Unsupported currency
+                  value:
+                    error_id: 2cd5330c-c4a9-45ce-88d3-8cbdaeba887c
+                    code: 4030
+                    message: Currency for country is not supported
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+      tags:
+      - Counterparties
+  /counterparty/{counterparty_id}:
+    get:
+      summary: Retrieve a counterparty
+      operationId: getCounterparty
+      description: Get the information about a specific counterparty by ID.
+      security:
+      - AccessToken:
+        - READ
+      parameters:
+      - name: counterparty_id
+        in: path
+        required: true
+        description: The ID of the counterparty to retrieve.
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: The information about a specific counterparty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Counterparty'
+              examples:
+                revolut_counterparty_individual:
+                  summary: Revolut individual counterparty
+                  value:
+                    id: 8e0e9886-0af1-4b0c-acf4-111180d2892b
+                    name: John Smith
+                    revtag: johnsmith
+                    profile_type: personal
+                    country: GB
+                    state: created
+                    created_at: '2022-09-14T14:41:39.312017Z'
+                    updated_at: '2022-09-14T14:41:39.312017Z'
+                revolut_counterparty_business:
+                  summary: Revolut business counterparty
+                  value:
+                    id: 11cae5ef-ec24-401d-98a3-e5baa0041671
+                    name: John Smith Co.
+                    revtag: jsmithco1
+                    profile_type: business
+                    country: GB
+                    state: created
+                    created_at: '2025-09-16T09:34:41.790401Z'
+                    updated_at: '2025-09-16T09:34:41.790401Z'
+                uk_counterparty:
+                  summary: UK counterparty
+                  value:
+                    id: b53fdd78-8d67-4f63-a103-eeeeef53cac8
+                    name: John Smith Co.
+                    profile_type: business
+                    state: created
+                    created_at: '2022-09-14T14:34:11.168340Z'
+                    updated_at: '2022-09-14T14:34:11.168340Z'
+                    accounts:
+                    - account_no: '12345678'
+                      sort_code: '540105'
+                      id: 5c9e171c-7e23-4d6a-b768-aaaaaba535f3
+                      name: John Smith Co.
+                      bank_country: GB
+                      currency: GBP
+                      type: external
+                      address:
+                        street_line1: Revolut LTD
+                        street_line2: 1 Canada Square
+                        region: Greater London
+                        city: London
+                        country: GB
+                        postcode: E14 5AB
+                international_business_eurozone:
+                  summary: International business counterparty (eurozone with EUR)
+                  value:
+                    id: 239d6f1f-2222-4ae6-1111-5cc603341b4e
+                    name: Bleu Blanc Conseil SARL
+                    profile_type: business
+                    state: created
+                    created_at: '2022-09-14T14:47:12.273718Z'
+                    updated_at: '2022-09-14T14:47:12.273718Z'
+                    accounts:
+                    - iban: FR1420041010050500013M02606
+                      bic: PSSTFRPPLIL
+                      id: b209281b-aakk-9911-8d83-ac72469cef8f
+                      name: Bleu Blanc Conseil SARL
+                      bank_country: FR
+                      currency: EUR
+                      type: external
+                      address:
+                        street_line1: 12 Rue de la Paix
+                        city: Paris
+                        country: FR
+                        postcode: '75002'
+                international_business_ch_eur:
+                  summary: International business counterparty (outside eurozone, with EUR)
+                  value:
+                    id: b8ce3922-d518-4ae6-9426-e8cc117e5332
+                    name: Johann Meier Co.
+                    profile_type: business
+                    state: created
+                    created_at: '2023-08-10T12:43:20.273500Z'
+                    updated_at: '2026-01-30T12:43:20.273500Z'
+                    accounts:
+                    - iban: CH9300762011623852957
+                      bic: UBSWCHZH80A
+                      id: d95bc455-f495-4f18-95fa-32f99479318c
+                      name: Johann Meier Co.
+                      bank_country: CH
+                      currency: EUR
+                      type: external
+                      address:
+                        street_line1: Bahnhofstrasse 10
+                        city: Zurich
+                        country: CH
+                        postcode: '8001'
+                international_business_ch_chf:
+                  summary: International business counterparty (outside eurozone, non-EUR)
+                  value:
+                    id: 173e6a6b-d955-465f-8f31-7f6f7c03927c
+                    name: Edelweiss Handel GmbH
+                    profile_type: business
+                    state: created
+                    created_at: '2023-08-10T12:43:20.273500Z'
+                    updated_at: '2026-01-32T10:54:03.350240Z'
+                    accounts:
+                    - iban: CH5604835012345678009
+                      bic: UBSWCHZH80A
+                      id: b3cc43e8-f141-459b-9bd5-3505cf9797f8
+                      name: Edelweiss Handel GmbH
+                      bank_country: CH
+                      currency: CHF
+                      type: external
+                      address:
+                        street_line1: Marktgasse 22
+                        city: Bern
+                        country: CH
+                        postcode: '3011'
+                card_counterparty:
+                  summary: Card counterparty
+                  value:
+                    id: 1d9013c8-84bf-474c-b3d9-690f2ae2e65c
+                    name: Jane Doe
+                    state: created
+                    created_at: '2024-01-10T15:32:10.172300Z'
+                    updated_at: '2024-01-10T15:32:10.172300Z'
+                    cards:
+                    - id: 0130f363-eeaf-4aa8-b77f-a6a629c603f5
+                      name: Jane Doe
+                      last_digits: 1234
+                      scheme: visa
+                      country: GB
+                      currency: GBP
+                    - id: fa05f2e5-d253-4661-85cc-bcff98b136ac
+                      name: Jane Doe
+                      last_digits: 5678
+                      scheme: mastercard
+                      country: GB
+                      currency: GBP
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Counterparties
+    delete:
+      summary: Delete a counterparty
+      operationId: deleteCounterparty
+      description: Delete a counterparty with the given ID. When a counterparty is deleted, you cannot make any payments to the counterparty.
+      security:
+      - AccessToken:
+        - READ
+        - WRITE
+      parameters:
+      - name: counterparty_id
+        in: path
+        required: true
+        description: The ID of the counterparty to delete.
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: The counterparty deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Counterparties
+  /counterparties/{counterparty_id}/payment-methods/{payment_method_id}:
+    patch:
+      summary: Update a counterparty's payment method
+      operationId: updateCounterpartyPaymentMethod
+      description: 'Update the **address** of a counterparty''s payment method.
+
+
+        :::tip [What is a payment method?]
+
+        A payment method is an individual account or card linked to a counterparty. When you [retrieve a counterparty](https://developer.revolut.com/docs/api/business#get-counterparty), the response includes an `accounts` array and a `cards` array — each entry in these arrays is a payment method with its own `id`.
+
+        :::
+
+
+        As only bank account payment methods have an address, you can use this endpoint to update the address of a counterparty''s bank account.
+
+
+        To get the `payment_method_id` for the bank account, [retrieve the counterparty](https://developer.revolut.com/docs/api/business#get-counterparty) and use the `id` from the `accounts` array in the response.
+
+
+        You must provide the full address object — all required address fields must be present in the request.
+
+        Omitted optional fields will retain their existing values.
+
+
+        For more information, see the guide: [Update a counterparty''s payment method](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/update-counterparty-payment-method).'
+      security:
+      - AccessToken:
+        - WRITE
+      parameters:
+      - name: counterparty_id
+        in: path
+        required: true
+        description: The ID of the counterparty.
+        schema:
+          type: string
+          format: uuid
+      - name: payment_method_id
+        in: path
+        required: true
+        description: The ID of the payment method to update. To get the `payment_method_id` for the bank account, [retrieve the counterparty](https://developer.revolut.com/docs/api/business#get-counterparty) and use the `id` from the `accounts` array in the response.
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: The updated address details.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCounterpartyPaymentMethodRequest'
+            examples:
+              update_address:
+                summary: Update a counterparty's address
+                value:
+                  address:
+                    country: GB
+                    street_line1: 7 Revolut Street
+                    street_line2: Floor 3
+                    city: London
+                    postcode: EC2V 8PH
+      responses:
+        '204':
+          description: The address was updated
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+      tags:
+      - Counterparties
+components:
+  schemas:
+    ErrorWithId:
+      required:
+      - code
+      - message
+      - error_id
+      type: object
+      properties:
+        error_id:
+          type: string
+          description: The ID of the specific error instance. Used for traceability.
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+    IndividualName:
+      type: object
+      description: 'The name of the counterparty, provided when the counterparty is an **individual** (personal account type) and is **not** being added via Revtag.
+
+
+        If specified, `company_name` and `name` must be empty.'
+      properties:
+        first_name:
+          type: string
+          description: The first name of the individual counterparty.
+        last_name:
+          type: string
+          description: The last name of the individual counterparty.
+    Currency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    CountryCodeCard:
+      type: string
+      pattern: ^[A-Z]{2}$
+      description: The country of the card issuer, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
+    UpdateCounterpartyPaymentMethodAddress:
+      type: object
+      description: The updated address for the counterparty's payment method. All required fields must be provided.
+      properties:
+        street_line1:
+          type: string
+          maxLength: 100
+          description: Street line 1 information.
+          example: 7 Revolut Street
+        street_line2:
+          type: string
+          maxLength: 100
+          description: Street line 2 information.
+          example: Floor 3
+        region:
+          type: string
+          maxLength: 50
+          description: The name of the region (state or province), for example, Ontario for Canada.
+          example: Greater London
+        city:
+          type: string
+          maxLength: 50
+          description: The name of the city.
+          example: London
+        country:
+          type: string
+          pattern: ^[A-Z]{2}$
+          description: The country of the counterparty, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+          example: GB
+        postcode:
+          type: string
+          maxLength: 15
+          description: The postcode of the counterparty address.
+          example: EC2V 8PH
+      required:
+      - country
+      - street_line1
+      - city
+      - postcode
+    AccountCurrency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    CounterpartyRequirementsField:
+      type: object
+      description: Represents a contextual field and its rules.
+      properties:
+        name:
+          type: string
+          description: "The name of the field to be provided in the [Create a counterparty endpoint](https://developer.revolut.com/docs/api/business#add-counterparty) request body. \nMatches the field names in the Create a counterparty endpoint exactly (e.g. `first_name`, `last_name`, `tax_id`, `route`, `account_type`)."
+        required:
+          type: boolean
+          description: Indicates whether this field must be provided when creating the counterparty.
+        regex:
+          $ref: '#/components/schemas/CounterpartyRequirementsFieldRegex'
+        options:
+          type: array
+          description: 'A list of allowed values for the field (enum).
+
+            If provided, the field value must be one of these options.'
+          items:
+            $ref: '#/components/schemas/CounterpartyRequirementsFieldOption'
+      required:
+      - name
+      - required
+    CounterpartyRequirementsFieldOption:
+      type: object
+      description: An allowed value option for the field.
+      properties:
+        value:
+          type: string
+          description: The accepted value to be passed to the API.
+        default:
+          type: boolean
+          description: Indicates the default option for the field if there is one.
+      required:
+      - value
+    CounterpartyCountriesResponse:
+      type: object
+      description: The response containing supported bank countries and their available currencies.
+      properties:
+        countries:
+          type: array
+          description: A list of supported bank countries.
+          items:
+            $ref: '#/components/schemas/CounterpartyCountry'
+      required:
+      - countries
+    CreateCounterpartyRequest:
+      type: object
+      properties:
+        profile_type:
+          type: string
+          enum:
+          - personal
+          - business
+          description: 'The type of the Revolut profile.
+
+            Indicates whether the counterparty is a personal or business account.
+
+            Provide it when adding a Revolut counterparty via Revtag.'
+        revtag:
+          type: string
+          description: The [Revtag](https://help.revolut.com/help/transfers/internal-transfers/username-payments/revtags/) of the counterparty to add.
+        name:
+          type: string
+          description: 'The name of the counterparty, provided when the counterparty is being added via **Revtag**.
+
+
+            If specified, `individual_name` and `company_name` must be empty.
+
+
+            :::note
+
+            The name that you provide must match or closely match the actual name associated with the account that you''re trying to add.
+
+            Otherwise, the creation fails and a `404` error is returned.
+
+            :::
+
+            '
+        company_name:
+          type: string
+          description: 'The name of the counterparty, provided when the counterparty is a **company** (business account type) and is **not** being added via Revtag.
+
+
+            If specified, `individual_name` and `name` must be empty.
+
+
+            :::warning
+
+            The `company_name` must contain at least 2 letters (not just characters).
+
+            For example, names like `12` will fail validation because they are two characters but not two letters.
+
+            :::'
+        individual_name:
+          $ref: '#/components/schemas/IndividualName'
+        bank_country:
+          $ref: '#/components/schemas/BankCountryCode'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        account_no:
+          type: string
+          description: The bank account number of the counterparty.
+        iban:
+          type: string
+          description: The IBAN number of the counterparty's account. This field is displayed for IBAN countries.
+        sort_code:
+          type: string
+          description: The sort code of the counterparty's account. This field is required for GBP accounts.
+        routing_number:
+          type: string
+          description: The routing number of the counterparty's account. This field is required for USD accounts.
+        bic:
+          type: string
+          description: The BIC number of the counterparty's account. This field is required for non-SEPA IBAN/SWIFT.
+        clabe:
+          type: string
+          description: The CLABE number of the counterparty's account. This field is required for SWIFT MX.
+        ifsc:
+          type: string
+          description: The IFSC number of the counterparty's account. This field is required for INR accounts.
+        bsb_code:
+          type: string
+          description: The BSB number of the counterparty's account. This field is required for AUD accounts.
+        address:
+          $ref: '#/components/schemas/BeneficiaryAddress'
+        route:
+          type: string
+          enum:
+          - ach
+          - fedwire
+          - swift
+          description: "Routing method for US USD transfers. When omitted, defaults to `ach` for US-registered businesses and `fedwire` for non-US businesses. \n\nRequired when `bank_country` is `US` and the desired routing method differs from the default."
+          example: ach
+        bank_number:
+          type: string
+          minLength: 3
+          maxLength: 3
+          description: Brazilian bank identification code (COMPE). Required for BR counterparties.
+          example: '033'
+        branch_code:
+          type: string
+          minLength: 4
+          maxLength: 4
+          description: Brazilian branch (agência) code. Required for BR counterparties.
+          example: '0001'
+        account_type:
+          type: string
+          enum:
+          - checking
+          - savings
+          description: "Bank account type. Defaults to `checking` for US ACH transfers when omitted. \n\nRequired for BR, CO, and CL counterparties."
+          example: checking
+        tax_id:
+          type: string
+          maxLength: 20
+          description: "Tax identification number.\n\nRequired and routed based on `bank_country` and recipient type:\n- **BR**:\n  - **Individual**: CPF (Cadastro de Pessoas Físicas). Accepted formats: `^\\d{11}$` or `^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$`.\n  - **Company**: CNPJ (Cadastro Nacional da Pessoa Jurídica). Accepted formats: `^\\d{14}$` or `^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}$`.\n- **CO (company)**: NIT (Número de Identificación Tributaria). Accepted format: `^\\d{10}$`.\n- **CL (individual, company)**: RUT (Rol Único Tributario)."
+        national_id:
+          type: string
+          description: National identification number. Required  when `bank_country` is `CO` and `profile_type` is `personal`, must specify Colombian Cédula de Ciudadanía.
+        phone:
+          type: string
+          maxLength: 20
+          description: 'The phone number of the counterparty in [E.164](https://en.wikipedia.org/wiki/E.164) format.
+
+
+            - For internal (Revolut) counterparties: the recipient''s Revolut phone number used to look them up.
+
+            - For external counterparties in CO, KR, and LK: the bank account phone number. Required when `bank_country` is `CO`, `KR`, or `LK`.
+
+
+            Country-specific formats:
+
+            - **CO**: `+57` followed by 10 digits (`^\+?57\d{10}$`)
+
+            - **KR**: `+82` followed by 10 digits (`^\+?82\d{10}$`)
+
+            - **LK**: `+94` followed by 10 digits (`^\+?94\d{10}$`)'
+          example: '+573001234567'
+        business_registration_id:
+          type: string
+          maxLength: 64
+          description: 'Company registration number. Required for business LK counterparties (`profile_type`: `business`).'
+          example: PV12345
+    CounterpartyAddress:
+      type: object
+      description: The address of the counterparty's account.
+      required:
+      - country
+      properties:
+        street_line1:
+          type: string
+          maxLength: 100
+          description: Street line 1 information.
+        street_line2:
+          type: string
+          maxLength: 100
+          description: Street line 2 information.
+        region:
+          type: string
+          maxLength: 50
+          description: The name of the region (state or province), for example, Ontario for Canada.
+        city:
+          type: string
+          maxLength: 50
+          description: The name of the city.
+        country:
+          type: string
+          pattern: ^[A-Z]{2}$
+          description: The country of the counterparty, as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+        postcode:
+          type: string
+          maxLength: 15
+          description: The postcode of the counterparty address.
+    CounterpartyRequirementsResponse:
+      type: object
+      description: The response containing applicable counterparty fields and their validation rules.
+      properties:
+        fields:
+          type: array
+          description: A list of applicable and conditionally required fields for the specific counterparty context.
+          items:
+            $ref: '#/components/schemas/CounterpartyRequirementsField'
+      required:
+      - fields
+    ValidateAccountNameRequest:
+      discriminator:
+        mapping:
+          UK: '#/components/schemas/ValidateAccountNameRequestUK'
+          AU: '#/components/schemas/ValidateAccountNameRequestAU'
+          RO: '#/components/schemas/ValidateAccountNameRequestRO'
+          EUR: '#/components/schemas/ValidateAccountNameRequestEUR'
+    UpdateCounterpartyPaymentMethodRequest:
+      type: object
+      description: The request body for updating a counterparty's payment method address.
+      required:
+      - address
+      properties:
+        address:
+          $ref: '#/components/schemas/UpdateCounterpartyPaymentMethodAddress'
+    Counterparties:
+      type: array
+      items:
+        $ref: '#/components/schemas/Counterparty'
+    Counterparty:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the counterparty.
+        name:
+          type: string
+          description: The name of the counterparty.
+        revtag:
+          type: string
+          description: The [Revtag](https://help.revolut.com/help/transfers/internal-transfers/username-payments/revtags/) of the counterparty.
+        profile_type:
+          $ref: '#/components/schemas/ProfileType'
+        country:
+          $ref: '#/components/schemas/CountryCode'
+        state:
+          enum:
+          - created
+          - draft
+          - deleted
+          description: Indicates the state of the counterparty.
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the counterparty was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the counterparty was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        accounts:
+          type: array
+          description: The list of public accounts associated with this counterparty.
+          items:
+            $ref: '#/components/schemas/CounterpartyAccount'
+        cards:
+          type: array
+          description: The list of cards associated with this counterparty.
+          items:
+            $ref: '#/components/schemas/CounterpartyCard'
+      required:
+      - id
+      - name
+      - state
+      - created_at
+      - updated_at
+    CounterpartyRequirementsFieldRegex:
+      type: object
+      description: Regular expression validation rules.
+      properties:
+        pattern:
+          type: string
+          description: The regex pattern the field value must match.
+        description:
+          type: string
+          description: A human-readable description of the regex constraint.
+      required:
+      - pattern
+      - description
+    ValidateAccountNameResponse:
+      discriminator:
+        mapping:
+          UK: '#/components/schemas/ValidateAccountNameResponseUK'
+          AU: '#/components/schemas/ValidateAccountNameResponseAU'
+          RO: '#/components/schemas/ValidateAccountNameResponseRO'
+          EUR: '#/components/schemas/ValidateAccountNameResponseEUR'
+    CountryCode:
+      type: string
+      pattern: ^[A-Z]{2}$
+      description: The counterparty's bank country, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+    ProfileType:
+      type: string
+      enum:
+      - personal
+      - business
+      description: 'The type of the counterparty.
+
+        Indicates whether the recipient is an individual or a company.'
+    CounterpartyErrorParams:
+      type: object
+      description: Additional parameters related to the error.
+      properties:
+        counterparty_id:
+          type: string
+          format: uuid
+          description: The ID of the Revolut counterparty (i.e. internal counterparty) that already exists.
+    CounterpartyCard:
+      type: object
+      required:
+      - id
+      - name
+      - last_digits
+      - scheme
+      - country
+      - currency
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the counterparty's card.
+        name:
+          type: string
+          description: The name of the counterparty.
+        last_digits:
+          type: string
+          description: The last four digits of the card number.
+        scheme:
+          type: string
+          enum:
+          - visa
+          - mastercard
+          description: The card brand.
+        country:
+          $ref: '#/components/schemas/CountryCodeCard'
+        currency:
+          $ref: '#/components/schemas/Currency'
+    BeneficiaryAddress:
+      type: object
+      description: The address of the counterparty.
+      properties:
+        street_line1:
+          type: string
+          description: Street line 1 information.
+          example: Revolut LTD
+        street_line2:
+          type: string
+          description: Street line 2 information.
+          example: 1 Canada Square
+        region:
+          type: string
+          description: The name of the region (state or province), for example, Ontario for Canada.
+          example: Ontario
+        city:
+          type: string
+          description: The name of the city.
+          example: London
+        country:
+          type: string
+          pattern: ^[A-Z]{2}$
+          description: The country of the counterparty, as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+          example: GB
+        postcode:
+          type: string
+          description: The postcode of the counterparty address.
+          example: E14 5AB
+      required:
+      - country
+      - postcode
+    CounterpartyCountry:
+      type: object
+      description: A supported bank country with its available currencies.
+      properties:
+        country:
+          $ref: '#/components/schemas/BankCountryCode'
+        currencies:
+          type: array
+          description: The currencies available for counterparty creation in this country.
+          items:
+            $ref: '#/components/schemas/Currency'
+      required:
+      - country
+      - currencies
+    CounterpartyAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the counterparty's account.
+        name:
+          type: string
+          description: The name of the counterparty.
+        bank_country:
+          $ref: '#/components/schemas/BankCountryCode'
+        currency:
+          $ref: '#/components/schemas/AccountCurrency'
+        type:
+          enum:
+          - revolut
+          - external
+          description: Indicates the type of account.
+          type: string
+        account_no:
+          type: string
+          description: The bank account number of the counterparty.
+        iban:
+          type: string
+          description: The IBAN number of the counterparty's account if applicable.
+        sort_code:
+          type: string
+          description: The sort code of the counterparty's account if applicable.
+        routing_number:
+          type: string
+          description: The routing number of the counterparty's account if applicable.
+        bic:
+          type: string
+          description: The BIC number of the counterparty's account if applicable.
+        clabe:
+          type: string
+          description: The CLABE number of the counterparty's account if applicable.
+        ifsc:
+          type: string
+          description: The IFSC number of the counterparty's account if applicable.
+        bsb_code:
+          type: string
+          description: The BSB number of the counterparty's account if applicable.
+        route:
+          type: string
+          enum:
+          - ach
+          - fedwire
+          - swift
+          description: Routing method for US/USD transfers. Defaults to `ach` for US-registered businesses and `fedwire` for non-US businesses.
+          example: ach
+        bank_number:
+          type: string
+          description: Brazilian bank identification code (COMPE). Returned for BR counterparties.
+          example: '033'
+        branch_code:
+          type: string
+          description: Brazilian branch (agência) code. Returned for BR counterparties.
+          example: '0001'
+        account_type:
+          type: string
+          enum:
+          - checking
+          - savings
+          description: Bank account type. Returned for BR, CO, and CL counterparties. Defaults to `checking` for US ACH transfers.
+          example: checking
+        tax_id:
+          type: string
+          maxLength: 20
+          description: "Tax identification number.\nRouted based on `bank_country` and recipient type:\n- **BR**:\n  - **Individual**: CPF (Cadastro de Pessoas Físicas). Accepted formats: `^\\d{11}$` or `^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$`.\n  - **Company**: CNPJ (Cadastro Nacional da Pessoa Jurídica). Accepted formats: `^\\d{14}$` or `^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}$`.\n- **CO (company)**: NIT (Número de Identificación Tributaria). Accepted format: `^\\d{10}$`.\n- **CL (individual, company)**: RUT (Rol Único Tributario)."
+        national_id:
+          type: string
+          description: 'National identification number.
+
+            Specifies Colombian Cédula de Ciudadanía when `bank_country` is `CO` and `profile_type` is `personal`.'
+        phone:
+          type: string
+          maxLength: 20
+          description: 'The phone number of the counterparty in [E.164](https://en.wikipedia.org/wiki/E.164) format.
+
+
+            Country-specific formats:
+
+            - **CO**: `+57` followed by 10 digits (`^\+?57\d{10}$`)
+
+            - **LK**: `+94` followed by 10 digits (`^\+?94\d{10}$`)
+
+            - **KR**: `+82` followed by 10 digits (`^\+?82\d{10}$`)'
+          example: '+573001234567'
+        business_registration_id:
+          type: string
+          maxLength: 64
+          description: Company registration number. Used for business LK counterparties.
+          example: PV12345
+        recipient_charges:
+          enum:
+          - 'no'
+          - expected
+          description: 'Indicates the possibility of the recipient charges.
+
+
+            :::warning
+
+            This field is deprecated and should be disregarded.
+
+            It is returned for legacy purposes only.
+
+            :::'
+          type: string
+          deprecated: true
+        address:
+          $ref: '#/components/schemas/CounterpartyAddress'
+      required:
+      - id
+      - currency
+      - type
+    BankCountryCode:
+      type: string
+      pattern: ^[A-Z]{2}$
+      description: The country of the bank, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+      example: GB
+    CounterpartyError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+        params:
+          $ref: '#/components/schemas/CounterpartyErrorParams'
+      required:
+      - code
+      - message
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

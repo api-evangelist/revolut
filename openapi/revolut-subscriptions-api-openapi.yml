@@ -1,0 +1,3147 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Subscriptions API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Subscriptions
+  description: 'The Subscriptions API provides a complete solution for creating and managing recurring billing for your customers.
+
+
+    You can automatically charge customers on flexible billing cycles, manage sophisticated subscription plans, and track the entire billing history for every subscriber.
+
+
+    ## How it works?
+
+
+    A subscription''s billing structure is defined by a **Subscription plan**. This model gives you granular control:
+
+
+    - **Plans** contain one or more **variations** (e.g., a "Gold" plan could have "Monthly" and "Yearly" variations).
+
+    - **Variations** can have multiple **phases** (e.g., a 7-day free trial followed by a regular billing phase).
+
+
+    This powerful structure allows you to build complex pricing models, including free trials, introductory offers, and tiered pricing.
+
+
+    ## Key features
+
+
+    - **Flexible pricing models:** Create plans with multiple variations and phases to support any billing scenario.
+
+    - **Automated charging:** Automatically charge a customer''s saved payment method at the start of each billing cycle.
+
+    - **Hosted onboarding:** For new customers, generate a setup order with a redirect URL to Revolut''s Hosted Payment Page, allowing them to securely add a payment method.
+
+    - **Lifecycle tracking:** Monitor each billing cycle''s state, view all associated orders, and access complete payment histories.
+
+    - **Full subscription management:** Easily update customer payment methods, cancel subscriptions, and view a complete billing history.'
+paths:
+  /api/subscription-plans:
+    parameters:
+    - $ref: '#/components/parameters/Authorization'
+    - $ref: '#/components/parameters/Revolut-Api-Version'
+    servers:
+    - description: Production server (uses live data)
+      url: https://merchant.revolut.com
+    post:
+      summary: Create a subscription plan
+      operationId: createSubscriptionPlan
+      description: 'Create a new subscription plan with one or more pricing variations.
+
+
+        A subscription plan defines the billing structure for subscriptions. Each plan can have multiple variations (e.g., monthly vs. yearly), and each variation can have multiple billing phases (e.g., trial period followed by regular billing). These plans are designed for flexibility, allowing you to combine fixed recurring fees with unit-based or usage-based charges into a single, unified subscription.
+
+
+        ## How subscription plans work
+
+
+        A subscription plan consists of four hierarchical levels:
+
+
+        1. **Plan**: The top-level container (e.g., "Standard Plan")
+
+        1. **Variations**: Different pricing options (e.g., monthly vs. yearly)
+
+        1. **Phases**: Sequential billing stages within each variation
+
+        1. **Subscription items**: Individual line items within a phase that define **how** to charge (e.g., a base fee plus per-unit charges)
+
+
+        ### Phases and billing items
+
+
+        If a `trial_duration` is defined at the variation level, billing phases begin immediately after the trial ends. Phases execute in sequence based on their `ordinal` value (1, 2, 3, etc.):
+
+
+        | Concept | Behaviour |
+
+        | ------- | --------- |
+
+        | **Cycle control** | Each phase has a `cycle_duration` (e.g., `P1M` for monthly). Use `cycle_count` to limit how many cycles occur; if `null` or omitted, the phase runs indefinitely. |
+
+        | **Sequential transition** | When a phase completes its cycles, the subscription advances to the next `ordinal`. If no next phase exists, the subscription stops automatically. |
+
+        | **Item composition** | Each phase contains one or more `subscription_items` defining how charges are calculated: **flat** items apply a fixed cost multiplied by `quantity`; **usage** items are metered at the end of the cycle based on reported consumption. |
+
+
+        :::tip [Example: Multi-item billing]
+
+        A plan combining a **base platform fee** and **monthly user licenses**:
+
+
+        **Variation:** `Monthly Team`
+
+
+        **Phase 1** — `ordinal: 1`, `cycle_duration: P1M`
+
+
+        | Item | Type | `amount` | `quantity` |
+
+        | ---- | ---- | -------- | ---------- |
+
+        | **Base platform fee** | `flat` | `4900` (£49.00) | `1` |
+
+        | **User licenses** | `flat` | `1000` (£10.00 per unit) | `5` |
+
+
+        The customer is billed a fixed platform fee plus £10.00 for each of their 5 active licenses every month.
+
+        :::'
+      tags:
+      - Subscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription-Plan-Creation'
+            examples:
+              simple_plan:
+                $ref: '#/components/examples/Req-Subscription-Plan-Simple'
+              trial_plan_with_duration:
+                $ref: '#/components/examples/Req-Subscription-Plan-With-Trial-Duration'
+              limited_plan:
+                $ref: '#/components/examples/Req-Subscription-Plan-Limited'
+              usage_base_plan:
+                $ref: '#/components/examples/Req-Subscription-Plan-Usage-Base'
+              hybrid_plan:
+                $ref: '#/components/examples/Req-Subscription-Plan-Hybrid'
+              package_plan:
+                $ref: '#/components/examples/Req-Subscription-Plan-Package'
+              items_plan:
+                $ref: '#/components/examples/Req-Subscription-Plan-With-Items'
+      responses:
+        '201':
+          description: Subscription plan created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription-Plan'
+              examples:
+                simple_plan:
+                  $ref: '#/components/examples/Res-Subscription-Plan-Simple'
+                trial_plan_with_duration:
+                  $ref: '#/components/examples/Res-Subscription-Plan-With-Trial-Duration'
+                limited_plan:
+                  $ref: '#/components/examples/Res-Subscription-Plan-Limited'
+                usage_base_plan:
+                  $ref: '#/components/examples/Res-Subscription-Plan-Usage-Base'
+                hybrid_plan:
+                  $ref: '#/components/examples/Res-Subscription-Plan-Hybrid'
+                package_plan:
+                  $ref: '#/components/examples/Res-Subscription-Plan-Package'
+                items_plan:
+                  $ref: '#/components/examples/Res-Subscription-Plan-With-Items'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+    get:
+      summary: Retrieve a subscription plan list
+      operationId: retrieveSubscriptionPlanList
+      description: "Retrieve all subscription plans configured for your merchant account. You can use the query parameters for:\n\n  | Filtering | Pagination |\n  | --------- | ---------- |\n  | Filter the subscription plans that you want to retrieve, for example, only retrieve plans created within a specific date range. <br/><br/>Parameters used for filtering:<br/><ul><li>`from`</li><li>`to`</li></ul> | View the subscription plans without loading all of them at once, for example, return a specified number of plans per page. <br/><br/>Parameters used for pagination: <br/><ul><li>`limit`</li><li>`page_token`</li></ul> |"
+      tags:
+      - Subscriptions
+      parameters:
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      - $ref: '#/components/parameters/Page-Token'
+      responses:
+        '200':
+          description: List of subscription plans retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription-Plans'
+              examples:
+                plans_list:
+                  $ref: '#/components/examples/Res-Subscription-Plans-List'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+  /api/subscription-plans/{subscription_plan_id}:
+    parameters:
+    - $ref: '#/components/parameters/Authorization'
+    - $ref: '#/components/parameters/Revolut-Api-Version'
+    - $ref: '#/components/parameters/Subscription-Plan-Id'
+    servers:
+    - description: Production server (uses live data)
+      url: https://merchant.revolut.com
+    get:
+      summary: Retrieve a subscription plan
+      operationId: retrieveSubscriptionPlan
+      description: 'Retrieve a specific subscription plan by its unique identifier.
+
+
+        A subscription plan contains **variations** (different pricing options like monthly vs. yearly), and each variation contains **phases** (sequential billing stages).
+
+
+        Phases execute based on their `ordinal` value. When a phase completes its `cycle_count`, the subscription moves to the next phase. If `cycle_count` is `null` or omitted, the phase continues indefinitely.
+
+
+        :::note
+
+        If a `trial_duration` is defined, phases begin immediately after the trial ends.
+
+        :::'
+      tags:
+      - Subscriptions
+      responses:
+        '200':
+          description: Subscription plan retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription-Plan'
+              examples:
+                simple_plan:
+                  $ref: '#/components/examples/Res-Subscription-Plan-Simple'
+                trial_plan_with_duration:
+                  $ref: '#/components/examples/Res-Subscription-Plan-With-Trial-Duration'
+                limited_plan:
+                  $ref: '#/components/examples/Res-Subscription-Plan-Limited'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '404':
+          description: Subscription plan not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+  /api/subscriptions:
+    parameters:
+    - $ref: '#/components/parameters/Authorization'
+    - $ref: '#/components/parameters/Revolut-Api-Version'
+    servers:
+    - description: Production server (uses live data)
+      url: https://merchant.revolut.com
+    post:
+      summary: Create a subscription
+      operationId: createSubscription
+      description: "Create a new subscription for a customer using a subscription plan variation.\n\nThere are several supported flows for creating and activating subscriptions, depending on your integration needs.\n\n:::note\nThe customer must already exist in the API. The `customer_id` is required for all subscription flows.\n:::\n\n<details>\n<summary>\n\n#### Flow 1: Hosted Payment Page (HPP)\n\n</summary>\n\nUse this flow to redirect the customer to Revolut's Hosted Payment Page to complete the first payment and save their payment method.\n\n**Backend flow:**\n1. Create a subscription with optional `setup_order_redirect_url`:\n\n   | `setup_order_redirect_url` | Behaviour |\n   | -------------------------- | --------- |\n   | **Provided** | The setup order's `redirect_url` field is set to this value. |\n   | **Omitted** | The setup order uses Revolut's default redirect behaviour. |\n\n1. The subscription is created in a `pending` state with a `setup_order_id` in the response.\n1. [Retrieve the order](https://developer.revolut.com/docs/api/merchant/2024-09-01#retrieve-order) using `setup_order_id` as the `order_id` in the path to get the `checkout_url`.\n1. Redirect the customer to the `checkout_url` for the Hosted Payment Page.\n\n**Customer flow:**\n1. Customer is redirected to Revolut's Hosted Payment Page.\n1. Customer completes payment on the HPP, and their payment method is saved.\n1. Customer redirect after payment depends on your setup:\n\n   | `setup_order_redirect_url` | Customer redirect |\n   | -------------------------- | ----------------- |\n   | **Provided** | Customer is redirected to your custom URL. |\n   | **Omitted** | Customer sees the default Revolut completion screen. |\n\n**Key characteristics:**\n- Customer completes payment on Revolut's hosted page\n- Payment method is automatically saved for future billing cycles\n- Optional custom redirect after payment\n- Best for web-based integrations\n\n</details>\n\n<details>\n\n<summary>\n\n#### Flow 2: Widget or card-not-present (CNP) payment\n\n</summary>\n\nUse this flow when you want to embed the payment experience directly on your website using one of Revolut's payment widgets or handle card-not-present payments.\n\n**Backend flow:**\n1. Create a subscription with minimal required parameters.\n1. The subscription is created in a `pending` state with a `setup_order_id` in the response.\n1. [Retrieve the order](https://developer.revolut.com/docs/api/merchant/2024-09-01#retrieve-order) using `setup_order_id` as the `order_id` in the path to get order details for your integration.\n1. Integrate your payment solution (widget, SDK, or CNP method) on your frontend, ensuring it's configured to save the customer's payment method for recurring billing.\n\n**Customer flow:**\n1. Customer stays on your website/application.\n1. Customer completes payment, and their payment method is saved for future billing cycles.\n\n**Key characteristics:**\n- Payment experience embedded directly in your application\n- Customer never leaves your website\n- Payment method is saved for future billing cycles\n- Best for native mobile apps or fully custom web experiences\n\n</details>"
+      tags:
+      - Subscriptions
+      parameters:
+      - $ref: '#/components/parameters/Idempotency-Key'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription-Creation'
+            examples:
+              with_setup_order:
+                $ref: '#/components/examples/Req-Subscription-Setup-Order'
+              with_setup_order_no_url:
+                $ref: '#/components/examples/Req-Subscription-Setup-Order-No-URL'
+              with_trial:
+                $ref: '#/components/examples/Req-Subscription-With-Trial'
+              skip_trial:
+                $ref: '#/components/examples/Req-Subscription-Skip-Trial'
+      responses:
+        '201':
+          description: Subscription created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+              examples:
+                with_setup_order:
+                  $ref: '#/components/examples/Res-Subscription-Setup-Order'
+                with_setup_order_no_url:
+                  $ref: '#/components/examples/Res-Subscription-Setup-Order-No-URL'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+    get:
+      summary: Retrieve a subscription list
+      operationId: retrieveSubscriptionList
+      description: "Retrieve all subscriptions for the merchant account. You can use the query parameters for:\n\n  | Filtering | Pagination |\n  | --------- | ---------- |\n  | Filter the subscriptions that you want to retrieve, for example, only retrieve subscriptions created within a specific date range or with a specific external reference. <br/><br/>Parameters used for filtering:<br/><ul><li>`from`</li><li>`to`</li><li>`external_reference`</li></ul> | View the subscriptions without loading all of them at once, for example, return a specified number of subscriptions per page. <br/><br/>Parameters used for pagination: <br/><ul><li>`limit`</li><li>`page_token`</li></ul> |"
+      tags:
+      - Subscriptions
+      parameters:
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      - name: external_reference
+        in: query
+        schema:
+          type: string
+        description: Return subscriptions with a specific `external_reference`. Used for **filtering**.
+        required: false
+      - $ref: '#/components/parameters/Page-Token'
+      responses:
+        '200':
+          description: List of subscriptions retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscriptions'
+              examples:
+                subscriptions_list:
+                  $ref: '#/components/examples/Res-Subscriptions-List'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+  /api/subscriptions/{subscription_id}:
+    parameters:
+    - $ref: '#/components/parameters/Authorization'
+    - $ref: '#/components/parameters/Revolut-Api-Version'
+    - $ref: '#/components/parameters/Subscription-Id'
+    servers:
+    - description: Production server (uses live data)
+      url: https://merchant.revolut.com
+    get:
+      summary: Retrieve a subscription
+      operationId: retrieveSubscription
+      description: 'Retrieve a subscription by its unique identifier.
+
+
+        Use this endpoint to get the current state and details of a specific subscription.'
+      tags:
+      - Subscriptions
+      responses:
+        '200':
+          description: Subscription retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+              examples:
+                active_subscription:
+                  $ref: '#/components/examples/Res-Subscription-Active'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '404':
+          description: Subscription not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+    patch:
+      summary: Update a subscription
+      operationId: updateSubscription
+      description: 'Update a subscription''s details.
+
+
+        You can update a subscription and specific parameters based on the value of the `state` parameter:
+
+
+        | State parameter value | Modifiable parameters |
+
+        | --------------------- | --------------------- |
+
+        | `pending`, `active`, `overdue`, `paused` | You can modify all listed parameters. |
+
+        | `cancelled`, `finished` | You cannot modify parameters. These are final states. |
+
+
+        **Common use cases:**
+
+        - **Update external reference**: When you need to sync with updated customer records in your system, correct an initial reference value, or re-map the subscription to a different internal tracking ID to maintain consistency with your database.'
+      tags:
+      - Subscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription-Update'
+            examples:
+              update_subscription:
+                $ref: '#/components/examples/Req-Subscription-Update'
+      responses:
+        '200':
+          description: Subscription updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+              examples:
+                updated_subscription:
+                  $ref: '#/components/examples/Res-Subscription-Active'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '404':
+          description: Subscription not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+  /api/subscriptions/{subscription_id}/change-plan:
+    parameters:
+    - $ref: '#/components/parameters/Authorization'
+    - $ref: '#/components/parameters/Revolut-Api-Version'
+    - $ref: '#/components/parameters/Subscription-Id'
+    servers:
+    - description: Production server (uses live data)
+      url: https://merchant.revolut.com
+    post:
+      summary: Change a subscription plan
+      operationId: changeSubscriptionPlan
+      description: 'Schedule a plan change for a subscription. The change is applied at the end of the current billing cycle.
+
+
+        ### Use cases
+
+
+        - **Plan upgrades:** Moving a customer to a higher-tier plan with more features or capacity.
+
+        - **Plan downgrades:** Moving a customer to a lower-tier plan that better fits their usage and budget.
+
+        - **Customer requests:** Accommodating a customer''s request to switch to a different plan variation.
+
+
+        ### How it works
+
+
+        When you schedule a plan change, the subscription continues operating under its current plan variation until the current billing cycle ends. At that point, the next cycle is created under the new plan variation.
+
+
+        - **Scheduled change:** The plan change is scheduled to take effect `at_cycle_end`. The current cycle completes normally, and the new plan variation applies starting from the next cycle.
+
+        - **Plan variation phases:** Some plan variations are divided into phases - distinct pricing or duration periods within a single variation. If the target plan variation has multiple phases, use `plan_variation_phase_id` to specify which phase to start from. If omitted, the change starts from the first phase.
+
+        - **Trial periods:** If the target plan variation includes a trial period, it is skipped when changing plans. Trial periods only apply when a subscription is first created.
+
+        - **Subsequent cycles:** After the transition, future cycles follow the cadence and pricing defined by the new plan variation.'
+      tags:
+      - Subscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription-Change-Plan'
+            examples:
+              change_plan:
+                $ref: '#/components/examples/Req-Subscription-Change-Plan'
+              change_plan_with_reason:
+                $ref: '#/components/examples/Req-Subscription-Change-Plan-With-Reason'
+              change_plan_with_phase:
+                $ref: '#/components/examples/Req-Subscription-Change-Plan-With-Phase'
+      responses:
+        '204':
+          description: Plan change scheduled successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+              examples:
+                immediate_not_supported:
+                  summary: Immediate plan change not supported
+                  value:
+                    code: bad_request
+                    message: Immediate plan change is not supported. Please provide 'scheduled' field (e.g. 'at_cycle_end')
+                    timestamp: 1601296792533
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '404':
+          description: Subscription not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+              examples:
+                subscription_finished:
+                  summary: Subscription is finished
+                  value:
+                    code: subscription_finished
+                    message: The subscription is finished
+                    timestamp: 1601296792533
+                next_cycle_exists:
+                  summary: Next cycle already exists with a different plan variation
+                  value:
+                    code: subscription_cycle_next_cycle_exists
+                    message: Next cycle already exists with a different plan variation
+                    timestamp: 1601296792533
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+  /api/subscriptions/{subscription_id}/change-renewal-date:
+    parameters:
+    - $ref: '#/components/parameters/Authorization'
+    - $ref: '#/components/parameters/Revolut-Api-Version'
+    - $ref: '#/components/parameters/Subscription-Id'
+    servers:
+    - description: Production server (uses live data)
+      url: https://merchant.revolut.com
+    post:
+      summary: Update a subscription renewal date
+      operationId: updateSubscriptionRenewalDate
+      description: "Reschedule the upcoming payment date for an active subscription cycle. This is a command endpoint — the renewal date is not a direct field on the Subscription resource, but is derived from the current active cycle's `end_date`.\n\n### Use cases\n\n- **Payment extensions:** Granting a customer more time to pay.\n- **Service delays:** Adjusting the billing date if service delivery is delayed.\n- **Billing alignment:** Moving a payment date to better suit a customer's financial schedule.\n\n### How it works\n\nExtending the current cycle's `end_date` naturally postpones the start of the next cycle and its associated payment trigger, providing flexibility for both the merchant and the customer.\n\nThe relationship between the cycle end and the billing execution depends on the plan type:\n\n- **Non-usage plans:** The next cycle's start date is the same as the billing date. The moment the current cycle ends, the next cycle begins and the payment is attempted.\n- **Usage-based plans (buffer & overlap):** To allow merchants time to finalize usage data, the billing date is scheduled after the cycle `end_date`.\n    - Usage continues to be aggregated until the updated `end_date`.\n    - When the current cycle (Cycle 1) reaches its updated `end_date`, **Cycle 2 starts immediately** to ensure no service interruption.\n    - The billing for Cycle 1 occurs a few hours later (12-hour buffer). This window allows you to upload or edit usages for the period that just ended while the customer is already technically in their next cycle.\n    - Rescheduling the `renewal_date` pushes this entire sequence—the end of Cycle 1, the start of Cycle 2, and the delayed billing trigger—further into the future.\n\nSubsequent cycles resume the original plan cadence (e.g., monthly) from the new date."
+      tags:
+      - Subscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription-Update-Renewal-Date'
+            examples:
+              simple_plan:
+                $ref: '#/components/examples/Req-Subscription-Update-Renewal-Date'
+      responses:
+        '204':
+          description: Renewal date updated successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '404':
+          description: Subscription not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '422':
+          description: Unprocessable entity (business rule violation)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+              examples:
+                subscription_finished:
+                  summary: Subscription is finished
+                  value:
+                    code: subscription_finished
+                    message: The subscription is finished
+                    timestamp: 1601296792533
+                next_cycle_exists:
+                  summary: Next cycle already exists
+                  value:
+                    code: subscription_cycle_next_cycle_exists
+                    message: Cannot change cycle end date when next cycle already exists
+                    timestamp: 1601296792533
+                end_date_too_early:
+                  summary: Renewal date is too early
+                  value:
+                    code: subscription_cycle_end_date_too_early
+                    message: The end date is too early
+                    timestamp: 1601296792533
+                end_date_too_far:
+                  summary: Renewal date is too far in the future
+                  value:
+                    code: subscription_cycle_end_date_too_far
+                    message: The end date is too far in the future
+                    timestamp: 1601296792533
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+  /api/subscriptions/{subscription_id}/cancel:
+    parameters:
+    - $ref: '#/components/parameters/Authorization'
+    - $ref: '#/components/parameters/Revolut-Api-Version'
+    - $ref: '#/components/parameters/Subscription-Id'
+    servers:
+    - description: Production server (uses live data)
+      url: https://merchant.revolut.com
+    post:
+      summary: Cancel a subscription
+      operationId: cancelSubscription
+      description: 'Cancel a subscription.
+
+
+        You can cancel a subscription in any state except `cancelled` or `finished`. When you cancel a subscription, it will be marked as `cancelled` and no further billing cycles will be created. Any pending orders will be cancelled.'
+      tags:
+      - Subscriptions
+      responses:
+        '204':
+          description: Subscription cancelled successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '404':
+          description: Subscription not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+  /api/subscriptions/{subscription_id}/cycles:
+    parameters:
+    - $ref: '#/components/parameters/Authorization'
+    - $ref: '#/components/parameters/Revolut-Api-Version'
+    - $ref: '#/components/parameters/Subscription-Id'
+    servers:
+    - description: Production server (uses live data)
+      url: https://merchant.revolut.com
+    get:
+      summary: Retrieve a subscription cycle list
+      operationId: retrieveSubscriptionCycleList
+      description: "Retrieve all billing cycles for a specific subscription. \n\nYou can use the query parameters for:\n\n  | Filtering | Pagination |\n  | --------- | ---------- |\n  | Filter the subscription cycles that you want to retrieve, for example, only retrieve cycles that started within a specific date range. <br/><br/>Parameters used for filtering:<br/><ul><li>`from`</li><li>`to`</li></ul> | View the subscription cycles without loading all of them at once, for example, return a specified number of cycles per page. <br/><br/>Parameters used for pagination: <br/><ul><li>`limit`</li><li>`page_token`</li></ul> |"
+      tags:
+      - Subscriptions
+      parameters:
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      - $ref: '#/components/parameters/Page-Token'
+      responses:
+        '200':
+          description: List of subscription cycles retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription-Cycles'
+              examples:
+                cycles_list:
+                  $ref: '#/components/examples/Res-Subscription-Cycles-List'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '404':
+          description: Subscription not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+  /api/subscriptions/{subscription_id}/cycles/{cycle_id}:
+    parameters:
+    - $ref: '#/components/parameters/Authorization'
+    - $ref: '#/components/parameters/Revolut-Api-Version'
+    - $ref: '#/components/parameters/Subscription-Id'
+    - $ref: '#/components/parameters/Cycle-Id'
+    servers:
+    - description: Production server (uses live data)
+      url: https://merchant.revolut.com
+    get:
+      summary: Retrieve a subscription cycle
+      operationId: retrieveSubscriptionCycle
+      description: 'Retrieve a specific billing cycle for a subscription by its unique identifier.
+
+
+        Use this endpoint to get the details and current state of a particular billing cycle.'
+      tags:
+      - Subscriptions
+      responses:
+        '200':
+          description: Subscription cycle retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription-Cycle'
+              examples:
+                finished_cycle:
+                  $ref: '#/components/examples/Res-Subscription-Cycle-Finished'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '404':
+          description: Subscription cycle not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+  /api/subscription-usages:
+    parameters:
+    - $ref: '#/components/parameters/Authorization'
+    - $ref: '#/components/parameters/Revolut-Api-Version'
+    servers:
+    - description: Production server (uses live data)
+      url: https://merchant.revolut.com
+    post:
+      summary: Create a subscription usage
+      operationId: createSubscriptionUsage
+      description: 'Report a unit of consumption against a usage-based subscription item. Revolut accumulates reported records throughout the billing cycle and processes the charge after the cycle''s `usage_cutoff_date`.
+
+
+        ### Resolve the billing cycle
+
+
+        Revolut automatically identifies the applicable billing cycle from the `usage_date` you provide. The following submission windows are accepted:
+
+
+        | Window | Rule |
+
+        | ------ | ---- |
+
+        | Active cycle | `usage_date` falls within the current cycle (`start_date ≤ usage_date < end_date`). |
+
+        | Past cycle correction | `usage_date` falls within a recently ended cycle, and the request is made before that cycle''s `usage_cutoff_date` (12 hours after `end_date` by default). |
+
+        | Next upcoming cycle | `usage_date` falls within the one next future cycle. Revolut creates a `pending` cycle to hold the record until it becomes active. |
+
+
+        Any `usage_date` outside these windows causes the request to be rejected.
+
+
+        ### How Revolut calculates the charge
+
+
+        After the `usage_cutoff_date` passes, all records for each usage item are aggregated using the method defined on the subscription plan:
+
+
+        | Method | Behaviour |
+
+        | ------ | --------- |
+
+        | `sum` | Totals all reported values during the cycle. Use for cumulative metrics (e.g., total GB transferred). |
+
+        | `latest` | Uses the most recently reported value at the `usage_cutoff_date`. If no usages are reported during the cycle, the charge is 0. Use for gauge-style metrics (e.g., active seat count at month-end). |
+
+        | `max` | Uses the highest value reported during the cycle. Use for capacity-based billing (e.g., peak concurrent connections). |
+
+
+        The aggregated total is multiplied by the unit price to produce the final charge.
+
+
+        :::warning
+
+        The `Idempotency-Key` header is **required** for this endpoint. Providing a unique idempotency key ensures that duplicate requests due to retries or network issues do not result in duplicate usage records.
+
+        :::'
+      tags:
+      - Subscriptions
+      parameters:
+      - $ref: '#/components/parameters/Idempotency-Key-Required'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription-Usage-Creation'
+            examples:
+              report_usage:
+                $ref: '#/components/examples/Req-Subscription-Usage'
+      responses:
+        '201':
+          description: Usage reported successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription-Usage'
+              examples:
+                usage_record:
+                  $ref: '#/components/examples/Res-Subscription-Usage'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+              examples:
+                item_code_not_found:
+                  summary: Subscription item code not found
+                  value:
+                    code: subscription_item_code_not_found
+                    message: Subscription item code 'api_calls' not found for phase
+                    timestamp: 1743465600
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '422':
+          description: Unprocessable entity (business rule violation)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+              examples:
+                subscription_finished:
+                  summary: Subscription is finished
+                  value:
+                    code: subscription_finished
+                    message: Cannot add usage to a finished subscription
+                    timestamp: 1743465600
+                usage_after_last_cycle:
+                  summary: Usage date after last cycle
+                  value:
+                    code: subscription_usage_after_last_cycle
+                    message: Usage date is after the last cycle
+                    timestamp: 1743465600
+                usage_before_start:
+                  summary: Usage date before subscription start
+                  value:
+                    code: subscription_usage_before_subscription_start
+                    message: Usage date is before the subscription start date
+                    timestamp: 1743465600
+                future_cycle_limit_exceeded:
+                  summary: Future cycle limit exceeded
+                  value:
+                    code: subscription_usage_future_cycle_limit_exceeded
+                    message: Cannot add usage for cycles too far in the future
+                    timestamp: 1743465600
+                usage_locked:
+                  summary: Cycle is past the usage cutoff date
+                  value:
+                    code: subscription_usage_locked
+                    message: Cannot modify usage for a locked cycle
+                    timestamp: 1743465600
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+    get:
+      summary: Retrieve a subscription usage list
+      operationId: retrieveSubscriptionUsageList
+      description: "Retrieve all usage records for the merchant account. Results are ordered by `usage_date`, unlike other list endpoints which order by `created_at`. You can use the query parameters for:\n\n  | Filtering | Pagination |\n  | --------- | ---------- |\n  | Filter the usage records that you want to retrieve, for example, only retrieve records for a specific subscription or billing cycle. <br/><br/>Parameters used for filtering:<br/><ul><li>`subscription_id`</li><li>`subscription_cycle_id`</li><li>`from_usage_date`</li><li>`to_usage_date`</li></ul> | View usage records without loading all of them at once, for example, return a specified number of records per page. <br/><br/>Parameters used for pagination:<br/><ul><li>`limit`</li><li>`page_token`</li></ul> |"
+      tags:
+      - Subscriptions
+      parameters:
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/From-Usage-Date'
+      - $ref: '#/components/parameters/To-Usage-Date'
+      - $ref: '#/components/parameters/Subscription-Id-Query'
+      - $ref: '#/components/parameters/Subscription-Cycle-Id-Query'
+      - $ref: '#/components/parameters/Page-Token'
+      responses:
+        '200':
+          description: List of subscription usages retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription-Usages'
+              examples:
+                usage_list:
+                  $ref: '#/components/examples/Res-Usage-List'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+  /api/subscription-usages/{usage_id}:
+    parameters:
+    - $ref: '#/components/parameters/Authorization'
+    - $ref: '#/components/parameters/Revolut-Api-Version'
+    - $ref: '#/components/parameters/Usage-Id'
+    servers:
+    - description: Production server (uses live data)
+      url: https://merchant.revolut.com
+    get:
+      summary: Retrieve a subscription usage
+      operationId: retrieveSubscriptionUsage
+      description: 'Retrieve a usage record by its unique identifier.
+
+
+        Use this endpoint to get the details of a specific usage that was reported or updated.'
+      tags:
+      - Subscriptions
+      responses:
+        '200':
+          description: Usage record retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription-Usage'
+              examples:
+                usage_record:
+                  $ref: '#/components/examples/Res-Subscription-Usage'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '404':
+          description: Usage not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+    patch:
+      summary: Update a subscription usage
+      operationId: updateSubscriptionUsage
+      description: Update the quantity or metadata of a subscription usage record.
+      tags:
+      - Subscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription-Usage-Update'
+            examples:
+              update_usage_quantity:
+                $ref: '#/components/examples/Req-Subscription-Usage-Update-Quantity'
+              update_usage_metadata:
+                $ref: '#/components/examples/Req-Subscription-Usage-Update-Metadata'
+              update_usage:
+                $ref: '#/components/examples/Req-Subscription-Usage-Update'
+      responses:
+        '200':
+          description: Usage updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription-Usage'
+              examples:
+                updated_usage:
+                  $ref: '#/components/examples/Res-Subscription-Usage'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '404':
+          description: Usage not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '422':
+          description: Unprocessable entity (business rule violation)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+              examples:
+                usage_locked:
+                  summary: Cycle is past the usage cutoff date
+                  value:
+                    code: subscription_usage_locked
+                    message: Cannot modify usage for a locked cycle
+                    timestamp: 1743465600
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+    delete:
+      summary: Delete a subscription usage
+      operationId: deleteSubscriptionUsage
+      description: Delete a subscription usage record. This operation is only permitted while the billing cycle is still open.
+      tags:
+      - Subscriptions
+      responses:
+        '204':
+          description: Usage deleted successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '404':
+          description: Usage not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+        '422':
+          description: Unprocessable entity (business rule violation)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+              examples:
+                usage_locked:
+                  summary: Cycle is past the usage cutoff date
+                  value:
+                    code: subscription_usage_locked
+                    message: Cannot modify usage for a locked cycle
+                    timestamp: 1743465600
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error-v2'
+      security:
+      - Api-Key: []
+components:
+  schemas:
+    Subscription-Scheduled-Action-Cancel:
+      title: Subscription-Scheduled-Action-Cancel
+      type: object
+      description: A cancellation scheduled to take effect at the end of the current billing cycle.
+      required:
+      - type
+      - reason
+      properties:
+        type:
+          $ref: '#/components/schemas/Subscription-Scheduled-Action-Type'
+        reason:
+          $ref: '#/components/schemas/Subscription-Change-Plan-Reason'
+    Subscription-Update-Renewal-Date:
+      type: object
+      properties:
+        renewal_date:
+          type: string
+          format: date-time
+          description: 'The new renewal date for the subscription, expressed as a UTC date-time value.
+
+
+            Must be set to a date later than the current renewal date; earlier dates are rejected.'
+          example: '2026-07-01T00:00:00Z'
+      required:
+      - renewal_date
+    Subscription-Items-Creation:
+      type: array
+      description: A list of subscription items for this phase.
+      items:
+        $ref: '#/components/schemas/Subscription-Item-Creation'
+    Setup-Order-Id:
+      type: string
+      format: uuid
+      description: 'The ID of the order created for handling the setup payment for the subscription.
+
+
+        Use the [Retrieve an order](https://developer.revolut.com/docs/api/merchant#retrieve-order) endpoint with this ID to get order details, including the `checkout_url` for redirecting customers to the Hosted Payment Page or the `token` for widget integration.
+
+
+        :::note
+
+        The order is created in parallel to the subscription and is used to collect the initial payment and save the customer''s payment method for future billing cycles.
+
+        :::'
+    Subscription-Usage-Update:
+      type: object
+      properties:
+        quantity:
+          $ref: '#/components/schemas/Subscription-Usage-Quantity'
+        metadata:
+          $ref: '#/components/schemas/Subscription-Usage-Metadata'
+    Subscription-Usage-Quantity:
+      type: number
+      minimum: 0
+      exclusiveMinimum: true
+      description: "The quantity of consumption to record for this usage report. \n\nSupports up to 20 digits before and 20 digits after the decimal point."
+      example: 100.5
+    Subscription:
+      type: object
+      required:
+      - id
+      - state
+      - customer_id
+      - plan_id
+      - plan_variation_id
+      - payment_method_type
+      - created_at
+      - updated_at
+      - current_cycle_id
+      properties:
+        id:
+          $ref: '#/components/schemas/Subscription-Id'
+        external_reference:
+          $ref: '#/components/schemas/Subscription-External-Reference'
+        state:
+          $ref: '#/components/schemas/Subscription-State'
+        customer_id:
+          $ref: '#/components/schemas/Customer-Id'
+        plan_id:
+          $ref: '#/components/schemas/Subscription-Plan-Id'
+        plan_variation_id:
+          $ref: '#/components/schemas/Subscription-Plan-Variation-Id'
+        payment_method_type:
+          $ref: '#/components/schemas/Subscription-Payment-Method-Type'
+        payment_method_id:
+          $ref: '#/components/schemas/Payment-Method-Id'
+        created_at:
+          $ref: '#/components/schemas/Subscription-Created'
+        updated_at:
+          $ref: '#/components/schemas/Subscription-Updated'
+        start_date:
+          $ref: '#/components/schemas/Subscription-Start-Date'
+        current_cycle_id:
+          $ref: '#/components/schemas/Subscription-Cycle-Id'
+        trial_duration:
+          $ref: '#/components/schemas/Subscription-Trial-Duration'
+        trial_end_date:
+          $ref: '#/components/schemas/Subscription-Trial-End-Date'
+        setup_order_id:
+          $ref: '#/components/schemas/Setup-Order-Id'
+        scheduled_action:
+          $ref: '#/components/schemas/Subscription-Scheduled-Action'
+    Subscription-Item-Tier:
+      type: object
+      properties:
+        upper_quantity_threshold:
+          type: number
+          nullable: true
+          description: The upper bound of the tier (exclusive). Null means unlimited.
+          example: 100
+        amount:
+          type: integer
+          description: Per-unit amount in minor currency units (e.g., cents for USD) charged for usage within this tier's threshold range.
+          example: 500
+      required:
+      - amount
+    Cycle-Count:
+      type: integer
+      nullable: true
+      minimum: 1
+      description: 'Number of billing cycles for this phase before moving to the next phase.
+
+
+        | Value | Behavior |
+
+        | ----- | -------- |
+
+        | `null` or omitted | Phase continues indefinitely. The subscription remains in this phase with no automatic progression. |
+
+        | Specific number (e.g., `1`, `3`, `12`) | After completing this many billing cycles, the subscription automatically moves to the next phase as determined by the `ordinal` field. |
+
+
+        **Example**: If `cycle_count=3` and `cycle_duration=P1M`, the subscription will complete 3 monthly cycles then move to the phase with the next highest `ordinal` value.
+
+
+        :::note
+
+        If no next phase exists in after a cycle with a specific `cycle_count`, the subscription will automatically stop when it completes its cycles.
+
+        :::'
+      title: Cycle-Count
+    Subscription-Cycle-Trial:
+      type: boolean
+      description: "Indicates whether this billing cycle occurs during the subscription's trial period.\n\nThis value is automatically calculated by the system based on the cycle's timing relative to the subscription's trial period. Returns `true` if the cycle is within the trial period (before `trial_end_date`), otherwise `false`. \n\nTrial cycles typically have different billing behavior, such as reduced or zero charges."
+      default: false
+      example: false
+    Subscription-Plan-Ordinal:
+      type: integer
+      minimum: 1
+      description: 'The sequential order of this phase in the subscription billing lifecycle.
+
+
+        Phases execute in ascending order based on this value:
+
+        - Phase with `ordinal=1` executes first
+
+        - Phase with `ordinal=2` executes second, and so on
+
+
+        When a phase completes its `cycle_count`, the subscription automatically progresses to the phase with the next `ordinal` value.
+
+
+        **Example**: A subscription with phases ordered as `ordinal=1` (trial), `ordinal=2` (regular), `ordinal=3` (discounted) will progress through them in that sequence.'
+      title: Subscription-Plan-Ordinal
+    Cycle-Number:
+      type: integer
+      minimum: 1
+      description: 'The sequential cycle number within the subscription.
+
+
+        Starts at `1` for the first cycle and increments with each new billing cycle.'
+    Subscription-External-Reference:
+      type: string
+      maxLength: 1024
+      description: 'Optional external reference for the subscription.
+
+
+        Use this field to store your own system''s identifier for easy tracking and correlation.'
+    Subscription-Items:
+      type: array
+      description: A list of subscription items for this phase.
+      items:
+        $ref: '#/components/schemas/Subscription-Item'
+    Subscription-Cycles:
+      type: object
+      required:
+      - cycles
+      properties:
+        next_page_token:
+          type: string
+          nullable: true
+          description: 'Token for retrieving the next page of results.
+
+
+            If not present, there are no more results to retrieve.'
+        cycles:
+          type: array
+          description: List of subscription cycles.
+          items:
+            $ref: '#/components/schemas/Subscription-Cycle'
+    Subscription-Usage-Date:
+      type: string
+      format: date-time
+      description: 'The timestamp indicating when the consumption actually occurred.
+
+
+        | Constraint | Detail |
+
+        | ---------- | ------ |
+
+        | Format | [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time string (e.g., `YYYY-MM-DDTHH:mm:ssZ`). |
+
+        | Timezone | Must be UTC. |
+
+        | Validation | Revolut uses this to identify the applicable billing cycle. Accepted for the active cycle (`start_date ≤ usage_date < end_date`), for a recently ended cycle before its `usage_cutoff_date`, and for the one next upcoming cycle. Other dates are rejected. |'
+      example: '2026-03-01T21:00:00Z'
+    Customer-Id:
+      type: string
+      format: uuid
+      description: Unique identifier for the customer.
+    Cycle-Duration:
+      type: string
+      format: duration
+      description: 'The length of each billing cycle for this phase in [ISO 8601 duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations).
+
+
+        This determines how often the customer is billed during this phase. The total time spent in a phase is `cycle_duration × cycle_count`.
+
+
+        **Common durations**:
+
+
+        | Duration | Description |
+
+        | -------- | ----------- |
+
+        | `P1M` | 1 month |
+
+        | `P1Y` | 1 year |
+
+        | `P15D` | 15 days |
+
+        | `P1W` | 1 week |
+
+        | `PT2H` | 2 hours |
+
+
+        **Example**: If `cycle_duration=P1M` and `cycle_count=12`, the customer will be billed monthly for 12 months (1 year total).'
+    Next-Page-Token:
+      type: string
+      nullable: true
+      description: 'Token for retrieving the next page of results. Use this token as the value of the `page_token` query parameter in your next request to retrieve the next page.
+
+
+        If not present, there are no more results to retrieve.'
+    Subscription-Item-Package-Size:
+      type: number
+      description: 'The number of units grouped together as a single billable package. Used to enable pricing of items that are too inexpensive to charge individually.
+
+
+        For example, a `package_size` of `1000` with a unit price of 10 minor units (£0.10 in GBP) lets you sell 1000 tokens for £0.10 — effectively pricing each token at £0.0001, below the minimum chargeable amount.
+
+
+        Set to `1` to price each unit individually.'
+      example: 1
+    Subscription-Usages:
+      type: object
+      properties:
+        next_page_token:
+          $ref: '#/components/schemas/Next-Page-Token'
+        subscription_usages:
+          type: array
+          description: List of subscription usages.
+          items:
+            $ref: '#/components/schemas/Subscription-Usage'
+    Order-Id:
+      type: string
+      format: uuid
+      description: Permanent order ID used to retrieve, capture, cancel, or refund an order after authorization.
+    Subscription-Plan-Id:
+      type: string
+      format: uuid
+      description: Unique identifier for the subscription plan.
+    Subscription-Trial-Duration:
+      type: string
+      format: duration
+      description: 'The trial period duration for this subscription in [ISO 8601 duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations) (e.g., "P14D" for 14 days).
+
+
+        ### Override plan defaults
+
+
+        Subscription plans can define a default trial duration. When creating a subscription, you can use this field to override the plan''s default trial period:
+
+
+        | Field value | Behaviour | Example |
+
+        | ----------- | -------- | ------- |
+
+        | **Not provided** | Uses the trial duration defined in the plan (if any) | Plan has `"P7D"` → subscription gets 7-day trial |
+
+        | **Different value** | Overrides the plan''s default trial duration | Plan has `"P7D"` → set to `"P30D"` for promotional offer, or `"P3D"` to reduce |
+
+        | **`"P0D"`** | Explicitly skips the trial period | Plan has `"P7D"` → set to `"P0D"` to skip trial entirely |
+
+
+        :::note
+
+        Only days (`D`) are allowed. Time components such as hours, minutes, or seconds are not permitted.
+
+        :::'
+      example: P14D
+      pattern: ^P[0-9]+D$
+    Subscription-Start-Date:
+      type: string
+      format: date-time
+      nullable: true
+      description: 'The date and time the subscription started in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+
+
+        This field is `null` until the subscription becomes active.'
+    Subscription-Item-Creation:
+      title: Subscription item
+      type: object
+      description: A subscription item for a plan phase. Can be either a fixed-fee (flat) item or a metered (usage) item.
+      discriminator:
+        propertyName: type
+        mapping:
+          flat: '#/components/schemas/Subscription-Item-Flat-Creation'
+          usage: '#/components/schemas/Subscription-Item-Usage-Creation'
+      oneOf:
+      - $ref: '#/components/schemas/Subscription-Item-Flat-Creation'
+      - $ref: '#/components/schemas/Subscription-Item-Usage-Creation'
+    Subscription-Plan-Created:
+      type: string
+      format: date-time
+      description: The date and time the subscription plan was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+    Subscriptions:
+      type: object
+      required:
+      - subscriptions
+      properties:
+        next_page_token:
+          $ref: '#/components/schemas/Next-Page-Token'
+        subscriptions:
+          type: array
+          description: List of subscriptions.
+          items:
+            $ref: '#/components/schemas/Subscription'
+    Subscription-Updated:
+      type: string
+      format: date-time
+      description: The date and time the subscription was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+    Subscription-Plan-Variation-Creation:
+      type: object
+      required:
+      - phases
+      properties:
+        phases:
+          type: array
+          minItems: 1
+          description: List of billing phases for this variation.
+          items:
+            $ref: '#/components/schemas/Subscription-Plan-Phase-Creation'
+    Subscription-Plan:
+      type: object
+      required:
+      - id
+      - name
+      - state
+      - created_at
+      - updated_at
+      - variations
+      properties:
+        id:
+          $ref: '#/components/schemas/Subscription-Plan-Id'
+        name:
+          $ref: '#/components/schemas/Subscription-Plan-Name'
+        trial_duration:
+          $ref: '#/components/schemas/Subscription-Plan-Trial-Duration'
+        state:
+          $ref: '#/components/schemas/Subscription-Plan-State'
+        created_at:
+          $ref: '#/components/schemas/Subscription-Plan-Created'
+        updated_at:
+          $ref: '#/components/schemas/Subscription-Plan-Updated'
+        variations:
+          type: array
+          description: List of subscription plan variations.
+          items:
+            $ref: '#/components/schemas/Subscription-Plan-Variation'
+    Currency:
+      type: string
+      format: ISO 4217
+      minLength: 3
+      maxLength: 3
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
+
+
+        :::info
+
+        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
+
+        :::'
+    Subscription-Trial-End-Date:
+      type: string
+      format: date-time
+      nullable: true
+      description: 'The date and time when the subscription''s trial period ends in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+
+
+        This value is automatically calculated by the system as: `start_date` + `trial_duration`
+
+
+        The `trial_duration` used in the calculation comes from either:
+
+        - The subscription''s custom `trial_duration` (if provided at creation time), or
+
+        - The plan''s default `trial_duration` (if no override was specified)
+
+
+        This field is `null` when the subscription has no trial period (e.g., when `trial_duration` is not set or is `"P0D"`).'
+      example: '2025-06-19T21:00:00.036001Z'
+    Subscription-Change-Plan:
+      type: object
+      properties:
+        plan_variation_id:
+          $ref: '#/components/schemas/Subscription-Plan-Variation-Id'
+        plan_variation_phase_id:
+          $ref: '#/components/schemas/Subscription-Plan-Phase-Id'
+        scheduled:
+          type: string
+          description: 'When the plan change should take effect.
+
+
+            | Value | Description |
+
+            | ----- | ----------- |
+
+            | `at_cycle_end` | The change is applied at the end of the current billing cycle. |'
+          enum:
+          - at_cycle_end
+          example: at_cycle_end
+        reason:
+          $ref: '#/components/schemas/Subscription-Change-Plan-Reason'
+      required:
+      - plan_variation_id
+      - scheduled
+    Subscription-Scheduled-Action:
+      description: A pending scheduled action on the subscription, applied at the end of the current billing cycle.
+      type: object
+      discriminator:
+        propertyName: type
+        mapping:
+          cancel: '#/components/schemas/Subscription-Scheduled-Action-Cancel'
+          change_plan_variation: '#/components/schemas/Subscription-Scheduled-Action-Change-Plan'
+      oneOf:
+      - $ref: '#/components/schemas/Subscription-Scheduled-Action-Cancel'
+      - $ref: '#/components/schemas/Subscription-Scheduled-Action-Change-Plan'
+    Previous-Cycle-Id:
+      type: string
+      format: uuid
+      nullable: true
+      description: 'The unique identifier of the previous billing cycle.
+
+
+        This field is `null` for the first cycle in a subscription.'
+    Subscription-Amount:
+      type: integer
+      minimum: 0
+      description: 'Subscription amount in minor currency units (e.g., cents for USD, pence for GBP).
+
+
+        For example, `9900` in `GBP` represents £99.00.
+
+
+        :::info
+
+        Conversion between major and minor units varies by currency. For instance, `100` minor units equal £1.00 in `GBP`, whereas in `ISK` they represent 100 units. For more details, see the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217).
+
+        :::'
+    Subscription-Plan-State:
+      type: string
+      enum:
+      - active
+      - deactivated
+      description: 'The state of the subscription plan.
+
+
+        | State | Description |
+
+        | ----- | ----------- |
+
+        | `active` | The plan is active and can be used to create new subscriptions. |
+
+        | `deactivated` | The plan has been deactivated and cannot be used for new subscriptions. |'
+    Subscription-Item-Usage-Creation:
+      type: object
+      description: Object structure for usage subscription item.
+      properties:
+        name:
+          $ref: '#/components/schemas/Subscription-Item-Name'
+        type:
+          $ref: '#/components/schemas/Subscription-Item-Type'
+        package_size:
+          $ref: '#/components/schemas/Subscription-Item-Package-Size'
+        unit:
+          $ref: '#/components/schemas/Subscription-Item-Unit'
+        amount:
+          type: integer
+          description: Flat amount per unit in minor currency units. Mutually exclusive with `tiers`.
+          example: 10
+        currency:
+          $ref: '#/components/schemas/Currency'
+        tiers:
+          type: array
+          description: Graduated pricing tiers. Mutually exclusive with `amount`.
+          items:
+            $ref: '#/components/schemas/Subscription-Item-Tier'
+        code:
+          $ref: '#/components/schemas/Subscription-Item-Code'
+        usage_aggregation_method:
+          $ref: '#/components/schemas/Usage-Aggregation-Method'
+      required:
+      - name
+      - type
+      - currency
+      - unit
+      - code
+      - usage_aggregation_method
+    Subscription-Item-Flat-Creation:
+      type: object
+      description: Object structure of flat subscription item.
+      properties:
+        name:
+          $ref: '#/components/schemas/Subscription-Item-Name'
+        type:
+          $ref: '#/components/schemas/Subscription-Item-Type'
+        package_size:
+          $ref: '#/components/schemas/Subscription-Item-Package-Size'
+        unit:
+          $ref: '#/components/schemas/Subscription-Item-Unit'
+        quantity:
+          $ref: '#/components/schemas/Subscription-Item-Quantity'
+        amount:
+          type: integer
+          description: Amount in minor currency units (e.g., cents for USD).
+          example: 9900
+        currency:
+          $ref: '#/components/schemas/Currency'
+      required:
+      - name
+      - type
+      - amount
+      - currency
+      - unit
+      - quantity
+    Subscription-Item-Type:
+      type: string
+      description: The type of subscription item.
+      enum:
+      - flat
+      - usage
+      example: flat
+    Subscription-Usage-Creation:
+      type: object
+      required:
+      - subscription_id
+      - subscription_item_code
+      - usage_date
+      - quantity
+      properties:
+        subscription_id:
+          $ref: '#/components/schemas/Subscription-Id'
+        subscription_item_code:
+          $ref: '#/components/schemas/Subscription-Item-Code'
+        usage_date:
+          $ref: '#/components/schemas/Subscription-Usage-Date'
+        quantity:
+          $ref: '#/components/schemas/Subscription-Usage-Quantity'
+        metadata:
+          $ref: '#/components/schemas/Subscription-Usage-Metadata'
+    Subscription-Item-Code:
+      type: string
+      description: 'A merchant-defined identifier for a usage-based subscription item. You set this code on each usage item when creating a subscription plan, and supply it when reporting consumption on [Create a subscription usage endpoint](https://developer.revolut.com/docs/api/merchant#create-subscription-usage) to target the correct metered item.
+
+
+        This allows a subscription with multiple usage items (e.g., `api_calls` and `storage_gb`) to receive consumption reports against the right item without relying on internal IDs.
+
+
+        The code must be unique within a plan phase.'
+      maxLength: 250
+      example: api_calls
+    Subscription-Scheduled-Action-Type:
+      type: string
+      description: 'The type of the scheduled action.
+
+
+        | Value | Description |
+
+        | ----- | ----------- |
+
+        | `cancel` | A cancellation scheduled to take effect at the end of the current billing cycle. |
+
+        | `change_plan_variation` | A plan variation change scheduled to take effect at the end of the current billing cycle. |'
+      enum:
+      - cancel
+      - change_plan_variation
+      example: change_plan_variation
+    Payment-Method-Id:
+      type: string
+      format: uuid
+      description: Unique identifier for the payment method.
+    Subscription-Cycle-Usage-Cutoff-Date:
+      type: string
+      format: date-time
+      description: 'The deadline for submitting or correcting usage records for this cycle, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+
+
+        Set to 12 hours after the cycle''s `end_date` by default. After this time, Revolut aggregates all reported usage records and creates the `post_billing_order_id` to initiate the charge.
+
+
+        :::note
+
+        Only present for cycles that include usage-based subscription items.
+
+        :::'
+    Subscription-Item-Name:
+      type: string
+      description: The name of the subscription item.
+      maxLength: 250
+      example: Base Subscription Fee
+    Subscription-Payment-Method-Type:
+      type: string
+      enum:
+      - automatic
+      - manual
+      description: 'The type of payment method used for the subscription.
+
+
+        | Type | Description |
+
+        | ---- | ----------- |
+
+        | `automatic` | Payments are automatically charged to the customer''s saved payment method. |
+
+        | `manual` | Payments require manual processing by the customer. |'
+    Subscription-Plan-Creation:
+      type: object
+      required:
+      - name
+      - variations
+      properties:
+        name:
+          $ref: '#/components/schemas/Subscription-Plan-Name'
+        trial_duration:
+          $ref: '#/components/schemas/Subscription-Plan-Trial-Duration'
+        variations:
+          type: array
+          minItems: 1
+          description: List of subscription plan variations (e.g., monthly, yearly pricing options).
+          items:
+            $ref: '#/components/schemas/Subscription-Plan-Variation-Creation'
+    Subscription-Plan-Phase:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Subscription-Plan-Phase-Id'
+        ordinal:
+          $ref: '#/components/schemas/Subscription-Plan-Ordinal'
+        cycle_duration:
+          $ref: '#/components/schemas/Cycle-Duration'
+        cycle_count:
+          $ref: '#/components/schemas/Cycle-Count'
+        amount:
+          $ref: '#/components/schemas/Subscription-Amount'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        subscription_items:
+          $ref: '#/components/schemas/Subscription-Items'
+      required:
+      - id
+      - ordinal
+      - cycle_duration
+    Subscription-Cycle:
+      type: object
+      required:
+      - id
+      - subscription_id
+      - plan_variation_id
+      - number
+      - state
+      properties:
+        id:
+          $ref: '#/components/schemas/Subscription-Cycle-Id'
+        subscription_id:
+          $ref: '#/components/schemas/Subscription-Id'
+        plan_variation_id:
+          $ref: '#/components/schemas/Subscription-Plan-Variation-Id'
+        plan_variation_phase_id:
+          $ref: '#/components/schemas/Subscription-Plan-Phase-Id'
+        number:
+          $ref: '#/components/schemas/Cycle-Number'
+        previous_cycle_id:
+          $ref: '#/components/schemas/Previous-Cycle-Id'
+        state:
+          $ref: '#/components/schemas/Subscription-Cycle-State'
+        start_date:
+          $ref: '#/components/schemas/Subscription-Cycle-Start-Date'
+        end_date:
+          $ref: '#/components/schemas/Subscription-Cycle-End-Date'
+        usage_cutoff_date:
+          $ref: '#/components/schemas/Subscription-Cycle-Usage-Cutoff-Date'
+        order_id:
+          $ref: '#/components/schemas/Order-Id'
+        post_billing_order_id:
+          $ref: '#/components/schemas/Subscription-Cycle-Post-Billing-Order-Id'
+        trial:
+          $ref: '#/components/schemas/Subscription-Cycle-Trial'
+    Subscription-Plan-Trial-Duration:
+      type: string
+      format: duration
+      description: 'The default trial period duration for this subscription plan in [ISO 8601 duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations) (e.g., "P14D" for 14 days).
+
+
+        This value serves as the default trial duration for all subscriptions created from this plan. Individual subscriptions can override this value at creation time.
+
+
+        :::note
+
+        Only days (`D`) are allowed. Time components such as hours, minutes, or seconds are not permitted.
+
+        :::'
+      example: P14D
+      pattern: ^P[0-9]+D$
+    Subscription-Cycle-Post-Billing-Order-Id:
+      type: string
+      format: uuid
+      description: 'The ID of the order created after the cycle''s `usage_cutoff_date` to charge usage-based items accumulated during the cycle.
+
+
+        | Scenario | Detail |
+
+        | -------- | ------ |
+
+        | Ongoing subscription | This order also acts as the next cycle''s `order_id`, combining usage post-billing for the current cycle with pre-billing for the next. |
+
+        | Last cycle | A standalone finishing order is created to charge all usage from this cycle. |
+
+        | Subscription ended with unpaid cycles | The finishing order consolidates all outstanding usage charges, including any from previous cycles where payment failed. |
+
+
+        :::note
+
+        Only present for cycles that include usage-based subscription items.
+
+        :::'
+    Subscription-Update:
+      type: object
+      properties:
+        external_reference:
+          $ref: '#/components/schemas/Subscription-External-Reference'
+    Subscription-Created:
+      type: string
+      format: date-time
+      description: The date and time the subscription was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+    Subscription-Usage-Id:
+      type: string
+      format: uuid
+      description: The unique identifier of the usage record.
+    Subscription-Cycle-Id:
+      type: string
+      format: uuid
+      description: Unique identifier for the subscription cycle.
+    Subscription-Plan-Variation-Id:
+      type: string
+      format: uuid
+      description: Unique identifier for the subscription plan variation.
+    Subscription-Cycle-End-Date:
+      type: string
+      format: date-time
+      description: The date and time the subscription cycle ends in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+    Subscription-Item:
+      title: Subscription item
+      type: object
+      description: A subscription item that defines a billing line within a plan phase. Can be either a fixed-fee (flat) item or a metered (usage) item.
+      discriminator:
+        propertyName: type
+        mapping:
+          flat: '#/components/schemas/Subscription-Item-Flat'
+          usage: '#/components/schemas/Subscription-Item-Usage'
+      oneOf:
+      - $ref: '#/components/schemas/Subscription-Item-Flat'
+      - $ref: '#/components/schemas/Subscription-Item-Usage'
+    Subscription-Creation:
+      type: object
+      required:
+      - plan_variation_id
+      - customer_id
+      properties:
+        plan_variation_id:
+          $ref: '#/components/schemas/Subscription-Plan-Variation-Id'
+        customer_id:
+          $ref: '#/components/schemas/Customer-Id'
+        external_reference:
+          $ref: '#/components/schemas/Subscription-External-Reference'
+        setup_order_redirect_url:
+          $ref: '#/components/schemas/Setup-Order-Redirect-URL'
+        trial_duration:
+          $ref: '#/components/schemas/Subscription-Trial-Duration'
+    Subscription-Id:
+      type: string
+      format: uuid
+      description: Unique identifier for the subscription.
+    Subscription-Change-Plan-Reason:
+      type: string
+      description: 'The reason for the scheduled action. This field is informational and does not affect how the action is processed.
+
+
+        | Value | Description |
+
+        | ----- | ----------- |
+
+        | `customer_request` | The action was requested by the customer. |
+
+        | `merchant_request` | The action was initiated by the merchant. |'
+      enum:
+      - customer_request
+      - merchant_request
+      default: merchant_request
+      example: customer_request
+    Subscription-Scheduled-Action-Change-Plan:
+      title: Subscription-Scheduled-Action-Change-Plan
+      type: object
+      description: A plan variation change scheduled to take effect at the end of the current billing cycle.
+      required:
+      - type
+      - reason
+      - plan_variation_id
+      properties:
+        type:
+          $ref: '#/components/schemas/Subscription-Scheduled-Action-Type'
+        reason:
+          $ref: '#/components/schemas/Subscription-Change-Plan-Reason'
+        plan_variation_id:
+          $ref: '#/components/schemas/Subscription-Plan-Variation-Id'
+        plan_variation_phase_id:
+          $ref: '#/components/schemas/Subscription-Plan-Phase-Id'
+    Subscription-Item-Usage:
+      type: object
+      description: Object structure of usage subscription item.
+      properties:
+        id:
+          $ref: '#/components/schemas/Subscription-Item-Id'
+        name:
+          $ref: '#/components/schemas/Subscription-Item-Name'
+        type:
+          $ref: '#/components/schemas/Subscription-Item-Type'
+        package_size:
+          $ref: '#/components/schemas/Subscription-Item-Package-Size'
+        unit:
+          $ref: '#/components/schemas/Subscription-Item-Unit'
+        amount:
+          type: integer
+          description: Flat amount per unit in minor currency units. Mutually exclusive with `tiers`.
+          example: 10
+        currency:
+          $ref: '#/components/schemas/Currency'
+        tiers:
+          type: array
+          description: Graduated pricing tiers. Mutually exclusive with `amount`.
+          items:
+            $ref: '#/components/schemas/Subscription-Item-Tier'
+        code:
+          $ref: '#/components/schemas/Subscription-Item-Code'
+        usage_aggregation_method:
+          $ref: '#/components/schemas/Usage-Aggregation-Method'
+      required:
+      - id
+      - name
+      - type
+      - currency
+      - unit
+      - code
+      - usage_aggregation_method
+    Subscription-Cycle-Start-Date:
+      type: string
+      format: date-time
+      description: The date and time the subscription cycle starts in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+    Error-v2:
+      title: Error
+      type: object
+      properties:
+        code:
+          type: string
+          description: 'An identifier that can be used to determine what went wrong.
+
+
+            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
+        message:
+          type: string
+          description: Some human readable text describing what went wrong.
+        timestamp:
+          type: integer
+          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
+    Subscription-State:
+      type: string
+      enum:
+      - pending
+      - active
+      - overdue
+      - paused
+      - cancelled
+      - finished
+      description: 'The state of the subscription.
+
+
+        | State | Description |
+
+        | ----- | ----------- |
+
+        | `pending` | The subscription has been created but is not yet active. This typically occurs when awaiting the first payment or setup completion. |
+
+        | `active` | The subscription is currently active and billing cycles are processing normally. |
+
+        | `overdue` | The subscription has a failed payment and is awaiting resolution. |
+
+        | `paused` | The subscription has been temporarily paused and no billing will occur. |
+
+        | `cancelled` | The subscription has been cancelled and will not renew. |
+
+        | `finished` | The subscription has completed all billing cycles (for limited-duration subscriptions). |'
+    Subscription-Usage-Metadata:
+      type: object
+      description: 'Key-value pairs you can attach to a usage record for your own tracking and reporting purposes.
+
+
+        | Constraint | Detail |
+
+        | ---------- | ------ |
+
+        | Keys | Maximum 50 keys per record. |
+
+        | Value types | String, number, or boolean only. |
+
+        | Number precision | Up to 20 digits before and 20 digits after the decimal point. |'
+      example:
+        user_id: '12345'
+        api_version: v2
+        usage_rate: 1.5
+        is_trial: true
+      additionalProperties:
+        anyOf:
+        - type: string
+        - type: number
+        - type: boolean
+      maxProperties: 50
+    Subscription-Item-Unit:
+      type: string
+      description: The unit of measurement for the item.
+      maxLength: 100
+      example: subscription
+    Subscription-Plan-Variation:
+      type: object
+      required:
+      - id
+      - phases
+      properties:
+        id:
+          $ref: '#/components/schemas/Subscription-Plan-Variation-Id'
+        phases:
+          type: array
+          description: List of billing phases for this variation.
+          items:
+            $ref: '#/components/schemas/Subscription-Plan-Phase'
+    Subscription-Usage-Updated-Date:
+      type: string
+      format: date-time
+      description: The date and time the usage record was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+      example: '2026-03-01T21:05:00Z'
+    Subscription-Item-Id:
+      type: string
+      format: uuid
+      description: The unique identifier of the subscription item.
+    Subscription-Usage-Created-Date:
+      type: string
+      format: date-time
+      description: The date and time the usage record was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+      example: '2026-03-01T21:05:00Z'
+    Subscription-Plan-Phase-Creation:
+      type: object
+      properties:
+        ordinal:
+          $ref: '#/components/schemas/Subscription-Plan-Ordinal'
+        cycle_duration:
+          $ref: '#/components/schemas/Cycle-Duration'
+        cycle_count:
+          $ref: '#/components/schemas/Cycle-Count'
+        amount:
+          $ref: '#/components/schemas/Subscription-Amount'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        subscription_items:
+          $ref: '#/components/schemas/Subscription-Items-Creation'
+      required:
+      - ordinal
+      - cycle_duration
+      - amount
+      - currency
+    Subscription-Item-Flat:
+      type: object
+      description: Object structure of flat subscription item.
+      properties:
+        id:
+          $ref: '#/components/schemas/Subscription-Item-Id'
+        name:
+          $ref: '#/components/schemas/Subscription-Item-Name'
+        type:
+          $ref: '#/components/schemas/Subscription-Item-Type'
+        package_size:
+          $ref: '#/components/schemas/Subscription-Item-Package-Size'
+        unit:
+          $ref: '#/components/schemas/Subscription-Item-Unit'
+        quantity:
+          $ref: '#/components/schemas/Subscription-Item-Quantity'
+        amount:
+          type: integer
+          description: Amount in minor currency units (e.g., cents for USD).
+          example: 9900
+        currency:
+          $ref: '#/components/schemas/Currency'
+      required:
+      - id
+      - name
+      - type
+      - amount
+      - currency
+      - unit
+      - quantity
+    Subscription-Cycle-State:
+      type: string
+      enum:
+      - pending
+      - active
+      - finished
+      description: 'The state of the subscription cycle.
+
+
+        | State | Description |
+
+        | ----- | ----------- |
+
+        | `pending` | The cycle has been created but has not yet started. A cycle can enter this state automatically when usage is reported for a future cycle via `POST /api/subscription-usages`. |
+
+        | `active` | The cycle is currently active and in progress. |
+
+        | `finished` | The cycle has completed. |'
+    Subscription-Plan-Phase-Id:
+      type: string
+      format: uuid
+      description: Unique identifier for the subscription plan phase.
+    Subscription-Usage:
+      type: object
+      required:
+      - id
+      - subscription_id
+      - subscription_cycle_id
+      - subscription_item_code
+      - usage_date
+      - quantity
+      - created_at
+      - updated_at
+      properties:
+        id:
+          $ref: '#/components/schemas/Subscription-Usage-Id'
+        subscription_id:
+          $ref: '#/components/schemas/Subscription-Id'
+        subscription_cycle_id:
+          $ref: '#/components/schemas/Subscription-Cycle-Id'
+        subscription_item_code:
+          $ref: '#/components/schemas/Subscription-Item-Code'
+        usage_date:
+          $ref: '#/components/schemas/Subscription-Usage-Date'
+        quantity:
+          $ref: '#/components/schemas/Subscription-Usage-Quantity'
+        metadata:
+          $ref: '#/components/schemas/Subscription-Usage-Metadata'
+        created_at:
+          $ref: '#/components/schemas/Subscription-Usage-Created-Date'
+        updated_at:
+          $ref: '#/components/schemas/Subscription-Usage-Updated-Date'
+    Setup-Order-Redirect-URL:
+      type: string
+      format: uri
+      pattern: ^https?:\/{2}.+/gi
+      maxLength: 2000
+      description: 'The URL to which the customer is redirected after completing the setup order on the Revolut Hosted Payment Page.
+
+
+        When provided, the response will include a `setup_order_id`. Use the [Retrieve an order](https://developer.revolut.com/docs/api/merchant#retrieve-order) endpoint with this `setup_order_id` to get the `checkout_url` for redirecting the customer to the Hosted Payment Page.
+
+
+        :::warning
+
+        Restrictions:
+
+        - Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)
+
+        - URI scheme is required and must be either `http` or `https`
+
+        - URI host is required and cannot be `localhost` or an IP address
+
+        - Max length: `2000`
+
+        - Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)
+
+        :::'
+    Subscription-Plans:
+      type: object
+      required:
+      - subscription_plans
+      properties:
+        next_page_token:
+          type: string
+          nullable: true
+          description: 'Token for retrieving the next page of results.
+
+
+            If not present, there are no more results to retrieve.'
+        subscription_plans:
+          type: array
+          description: List of subscription plans.
+          items:
+            $ref: '#/components/schemas/Subscription-Plan'
+    Subscription-Plan-Updated:
+      type: string
+      format: date-time
+      description: The date and time the subscription plan was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+    Usage-Aggregation-Method:
+      type: string
+      description: 'The method used to aggregate usage events over a billing cycle to calculate the chargeable amount.
+
+
+        | Value | Behaviour |
+
+        | ----- | --------- |
+
+        | `sum` | Totals all reported usage events during the cycle. Use for cumulative metrics (e.g., API calls, data transferred). |
+
+        | `latest` | Uses the most recently reported value at the end of the cycle. If no usage is reported in a cycle, `0` is used — values do not carry over from previous cycles. Use for gauge-style metrics (e.g., active seats). |
+
+        | `max` | Uses the peak value reported during the cycle. Use for capacity-based billing (e.g., max concurrent connections). |'
+      enum:
+      - sum
+      - latest
+      - max
+      example: sum
+    Subscription-Plan-Name:
+      type: string
+      minLength: 1
+      maxLength: 1024
+      description: The name of the subscription plan.
+    Subscription-Item-Quantity:
+      type: number
+      description: The quantity of the item.
+      example: 1
+  parameters:
+    Subscription-Cycle-Id-Query:
+      name: subscription_cycle_id
+      in: query
+      schema:
+        type: string
+        format: uuid
+      description: Filter usages by the ID of the subscription cycle.
+      required: false
+    From-Usage-Date:
+      name: from_usage_date
+      in: query
+      schema:
+        type: string
+        format: date-time
+      description: Filter usage records with a `usage_date` on or after this date and time.
+      required: false
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 500
+        default: 100
+      description: Maximum number of records to return. Used for **pagination**.
+      required: false
+    Idempotency-Key-Required:
+      name: Idempotency-Key
+      in: header
+      schema:
+        type: string
+      required: true
+      description: 'The `Idempotency-Key` ensures that requests are processed only once, preventing multiple executions of the same operation due to retries or duplicate requests.
+
+
+        This header is required. It can accept any unique string value the merchant uses.
+
+
+        A recommended practice is to use a unique identifier from your system (such as the entity''s ID or a request UUID) as the idempotency key. This facilitates tracking and managing requests effectively.'
+    Revolut-Api-Version:
+      name: Revolut-Api-Version
+      in: header
+      schema:
+        type: string
+        format: date
+        example: '2026-04-20'
+        enum:
+        - '2023-09-01'
+        - '2024-05-01'
+        - '2024-09-01'
+        - '2025-10-16'
+        - '2025-12-04'
+        - '2026-03-12'
+        - '2026-04-20'
+      required: true
+      description: 'The version of the Merchant API, specified in `YYYY-MM-DD` format.
+
+
+        If not specified, you will receive an error.
+
+
+
+        :::info
+
+        For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).
+
+        :::'
+      x-config-always-visible-in-example: true
+    Usage-Id:
+      name: usage_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the usage record.
+    Subscription-Plan-Id:
+      name: subscription_plan_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the subscription plan.
+    From:
+      name: from
+      in: query
+      schema:
+        type: string
+        format: date-time
+      description: Filter records created from this date/time. Used for **filtering**.
+      required: false
+    Idempotency-Key:
+      name: Idempotency-Key
+      in: header
+      schema:
+        type: string
+      required: false
+      description: 'The `Idempotency-Key` ensures that requests are processed only once, preventing multiple executions of the same operation due to retries or duplicate requests.
+
+
+        This header is optional and can accept any unique string value the merchant uses.
+
+
+        A recommended practice is to use a unique identifier from your system (such as the entity''s ID or a request UUID) as the idempotency key. This facilitates tracking and managing requests effectively.'
+    Authorization:
+      name: Authorization
+      in: header
+      schema:
+        type: string
+        format: Bearer <yourSecretApiKey>
+        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
+      required: true
+      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
+    Subscription-Id:
+      name: subscription_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the subscription.
+    To:
+      name: to
+      in: query
+      schema:
+        type: string
+        format: date-time
+      description: Filter records created until this date/time. Used for **filtering**.
+      required: false
+    Subscription-Id-Query:
+      name: subscription_id
+      in: query
+      schema:
+        type: string
+        format: uuid
+      description: Filter usages by the ID of the subscription.
+      required: false
+    Page-Token:
+      name: page_token
+      in: query
+      schema:
+        type: string
+      description: "Token for retrieving the next page of results. Used for **pagination**.\n\nTo paginate through results:\n\n  1. Make an initial request with the desired `limit`.\n  1. The response will include a `next_page_token` if more results are available.\n  1. Use that token in the `page_token` parameter of your next request.\n  1. Repeat until `next_page_token` is not present.\n\n:::note\nWhen using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.\n:::"
+      required: false
+    Cycle-Id:
+      name: cycle_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the subscription cycle.
+    To-Usage-Date:
+      name: to_usage_date
+      in: query
+      schema:
+        type: string
+        format: date-time
+      description: Filter usage records with a `usage_date` before this date and time.
+      required: false
+  examples:
+    Req-Subscription-Change-Plan-With-Reason:
+      summary: Schedule plan change with reason
+      value:
+        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
+        scheduled: at_cycle_end
+        reason: customer_request
+    Req-Subscription-Usage-Update-Metadata:
+      summary: Update metadata
+      value:
+        metadata:
+          user_id: '67890'
+          api_version: v3
+    Res-Subscription-Setup-Order:
+      summary: Subscription created with setup order
+      value:
+        id: 550e8400-e29b-41d4-a716-446655440000
+        external_reference: ext-ref-12345
+        state: pending
+        customer_id: 650e8400-e29b-41d4-a716-446655440001
+        plan_id: 750e8400-e29b-41d4-a716-446655440002
+        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
+        payment_method_type: automatic
+        created_at: '2025-06-05T21:00:00.036001Z'
+        updated_at: '2025-06-05T21:00:00.036001Z'
+        setup_order_id: a50e8400-e29b-41d4-a716-446655440005
+        current_cycle_id: a31627fb-b037-4566-8d7b-f380c1f44653
+    Req-Subscription-Update:
+      summary: Update subscription
+      value:
+        external_reference: ext-ref-12345
+    Res-Subscription-Usage:
+      summary: Successful usage record creation
+      description: Returns the reported usages
+      value:
+        id: 750e8400-e29b-41d4-a716-446655440000
+        subscription_id: 550e8400-e29b-41d4-a716-446655440000
+        subscription_cycle_id: 850e8400-e29b-41d4-a716-446655440000
+        subscription_item_code: api_calls
+        usage_date: '2026-03-01T21:00:00Z'
+        quantity: 100
+        metadata:
+          user_id: '12345'
+          api_version: v2
+        created_at: '2026-03-01T21:05:00Z'
+        updated_at: '2026-03-01T21:05:00Z'
+    Req-Subscription-Setup-Order-No-URL:
+      summary: Subscription without redirect URL
+      value:
+        plan_variation_id: 550e8400-e29b-41d4-a716-446655440000
+        customer_id: 650e8400-e29b-41d4-a716-446655440001
+        external_reference: ext-ref-12345
+    Req-Subscription-Setup-Order:
+      summary: Subscription with redirect URL
+      value:
+        plan_variation_id: 550e8400-e29b-41d4-a716-446655440000
+        customer_id: 650e8400-e29b-41d4-a716-446655440001
+        setup_order_redirect_url: https://example.com/subscription/setup/complete
+        external_reference: ext-ref-12345
+    Res-Subscription-Plan-With-Trial-Duration:
+      summary: Plan with trial duration
+      value:
+        id: 750e8400-e29b-41d4-a716-446655440010
+        name: Premium Plan with 14-day Trial
+        trial_duration: P14D
+        state: active
+        created_at: '2025-06-04T21:00:00.036001Z'
+        updated_at: '2025-06-04T21:00:00.036001Z'
+        variations:
+        - id: 850e8400-e29b-41d4-a716-446655440011
+          phases:
+          - id: 950e8400-e29b-41d4-a716-446655440012
+            ordinal: 1
+            cycle_duration: P1M
+            amount: 9900
+            currency: GBP
+    Req-Subscription-Plan-Hybrid:
+      summary: Hybrid plan with flat base fee and usage-based items
+      value:
+        name: Professional Plan
+        variations:
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1M
+            subscription_items:
+            - name: Base Subscription
+              type: flat
+              quantity: 1
+              amount: 2900
+              currency: GBP
+              unit: subscription
+            - name: API Calls
+              type: usage
+              currency: GBP
+              unit: calls
+              code: api_calls
+              usage_aggregation_method: sum
+              amount: 10
+            - name: Storage
+              type: usage
+              currency: GBP
+              unit: gb
+              code: storage_gb
+              usage_aggregation_method: max
+              package_size: 1
+              tiers:
+              - upper_quantity_threshold: 10
+                amount: 0
+              - upper_quantity_threshold: 100
+                amount: 50
+              - amount: 30
+    Res-Subscription-Plan-Simple:
+      summary: Simple yearly and monthly plan
+      value:
+        id: f757b068-f287-43c8-8d05-9c073fecbe73
+        name: Enterprise Pro Plan
+        state: active
+        created_at: '2026-01-26T08:59:09.433527Z'
+        updated_at: '2026-01-26T08:59:09.433527Z'
+        variations:
+        - id: f4e0a171-4f4e-484b-b0a2-22085059af65
+          phases:
+          - id: 23319d04-4b23-4ae7-ba54-82112c752683
+            ordinal: 1
+            cycle_duration: P1M
+            amount: 990
+            currency: GBP
+        - id: 7cf47b0d-3da9-496b-a4e9-fbbe43c33ee3
+          phases:
+          - id: feed2491-c895-4bfa-ba05-a3a088842d5c
+            ordinal: 1
+            cycle_duration: P1Y
+            amount: 9990
+            currency: GBP
+    Res-Subscription-Cycles-List:
+      summary: List of subscription cycles
+      value:
+        next_page_token: 9e5d2caa-bb60-4b5b-b7cf-6345bbdff67e
+        cycles:
+        - id: 550e8400-e29b-41d4-a716-446655440010
+          subscription_id: 650e8400-e29b-41d4-a716-446655440001
+          plan_variation_id: 750e8400-e29b-41d4-a716-446655440002
+          plan_variation_phase_id: 850e8400-e29b-41d4-a716-446655440003
+          number: 2
+          previous_cycle_id: 550e8400-e29b-41d4-a716-446655440000
+          state: active
+          start_date: '2025-07-05T21:00:00.036001Z'
+          end_date: '2025-08-05T21:00:00.036001Z'
+          order_id: a50e8400-e29b-41d4-a716-446655440015
+          trial: false
+        - id: 550e8400-e29b-41d4-a716-446655440000
+          subscription_id: 650e8400-e29b-41d4-a716-446655440001
+          plan_variation_id: 750e8400-e29b-41d4-a716-446655440002
+          number: 1
+          state: finished
+          start_date: '2025-06-05T21:00:00.036001Z'
+          end_date: '2025-07-05T21:00:00.036001Z'
+          order_id: a50e8400-e29b-41d4-a716-446655440005
+          trial: true
+    Req-Subscription-Change-Plan:
+      summary: Schedule plan change at cycle end
+      value:
+        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
+        scheduled: at_cycle_end
+    Req-Subscription-Usage-Update:
+      summary: Update both quantity and metadata
+      value:
+        quantity: 200
+        metadata:
+          user_id: '54321'
+    Res-Subscription-Plans-List:
+      summary: List of subscription plans
+      value:
+        next_page_token: 9e5d2caa-bb60-4b5b-b7cf-6345bbdff67e
+        subscription_plans:
+        - id: 550e8400-e29b-41d4-a716-446655440000
+          name: Premium Plan with 14-days Trial
+          state: active
+          trial_duration: P14D
+          created_at: '2025-06-05T21:00:00.036001Z'
+          updated_at: '2025-06-05T21:00:00.036001Z'
+          variations:
+          - id: 550e8400-e29b-41d4-a716-446655440001
+            phases:
+            - id: 550e8400-e29b-41d4-a716-446655440002
+              ordinal: 1
+              cycle_duration: P1Y
+              amount: 99900
+              currency: GBP
+        - id: f757b068-f287-43c8-8d05-9c073fecbe73
+          name: Enterprise Pro Plan
+          state: active
+          created_at: '2026-01-26T08:59:09.433527Z'
+          updated_at: '2026-01-26T08:59:09.433527Z'
+          variations:
+          - id: f4e0a171-4f4e-484b-b0a2-22085059af65
+            phases:
+            - id: 23319d04-4b23-4ae7-ba54-82112c752683
+              ordinal: 1
+              cycle_duration: P1M
+              amount: 990
+              currency: GBP
+          - id: 7cf47b0d-3da9-496b-a4e9-fbbe43c33ee3
+            phases:
+            - id: feed2491-c895-4bfa-ba05-a3a088842d5c
+              ordinal: 1
+              cycle_duration: P1Y
+              amount: 9990
+              currency: GBP
+    Res-Subscriptions-List:
+      summary: List of subscriptions
+      value:
+        next_page_token: 9e5d2caa-bb60-4b5b-b7cf-6345bbdff67e
+        subscriptions:
+        - id: 550e8400-e29b-41d4-a716-446655440000
+          external_reference: ext-ref-12345
+          state: active
+          customer_id: 650e8400-e29b-41d4-a716-446655440001
+          plan_id: 750e8400-e29b-41d4-a716-446655440002
+          plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
+          payment_method_type: automatic
+          payment_method_id: 6689e244-8af7-4ada-9448-a91f02d4f192
+          created_at: '2025-06-05T21:00:00.036001Z'
+          updated_at: '2025-06-05T21:00:00.036001Z'
+          start_date: '2025-06-05T21:00:00.036001Z'
+          current_cycle_id: 950e8400-e29b-41d4-a716-446655440004
+        - id: 550e8400-e29b-41d4-a716-446655440010
+          state: pending
+          customer_id: 650e8400-e29b-41d4-a716-446655440011
+          plan_id: 750e8400-e29b-41d4-a716-446655440012
+          plan_variation_id: 850e8400-e29b-41d4-a716-446655440013
+          payment_method_type: automatic
+          created_at: '2025-06-04T21:00:00.036001Z'
+          updated_at: '2025-06-04T21:00:00.036001Z'
+          current_cycle_id: a31627fb-b037-4566-8d7b-f380c1f44653
+    Res-Subscription-Plan-With-Items:
+      summary: Plan with flat and usage-based subscription items
+      value:
+        id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        name: Professional Platform Plan
+        state: active
+        created_at: '2026-01-10T09:00:00.000000Z'
+        updated_at: '2026-01-10T09:00:00.000000Z'
+        variations:
+        - id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+          phases:
+          - id: c3d4e5f6-a7b8-9012-cdef-123456789012
+            ordinal: 1
+            cycle_duration: P1M
+            amount: 4900
+            currency: GBP
+            subscription_items:
+            - id: d4e5f6a7-b8c9-0123-defa-234567890123
+              type: flat
+              name: Platform License
+              unit: subscription
+              quantity: 1
+              amount: 4900
+              currency: GBP
+            - id: e5f6a7b8-c9d0-1234-efab-345678901234
+              type: usage
+              name: API Calls
+              unit: call
+              code: api_calls
+              usage_aggregation_method: sum
+              amount: 1
+              currency: GBP
+    Req-Subscription-Plan-With-Items:
+      summary: Plan with flat and usage-based subscription items
+      value:
+        name: Professional Platform Plan
+        variations:
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1M
+            amount: 4900
+            currency: GBP
+            subscription_items:
+            - type: flat
+              name: Platform License
+              unit: subscription
+              quantity: 1
+              amount: 4900
+              currency: GBP
+            - type: usage
+              name: API Calls
+              unit: call
+              code: api_calls
+              usage_aggregation_method: sum
+              amount: 1
+              currency: GBP
+    Req-Subscription-Plan-Simple:
+      summary: Simple yearly and monthly plan
+      value:
+        name: Enterprise Pro Plan
+        variations:
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1Y
+            amount: 99900
+            currency: GBP
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1M
+            amount: 9900
+            currency: GBP
+    Req-Subscription-Plan-Limited:
+      summary: Plan that ends after 12 months
+      value:
+        name: 12-month Limited Plan
+        variations:
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1M
+            cycle_count: 12
+            amount: 1000
+            currency: GBP
+    Res-Subscription-Active:
+      summary: Active subscription
+      value:
+        id: 550e8400-e29b-41d4-a716-446655440000
+        external_reference: ext-ref-12345
+        state: active
+        customer_id: 650e8400-e29b-41d4-a716-446655440001
+        plan_id: 750e8400-e29b-41d4-a716-446655440002
+        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
+        payment_method_type: automatic
+        payment_method_id: 6689e244-8af7-4ada-9448-a91f02d4f192
+        created_at: '2025-06-05T21:00:00.036001Z'
+        updated_at: '2025-06-05T21:00:00.036001Z'
+        start_date: '2025-06-05T21:00:00.036001Z'
+        current_cycle_id: 950e8400-e29b-41d4-a716-446655440004
+        trial_duration: P14D
+        trial_end_date: '2025-06-19T21:00:00.036001Z'
+    Req-Subscription-Usage:
+      summary: Report active license seats
+      description: Reporting active seats used during a period
+      value:
+        subscription_id: 550e8400-e29b-41d4-a716-446655440000
+        subscription_item_code: active_seats
+        usage_date: '2026-03-15T09:30:00Z'
+        quantity: 12
+        metadata:
+          department: engineering
+          update_type: onboarding
+    Res-Usage-List:
+      summary: Retrieve a list of usage records
+      value:
+        next_page_token: 9e5d2caa-bb60-4b5b-b7cf-6345bbdff67e
+        subscription_usages:
+        - id: 750e8400-e29b-41d4-a716-446655440000
+          subscription_id: 550e8400-e29b-41d4-a716-446655440000
+          subscription_cycle_id: 850e8400-e29b-41d4-a716-446655440000
+          subscription_item_code: api_calls
+          usage_date: '2026-03-01T21:00:00Z'
+          quantity: 100
+          metadata:
+            user_id: '12345'
+            api_version: v2
+          created_at: '2026-03-01T21:05:00Z'
+          updated_at: '2026-03-01T21:05:00Z'
+        - id: bc903328-9f37-4d7a-8f56-02e5b7c76891
+          subscription_id: 550e8400-e29b-41d4-a716-446655440000
+          subscription_cycle_id: 850e8400-e29b-41d4-a716-446655440000
+          subscription_item_code: api_calls
+          usage_date: '2026-03-01T22:15:00Z'
+          quantity: 50
+          metadata:
+            user_id: '12345'
+            api_version: v2
+          created_at: '2026-03-01T22:20:00Z'
+          updated_at: '2026-03-01T22:20:00Z'
+    Req-Subscription-With-Trial:
+      summary: Subscription with trial period overriding the trial duration from plan
+      value:
+        plan_variation_id: 550e8400-e29b-41d4-a716-446655440000
+        customer_id: 650e8400-e29b-41d4-a716-446655440001
+        payment_method_id: 6689e244-8af7-4ada-9448-a91f02d4f192
+        trial_duration: P14D
+        external_reference: ext-ref-12345
+    Req-Subscription-Change-Plan-With-Phase:
+      summary: Schedule plan change to a specific phase
+      value:
+        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
+        plan_variation_phase_id: 950e8400-e29b-41d4-a716-446655440004
+        scheduled: at_cycle_end
+    Res-Subscription-Plan-Hybrid:
+      summary: Hybrid plan with flat base fee and usage-based items
+      value:
+        id: b22198c4-724d-4e9e-b9e3-827c3f78e456
+        name: Professional Plan
+        state: active
+        created_at: '2026-04-15T18:02:11.000Z'
+        updated_at: '2026-04-15T18:02:11.000Z'
+        variations:
+        - id: d4e0a171-4f4e-484b-b0a2-22085059df77
+          phases:
+          - id: ffeed491-c895-4bfa-ba05-a3a088842e22
+            ordinal: 1
+            cycle_duration: P1M
+            subscription_items:
+            - name: Base Subscription
+              type: flat
+              quantity: 1
+              amount: 2900
+              currency: GBP
+              unit: subscription
+            - name: API Calls
+              type: usage
+              currency: GBP
+              unit: calls
+              code: api_calls
+              usage_aggregation_method: sum
+              amount: 10
+            - name: Storage
+              type: usage
+              currency: GBP
+              unit: gb
+              code: storage_gb
+              usage_aggregation_method: max
+              package_size: 1
+              tiers:
+              - upper_quantity_threshold: 10
+                amount: 0
+              - upper_quantity_threshold: 100
+                amount: 50
+              - amount: 30
+    Res-Subscription-Cycle-Finished:
+      summary: Finished subscription cycle
+      value:
+        id: 950e8400-e29b-41d4-a716-446655440004
+        subscription_id: 650e8400-e29b-41d4-a716-446655440001
+        plan_variation_id: 750e8400-e29b-41d4-a716-446655440002
+        plan_variation_phase_id: 850e8400-e29b-41d4-a716-446655440003
+        number: 1
+        state: finished
+        start_date: '2025-06-05T21:00:00.036001Z'
+        end_date: '2025-07-05T21:00:00.036001Z'
+        order_id: b50e8400-e29b-41d4-a716-446655440006
+        trial: true
+    Res-Subscription-Setup-Order-No-URL:
+      summary: Subscription created with setup order (no redirect URL)
+      value:
+        id: 550e8400-e29b-41d4-a716-446655440006
+        external_reference: ext-ref-12345
+        state: pending
+        customer_id: 650e8400-e29b-41d4-a716-446655440001
+        plan_id: 750e8400-e29b-41d4-a716-446655440002
+        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
+        payment_method_type: automatic
+        created_at: '2025-06-05T21:00:00.036001Z'
+        updated_at: '2025-06-05T21:00:00.036001Z'
+        setup_order_id: a50e8400-e29b-41d4-a716-446655440007
+        current_cycle_id: a31627fb-b037-4566-8d7b-f380c1f44654
+    Req-Subscription-Plan-Package:
+      summary: Usage-based plan with block pricing (price per 1000 units)
+      value:
+        name: SMS Plan
+        variations:
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1M
+            subscription_items:
+            - name: SMS Messages
+              type: usage
+              currency: GBP
+              unit: messages
+              code: sms_messages
+              usage_aggregation_method: sum
+              package_size: 1000
+              amount: 500
+    Req-Subscription-Plan-With-Trial-Duration:
+      summary: Plan with trial duration
+      value:
+        name: Premium Plan with 14-day Trial
+        trial_duration: P14D
+        variations:
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1M
+            amount: 9900
+            currency: GBP
+    Req-Subscription-Update-Renewal-Date:
+      summary: Update renewal date
+      value:
+        renewal_date: '2026-07-01T00:00:00Z'
+    Res-Subscription-Plan-Package:
+      summary: Usage-based plan with block pricing (price per 1000 units)
+      value:
+        id: e33198c4-124d-4e9e-b9e3-827c3f78e789
+        name: SMS Plan
+        state: active
+        created_at: '2026-04-15T18:05:42.000Z'
+        updated_at: '2026-04-15T18:05:42.000Z'
+        variations:
+        - id: c4e0a171-4f4e-484b-b0a2-22085059df44
+          phases:
+          - id: ddeed491-c895-4bfa-ba05-a3a088842e33
+            ordinal: 1
+            cycle_duration: P1M
+            subscription_items:
+            - name: SMS Messages
+              type: usage
+              currency: GBP
+              unit: messages
+              code: sms_messages
+              usage_aggregation_method: sum
+              package_size: 1000
+              amount: 500
+    Req-Subscription-Skip-Trial:
+      summary: Subscription skipping trial predefined in plan
+      value:
+        plan_variation_id: 550e8400-e29b-41d4-a716-446655440000
+        customer_id: 650e8400-e29b-41d4-a716-446655440001
+        payment_method_id: 6689e244-8af7-4ada-9448-a91f02d4f192
+        trial_duration: P0D
+        external_reference: ext-ref-12345
+    Res-Subscription-Plan-Limited:
+      summary: Plan that ends after 12 months
+      value:
+        id: 550e8400-e29b-41d4-a716-446655440003
+        name: 12-month Limited Plan
+        state: active
+        created_at: '2025-06-05T21:00:00.036001Z'
+        updated_at: '2025-06-05T21:00:00.036001Z'
+        variations:
+        - id: 550e8400-e29b-41d4-a716-446655440004
+          phases:
+          - id: 550e8400-e29b-41d4-a716-446655440005
+            ordinal: 1
+            cycle_duration: P1M
+            cycle_count: 12
+            amount: 1000
+            currency: GBP
+    Req-Subscription-Plan-Usage-Base:
+      summary: Usage-based plan with tiered pricing
+      value:
+        name: API Usage Plan
+        variations:
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1M
+            subscription_items:
+            - name: API Calls
+              type: usage
+              currency: GBP
+              unit: calls
+              code: api_calls
+              usage_aggregation_method: sum
+              tiers:
+              - upper_quantity_threshold: 1000
+                amount: 0
+              - upper_quantity_threshold: 10000
+                amount: 10
+              - amount: 5
+    Res-Subscription-Plan-Usage-Base:
+      summary: Usage-based plan with tiered pricing
+      value:
+        id: 8d2c8872-9e8a-4b1a-827c-3f78e1234abc
+        name: API Usage Plan
+        state: active
+        created_at: '2026-04-15T17:58:36.000Z'
+        updated_at: '2026-04-15T17:58:36.000Z'
+        variations:
+        - id: a4e0a171-4f4e-484b-b0a2-22085059df99
+          phases:
+          - id: ceed2491-c895-4bfa-ba05-a3a088842e11
+            ordinal: 1
+            cycle_duration: P1M
+            subscription_items:
+            - name: API Calls
+              type: usage
+              currency: GBP
+              unit: calls
+              code: api_calls
+              usage_aggregation_method: sum
+              tiers:
+              - upper_quantity_threshold: 1000
+                amount: 0
+              - upper_quantity_threshold: 10000
+                amount: 10
+              - amount: 5
+    Req-Subscription-Usage-Update-Quantity:
+      summary: Update quantity
+      value:
+        quantity: 150
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

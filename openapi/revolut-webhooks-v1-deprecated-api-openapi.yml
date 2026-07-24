@@ -1,0 +1,123 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Webhooks (v1) (deprecated) API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Webhooks (v1) (deprecated)
+  description: ":::warning\nThis is the v1 of the Webhooks API. This version is deprecated. For the latest version of the API, see [Webhooks (v2)](https://developer.revolut.com/docs/api/business#tag-webhooks-v2).\n:::\n\nA webhook (also called a web callback) allows your system to receive updates about your account to an HTTPS endpoint that you provide. \nWhen a supported event occurs, a notification is posted via HTTP `POST` method to the specified endpoint. \n\nIf the receiver returns an HTTP error response, Revolut will retry the webhook event two more times.\n\nThe following events are supported:\n\n- `TransactionCreated`\n- `TransactionStateChanged`\n\nYou cannot choose which event type to subscribe to. When you create a webhook, you automatically subscribe to all supported events."
+paths:
+  /webhook:
+    servers:
+    - url: https://b2b.revolut.com/api/1.0/
+      description: Production server (uses live data)
+    - url: https://sandbox-b2b.revolut.com/api/1.0/
+      description: Sandbox server (uses test data)
+    get:
+      summary: Retrieve a webhook
+      operationId: getWebhookV1
+      description: Get your webhook URL.
+      deprecated: true
+      security:
+      - AccessToken:
+        - READ
+      responses:
+        '200':
+          description: The existing webhook
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook-v1'
+              example:
+                url: https://www.revolut.com
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Webhooks (v1) (deprecated)
+    post:
+      summary: Set a webhook
+      operationId: setUpWebhook
+      description: Set up a webhook URL so that event notifications are pushed to the specified URL. Only HTTPS URLs are supported.
+      deprecated: true
+      security:
+      - AccessToken:
+        - READ
+        - WRITE
+      requestBody:
+        description: URL to set up as a webhook
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Webhook-v1'
+            example:
+              url: https://www.revolut.com
+      responses:
+        '204':
+          description: The webhook has been set up
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Webhooks (v1) (deprecated)
+    delete:
+      summary: Delete a webhook
+      operationId: deleteWebhookV1
+      description: Delete a webhook so that events are not sent to the specified URL any more.
+      deprecated: true
+      security:
+      - AccessToken:
+        - READ
+        - WRITE
+      responses:
+        '204':
+          description: The webhook has been deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Webhooks (v1) (deprecated)
+components:
+  schemas:
+    Webhook-v1:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: The valid webhook URL that event notifications are sent to. The supported protocol is `https`.
+      required:
+      - url
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

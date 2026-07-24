@@ -1,0 +1,1346 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Domestic standing order API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Domestic standing order
+  description: '*Domestic standing orders*, which you can use for local payments in the local currency of the user.
+
+
+    :::note
+
+    Revolut supports only GBP as local in the UK and EUR in Single Euro Payments Area (SEPA) countries.
+
+    :::
+
+
+    As a regulated third party provider, you can use the provided endpoints to initiate a domestic payment in the following high-level workflow:
+
+
+    - Create a consent.
+
+    - Get the consent.
+
+    - Create a payment.
+
+    - Get the payment.
+
+
+    Before you begin, ensure that you''ve registered your application with the `payments` scope.
+
+    For more information, see [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment).
+
+
+    :::tip
+
+    See also [Domestic payments](https://developer.revolut.com/docs/api/open-banking#tag-domestic-payment) and [Domestic scheduled payments](https://developer.revolut.com/docs/api/open-banking#tag-domestic-scheduled-payment).
+
+    :::'
+paths:
+  /domestic-standing-order-consents:
+    post:
+      tags:
+      - Domestic standing order
+      summary: Create a domestic standing order consent
+      security:
+      - AccessToken:
+        - payments
+        JWS:
+        - payments
+      description: 'Create a domestic standing order consent described in the [Open Banking API documentation: Account and Transaction API Specification](https://openbanking.atlassian.net/wiki/spaces/DZ/pages/999622968/Account+and+Transaction+API+Specification+-+v3.1.1).
+
+
+        Use domestic standing orders for local recurring payments in the local currency of the user.
+
+
+        :::note
+
+        Revolut supports only GBP as local in the UK and EUR in Single Euro Payments Area (SEPA) countries.
+
+        :::
+
+
+        Because Revolut Business users can have multiple accounts in the same currency, they can choose which account they want to be charged in the consent authorization UI.
+
+
+        When you make the API call, ensure that you pass the corresponding JSON Web Signature (JWS) in the `x-jws-signature` request header. Note:
+
+        - The JWS is generated from the request body with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) signing key that is specified in the JWS header.
+
+        - The JWS consists of a header and a signature in the `<jws_header>..<jws_signature>` format.
+
+
+        To see how to create a JWS, see the guide: [Work with JSON Web Signatures](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures).
+
+
+
+        The following types of standing orders frequency are supported:
+
+
+        |  FREQUENCY |  EXAMPLE | DETAILS  |
+
+        |---|---|---|
+
+        |  `EvryDay` | EvryDay  | daily, supported only for personal accounts  |
+
+        | `IntrvlWkDay`  | IntrvlWkDay:01:03  | weekly on a specified week day, only 1 week interval is supported  |
+
+        | `IntrvlMnthDay`  | IntrvlMnthDay:01:03  |  monthly on a specified day of month, only 1 month interval is supported |
+
+
+        See also [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment#2-create-a-domestic-payment-consent).'
+      operationId: CreateDomesticStandingOrderConsents
+      parameters:
+      - name: x-fapi-financial-id
+        in: header
+        description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
+
+          The ID of Revolut is `001580000103UAvAAM`.'
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-customer-last-logged-time
+        in: header
+        description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+
+
+          All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
+
+          For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
+        schema:
+          pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
+          type: string
+      - name: x-fapi-customer-ip-address
+        in: header
+        description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        schema:
+          type: string
+      - name: x-fapi-interaction-id
+        in: header
+        description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: 'The access token that you''ve generated.
+
+          For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).'
+        required: true
+        schema:
+          type: string
+      - name: x-idempotency-key
+        in: header
+        description: 'Each request is processed only once per `x-idempotency-key`.
+
+          The idempotency key is valid for 24 hours.'
+        required: true
+        schema:
+          maxLength: 40
+          pattern: ^(?!\s)(.*)(\S)$
+          type: string
+      - name: x-jws-signature
+        in: header
+        description: A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.
+        required: true
+        schema:
+          type: string
+      - name: x-customer-user-agent
+        in: header
+        description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OBWriteDomesticStandingOrderConsent2'
+            example:
+              Data:
+                Permission: Create
+                Initiation:
+                  Frequency: EvryDay
+                  Reference: Reference1234
+                  FirstPaymentDateTime: '2022-09-23T14:15:22Z'
+                  FirstPaymentAmount:
+                    Amount: '1.00'
+                    Currency: GBP
+                  CreditorAccount:
+                    SchemeName: UK.OBIE.SortCodeAccountNumber
+                    Identification: '11223321325698'
+                    Name: Receiver Co.
+              Risk:
+                PaymentContextCode: BillPayment
+        required: true
+      responses:
+        '201':
+          description: Domestic Standing Order Consents Created
+          headers:
+            x-jws-signature:
+              description: Header containing a [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.
+              schema:
+                type: string
+            x-fapi-interaction-id:
+              description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBWriteDomesticStandingOrderConsentResponse2'
+              example:
+                Data:
+                  Status: AwaitingAuthorisation
+                  StatusUpdateDateTime: '2022-09-23T17:29:11.18491Z'
+                  CreationDateTime: '2022-09-23T17:29:11.18491Z'
+                  Permission: Create
+                  ConsentId: a8987204-xxxx-4c26-xxxx-f7a3effea6f3
+                  Initiation:
+                    Frequency: EvryDay
+                    Reference: Reference1234
+                    FirstPaymentDateTime: '2022-09-24T14:15:22Z'
+                    FirstPaymentAmount:
+                      Amount: '1.00'
+                      Currency: GBP
+                    CreditorAccount:
+                      SchemeName: UK.OBIE.SortCodeAccountNumber
+                      Identification: '11223321325698'
+                      Name: Receiver Co.
+                Risk:
+                  PaymentContextCode: BillPayment
+                Links:
+                  Self: https://oba-auth.revolut.com/domestic-standing-order-consents/a8987204-xxxx-4c26-xxxx-f7a3effea6f3
+                Meta:
+                  TotalPages: 1
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+              examples:
+                FirstPaymentDateTime-and-Frequency-mismatch:
+                  summary: Unsupported frequency - FirstPaymentDateTime and Frequency date mismatch
+                  value:
+                    Code: 400 Bad Request
+                    Message: Invalid request parameters
+                    Id: 2CIH72EKKPW2
+                    Errors:
+                    - ErrorCode: UK.OBIE.Field.Invalid
+                      Message: Unsupported frequency
+                FirstPaymentDateTime-in-the-past:
+                  summary: FirstPaymentDateTime is in the past
+                  value:
+                    Code: 400 Bad Request
+                    Message: Invalid request parameters
+                    Id: S62D6M5AC9DZ
+                    Errors:
+                    - ErrorCode: UK.OBIE.Field.Invalid
+                      Message: FirstPaymentDateTime has to be in the future
+        '401':
+          description: Unauthorized
+          content: {}
+        '403':
+          description: Forbidden
+          content: {}
+        '405':
+          description: Method Not Allowed
+          content: {}
+        '406':
+          description: Not Acceptable
+          content: {}
+        '415':
+          description: Unsupported Media Type
+          content: {}
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              description: Time in seconds to wait before you make a new request.
+              schema:
+                type: integer
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+      x-codegen-request-body-name: OBWriteDomesticStandingOrderConsent2Param
+  /domestic-standing-order-consents/{ConsentId}:
+    get:
+      tags:
+      - Domestic standing order
+      summary: Retrieve a domestic standing order consent
+      security:
+      - AccessToken:
+        - payments
+      description: 'Get the details of a domestic standing order consent.
+
+
+        See also [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment).'
+      operationId: GetDomesticStandingOrderConsentsConsentId
+      parameters:
+      - name: ConsentId
+        in: path
+        description: The ID of the account access consent.
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-financial-id
+        in: header
+        description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
+
+          The ID of Revolut is `001580000103UAvAAM`.'
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-customer-last-logged-time
+        in: header
+        description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+
+
+          All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
+
+          For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
+        schema:
+          pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
+          type: string
+      - name: x-fapi-customer-ip-address
+        in: header
+        description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        schema:
+          type: string
+      - name: x-fapi-interaction-id
+        in: header
+        description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: 'The access token that you''ve generated.
+
+          For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).'
+        required: true
+        schema:
+          type: string
+      - name: x-customer-user-agent
+        in: header
+        description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Domestic Standing Order Consents Read
+          headers:
+            x-jws-signature:
+              description: Header containing a [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.
+              schema:
+                type: string
+            x-fapi-interaction-id:
+              description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBWriteDomesticStandingOrderConsentResponse2'
+              example:
+                Data:
+                  Status: AwaitingAuthorisation
+                  StatusUpdateDateTime: '2022-09-23T17:29:11.18491Z'
+                  CreationDateTime: '2022-09-23T17:29:11.18491Z'
+                  Permission: Create
+                  ConsentId: a8987204-xxxx-4c26-xxxx-f7a3effea6f3
+                  Initiation:
+                    Frequency: EvryDay
+                    Reference: Reference1234
+                    CreditorAccount:
+                      Name: Receiver Co.
+                      SchemeName: UK.OBIE.SortCodeAccountNumber
+                      Identification: '11223321325698'
+                    FirstPaymentAmount:
+                      Amount: '1.00'
+                      Currency: GBP
+                    FirstPaymentDateTime: '2022-09-24T14:15:22Z'
+                Risk:
+                  PaymentContextCode: BillPayment
+                Links:
+                  Self: https://oba-auth.revolut.com/domestic-standing-order-consents/a8987204-xxxx-4c26-xxxx-f7a3effea6f3
+                Meta:
+                  TotalPages: 1
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '401':
+          description: Unauthorized
+          content: {}
+        '403':
+          description: Forbidden
+          content: {}
+        '405':
+          description: Method Not Allowed
+          content: {}
+        '406':
+          description: Not Acceptable
+          content: {}
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              description: Time in seconds to wait before you make a new request.
+              schema:
+                type: integer
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+  /domestic-standing-orders:
+    post:
+      tags:
+      - Domestic standing order
+      summary: Create a domestic standing order
+      security:
+      - AccessToken:
+        - payments
+        JWS:
+        - payments
+      description: 'Create a domestic standing order.
+
+
+        :::note
+
+        As is defined in the Open Banking Specifications, the `/Data/Initiation` and the `/Data/Risk` sections of the request must be an exact match for the related consent passed in `ConsentId`.
+
+        :::
+
+
+        See also [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment#6-initiate-the-domestic-payment).
+
+        '
+      operationId: CreateDomesticStandingOrders
+      parameters:
+      - name: x-fapi-financial-id
+        in: header
+        description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
+
+          The ID of Revolut is `001580000103UAvAAM`.'
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-customer-last-logged-time
+        in: header
+        description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+
+
+          All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
+
+          For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
+        schema:
+          pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
+          type: string
+      - name: x-fapi-customer-ip-address
+        in: header
+        description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        schema:
+          type: string
+      - name: x-fapi-interaction-id
+        in: header
+        description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: 'The access token that you''ve generated.
+
+          For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).'
+        required: true
+        schema:
+          type: string
+      - name: x-idempotency-key
+        in: header
+        description: 'Each request is processed only once per `x-idempotency-key`.
+
+          The idempotency key is valid for 24 hours.'
+        required: true
+        schema:
+          maxLength: 40
+          pattern: ^(?!\s)(.*)(\S)$
+          type: string
+      - name: x-jws-signature
+        in: header
+        description: A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.
+        required: true
+        schema:
+          type: string
+      - name: x-customer-user-agent
+        in: header
+        description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OBWriteDomesticStandingOrder2'
+            example:
+              Data:
+                ConsentId: a8987204-xxxx-4c26-xxxx-f7a3effea6f3
+                Initiation:
+                  Frequency: EvryDay
+                  Reference: Reference1234
+                  FirstPaymentDateTime: '2022-09-24T14:15:22Z'
+                  FirstPaymentAmount:
+                    Amount: '1.00'
+                    Currency: GBP
+                  CreditorAccount:
+                    SchemeName: UK.OBIE.SortCodeAccountNumber
+                    Identification: '11223321325698'
+                    Name: Receiver Co.
+              Risk:
+                PaymentContextCode: BillPayment
+        required: true
+      responses:
+        '201':
+          description: Domestic Standing Orders Created
+          headers:
+            x-jws-signature:
+              description: Header containing a [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.
+              schema:
+                type: string
+            x-fapi-interaction-id:
+              description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBWriteDomesticStandingOrderResponse2'
+              example:
+                Data:
+                  ConsentId: a8987204-xxxx-4c26-xxxx-f7a3effea6f3
+                  CreationDateTime: '2022-09-23T17:37:46.190063Z'
+                  DomesticStandingOrderId: 4c31965f-3de0-xxxx-8946-2f4f0e50dcda
+                  Initiation:
+                    CreditorAccount:
+                      Identification: '11223321325698'
+                      Name: Receiver Co.
+                      SchemeName: UK.OBIE.SortCodeAccountNumber
+                    FirstPaymentAmount:
+                      Amount: '1.00'
+                      Currency: GBP
+                    FirstPaymentDateTime: '2022-09-24T14:15:22Z'
+                    Frequency: EvryDay
+                    Reference: Reference1234
+                    DebtorAccount:
+                      SchemeName: UK.OBIE.IBAN
+                      Identification: GB95REVO00997053872360
+                      Name: John Doe
+                  Permission: Create
+                  Status: InitiationCompleted
+                  StatusUpdateDateTime: '2022-09-23T17:37:46.190063Z'
+                Links:
+                  Self: https://oba-auth.revolut.com/domestic-standing-orders/4c31965f-3de0-xxxx-8946-2f4f0e50dcda
+                Meta:
+                  TotalPages: 1
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '401':
+          description: Unauthorized
+          content: {}
+        '403':
+          description: Forbidden
+          content: {}
+        '405':
+          description: Method Not Allowed
+          content: {}
+        '406':
+          description: Not Acceptable
+          content: {}
+        '415':
+          description: Unsupported Media Type
+          content: {}
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              description: Time in seconds to wait before you make a new request.
+              schema:
+                type: integer
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+      x-codegen-request-body-name: OBWriteDomesticStandingOrder2Param
+  /domestic-standing-orders/{DomesticStandingOrderId}:
+    get:
+      tags:
+      - Domestic standing order
+      summary: Retrieve a domestic standing order
+      security:
+      - AccessToken:
+        - payments
+      description: 'Get the status of a domestic standing order.
+
+
+        See also [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment#7-check-the-status-of-the-payment).'
+      operationId: GetDomesticStandingOrdersDomesticStandingOrderId
+      parameters:
+      - name: DomesticStandingOrderId
+        in: path
+        description: The ID of the domestic standing order.
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-financial-id
+        in: header
+        description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
+
+          The ID of Revolut is `001580000103UAvAAM`.'
+        required: true
+        schema:
+          type: string
+      - name: x-fapi-customer-last-logged-time
+        in: header
+        description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+
+
+          All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
+
+          For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
+        schema:
+          pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
+          type: string
+      - name: x-fapi-customer-ip-address
+        in: header
+        description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        schema:
+          type: string
+      - name: x-fapi-interaction-id
+        in: header
+        description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: 'The access token that you''ve generated.
+
+          For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).'
+        required: true
+        schema:
+          type: string
+      - name: x-customer-user-agent
+        in: header
+        description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Domestic Standing Orders Read
+          headers:
+            x-jws-signature:
+              description: Header containing a [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.
+              schema:
+                type: string
+            x-fapi-interaction-id:
+              description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UID used as a correlation id.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBWriteDomesticStandingOrderResponse2'
+              example:
+                Data:
+                  Status: InitiationCompleted
+                  StatusUpdateDateTime: '2022-09-23T17:37:46.190063Z'
+                  CreationDateTime: '2022-09-23T17:37:46.190063Z'
+                  Permission: Create
+                  DomesticStandingOrderId: 4c31965f-3de0-xxxx-8946-2f4f0e50dcda
+                  ConsentId: a8987204-xxxx-4c26-xxxx-f7a3effea6f3
+                  Initiation:
+                    Frequency: EvryDay
+                    Reference: Reference1234
+                    CreditorAccount:
+                      Name: Receiver Co.
+                      SchemeName: UK.OBIE.SortCodeAccountNumber
+                      Identification: '11223321325698'
+                    DebtorAccount:
+                      SchemeName: UK.OBIE.IBAN
+                      Identification: GB95REVO00997053872360
+                      Name: John Doe
+                    FirstPaymentAmount:
+                      Amount: '1.00'
+                      Currency: GBP
+                    FirstPaymentDateTime: '2022-09-24T14:15:22Z'
+                Links:
+                  Self: https://oba-auth.revolut.com/domestic-standing-orders/4c31965f-3de0-xxxx-8946-2f4f0e50dcda
+                Meta:
+                  TotalPages: 1
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+        '401':
+          description: Unauthorized
+          content: {}
+        '403':
+          description: Forbidden
+          content: {}
+        '405':
+          description: Method Not Allowed
+          content: {}
+        '406':
+          description: Not Acceptable
+          content: {}
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              description: Time in seconds to wait before you make a new request.
+              schema:
+                type: integer
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBErrorResponse1'
+components:
+  schemas:
+    OBExternalConsentStatus1Code:
+      type: string
+      description: The status of the consent.
+      enum:
+      - Authorised
+      - AwaitingAuthorisation
+      - Consumed
+      - Rejected
+    OBDomesticStandingOrderInitiationResponse:
+      type: object
+      description: The Initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds from the debtor account to the creditor for a domestic standing order.
+      allOf:
+      - $ref: '#/components/schemas/OBDomesticStandingOrderBase'
+      - type: object
+        properties:
+          DebtorAccount:
+            $ref: '#/components/schemas/OBCashAccountDebtorResponse'
+      - type: object
+        required:
+        - CreditorAccount
+        - FirstPaymentAmount
+        - FirstPaymentDateTime
+        - Frequency
+        - DebtorAccount
+    OBWriteDomesticStandingOrderConsent2:
+      required:
+      - Data
+      - Risk
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataDomesticStandingOrderConsent2'
+        Risk:
+          $ref: '#/components/schemas/OBRisk1'
+    Meta:
+      title: MetaData
+      type: object
+      properties:
+        TotalPages:
+          type: integer
+          description: Used for pagination. Indicates how many pages of results are available.
+          format: int32
+      description: Meta data relevant to the payload.
+    OBExternalAccountIdentification4Code:
+      type: string
+      description: The name of the identification scheme.
+      enum:
+      - UK.OBIE.IBAN
+      - UK.OBIE.SortCodeAccountNumber
+      - US.RoutingNumberAccountNumber
+      - US.BranchCodeAccountNumber
+      example: UK.OBIE.IBAN
+    OBExternalMerchantCategoryCode:
+      type: string
+      description: The merchant category code.
+    OBWriteDomesticStandingOrderResponse2:
+      required:
+      - Data
+      - Links
+      - Meta
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataDomesticStandingOrderResponse2'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+    OBCashAccountDebtorResponse:
+      required:
+      - Identification
+      - SchemeName
+      type: object
+      description: 'The details to identify the account which was used to approve the payment consent.
+
+
+        This information can be used as a refund address.'
+      properties:
+        SchemeName:
+          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
+        Identification:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The identifier assigned to the account, which is known by the account owner.
+        Name:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: 'The name or names of the account owner(s) represented at an account level.
+
+
+            The account name is not the product name or the nickname of the account.
+
+
+            :::warning[Name validation]
+
+            This field will only return the actual owner(s) name if `DebtorAccount` was not defined in the consent.
+
+
+            If it was defined in the consent, the same value from the consent will be returned.
+
+            :::'
+        SecondaryIdentification:
+          maxLength: 34
+          minLength: 1
+          type: string
+          description: 'The secondary account ID that the account servicing institution assigns.
+
+
+            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
+    OBWriteDataDomesticStandingOrderConsent2:
+      required:
+      - Initiation
+      - Permission
+      type: object
+      properties:
+        Permission:
+          $ref: '#/components/schemas/OBExternalPermissions2Code'
+        Initiation:
+          $ref: '#/components/schemas/OBDomesticStandingOrder2'
+    OBActiveCurrencyAndAmount_SimpleType:
+      pattern: ^\d{1,13}\.\d{1,5}$
+      type: string
+      description: The amount of money where the unit of currency is explicit and compliant with [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217).
+    OBCashAccountDebtor4:
+      required:
+      - Identification
+      - SchemeName
+      type: object
+      description: 'The details to identify the account from which the payment consent can be approved.
+
+
+        If provided in the consent, the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) will only be able to approve the payment consent from an account which matches the provided account identifier.
+
+        '
+      properties:
+        SchemeName:
+          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
+        Identification:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The identifier assigned to the account, which is known by the account owner.
+        Name:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: 'The name or names of the account owner(s) represented at an account level.
+
+
+            The account name is not the product name or the nickname of the account.
+
+
+            :::warning
+
+            The name value is not validated against the actual owner name of the account.
+
+            :::'
+        SecondaryIdentification:
+          maxLength: 34
+          minLength: 1
+          type: string
+          description: 'The secondary account ID that the account servicing institution assigns.
+
+
+            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
+    OBWriteDataDomesticStandingOrder2:
+      required:
+      - ConsentId
+      - Initiation
+      type: object
+      properties:
+        ConsentId:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
+        Initiation:
+          $ref: '#/components/schemas/OBDomesticStandingOrder2'
+    OBExternalPermissions2Code:
+      type: string
+      description: The Open Banking service request type.
+      enum:
+      - Create
+    OBExternalStatus1Code:
+      type: string
+      description: The status of the payment.
+      enum:
+      - InitiationCompleted
+      - InitiationFailed
+      - InitiationPending
+    OBWriteDomesticStandingOrderConsentResponse2:
+      required:
+      - Data
+      - Links
+      - Meta
+      - Risk
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataDomesticStandingOrderConsentResponse2'
+        Risk:
+          $ref: '#/components/schemas/OBRisk1'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+    OBWriteDomesticStandingOrder2:
+      required:
+      - Data
+      - Risk
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataDomesticStandingOrder2'
+        Risk:
+          $ref: '#/components/schemas/OBRisk1'
+    OBErrorResponse1:
+      required:
+      - Code
+      - Errors
+      - Message
+      type: object
+      properties:
+        Code:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The error code in high level that helps categorize the error.
+        Id:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'The error message.
+
+            For example, `There is something wrong with the request parameters provided`.'
+        Errors:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OBError1'
+      description: The detailed information about the error to help troubleshooting.
+    OBWriteDataDomesticStandingOrderResponse2:
+      required:
+      - ConsentId
+      - CreationDateTime
+      - DomesticStandingOrderId
+      - Initiation
+      - Status
+      - StatusUpdateDateTime
+      type: object
+      properties:
+        DomesticStandingOrderId:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the domestic standing order resource.
+        ConsentId:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
+        CreationDateTime:
+          type: string
+          description: 'The date and time when the resource was created.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Status:
+          $ref: '#/components/schemas/OBExternalStatus1Code'
+        StatusUpdateDateTime:
+          type: string
+          description: 'The date and time when the resource status was updated.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Initiation:
+          $ref: '#/components/schemas/OBDomesticStandingOrderInitiationResponse'
+        Permission:
+          $ref: '#/components/schemas/OBExternalPermissions2Code'
+    Links:
+      required:
+      - Self
+      type: object
+      properties:
+        Self:
+          type: string
+          description: The absolute URI to the resource.
+          format: uri
+        Next:
+          type: string
+          description: The absolute URI to the next pagination resource.
+          format: uri
+        Prev:
+          type: string
+          description: The absolute URI to the previous pagination resource.
+          format: uri
+      description: Links relevant to the payload.
+    OBDomesticStandingOrderBase:
+      type: object
+      properties:
+        Frequency:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: "The frequency of the standing order:\n- `EvryDay`: Every day\n- `IntrvlWkDay`: Only one week interval is supported (01) and any day within the week (01 to 07)\n- `IntrvlMnthDay`: Only one month interval is supported (01) and any day within the month (1 to 31)\n\nExample values:\n- `EvryDay`\n- `IntrvlWkDay:01:0[1-7]`\n- `IntrvlMnthDay:01:(0[1-9]|[12][0-9]|3[01])`\n\n:::warning\nThe day of the interval must agree with the day from `FirstPaymentDateTime`, otherwise, for `POST` requests, the `Unsupported frequency` error is returned.\nFor example: \n- Correct: `Frequency=IntrvlMnthDay:01:03` and `FirstPaymentDateTime=2026-02-03T14:15:22Z` - the day to schedule the payment is the 3rd day of the month, and the first occurrence will be on the 3rd of February\n- Incorrect: `Frequency=IntrvlMnthDay:01:03` and `FirstPaymentDateTime=2026-02-17T14:15:22Z` - the day to schedule the payment is the 3rd day of the month, but the first occurrence is set to the 17th of February, so the days don't match.\n:::"
+        Reference:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: 'The unique reference that the creditor assigns to unambiguously identify the payment transaction.
+
+
+            If available, the initiating party should provide this reference in the structured remittance information to enable reconciliation by the creditor upon receipt of the amount of money.
+
+
+            If the business context requires the use of a creditor reference or a payment remit identification, and only one identifier can be passed through the end-to-end chain, the creditor''s reference or payment remittance identification should be quoted in the end-to-end transaction identification.'
+        NumberOfPayments:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: ':::warning
+
+            Currently, standing orders do not support ending conditions, so using this field will result in an error.
+
+            :::
+
+
+            The number of payments to make, with the interval set in `frequency`, counting from the start date set in `FirstPaymentDateTime`.'
+        FirstPaymentDateTime:
+          type: string
+          description: "The date and time when the first payment for a standing order schedule is made.\n\nAll dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.\nAll date-time fields in responses must include the timezone.\n\nFor example: `2017-04-05T10:43:07+00:00`.\n\n:::warning\nThe day part of the date must agree with the day of the interval set in `Frequency`, otherwise, for `POST` requests, the `Unsupported frequency` error is returned.\nFor example: \n- Correct: `Frequency=IntrvlMnthDay:01:03` and `FirstPaymentDateTime=2026-02-03T14:15:22Z` - the day to schedule the payment is the 3rd day of the month, and the first occurrence will be on the 3rd of February\n- Incorrect: `Frequency=IntrvlMnthDay:01:03` and `FirstPaymentDateTime=2026-02-17T14:15:22Z` - the day to schedule the payment is the 3rd day of the month, but the first occurrence is set to the 17th of February, so the days don't match.\n:::"
+          format: date-time
+        FinalPaymentDateTime:
+          type: string
+          description: ':::warning
+
+            Currently, standing orders do not support ending conditions, so this field is ignored.
+
+            :::
+
+
+            The date and time when the final payment for a standing order schedule is made.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        FirstPaymentAmount:
+          required:
+          - Amount
+          - Currency
+          type: object
+          properties:
+            Amount:
+              $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
+            Currency:
+              pattern: ^[A-Z]{3,3}$
+              type: string
+              description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+          description: The amount of the first standing order.
+        RecurringPaymentAmount:
+          required:
+          - Amount
+          - Currency
+          type: object
+          properties:
+            Amount:
+              $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
+            Currency:
+              pattern: ^[A-Z]{3,3}$
+              type: string
+              description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+          description: The amount of the recurring standing order. If provided, must be equal to `FirstPaymentAmount`.
+        FinalPaymentAmount:
+          required:
+          - Amount
+          - Currency
+          type: object
+          properties:
+            Amount:
+              $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
+            Currency:
+              pattern: ^[A-Z]{3,3}$
+              type: string
+              description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+          description: ':::warning
+
+            Currently, standing orders do not support ending conditions, so this field is ignored.
+
+            :::
+
+
+            The amount of the final standing order.'
+        CreditorAccount:
+          $ref: '#/components/schemas/OBCashAccountCreditor3'
+      description: The Initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds from the debtor account to the creditor for a domestic standing order.
+    OBExternalMerchantCustomerIdentification:
+      type: string
+      description: The merchant customer identification.
+    OBWriteDataDomesticStandingOrderConsentResponse2:
+      required:
+      - ConsentId
+      - CreationDateTime
+      - Initiation
+      - Permission
+      - Status
+      - StatusUpdateDateTime
+      type: object
+      properties:
+        ConsentId:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
+        CreationDateTime:
+          type: string
+          description: 'The date and time when the resource was created.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Status:
+          $ref: '#/components/schemas/OBExternalConsentStatus1Code'
+        StatusUpdateDateTime:
+          type: string
+          description: 'The date and time when the resource status was updated.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Permission:
+          $ref: '#/components/schemas/OBExternalPermissions2Code'
+        Initiation:
+          $ref: '#/components/schemas/OBDomesticStandingOrder2'
+    OBDomesticStandingOrder2:
+      type: object
+      description: The Initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds from the debtor account to the creditor for a domestic standing order.
+      allOf:
+      - $ref: '#/components/schemas/OBDomesticStandingOrderBase'
+      - type: object
+        properties:
+          DebtorAccount:
+            $ref: '#/components/schemas/OBCashAccountDebtor4'
+      - type: object
+        required:
+        - CreditorAccount
+        - FirstPaymentAmount
+        - FirstPaymentDateTime
+        - Frequency
+    OBError1:
+      required:
+      - ErrorCode
+      - Message
+      type: object
+      properties:
+        ErrorCode:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The error code in low level, for example, `UK.OBIE.Field.Missing`.
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'The description of the error that occurred.
+
+            For example, `A mandatory field isn''t supplied`, `RequestedExecutionDateTime must be in future`, and `OBIE doesn''t standardise this field`.'
+    OBExternalPaymentContext1Code:
+      type: string
+      description: The payment context.
+      enum:
+      - BillPayment
+      - EcommerceGoods
+      - EcommerceServices
+      - Other
+      - PartyToParty
+    OBRisk1:
+      type: object
+      properties:
+        PaymentContextCode:
+          $ref: '#/components/schemas/OBExternalPaymentContext1Code'
+        MerchantCategoryCode:
+          $ref: '#/components/schemas/OBExternalMerchantCategoryCode'
+        MerchantCustomerIdentification:
+          $ref: '#/components/schemas/OBExternalMerchantCustomerIdentification'
+        DeliveryAddress:
+          required:
+          - Country
+          - TownName
+          type: object
+          properties:
+            AddressLine:
+              maxItems: 2
+              minItems: 0
+              type: array
+              description: The information that locates and identifies the delivery address, as defined by postal services, that is presented in free format text.
+              items:
+                maxLength: 70
+                minLength: 1
+                type: string
+            StreetName:
+              maxLength: 70
+              minLength: 1
+              type: string
+              description: The name of the street.
+            BuildingNumber:
+              maxLength: 16
+              minLength: 1
+              type: string
+              description: The number of the building.
+            PostCode:
+              maxLength: 16
+              minLength: 1
+              type: string
+              description: The post code of the delivery address.
+            TownName:
+              maxLength: 35
+              minLength: 1
+              type: string
+              description: The name of the town.
+            CountrySubDivision:
+              maxItems: 2
+              minItems: 0
+              type: array
+              description: The subdivision of the country, for example, state, region or county.
+              items:
+                maxLength: 35
+                minLength: 1
+                type: string
+            Country:
+              pattern: ^[A-Z]{2,2}$
+              type: string
+              description: The name of the country.
+          description: The information that locates and identifies the delivery address, as defined by postal services or in free format text.
+      description: The Risk section contains the risk indicators that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which can be used to specify additional details for risk scoring for account information.
+    OBCashAccountCreditor3:
+      required:
+      - Identification
+      - Name
+      - SchemeName
+      type: object
+      properties:
+        SchemeName:
+          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
+        Identification:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The account ID that the institution assigns to identify an account, which is known by the account owner.
+        Name:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: 'The account name that the account servicing institution assigns.
+
+
+            The account name is the name or names of the account owner(s) represented at an account level.
+
+
+            The account name is not the product name or the nickname of the account.
+
+
+            :::note
+
+            [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary)s might optionally validate this name to confirm the payee.
+
+            :::'
+        SecondaryIdentification:
+          maxLength: 34
+          minLength: 1
+          type: string
+          description: 'The secondary account ID that the account servicing institution assigns.
+
+
+            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
+      description: The details to identify the account.
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

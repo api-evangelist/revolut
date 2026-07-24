@@ -1,0 +1,1084 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Business Accounting Payment drafts API
+  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  contact: {}
+servers:
+- url: https://b2b.revolut.com/api/1.0
+  description: Production server (uses live data)
+- url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+tags:
+- name: Payment drafts
+  description: 'Payment drafts let you prepare payments for future processing, prepare payments that require an approval, or prepare bulk or scheduled payments.
+
+
+    Simply create a draft, and when you''re ready, [send it for processing as payment](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing).
+
+    If you or the payment you''re making is subject to an [approval process](https://help.revolut.com/business/help/managing-my-business/users-and-employees/how-can-i-set-payment-approval-rules/), another team member designated as an approver must approve it in the [Revolut Business app](https://business.revolut.com/) before the payment can be processed.
+
+
+    You can also retrieve or delete the drafts created with the API.
+
+
+    For more information on use cases and other details, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).'
+paths:
+  /payment-drafts:
+    get:
+      summary: Retrieve a list of payment drafts
+      operationId: getPaymentDrafts
+      description: 'Get the list of payment drafts that haven''t been [sent for processing](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing).
+
+
+        By default, only payment drafts created with the API (including [Draft payment](https://developer.revolut.com/docs/api/open-banking#tag-draft-payment) endpoints) are returned. To retrieve drafts from other sources, use the `source` parameter.
+
+
+        The response lists the drafts with their details, such as the number of payments included in the draft, but not the payment details.
+
+
+        For more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).'
+      security:
+      - AccessToken:
+        - READ
+      parameters:
+      - name: source
+        in: query
+        required: false
+        description: 'Filter payment drafts by the source from which they were created.
+
+
+          - `api`: Only drafts created with the API (excluding the [Draft payment](https://developer.revolut.com/docs/api/open-banking#tag-draft-payment) endpoints).
+
+          - `integration`: Drafts created via integrations (e.g., Xero) and [Draft payment](https://developer.revolut.com/docs/api/open-banking#tag-draft-payment) endpoints.
+
+          - `email`: Only drafts created via email.
+
+          - `all`: All payment drafts, **including drafts created in the Revolut Business app**.'
+        schema:
+          type: string
+          enum:
+          - api
+          - integration
+          - email
+          - all
+      responses:
+        '200':
+          description: List of payment drafts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentDraftsResponse'
+              example:
+                payment_orders:
+                - id: e7e54cb2-861a-aaaa-80e9-3e6600f3db10
+                  scheduled_for: '2026-06-24'
+                  title: Draft Payment through API
+                  payments_count: 1
+                  source: api
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+      tags:
+      - Payment drafts
+    post:
+      summary: Create a payment draft
+      operationId: createPaymentDraft
+      description: 'Create a payment draft.
+
+
+        When you create a payment draft, it stays a draft until you [send it for processing as payment](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing) in the [Revolut Business app](https://business.revolut.com/).
+
+
+        Until then, you can [delete](https://developer.revolut.com/docs/api/business#delete-payment-draft) the draft if you no longer wish to proceed with it.
+
+
+        :::note
+
+        If you or the payment you''re making is subject to an [approval process](https://help.revolut.com/business/help/managing-my-business/users-and-employees/how-can-i-set-payment-approval-rules/), when you send the draft for processing, the payment goes into the `Pending review` state.
+
+        Before it can be processed, the business owner, administrator, or another team member designated as an approver must approve it in the Revolut Business app.
+
+        :::
+
+
+        For more information on use cases and other details, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).'
+      security:
+      - AccessToken:
+        - READ
+        - WRITE
+      tags:
+      - Payment drafts
+      requestBody:
+        description: The payment draft information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaymentDraftRequest'
+            examples:
+              simple_draft:
+                summary: Payment draft for a simple payment
+                value:
+                  title: Payment Draft Title
+                  payments:
+                  - account_id: 2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb
+                    receiver:
+                      counterparty_id: a15bcac4-dd42-45ed-a828-6806ccc8bb7e
+                      account_id: 2bf609f4-9825-4401-b6f7-960c61f8bee0
+                    amount: 10
+                    currency: GBP
+                    reference: 'Payment #123'
+              draft_with_charge_bearer:
+                summary: Payment draft for a single payment with charge bearer specified
+                value:
+                  title: Payment Draft Title
+                  payments:
+                  - account_id: 21cb9b68-0017-45cf-93f2-1a8954bcb120
+                    receiver:
+                      counterparty_id: d4d52566-280b-47df-b34f-0da6da484c43
+                    amount: 100
+                    currency: USD
+                    reference: 'Transaction #456'
+                    charge_bearer: debtor
+              bulk_payment_draft:
+                summary: Payment draft for a bulk payment
+                value:
+                  title: Payment Draft Title
+                  payments:
+                  - account_id: 2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb
+                    receiver:
+                      counterparty_id: a15bcac4-dd42-45ed-a828-6806ccc8bb7e
+                      account_id: 2bf609f4-9825-4401-b6f7-960c61f8bee0
+                    amount: 10
+                    currency: GBP
+                    reference: 'Payment #123'
+                  - account_id: 2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb
+                    receiver:
+                      counterparty_id: f3107ecc-d368-48f3-8120-92b7d612f949
+                    amount: 120
+                    currency: GBP
+                    reference: 'Transaction #654'
+                  - account_id: 2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb
+                    receiver:
+                      counterparty_id: d4d52566-280b-47df-b34f-0da6da484c43
+                    amount: 100
+                    currency: EUR
+                    reference: 'Invoice #789'
+              scheduled_payment_draft:
+                summary: Payment draft for a scheduled payment
+                value:
+                  title: Payment Draft Title
+                  schedule_for: '2026-06-24'
+                  payments:
+                  - account_id: 2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb
+                    receiver:
+                      counterparty_id: a15bcac4-dd42-45ed-a828-6806ccc8bb7e
+                      account_id: 2bf609f4-9825-4401-b6f7-960c61f8bee0
+                    amount: 10
+                    currency: GBP
+                    reference: 'Payment #123'
+              scheduled_bulk_payment_draft:
+                summary: Payment draft for a scheduled bulk payment
+                value:
+                  title: Payment Draft Title
+                  schedule_for: '2026-06-24'
+                  payments:
+                  - account_id: 2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb
+                    receiver:
+                      counterparty_id: a15bcac4-dd42-45ed-a828-6806ccc8bb7e
+                      account_id: 2bf609f4-9825-4401-b6f7-960c61f8bee0
+                    amount: 10
+                    currency: GBP
+                    reference: 'Payment #123'
+                  - account_id: 2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb
+                    receiver:
+                      counterparty_id: d4d52566-280b-47df-b34f-0da6da484c43
+                    amount: 100
+                    currency: EUR
+                    reference: 'Invoice #789'
+      responses:
+        '201':
+          description: The ID of the payment draft that was created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePaymentDraftResponse'
+              example:
+                id: e7e54cb2-861a-aaaa-80e9-3e6600f3db10
+        '204':
+          description: No payments provided
+        '400':
+          description: 'Bad Request
+
+
+            Returned, for example, when a required parameter is missing or malformatted, or when the request contains incompatible parameters.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                charge_bearer_bulk_payments:
+                  summary: Charge bearer cannot be used with bulk payments
+                  value:
+                    code: 2101
+                    message: Charge bearer is not supported for bulk payments.
+                charge_bearer_not_eligible:
+                  summary: Charge bearer not supported for the given recipient
+                  value:
+                    code: 3287
+                    message: Recipient not eligible for SWIFT SHA/OUR
+                currency_should_match:
+                  summary: Payment currency must match the recipient account currency
+                  value:
+                    code: 3452
+                    message: Payment draft currency should match with recipient currency [USD] but is [EUR]
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+  /payment-drafts/{payment_draft_id}:
+    get:
+      summary: Retrieve a payment draft
+      operationId: getPaymentDraft
+      description: 'Get the information about a specific payment draft by ID.
+
+
+        Returns drafts created with the API or via the [Revolut Business app](https://business.revolut.com/).
+
+
+        The response lists the details of the payment(s) included in the draft, as well as the draft details.
+
+
+        For more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).'
+      security:
+      - AccessToken:
+        - READ
+      tags:
+      - Payment drafts
+      parameters:
+      - name: payment_draft_id
+        in: path
+        required: true
+        description: The ID of the payment draft to retrieve.
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: The information about a specific payment draft
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentDraftResponse'
+              example:
+                title: Draft Payment through API
+                scheduled_for: '2026-06-24'
+                payments:
+                - id: 67b38771-3db0-4cf0-bdc0-aaaa1284ab81
+                  amount:
+                    amount: 123
+                    currency: GBP
+                  reference: Draft Payment through API
+                  account_id: 05018b0d-e67c-4fec-aaaa-415e9da9432c
+                  receiver:
+                    counterparty_id: c71af44d-aaaa-4e1a-84bb-17589c81f022
+                  state: CREATED
+                  current_charge_options:
+                    from:
+                      amount: 123
+                      currency: GBP
+                    to:
+                      amount: 123
+                      currency: GBP
+                    rate: '1.0000'
+                    fee:
+                      amount: 0
+                      currency: GBP
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+    delete:
+      summary: Delete a payment draft
+      operationId: deletePaymentDraft
+      description: 'Delete a payment draft with the given ID.
+
+
+        You can delete a payment draft only if it hasn''t been [sent for processing](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing).
+
+
+        For more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).'
+      security:
+      - AccessToken:
+        - READ
+        - WRITE
+      tags:
+      - Payment drafts
+      parameters:
+      - name: payment_draft_id
+        in: path
+        required: true
+        description: The ID of the payment draft to delete.
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: The payment draft was successfully deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+    patch:
+      summary: Update a payment draft
+      operationId: updatePaymentDraft
+      description: 'Update the metadata of a payment draft (`title` and/or `schedule_for`).
+
+
+        :::note
+
+        - You can update drafts created with the API or via the Revolut Business app.
+
+        - The `schedule_for` date must be in the future.
+
+        :::
+
+
+        All fields are optional — omitting a field leaves it unchanged.
+
+
+        For more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).'
+      security:
+      - AccessToken:
+        - READ
+        - WRITE
+      tags:
+      - Payment drafts
+      parameters:
+      - name: payment_draft_id
+        in: path
+        required: true
+        description: The ID of the payment draft to update.
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: The fields to update on the payment draft.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePaymentDraftRequest'
+            examples:
+              update_title:
+                summary: Update the draft title
+                value:
+                  title: Updated Draft Title
+              update_schedule:
+                summary: Update the scheduled date
+                value:
+                  schedule_for: '2026-07-01'
+              update_both:
+                summary: Update both title and scheduled date
+                value:
+                  title: Updated Draft Title
+                  schedule_for: '2026-07-01'
+      responses:
+        '204':
+          description: The payment draft was successfully updated
+        '400':
+          description: 'Bad Request
+
+
+            Returned, for example, when a required parameter is missing or malformatted.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+        '404':
+          description: The specified payment draft was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                draft_not_found:
+                  summary: Payment draft not found
+                  value:
+                    code: 3006
+                    message: The specified payment draft was not found
+        '422':
+          description: 'Unprocessable Entity
+
+
+            Returned when the payment draft cannot be modified.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                created_by_other_source:
+                  summary: Draft created by other source cannot be modified
+                  value:
+                    code: 3100
+                    message: Payment draft was created via Partner API and cannot be updated
+                already_processed:
+                  summary: Draft is already processed
+                  value:
+                    code: 3417
+                    message: Payment draft is already processed
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+  /payment-drafts/{payment_draft_id}/payments:
+    post:
+      summary: Add a payment to a payment draft
+      operationId: addPaymentDraftPayment
+      description: 'Add a new payment to an existing payment draft.
+
+
+        :::note
+
+        You can add payments to drafts created with the API or via the Revolut Business app.
+
+        :::
+
+
+        The payment uses the same shape as the payments in the [create payment draft](#create-payment-draft) request.
+
+
+        For more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).'
+      security:
+      - AccessToken:
+        - READ
+        - WRITE
+      tags:
+      - Payment drafts
+      parameters:
+      - name: payment_draft_id
+        in: path
+        required: true
+        description: The ID of the payment draft to add the payment to.
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: The payment to add to the draft.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequest'
+            examples:
+              simple_payment:
+                summary: Add a simple payment to a draft
+                value:
+                  account_id: 2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb
+                  receiver:
+                    counterparty_id: a15bcac4-dd42-45ed-a828-6806ccc8bb7e
+                    account_id: 2bf609f4-9825-4401-b6f7-960c61f8bee0
+                  amount: 50
+                  currency: GBP
+                  reference: 'Payment #456'
+      responses:
+        '201':
+          description: The ID of the payment that was added to the draft
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePaymentDraftPaymentResponse'
+              example:
+                id: a1b2c3d4-0000-0000-0000-000000000002
+        '400':
+          description: 'Bad Request
+
+
+            Returned, for example, when a required parameter is missing or malformatted.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+        '404':
+          description: The specified payment draft was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                draft_not_found:
+                  summary: Payment draft not found
+                  value:
+                    code: 3006
+                    message: The specified payment draft was not found
+        '422':
+          description: 'Unprocessable Entity
+
+
+            Returned when the payment draft cannot be modified.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                created_by_other_source:
+                  summary: Draft created by other source cannot be modified
+                  value:
+                    code: 3100
+                    message: Payment draft was created via Partner API and cannot be updated
+                already_processed:
+                  summary: Draft is already processed
+                  value:
+                    code: 3417
+                    message: Payment draft is already processed
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+  /payment-drafts/{payment_draft_id}/payments/{payment_id}:
+    patch:
+      summary: Update a payment in a payment draft
+      operationId: updatePaymentDraftPayment
+      description: 'Update the fields of a single payment within a payment draft.
+
+
+        :::note
+
+        You can update payments in drafts created with the API or via the Revolut Business app.
+
+        :::
+
+
+        All fields are optional — omit what should not change. Other payments in the draft are unaffected.
+
+
+        For more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).'
+      security:
+      - AccessToken:
+        - READ
+        - WRITE
+      tags:
+      - Payment drafts
+      parameters:
+      - name: payment_draft_id
+        in: path
+        required: true
+        description: The ID of the payment draft that contains the payment.
+        schema:
+          type: string
+          format: uuid
+      - name: payment_id
+        in: path
+        required: true
+        description: The ID of the payment to update.
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: The fields to update on the payment.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDraftPaymentRequest'
+            examples:
+              update_amount:
+                summary: Update the payment amount
+                value:
+                  amount: 200
+              update_reference:
+                summary: Update the payment reference
+                value:
+                  reference: Updated reference
+              update_receiver:
+                summary: Update the receiver
+                value:
+                  receiver:
+                    counterparty_id: f3107ecc-d368-48f3-8120-92b7d612f949
+      responses:
+        '204':
+          description: The payment was successfully updated
+        '400':
+          description: 'Bad Request
+
+
+            Returned, for example, when a required parameter is missing or malformatted.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+        '404':
+          description: The specified payment draft or payment was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                not_found:
+                  summary: Payment draft or payment not found
+                  value:
+                    code: 3006
+                    message: The specified payment draft or payment was not found
+        '422':
+          description: 'Unprocessable Entity
+
+
+            Returned when the payment draft cannot be modified.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                created_by_other_source:
+                  summary: Draft created by other source cannot be modified
+                  value:
+                    code: 3100
+                    message: Payment draft was created via Partner API and cannot be updated
+                already_processed:
+                  summary: Draft is already processed
+                  value:
+                    code: 3417
+                    message: Payment draft is already processed
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+    delete:
+      summary: Delete a payment from a payment draft
+      operationId: deletePaymentDraftPayment
+      description: 'Delete a single payment from a payment draft. Other payments in the draft are unaffected.
+
+
+        :::note
+
+        You can delete payments from drafts created with the API or via the Revolut Business app.
+
+        :::
+
+
+        For more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).'
+      security:
+      - AccessToken:
+        - READ
+        - WRITE
+      tags:
+      - Payment drafts
+      parameters:
+      - name: payment_draft_id
+        in: path
+        required: true
+        description: The ID of the payment draft that contains the payment.
+        schema:
+          type: string
+          format: uuid
+      - name: payment_id
+        in: path
+        required: true
+        description: The ID of the payment to delete.
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: The payment was successfully removed from the draft
+        '404':
+          description: The specified payment draft or payment was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                not_found:
+                  summary: Payment draft or payment not found
+                  value:
+                    code: 3006
+                    message: The specified payment draft or payment was not found
+        '422':
+          description: 'Unprocessable Entity
+
+
+            Returned when the payment draft cannot be modified.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+              examples:
+                created_by_other_source:
+                  summary: Draft created by other source cannot be modified
+                  value:
+                    code: 3100
+                    message: Payment draft was created via Partner API and cannot be updated
+                already_processed:
+                  summary: Draft is already processed
+                  value:
+                    code: 3417
+                    message: Payment draft is already processed
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorWithId'
+components:
+  schemas:
+    Currency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    PaymentReceiver:
+      type: object
+      description: 'The details of the transfer recipient.
+
+
+        If the counterparty has multiple payment methods available (e.g. 2 accounts, or 1 account and 1 card), you must specify the account (`account_id`) or card (`card_id`) to which you want to transfer the money.'
+      properties:
+        counterparty_id:
+          type: string
+          format: uuid
+          description: The ID of the receiving counterparty.
+        account_id:
+          type: string
+          format: uuid
+          description: 'The ID of the receiving counterparty''s account. Used for bank transfers.
+
+
+            If the counterparty has multiple payment methods available, use it to specify the account to which you want to send the money.'
+        card_id:
+          type: string
+          format: uuid
+          description: 'The ID of the receiving counterparty''s card.
+
+            Used for card transfers.
+
+
+            If the counterparty has multiple payment methods available, use it to specify the card to which you want to send the money.'
+      required:
+      - counterparty_id
+    CreatePaymentDraftResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: number
+          description: The ID of the payment draft created.
+      required:
+      - id
+    PaymentOrderInfo:
+      type: object
+      description: A list of payments.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the payment draft.
+        scheduled_for:
+          type: string
+          format: date
+          description: The scheduled date of the payment draft in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        title:
+          type: string
+          description: The title of the payment draft.
+        payments_count:
+          type: integer
+          description: The number of payments in the payment draft.
+        source:
+          type: string
+          description: The source from which the payment draft was created.
+          enum:
+          - api
+          - integration
+          - email
+          - business_app
+      required:
+      - id
+      - payments_count
+    PaymentInfo:
+      type: object
+      description: The details of the payment draft.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 'The ID of the payment.
+
+
+            Do not confuse it with the [payment draft ID](https://developer.revolut.com/docs/api/business#get-payment-drafts#response) or [transaction ID](https://developer.revolut.com/docs/api/business#get-transaction).'
+        amount:
+          $ref: '#/components/schemas/AmountWithCurrency'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        account_id:
+          type: string
+          format: uuid
+          description: The ID of the account to pay from.
+        receiver:
+          $ref: '#/components/schemas/PaymentReceiver'
+        state:
+          $ref: '#/components/schemas/PaymentState'
+        reason:
+          type: string
+          description: The reason for the current state.
+        error_message:
+          type: string
+          description: The description of the error message.
+        current_charge_options:
+          type: object
+          description: The explanation of conversion process.
+          required:
+          - from
+          - to
+          properties:
+            from:
+              $ref: '#/components/schemas/AmountWithCurrency'
+            to:
+              $ref: '#/components/schemas/AmountWithCurrency'
+            rate:
+              type: string
+            fee:
+              $ref: '#/components/schemas/AmountWithCurrency'
+        reference:
+          type: string
+          description: The description of the transaction.
+        transfer_reason_code:
+          $ref: '#/components/schemas/TransferReasonCode'
+      required:
+      - id
+      - amount
+      - account_id
+      - receiver
+      - state
+      - current_charge_options
+    ErrorWithId:
+      required:
+      - code
+      - message
+      - error_id
+      type: object
+      properties:
+        error_id:
+          type: string
+          description: The ID of the specific error instance. Used for traceability.
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+    CreatePaymentDraftPaymentResponse:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the payment added to the draft.
+    PaymentDraftResponse:
+      type: object
+      properties:
+        scheduled_for:
+          type: string
+          format: date
+          description: The scheduled date of the payment draft in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        title:
+          type: string
+          description: The title of the payment draft.
+        payments:
+          type: array
+          description: The list of payments in the bulk.
+          items:
+            $ref: '#/components/schemas/PaymentInfo'
+        source:
+          type: string
+          description: The source from which the payment draft was created.
+          enum:
+          - api
+          - integration
+          - email
+          - business_app
+      required:
+      - payments
+    CreatePaymentDraftRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: The title of the payment draft.
+        schedule_for:
+          type: string
+          format: date
+          description: The scheduled date of the payment draft in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        payments:
+          type: array
+          description: The details of the payment(s) to be made.
+          items:
+            $ref: '#/components/schemas/PaymentRequest'
+      required:
+      - payments
+    UpdateDraftPaymentRequest:
+      type: object
+      description: The updated details of a single payment in a payment draft.
+      minProperties: 1
+      properties:
+        receiver:
+          $ref: '#/components/schemas/PaymentReceiver'
+        amount:
+          type: number
+          format: double
+          exclusiveMinimum: true
+          minimum: 0
+          description: The amount of the payment.
+        currency:
+          $ref: '#/components/schemas/Currency'
+        reference:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: 'The reference for the payment.
+
+            A piece of text or number you provide to help identify what the payment relates to.
+
+            It can be used, for example, for reconciliation or tracking purposes.'
+        charge_bearer:
+          type: string
+          nullable: true
+          description: 'The party that should bear the transaction fees related to the selected transaction route if applied.
+
+            Possible options are:
+
+            - `shared`: Also known as **SHA**. The transaction route fees are split between the sender and the recipient.
+
+            - `debtor`: Also known as **OUR**. The sender pays all explicit transaction fees.'
+          enum:
+          - shared
+          - debtor
+        transfer_reason_code:
+          $ref: '#/components/schemas/TransferReasonCode'
+    PaymentRequest:
+      type: object
+      description: The details of the draft payment.
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          description: "The ID of the account to pay from. \n\n:::note\nYou can specify only one account ID for multiple payments in the same payment draft.\n:::"
+        receiver:
+          $ref: '#/components/schemas/PaymentReceiver'
+        amount:
+          type: number
+          format: double
+          exclusiveMinimum: true
+          minimum: 0
+          description: The amount of the payment.
+        currency:
+          $ref: '#/components/schemas/Currency'
+        reference:
+          type: string
+          maxLength: 255
+          description: 'The reference for the payment.
+
+            A piece of text or number you provide to help identify what the payment relates to.
+
+            It can be used, for example, for reconciliation or tracking purposes.
+
+
+            You might include an invoice number, account or transaction ID, or any other reference meaningful to you.'
+        charge_bearer:
+          type: string
+          description: "The party that should bear the transaction fees related to the selected transaction route if applied.\nPossible options are: \n- `shared`: Also known as **SHA**. The transaction route fees are split between the sender and the recipient. \n  The sender pays the fees charged by their bank, while the recipient pays the fees charged by the receiving and any intermediary banks.\n- `debtor`: Also known as **OUR**. The sender pays all explicit transaction fees.\n\n:::note\n- This field is not supported for [bulk payments](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#use-cases). \n- Some transactions with fees might not support charge bearer selection.\n  If this is the case, the request will return an error.\n  To proceed with the default fee handling, remove this field from your request and try again.\n:::"
+          enum:
+          - shared
+          - debtor
+        transfer_reason_code:
+          $ref: '#/components/schemas/TransferReasonCode'
+      required:
+      - account_id
+      - receiver
+      - amount
+      - currency
+      - reference
+    PaymentDraftsResponse:
+      type: object
+      required:
+      - payment_orders
+      properties:
+        payment_orders:
+          type: array
+          description: The list of payment drafts that haven't been sent for processing.
+          items:
+            $ref: '#/components/schemas/PaymentOrderInfo'
+    UpdatePaymentDraftRequest:
+      type: object
+      description: The updated metadata of a payment draft.
+      minProperties: 1
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+          nullable: true
+          description: The title of the payment draft. To clear the title, provide `null`.
+        schedule_for:
+          type: string
+          format: date
+          nullable: true
+          description: 'The scheduled date of the payment draft in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+
+
+            :::note
+
+            The date must be in the future.
+
+            :::
+
+
+            To clear the scheduled date, provide `null`.'
+    AmountWithCurrency:
+      type: object
+      description: ''
+      properties:
+        amount:
+          type: number
+          format: double
+          description: The amount of the transaction.
+        currency:
+          $ref: '#/components/schemas/Currency'
+    TransferReasonCode:
+      type: string
+      description: "The reason code for the transaction. Transactions to certain countries and currencies might require you to provide a transfer reason. \nYou can check available reason codes with the [`GET /transfer-reasons` operation](https://developer.revolut.com/docs/api/business#get-transfer-reasons).\n\nIf a transfer reason is not required for the given currency and country, this field is ignored."
+      example: property_rental
+    PaymentState:
+      enum:
+      - CREATED
+      - PENDING
+      - COMPLETED
+      - REVERTED
+      - DECLINED
+      - CANCELLED
+      - FAILED
+      - DELETED
+      type: string
+      description: Indicates the state of the transaction.
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"
