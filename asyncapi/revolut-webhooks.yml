@@ -1,0 +1,103 @@
+generated: '2026-07-20'
+method: derived
+spec_type: Webhooks
+source: openapi/ webhook management endpoints
+summary: Revolut Business and Merchant APIs let integrators register webhook endpoints (with signing secrets)
+  to receive event notifications. Crypto Ramp exposes webhook CRUD for order events.
+apis:
+- api: business
+  source: openapi/revolut-business-openapi.yaml
+  management_endpoints:
+  - /webhook
+  - /webhooks
+  - /webhooks/{webhook_id}
+  - /webhooks/{webhook_id}/rotate-signing-secret
+  - /webhooks/{webhook_id}/failed-events
+  operations:
+  - operation: getWebhookV1
+    method: GET
+    path: /webhook
+  - operation: setUpWebhook
+    method: POST
+    path: /webhook
+  - operation: deleteWebhookV1
+    method: DELETE
+    path: /webhook
+  - operation: createWebhook
+    method: POST
+    path: /webhooks
+  - operation: getWebhooks
+    method: GET
+    path: /webhooks
+  - operation: getWebhook
+    method: GET
+    path: /webhooks/{webhook_id}
+  - operation: updateWebhook
+    method: PATCH
+    path: /webhooks/{webhook_id}
+  - operation: deleteWebhook
+    method: DELETE
+    path: /webhooks/{webhook_id}
+  - operation: rotateWebhookSigningSecret
+    method: POST
+    path: /webhooks/{webhook_id}/rotate-signing-secret
+  - operation: getFailedWebhookEvents
+    method: GET
+    path: /webhooks/{webhook_id}/failed-events
+- api: merchant
+  source: openapi/revolut-merchant-openapi.yaml
+  management_endpoints:
+  - /api/webhooks
+  - /api/webhooks/{webhook_id}
+  - /api/webhooks/{webhook_id}/rotate-signing-secret
+  - /api/synchronous-webhooks
+  - /api/synchronous-webhooks/{synchronous_webhook_id}
+  operations:
+  - operation: createWebhook
+    method: POST
+    path: /api/webhooks
+  - operation: retrieveWebhookList
+    method: GET
+    path: /api/webhooks
+  - operation: retrieveWebhook
+    method: GET
+    path: /api/webhooks/{webhook_id}
+  - operation: updateWebhook
+    method: PATCH
+    path: /api/webhooks/{webhook_id}
+  - operation: deleteWebhook
+    method: DELETE
+    path: /api/webhooks/{webhook_id}
+  - operation: rotateWebhookSigningSecret
+    method: POST
+    path: /api/webhooks/{webhook_id}/rotate-signing-secret
+  - operation: registerAddressValidationEndpoint
+    method: POST
+    path: /api/synchronous-webhooks
+  - operation: retrieveSynchronousWebhookList
+    method: GET
+    path: /api/synchronous-webhooks
+  - operation: deleteSynchronousWebhook
+    method: DELETE
+    path: /api/synchronous-webhooks/{synchronous_webhook_id}
+- api: crypto-ramp
+  source: openapi/revolut-crypto-ramp-openapi.yaml
+  management_endpoints:
+  - /webhooks/{webhook_id}
+  - /webhooks
+  operations:
+  - operation: retrieve-a-webhook
+    method: GET
+    path: /webhooks/{webhook_id}
+  - operation: update-a-webhook
+    method: PATCH
+    path: /webhooks/{webhook_id}
+  - operation: delete-a-webhook
+    method: DELETE
+    path: /webhooks/{webhook_id}
+  - operation: retrieve-a-list-of-webhooks
+    method: GET
+    path: /webhooks
+  - operation: create-a-webhook
+    method: POST
+    path: /webhooks

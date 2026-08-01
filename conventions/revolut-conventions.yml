@@ -1,0 +1,41 @@
+generated: '2026-07-20'
+method: searched
+source: >-
+  github.com/revolut-engineering/revolut-openapi specs + developer.revolut.com
+  docs conventions (Merchant, Business, Open Banking).
+summary: >-
+  Revolut runs several distinct REST APIs with different conventions. Merchant and Open Banking
+  support request idempotency via an Idempotency-Key / idempotency-key header. Auth differs per
+  product: Business uses OAuth 2.0 (JWT client assertion, bearer AccessToken), Merchant uses a
+  secret API key as a bearer token, Open Banking uses OAuth 2.0 + detached JWS signatures (FAPI),
+  Revolut X uses an API key with an HMAC request signature, and Crypto Ramp uses a bearer AccessToken.
+authentication:
+  business: OAuth 2.0 authorization code + JWT client assertion; bearer AccessToken. See authentication/revolut-authentication.yml
+  merchant: 'Secret API key sent as `Authorization: Bearer <secret-api-key>`; public key used client-side in checkout.'
+  open_banking: OAuth 2.0 (UK Open Banking / FAPI) with detached JWS message signing (x-jws-signature).
+  revolut_x: API key + HMAC-SHA256 request signature (see skills/revolut-x scripts/revx_sign.py).
+  crypto_ramp: Bearer AccessToken (partner credential).
+idempotency:
+  supported: true
+  header:
+    merchant: Idempotency-Key
+    open_banking: idempotency-key
+  scope: Applies to write (POST) operations such as creating orders/payments; a repeated key returns the original result.
+  cross_ref: errors/revolut-problem-types.yml
+versioning:
+  business: single version in the URI path (/api/1.0)
+  merchant: date-based version string (e.g. 2026-04-20) selected via the API; multiple dated specs published
+  open_banking: UK Open Banking Read/Write standard v3.1.0 in the URI path
+  cross_ref: lifecycle/revolut-lifecycle.yml
+error_envelope:
+  merchant: '{code, message, timestamp} (Error-v2) or {errorId, timestamp} (Error)'
+  business: '{message, code} / ErrorWithId'
+  open_banking: 'OBIE error: {Code, Message, Errors[{ErrorCode, Message, Path}]}'
+  format: custom-json-envelope (not RFC 9457 problem+json)
+  cross_ref: errors/revolut-problem-types.yml
+webhooks:
+  supported: true
+  cross_ref: asyncapi/revolut-webhooks.yml
+rate_limiting:
+  signaled: true
+  note: All APIs return HTTP 429 Too Many Requests when limits are exceeded.

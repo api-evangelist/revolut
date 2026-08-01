@@ -1,9 +1,28 @@
 aid: revolut
 name: Revolut
-description: 'Revolut is a company surfaced as a portfolio company of seedcamp, softbank-vision-fund and
-  added to the API Evangelist network as a stub for enrichment. Sector: fintech. This profile is a lead
-  awaiting the enrichment pipeline.'
+description: >-
+  Revolut is a global financial technology company providing banking, payments, cards, foreign
+  exchange, savings, and crypto services to retail and business customers. Its developer platform
+  publishes several distinct REST APIs: the Business API (accounts, transfers, payments,
+  counterparties, cards, webhooks), the Merchant API (online card acquiring, orders, captures,
+  refunds, subscriptions), the Open Banking API (UK Open Banking / PSD2 account information and
+  payment initiation, FAPI-secured with detached JWS), the Crypto Ramp API (fiat-to-crypto on/off
+  ramp for partners), and the Revolut X crypto exchange API (balances, orders, trades, market
+  data). Revolut publishes official OpenAPI specifications and Agent Skills on GitHub.
 url: https://raw.githubusercontent.com/api-evangelist/revolut/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://assets.revolut.com/assets/revolut-app-icons/Developer.png
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
@@ -13,16 +32,1262 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-21'
 tags:
 - Company
 - Fintech
-apis: []
+- Payments
+- Banking
+- Open Banking
+- Merchant Acquiring
+- Cryptocurrency
+- Cards
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: revolut:revolut-accounting-api
+  name: Revolut Accounting API
+  description: >-
+    Manage [accounting settings](https://business.revolut.com/settings/accounting) for your business that
+    can be assigned to your financial records such as [expenses](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses)
+    or bills*.
+
+
+    Create, retrieve, update, and delete settings such as accounting categories, tax rates, and labels.
+
+
+    For more information, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings),
+    [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories),
+    [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates)
+    and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups),
+    .
+
+
+    See also the Revolut Help Centre: [Expenses](https://help.revolut.com/business/help/managing-my-business/expenses/)
+    and [BillPay](https://help.revolut.com/business/help/integrating-with-external-apps/introduction-to-billpay/).
+
+
+    _*<small>Some settings are not supported for certain types of financial records.
+
+    For example, labels cannot be applied to bills.
+
+    Check the guides for details.
+
+    </small>_
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Accounting
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-accounting-api-openapi.yml
+- aid: revolut:revolut-accounting-categories-api
+  name: Revolut Accounting categories API
+  description: >-
+    Manage accounting categories for your business.
+
+    You can create, retrieve, and delete accounting categories that can be assigned to your financial
+    records such as [expenses](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses)
+    or bills.
+
+
+    For more information, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings)
+    and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).
+
+
+    See also the Revolut Help Centre: [Expenses](https://help.revolut.com/business/help/managing-my-business/expenses/)
+    and [BillPay](https://help.revolut.com/business/help/integrating-with-external-apps/introduction-to-billpay/).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Accounting categories
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-accounting-categories-api-openapi.yml
+- aid: revolut:revolut-accounts-api
+  name: Revolut Accounts API
+  description: "Get the balances, full banking details, and other details of your business accounts. \n\
+    \nFor more information, see the guides: [Get your account details](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/manage-your-accounts)."
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-accounts-api-openapi.yml
+- aid: revolut:revolut-apple-pay-merchant-registration-api
+  name: Revolut Apple Pay merchant registration API
+  description: >-
+    Operations for managing a merchant's domain registration and configuration with Apple for integration
+    of Apple Pay via Revolut.
+
+
+    This includes initiating domain validation with Apple, a necessary step for merchants to offer Apple
+    Pay as a payment method on their websites or apps.
+
+
+    These endpoints interact with Apple's [Apple Pay Web Merchant Registration services](https://developer.apple.com/documentation/applepaywebmerchantregistrationapi).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Apple Pay merchant registration
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-apple-pay-merchant-registration-api-openapi.yml
+- aid: revolut:revolut-applications-api
+  name: Revolut Applications API
+  description: >-
+    These endpoints let you manage your applications.
+
+
+    Applications can also be created in the [Developer Portal](https://developer.revolut.com/portal/).
+
+
+    For more information, see:
+
+    - [Register your application using DCR](https://developer.revolut.com/docs/guides/build-banking-apps/register-your-application-using-dcr/)
+
+    - [Manage your applications](https://developer.revolut.com/docs/guides/build-banking-apps/manage-your-applications/get-an-application)
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Applications
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-applications-api-openapi.yml
+- aid: revolut:revolut-balance-api
+  name: Revolut Balance API
+  description: Get your Revolut X crypto exchange balances, including both crypto and fiat.
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Balance
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-balance-api-openapi.yml
+- aid: revolut:revolut-card-invitations-api
+  name: Revolut Card invitations API
+  description: >-
+    Use card invitations to pre-create cards for [team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members)
+    who have not yet onboarded.
+
+    Once the team member completes onboarding, the card is automatically issued as per the configuration
+    specified in the invitation.
+
+    You can also retrieve and update the invitations, or cancel them if they're no longer needed.
+
+
+    :::note
+
+    - This feature is not available in Sandbox.
+
+    - To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).
+
+    :::
+
+
+    For more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Card invitations
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-card-invitations-api-openapi.yml
+- aid: revolut:revolut-cards-api
+  name: Revolut Cards API
+  description: >-
+    Manage cards issued for your business, freeze, unfreeze, lock, unlock, terminate and update card settings,
+    such as spending limits and merchant controls.
+
+
+    :::note
+
+    - This feature is not available in Sandbox.
+
+    - To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).
+
+    :::
+
+
+    For more information, see the guides: [Manage cards for your business](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).
+
+
+    :::tip [Card invitations for onboarding team members]
+
+    To prepare virtual cards for team members who have not completed onboarding yet, use [Card invitations](https://developer.revolut.com/docs/api/business#update-card-invitation)
+    instead.
+
+    :::
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Cards
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-cards-api-openapi.yml
+- aid: revolut:revolut-configuration-api
+  name: Revolut Configuration API
+  description: Get Revolut X configuration for traded assets and pairs.
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Configuration
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-configuration-api-openapi.yml
+- aid: revolut:revolut-counterparties-api
+  name: Revolut Counterparties API
+  description: "Manage counterparties that you intend to transact with.\n\nRequest and response examples\
+    \ can vary based on the account provider's location and type of the counterparty. \nFor more information,\
+    \ see the guides: [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty),\
+    \ [Retrieve counterparties](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/retrieve-counterparties),\
+    \ and [Update a counterparty's payment method](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/update-counterparty-payment-method).\n\
+    \n:::note\nIn the Sandbox environment, you cannot add real people and businesses as Revolut counterparties.\
+    \ \nTherefore, to help you simulate [Create a counterparty](https://developer.revolut.com/docs/api/business#add-counterparty)\
+    \ requests, we have created some test accounts for counterparties of profile type `personal`.\n\n\
+    To add a counterparty via Revtag, use one of these pairs for the `name` and `revtag` fields respectively:\
+    \ \n- `Test User 1` & `john1pvki`\n- `Test User 2` & `john2pvki`\n-    ...\n- `Test User 9` & `john9pvki`\n\
+    :::"
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Counterparties
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-counterparties-api-openapi.yml
+- aid: revolut:revolut-customers-api
+  name: Revolut Customers API
+  description: >-
+    The Customers resource in the Merchant API is a pivotal tool for tracking and managing customer-related
+    transactions within your e-commerce or retail platform. This resource provides a structured approach
+    to customer management, enabling you to maintain a consistent record of customer transactions.
+
+
+    A `Customer` object can be created using the [Create a customer](https://developer.revolut.com/docs/api/merchant#create-customer)
+    endpoint and you can then retrieve, update and delete a customer using its `id`. `Customer` objects
+    enable you to track multiple transactions in your system associated with the same customer in the
+    Merchant API.
+
+
+    You can save and store payment methods of a customer in the `payment_method` object, for more information,
+    see: [Charge a customer's saved payment method](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/charge-saved-payment-method).
+    A merchant can store the details of the payment securely and group transactions from the same payment
+    method in their system.
+
+
+    A payment method is unique for each customer. For example, if the same card is used for a transaction
+    by two different customers, two payment method objects are created linked to each customer.
+
+
+    Similar principle applies when saving payment methods via Revolut Pay for merchant initiated transaction
+    (MIT - useful for recurring payments). If a customer saves their details through Revolut Pay for MIT
+    in separate sessions, each session will create a new payment method object linked to the customer.
+
+
+    :::note
+
+    You cannot create a payment method explicitly because they are generated as part of a payment. You
+    can only retrieve, update or delete a payment method, or you can retrieve all payment methods of a
+    customer.
+
+    :::
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Customers
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-customers-api-openapi.yml
+- aid: revolut:revolut-disputes-api
+  name: Revolut Disputes API
+  description: >-
+    Endpoints that allow merchants to view customer payment disputes.
+
+     It provides a robust framework with high-level states (e.g., `won`, `lost`, `needs_response`, `under_review`)
+    and detailed substates (e.g., `lost_expired`, `pre_arbitration`, `won_pre_arbitration`, etc.) to accurately
+    track the dispute lifecycle.
+
+     Additionally, the API integrates standard dispute reason codes and human-readable descriptions, offering
+    a customisable approach to dispute resolution that facilitates effective dispute management.
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Disputes
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-disputes-api-openapi.yml
+- aid: revolut:revolut-domestic-payment-api
+  name: Revolut Domestic payment API
+  description: >-
+    *Domestic payments*, which you can use for local payments in the local currency of the user.
+
+
+    :::note
+
+    Revolut supports only GBP as local in the UK and EUR in Single Euro Payments Area (SEPA) countries.
+
+    :::
+
+
+    As a regulated third party provider, you can use the provided endpoints to initiate a domestic payment
+    in the following high-level workflow:
+
+
+    - Create a consent.
+
+    - Get the consent.
+
+    - Create a payment.
+
+    - Get the payment.
+
+
+    Before you begin, ensure that you've registered your application with the `payments` scope.
+
+    For more information, see [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment).
+
+
+    :::tip
+
+    See also [Domestic scheduled payments](https://developer.revolut.com/docs/api/open-banking#tag-domestic-scheduled-payment)
+    and [Domestic standing orders](https://developer.revolut.com/docs/api/open-banking#tag-domestic-standing-order).
+
+    :::
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Domestic payment
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-domestic-payment-api-openapi.yml
+- aid: revolut:revolut-domestic-scheduled-payment-api
+  name: Revolut Domestic scheduled payment API
+  description: >-
+    *Domestic scheduled payments*, which you can use for local payments in the local currency of the user.
+
+
+    :::note
+
+    Revolut supports only GBP as local in the UK and EUR in Single Euro Payments Area (SEPA) countries.
+
+    :::
+
+
+    As a regulated third party provider, you can use the provided endpoints to initiate a payment in the
+    following high-level workflow:
+
+
+    - Create a consent.
+
+    - Get the consent.
+
+    - Create a payment.
+
+    - Get the payment.
+
+
+    Before you begin, ensure that you've registered your application with the `payments` scope.
+
+    For more information, see [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment).
+
+
+    :::tip
+
+    See also [Domestic payments](https://developer.revolut.com/docs/api/open-banking#tag-domestic-payment)
+    and [Domestic standing orders](https://developer.revolut.com/docs/api/open-banking#tag-domestic-standing-order).
+
+    :::
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Domestic scheduled payment
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-domestic-scheduled-payment-api-openapi.yml
+- aid: revolut:revolut-domestic-standing-order-api
+  name: Revolut Domestic standing order API
+  description: >-
+    *Domestic standing orders*, which you can use for local payments in the local currency of the user.
+
+
+    :::note
+
+    Revolut supports only GBP as local in the UK and EUR in Single Euro Payments Area (SEPA) countries.
+
+    :::
+
+
+    As a regulated third party provider, you can use the provided endpoints to initiate a domestic payment
+    in the following high-level workflow:
+
+
+    - Create a consent.
+
+    - Get the consent.
+
+    - Create a payment.
+
+    - Get the payment.
+
+
+    Before you begin, ensure that you've registered your application with the `payments` scope.
+
+    For more information, see [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment).
+
+
+    :::tip
+
+    See also [Domestic payments](https://developer.revolut.com/docs/api/open-banking#tag-domestic-payment)
+    and [Domestic scheduled payments](https://developer.revolut.com/docs/api/open-banking#tag-domestic-scheduled-payment).
+
+    :::
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Domestic standing order
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-domestic-standing-order-api-openapi.yml
+- aid: revolut:revolut-draft-payment-api
+  name: Revolut Draft payment API
+  description: >-
+    You can create a draft payment to initiate a payment on behalf of a user, and request the approval
+    for the draft payment in the user account.
+
+
+    Then, you can retrieve or delete a draft payment.
+
+
+    :::note
+
+    The draft payments API is available only for Revolut Business customers.
+
+    If you'd like to use this endpoint, reach out to us.
+
+    :::
+
+
+    For more information, see [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Draft payment
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-draft-payment-api-openapi.yml
+- aid: revolut:revolut-expenses-api
+  name: Revolut Expenses API
+  description: >-
+    Get the list of all the expenses, or use the filters to narrow down the results.
+
+    You can also get a specific expense, or get a receipt related to an expense by providing their respective
+    IDs.
+
+
+    :::note
+
+    This feature is not available in Sandbox.
+
+    :::
+
+
+    For more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Expenses
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-expenses-api-openapi.yml
+- aid: revolut:revolut-file-payment-api
+  name: Revolut File Payment API
+  description: The File Payment API from Revolut — 6 operation(s) for file payment.
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - File Payment
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-file-payment-api-openapi.yml
+- aid: revolut:revolut-foreign-exchange-api
+  name: Revolut Foreign exchange API
+  description: >-
+    Retrieve information on exchange rates between currencies, buy and sell currencies.
+
+
+    For more information, see the guides: [Exchange money](https://developer.revolut.com/docs/guides/manage-accounts/exchange-money).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Foreign exchange
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-foreign-exchange-api-openapi.yml
+- aid: revolut:revolut-international-payment-api
+  name: Revolut International payment API
+  description: >-
+    *International payments*, which you can use for international SWIFT payments in all currencies that
+    Revolut supports.
+
+
+    As a regulated third party provider, you can use the provided endpoints to initiate a payment in the
+    following high-level workflow:
+
+
+    - Create a consent.
+
+    - Get the consent.
+
+    - Create a payment.
+
+    - Get the payment.
+
+
+    Before you begin, ensure that you've registered your application with the `payments` scope.
+
+    For more information, see [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment).
+
+
+    :::tip
+
+    See also [International scheduled payments](https://developer.revolut.com/docs/api/open-banking#tag-international-scheduled-payment)
+    and [International standing orders](https://developer.revolut.com/docs/api/open-banking#tag-international-standing-order).
+
+    :::
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - International payment
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-international-payment-api-openapi.yml
+- aid: revolut:revolut-international-scheduled-payment-api
+  name: Revolut International scheduled payment API
+  description: >-
+    *International scheduled payments*, which you can use for international SWIFT payments in all currencies
+    that Revolut supports.
+
+
+    As a regulated third party provider, you can use the provided endpoints to initiate a payment in the
+    following high-level workflow:
+
+
+    - Create a consent.
+
+    - Get the consent.
+
+    - Create a payment.
+
+    - Get the payment.
+
+
+    Before you begin, ensure that you've registered your application with the `payments` scope.
+
+    For more information, see [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment).
+
+
+    :::tip
+
+    See also: [International payments](https://developer.revolut.com/docs/api/open-banking#tag-international-payment)
+    and [International standing orders](https://developer.revolut.com/docs/api/open-banking#tag-international-standing-order)
+    .
+
+    :::
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - International scheduled payment
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-international-scheduled-payment-api-openapi.yml
+- aid: revolut:revolut-international-standing-order-api
+  name: Revolut International standing order API
+  description: >-
+    *International standing orders*, which you can use for international SWIFT payments in all currencies
+    that Revolut supports.
+
+
+    As a regulated third party provider, you can use the provided endpoints to initiate a payment in the
+    following high-level workflow:
+
+
+    - Create a consent.
+
+    - Get the consent.
+
+    - Create a payment.
+
+    - Get the payment.
+
+
+    Before you begin, ensure that you've registered your application with the `payments` scope.
+
+    For more information, see [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment).
+
+
+    :::tip
+
+    See also [International payments](https://developer.revolut.com/docs/api/open-banking#tag-international-payment)
+    and [International scheduled payments](https://developer.revolut.com/docs/api/open-banking#tag-international-scheduled-payment).
+
+    :::
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - International standing order
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-international-standing-order-api-openapi.yml
+- aid: revolut:revolut-labels-api
+  name: Revolut Labels API
+  description: >-
+    Manage accounting labels and label groups for your business.
+
+    Create, retrieve, update, and delete label groups and labels that can be added to your financial records
+    such as [expenses](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses).
+
+
+    For more information, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings),
+    and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).
+
+
+    See also the Revolut Help Centre: [Expenses](https://help.revolut.com/business/help/managing-my-business/expenses/).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Labels
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-labels-api-openapi.yml
+- aid: revolut:revolut-locations-api
+  name: Revolut Locations API
+  description: >-
+    The Locations API is designed to help merchants manage multiple points of sale, including both **online
+    storefronts** and **physical stores**. Registering locations lets you differentiate and group your
+    orders from different stores. You can also introduce custom business logic for each location, such
+    as different inventory management, pricing, or shipping rules.
+
+
+    To start using locations, follow the relevant use case for your business:
+
+
+    ### Online locations
+
+      1. Register an online location using the [Create a location](https://developer.revolut.com/docs/api/merchant#create-location)
+    endpoint, setting the `type` to `online`.
+      1. Configure your custom processes on your backend for each registered location (e.g., grouping
+    orders, custom pricing, etc.).
+      1. Send the `location_id` parameter in the request body during [order creation](https://developer.revolut.com/docs/api/merchant#create-order)
+    to assign the order to a specific location.
+
+    ### Physical locations
+
+      1. Register a physical location using the [Create a location](https://developer.revolut.com/docs/api/merchant#create-location)
+    endpoint, setting the `type` to `physical`.
+      1. In case of Revolut POS, our system handles order creation including `location_id` to associate
+    the order with your location.
+
+    ## Fast checkout for multiple storefronts
+
+
+    Locations are particularly useful for tailoring the user experience on each of your online storefronts,
+    especially when using features like [**Fast checkout**](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/fast-checkout).
+
+
+    For example, if you operate two online stores with different shipping rules, you can register two
+    separate `online` locations. By then using the `location_id` to [register a distinct address validation
+    endpoint](https://developer.revolut.com/docs/api/merchant#register-address-validation-endpoint) for
+    each one, your backend can apply the correct shipping logic and pricing for the specific storefront
+    a customer is buying from.
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Locations
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-locations-api-openapi.yml
+- aid: revolut:revolut-market-data-api
+  name: Revolut Market Data API
+  description: Retrieve real-time and historical market data for Revolut X.
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Market Data
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-market-data-api-openapi.yml
+- aid: revolut:revolut-orders-api
+  name: Revolut Orders API
+  description: >-
+    The Orders resource in the Merchant API offers a comprehensive solution for managing the lifecycle
+    of orders within your e-commerce or retail platform. Designed to streamline order processing, this
+    resource encapsulates a suite of operations that allow for efficiently handling order management-related
+    tasks. For more information about the order lifecycle, see: [Order and payment lifecycle](https://developer.revolut.com/docs/guides/merchant/reference/order-lifecycle).
+
+
+    These operations are equipped to handle various order management scenarios, providing a robust interface
+    for businesses to interact with their order data.
+
+
+    To process a payment related to your customers' purchases, you need to create an `Order` object. Then
+    you can use an order's unique `token` to process and accept payments via the Revolut Checkout Widget.
+
+
+    :::warning
+
+    The [Create an order endpoint](https://developer.revolut.com/docs/api/merchant#create-order) was updated
+    to a new version and now returns `token` as the public identifier for the order. Previous integrations
+    might still use the deprecated endpoint returning `public_id`.
+
+
+    We strongly advise upgrading to the new [Create an order endpoint](https://developer.revolut.com/docs/api/merchant#create-order).
+
+    :::
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-orders-api-openapi.yml
+- aid: revolut:revolut-other-api
+  name: Revolut Other API
+  description: Other operations that can be done with the Merchant API.
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Other
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-other-api-openapi.yml
+- aid: revolut:revolut-partners-api
+  name: Revolut Partners API
+  description: >-
+    The **Partners** endpoints let you poll different exchange rates, display them on your website and
+    compare them with other providers.
+
+
+    For more details, see the guides: [Leverage the Crypto Ramp API](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/use-the-api).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Partners
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-partners-api-openapi.yml
+- aid: revolut:revolut-payment-drafts-api
+  name: Revolut Payment drafts API
+  description: >-
+    Payment drafts let you prepare payments for future processing, prepare payments that require an approval,
+    or prepare bulk or scheduled payments.
+
+
+    Simply create a draft, and when you're ready, [send it for processing as payment](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing).
+
+    If you or the payment you're making is subject to an [approval process](https://help.revolut.com/business/help/managing-my-business/users-and-employees/how-can-i-set-payment-approval-rules/),
+    another team member designated as an approver must approve it in the [Revolut Business app](https://business.revolut.com/)
+    before the payment can be processed.
+
+
+    You can also retrieve or delete the drafts created with the API.
+
+
+    For more information on use cases and other details, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Payment drafts
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-payment-drafts-api-openapi.yml
+- aid: revolut:revolut-payment-intents-api
+  name: Revolut Payment intents API
+  description: >-
+    Operations for managing payment intents in the push payments to Revolut Terminal flow.
+
+
+    A **payment intent** represents the intention to complete payment for a specific order on a specific
+    Revolut Terminal device. Payment intents are the mechanism that links orders created via the Merchant
+    API with physical terminal devices in **Pay at Counter** mode.
+
+
+    ## What is a payment intent?
+
+
+    When you create a payment intent, you're pushing a payment request from your POS system to a Revolut
+    Terminal. The payment intent:
+
+
+    - Links an order to a specific terminal device
+
+    - Triggers the payment request to appear on the terminal screen
+
+    - Tracks the customer's interaction with the terminal (pending → processing → completed)
+
+    - Provides a `payment_id` when completed, which you use to retrieve the final payment status
+
+
+    ## Payment intent lifecycle
+
+
+    1. **Create:** Push a payment intent to a terminal by [creating a payment intent](https://developer.revolut.com/docs/api/merchant#create-payment-intent)
+
+    1. **Track:** Poll the payment intent status by [retrieving payment intent details](https://developer.revolut.com/docs/api/merchant#retrieve-payment-intent)
+    until it reaches a final state
+
+    1. **Complete:** When state is `completed`, extract the `payment_id` and [retrieve the final payment
+    status](https://developer.revolut.com/docs/api/merchant#retrieve-payment-details)
+
+    1. **Cancel (optional):** Cancel pending payment intents using [Cancel a payment intent](https://developer.revolut.com/docs/api/merchant#cancel-payment-intent)
+
+
+    ## Important notes
+
+
+    - A payment intent reaching `completed` state means the checkout process finished on the terminal,
+    but it does **not** guarantee the payment succeeded
+
+    - You must check the actual payment status using the `payment_id` returned in the completed payment
+    intent
+
+    - Payment status can be `captured`/`completed` (successful), `declined` (card rejected), `failed`
+    (technical error), or `cancelled`
+
+
+    :::info
+
+    For the complete push payments integration guide, see: [Push payments to Revolut Terminal](https://developer.revolut.com/docs/guides/merchant/accept-payments/in-person-payments/terminal/push-payments).
+
+    :::
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Payment intents
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-payment-intents-api-openapi.yml
+- aid: revolut:revolut-payments-api
+  name: Revolut Payments API
+  description: >-
+    Payment operations enable you to initiate payments, or track payment status transitions. You can use
+    the ID of the payment to retrieve information about a specific payment.
+
+
+    :::info
+
+    For more information about the payment lifecycle, see: [Order and payment lifecycle](https://developer.revolut.com/docs/guides/merchant/reference/order-lifecycle).
+
+    :::
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Payments
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-payments-api-openapi.yml
+- aid: revolut:revolut-payout-links-api
+  name: Revolut Payout links API
+  description: "Use payout links to send money without having to request full banking details of the recipient.\
+    \  \nThe recipient must claim the money before the link expires.\n\n:::note\nThis feature is available\
+    \ in the UK, the EEA, AU, and SG.\n:::\n\nFor more information, see the guides: [Send money via payout\
+    \ link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links)."
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Payout links
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-payout-links-api-openapi.yml
+- aid: revolut:revolut-payouts-api
+  name: Revolut Payouts API
+  description: >-
+    Endpoints for retrieving information about payouts, allowing merchants to access details of funds
+    withdrawn from their Merchant account to external bank accounts.
+
+
+    Merchants can use these endpoints to retrieve a list of payouts and specific payout details. The payout
+    IDs obtained can be used to [generate detailed reports](https://developer.revolut.com/docs/api/merchant#tag-report-runs)
+    that provide comprehensive breakdowns of all transactions contributing to the payout amounts.
+
+
+    Payout information, including IDs, can be retrieved via the [Retrieve payout list](https://developer.revolut.com/docs/api/merchant#retrieve-payout-list)
+    endpoint or from [webhook events related to payouts](https://developer.revolut.com/docs/api/merchant#create-webhook#callbacks).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Payouts
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-payouts-api-openapi.yml
+- aid: revolut:revolut-public-market-data-api
+  name: Revolut Public Market Data API
+  description: Get Revolut X real time public market data.
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Public Market Data
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-public-market-data-api-openapi.yml
+- aid: revolut:revolut-report-runs-api
+  name: Revolut Report runs API
+  description: >-
+    Use **Report runs** operations to generate CSV reports of your Merchant account transactions. Choose
+    from the following report types based on your use case:
+
+
+    | Report type | Description |
+
+    | ----------- | ----------- |
+
+    | `custom_report` | Settled and processing transactions with a configurable set of columns. |
+
+    | `settlement_report` | All settled transactions, with a configurable set of columns. |
+
+    | `payments_report` | All payments, including failed and declined ones. |
+
+    | `payout_statement_report` | All transactions that contributed to a specific payout. |
+
+    | `icpp_fee_breakdown_report` | IC++ fee components broken down per transaction for a specific IC++
+    charge. |
+
+
+    :::info
+
+    For more information about how to generate CSV reports, see: [Create CSV reports of transactions](https://developer.revolut.com/docs/guides/merchant/monitor-and-observe/reports-reconciliation).
+
+    :::
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Report runs
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-report-runs-api-openapi.yml
+- aid: revolut:revolut-simulations-api
+  name: Revolut Simulations API
+  description: "The Simulations API is only available in the Sandbox environment. \nIt lets you simulate\
+    \ certain events that are otherwise only possible in the production environment, such as your account's\
+    \ top-up and transfer state changes. \n\nFor more information, see the guides: [Test your flows with\
+    \ simulations (Sandbox only)](https://developer.revolut.com/docs/guides/manage-accounts/api-usage-and-testing/test-flows-with-simulations).\n\
+    \n:::note\nTo play around with Sandbox, [create a Sandbox account](https://sandbox-business.revolut.com/).\n\
+    :::"
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Simulations
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-simulations-api-openapi.yml
+- aid: revolut:revolut-subscriptions-api
+  name: Revolut Subscriptions API
+  description: >-
+    The Subscriptions API provides a complete solution for creating and managing recurring billing for
+    your customers.
+
+
+    You can automatically charge customers on flexible billing cycles, manage sophisticated subscription
+    plans, and track the entire billing history for every subscriber.
+
+
+    ## How it works?
+
+
+    A subscription's billing structure is defined by a **Subscription plan**. This model gives you granular
+    control:
+
+
+    - **Plans** contain one or more **variations** (e.g., a "Gold" plan could have "Monthly" and "Yearly"
+    variations).
+
+    - **Variations** can have multiple **phases** (e.g., a 7-day free trial followed by a regular billing
+    phase).
+
+
+    This powerful structure allows you to build complex pricing models, including free trials, introductory
+    offers, and tiered pricing.
+
+
+    ## Key features
+
+
+    - **Flexible pricing models:** Create plans with multiple variations and phases to support any billing
+    scenario.
+
+    - **Automated charging:** Automatically charge a customer's saved payment method at the start of each
+    billing cycle.
+
+    - **Hosted onboarding:** For new customers, generate a setup order with a redirect URL to Revolut's
+    Hosted Payment Page, allowing them to securely add a payment method.
+
+    - **Lifecycle tracking:** Monitor each billing cycle's state, view all associated orders, and access
+    complete payment histories.
+
+    - **Full subscription management:** Easily update customer payment methods, cancel subscriptions,
+    and view a complete billing history.
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Subscriptions
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-subscriptions-api-openapi.yml
+- aid: revolut:revolut-tax-rates-api
+  name: Revolut Tax rates API
+  description: >-
+    Manage tax rates for your business.
+
+    Create, retrieve, update, and delete tax rates that can be assigned to your financial records such
+    as [expenses](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses)
+    or bills.
+
+
+    For more information, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings)
+    and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).
+
+
+    See also the Revolut Help Centre: [Expenses](https://help.revolut.com/business/help/managing-my-business/expenses/)
+    and [BillPay](https://help.revolut.com/business/help/integrating-with-external-apps/introduction-to-billpay/).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Tax rates
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-tax-rates-api-openapi.yml
+- aid: revolut:revolut-team-members-api
+  name: Revolut Team members API
+  description: >-
+    Retrieve information on existing team members of your organisation, delete team members, and invite
+    new members.
+
+
+    For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Team members
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-team-members-api-openapi.yml
+- aid: revolut:revolut-terminals-api
+  name: Revolut Terminals API
+  description: >-
+    Operations for managing Revolut Terminal devices and push payment integrations with Point of Sale
+    (POS) systems.
+
+
+    The Terminals API enables POS software providers to integrate with Revolut Terminal devices for accepting
+    in-person payments through a **push payments** model. This server-to-server integration allows your
+    POS system to:
+
+
+    - Discover available terminals at specific locations
+
+    - Push payment requests to physical terminal devices
+
+    - Track payment intent and payment status in real-time
+
+    - Cancel pending payment requests when needed
+
+
+    ## Push payments workflow
+
+
+    1. **Terminal discovery:** Use the [Retrieve terminal list](https://developer.revolut.com/docs/api/merchant#retrieve-terminal-list)
+    endpoint to find available terminals at a location (filtered by `operation_mode=pos`)
+
+    1. **Payment intent creation:** Push a payment request to a specific terminal using [Create a payment
+    intent](https://developer.revolut.com/docs/api/merchant#create-payment-intent)
+
+    1. **Status tracking:** Poll the payment intent status until completion using [Retrieve a payment
+    intent](https://developer.revolut.com/docs/api/merchant#retrieve-payment-intent) endpoint
+
+    1. **Payment confirmation:** Once the payment intent reaches `completed` state, [retrieve the final
+    payment status](https://developer.revolut.com/docs/api/merchant#retrieve-payment-details) using the
+    returned `payment_id`
+
+
+    :::info
+
+    For detailed implementation guidance, see: [Push payments to Revolut Terminal](https://developer.revolut.com/docs/guides/merchant/accept-payments/in-person-payments/terminal/push-payments).
+
+    :::
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Terminals
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-terminals-api-openapi.yml
+- aid: revolut:revolut-trades-api
+  name: Revolut Trades API
+  description: >-
+    Retrieve Revolut X trade history and execution details: view public market trades or your specific
+    private trade executions (fills).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Trades
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-trades-api-openapi.yml
+- aid: revolut:revolut-transactions-api
+  name: Revolut Transactions API
+  description: >-
+    Get the details of your transactions.
+
+
+    :::note
+
+    An incoming or outgoing payment is represented as a transaction.
+
+    :::
+
+
+    For more information, see the guides: [Retrieve transactions](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-transactions).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Transactions
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-transactions-api-openapi.yml
+- aid: revolut:revolut-transfers-api
+  name: Revolut Transfers API
+  description: >-
+    Move funds in the same currency between accounts of your business, or make payments to your counterparties.
+
+
+    For more details, see the guides: [Send money](https://developer.revolut.com/docs/guides/manage-accounts/transfers/send-money).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Transfers
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-transfers-api-openapi.yml
+- aid: revolut:revolut-webhooks-api
+  name: Revolut Webhooks API
+  description: >-
+    A webhook (also called a web callback) allows your system to receive an event from Ramp immediately
+    after it happens.
+
+    With the **Webhooks** endpoints, you can create, update, delete, and retrieve webhooks, as well as
+    retrieve webhooks that you have created.
+
+
+    For more details, see the guides: [Work with Webhooks -> Track order and payment lifecycle](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/work-with-webhooks/use-webhooks)
+    and [-> Verify the payload signature](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/work-with-webhooks/verify-the-payload-signature).
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-webhooks-api-openapi.yml
+- aid: revolut:revolut-webhooks-v1-deprecated-api
+  name: Revolut Webhooks (v1) (deprecated) API
+  description: ":::warning\nThis is the v1 of the Webhooks API. This version is deprecated. For the latest\
+    \ version of the API, see [Webhooks (v2)](https://developer.revolut.com/docs/api/business#tag-webhooks-v2).\n\
+    :::\n\nA webhook (also called a web callback) allows your system to receive updates about your account\
+    \ to an HTTPS endpoint that you provide. \nWhen a supported event occurs, a notification is posted\
+    \ via HTTP `POST` method to the specified endpoint. \n\nIf the receiver returns an HTTP error response,\
+    \ Revolut will retry the webhook event two more times.\n\nThe following events are supported:\n\n\
+    - `TransactionCreated`\n- `TransactionStateChanged`\n\nYou cannot choose which event type to subscribe\
+    \ to. When you create a webhook, you automatically subscribe to all supported events."
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Webhooks (v1) (deprecated)
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-webhooks-v1-deprecated-api-openapi.yml
+- aid: revolut:revolut-webhooks-v2-api
+  name: Revolut Webhooks (v2) API
+  description: ":::note\nThis is the latest version of the Webhooks API, v2. For the previous version\
+    \ of the API, see [Webhooks (v1) (deprecated)](https://developer.revolut.com/docs/api/business#tag-webhooks-v1-deprecated).\n\
+    :::\n\nA webhook (also called a web callback) allows your system to receive updates about your account\
+    \ to an HTTPS endpoint that you provide.\nWhen a supported event occurs, a notification is posted\
+    \ via HTTP `POST` method to the specified endpoint. \n\nIf the receiver returns an HTTP error response,\
+    \ Revolut will retry the webhook event three more times, each with a 10-minute interval.\n\nThe following\
+    \ events are supported:\n\n- `TransactionCreated`\n- `TransactionStateChanged`\n- `PayoutLinkCreated`\n\
+    - `PayoutLinkStateChanged`\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks)\
+    \ and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks)."
+  humanURL: https://developer.revolut.com/docs/business/business-api
+  baseURL: https://b2b.revolut.com/api/1.0
+  tags:
+  - Webhooks (v2)
+  properties:
+  - type: OpenAPI
+    url: openapi/revolut-webhooks-v2-api-openapi.yml
 common:
+- type: DeveloperPortal
+  url: https://developer.revolut.com/
+- type: Documentation
+  url: https://developer.revolut.com/docs
+- type: APIReference
+  url: https://developer.revolut.com/api-reference
+- type: GettingStarted
+  url: https://developer.revolut.com/docs/guides
+- type: GitHubOrganization
+  url: https://github.com/revolut-engineering
 - type: Website
-  url: https://seedcamp.com/company/revolut/
+  url: https://www.revolut.com/
+- type: SourceCode
+  url: https://github.com/revolut-engineering/revolut-openapi
+- type: Authentication
+  url: authentication/revolut-authentication.yml
+- type: Conventions
+  url: conventions/revolut-conventions.yml
+- type: Idempotency
+  url: conventions/revolut-conventions.yml
+- type: ErrorCatalog
+  url: errors/revolut-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/revolut-lifecycle.yml
+- type: Deprecation
+  url: lifecycle/revolut-lifecycle.yml
+- type: ChangeLog
+  url: changelog/revolut-changelog.yml
+- type: Conformance
+  url: conformance/revolut-conformance.yml
+- type: Compliance
+  url: conformance/revolut-conformance.yml
+- type: DataModel
+  url: data-model/revolut-data-model.yml
+- type: Sandbox
+  url: sandbox/revolut-sandbox.yml
+- type: Webhooks
+  url: asyncapi/revolut-webhooks.yml
+- type: Packages
+  url: packages/revolut-packages.yml
+- type: SDKs
+  url: packages/revolut-packages.yml
+- type: MCPServer
+  url: mcp/revolut-mcp.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: LLMsTxt
+  url: llms/revolut-llms.txt
+- type: WellKnown
+  url: well-known/revolut-well-known.yml
+- type: SecurityTxt
+  url: well-known/revolut-security.txt
+- type: Security
+  url: https://www.revolut.com/responsible-disclosure-program
+- type: VulnerabilityDisclosure
+  url: security/revolut-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/revolut-domain-security.yml
+- type: AgenticAccess
+  url: agentic-access/revolut-agentic-access.yml
+x-enrichment:
+  date: '2026-07-21'
+  status: enriched
+  artifacts_added: 27
+  pass: local-v1

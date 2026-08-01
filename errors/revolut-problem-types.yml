@@ -1,0 +1,99 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/ 4xx-5xx responses across all Revolut specs
+format: custom-json-envelope
+envelope:
+  note: 'Revolut error bodies are a JSON envelope, not RFC 9457 problem+json. Merchant: {code,message,timestamp}
+    (Error-v2) or {errorId,timestamp} (Error). Business: {message,code} / ErrorWithId. Open Banking (UK
+    OBIE): {Code,Message,Errors[{ErrorCode,Message,Path}]}.'
+problems:
+- status: '400'
+  title: Bad Request
+  apis:
+  - business
+  - crypto-ramp
+  - merchant
+  - open-banking
+  - revolut-x
+  example_operation: openapi/revolut-business-openapi.yaml#createAccountingCategory
+- status: '401'
+  title: Unauthorized
+  apis:
+  - business
+  - crypto-ramp
+  - merchant
+  - open-banking
+  - revolut-x
+  example_operation: openapi/revolut-business-openapi.yaml#createAccountingCategory
+- status: '403'
+  title: Forbidden
+  apis:
+  - business
+  - merchant
+  - open-banking
+  - revolut-x
+  example_operation: openapi/revolut-business-openapi.yaml#createAccountingCategory
+- status: '404'
+  title: Not Found
+  apis:
+  - business
+  - crypto-ramp
+  - merchant
+  - open-banking
+  - revolut-x
+  example_operation: openapi/revolut-business-openapi.yaml#getAccountingCategory
+- status: '405'
+  title: Method Not Allowed
+  apis:
+  - open-banking
+  example_operation: openapi/revolut-open-banking-openapi.yaml#CreateAccountAccessConsents
+- status: '406'
+  title: Not Acceptable
+  apis:
+  - open-banking
+  example_operation: openapi/revolut-open-banking-openapi.yaml#CreateAccountAccessConsents
+- status: '409'
+  title: Conflict
+  apis:
+  - business
+  - revolut-x
+  example_operation: openapi/revolut-business-openapi.yaml#createAccountingCategory
+- status: '415'
+  title: Unsupported Media Type
+  apis:
+  - open-banking
+  example_operation: openapi/revolut-open-banking-openapi.yaml#CreateAccountAccessConsents
+- status: '422'
+  title: Unprocessable Entity
+  apis:
+  - business
+  - merchant
+  - open-banking
+  example_operation: openapi/revolut-business-openapi.yaml#createAccountingCategory
+- status: '429'
+  title: Too Many Requests
+  apis:
+  - business
+  - crypto-ramp
+  - open-banking
+  - revolut-x
+  example_operation: openapi/revolut-business-openapi.yaml#createAccountingCategory
+- status: '500'
+  title: Internal Server Error
+  apis:
+  - business
+  - crypto-ramp
+  - open-banking
+  example_operation: openapi/revolut-business-openapi.yaml#createAccountingCategory
+- status: '503'
+  title: Service Unavailable
+  apis:
+  - business
+  - crypto-ramp
+  - open-banking
+  example_operation: openapi/revolut-business-openapi.yaml#createAccountingCategory
+- status: 5XX
+  title: Server Error
+  apis:
+  - revolut-x
+  example_operation: openapi/revolut-x-openapi.yaml#getAllBalances

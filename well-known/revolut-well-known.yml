@@ -1,0 +1,42 @@
+generated: '2026-07-20'
+method: searched
+source: live probes of Revolut hosts
+notes: >-
+  developer.revolut.com returns HTTP 200 for every /.well-known/* path but the body is the
+  SPA catch-all HTML (content-type text/html), so those are NOT real discovery documents and
+  are recorded as none. The only real well-known document found is the RFC 9116 security.txt on
+  www.revolut.com, saved verbatim as revolut-security.txt.
+hosts:
+  - host: https://www.revolut.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        file: revolut-security.txt
+  - host: https://developer.revolut.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        real: false
+        note: SPA catch-all HTML, not a real security.txt
+      - path: /.well-known/openid-configuration
+        status: 200
+        real: false
+        note: SPA catch-all HTML
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        real: false
+        note: SPA catch-all HTML
+      - path: /.well-known/api-catalog
+        status: 200
+        real: false
+        note: SPA catch-all HTML
+      - path: /.well-known/ai-plugin.json
+        status: 200
+        real: false
+        note: SPA catch-all HTML
+  - host: https://merchant.revolut.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404

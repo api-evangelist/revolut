@@ -1,0 +1,28 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/ specs + Revolut published posture (security.txt, Open Banking standard)
+standards:
+  - id: oauth2
+    conforms: true
+    evidence: Business + Open Banking use OAuth 2.0 (bearer AccessToken / authorization code flows).
+  - id: uk-open-banking-3.1
+    conforms: true
+    evidence: openapi/revolut-open-banking-openapi.yaml implements the UK Open Banking Read/Write API v3.1.0 (OBIE resources OBAccount3, OBBeneficiary3, consents).
+  - id: fapi
+    conforms: true
+    evidence: Open Banking uses detached JWS request signing (x-jws-signature) and OAuth 2.0, per the FAPI / OBIE profile.
+  - id: psd2
+    conforms: true
+    evidence: Revolut Open Banking exposes PSD2 AISP/PISP account-information and payment-initiation endpoints.
+  - id: idempotency
+    conforms: true
+    evidence: Merchant (Idempotency-Key) and Open Banking (idempotency-key) support idempotent writes.
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: Error bodies are a custom JSON envelope, not application/problem+json.
+  - id: rfc9116-security-txt
+    conforms: true
+    evidence: www.revolut.com/.well-known/security.txt (saved verbatim).
+  - id: pci-dss
+    conforms: true
+    evidence: Merchant API is a card-acquiring product; Revolut is PCI DSS compliant per its published trust/legal posture.
