@@ -1,0 +1,87 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Foreign exchange API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Foreign exchange",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get an exchange rate",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/rate",
+            "params": [
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "The currency that you exchange from in [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) format."
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "The amount of the currency to exchange **from**. The default value is `1.00`."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "The currency that you exchange to in [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) format."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the sell exchange rate between two currencies.\n\nYou can check the [currencies supported in Production](https://help.revolut.com/business/help/receiving-payments/currency-exchanges/which-currencies-can-i-exchange-and-keep-in-my-account/) in the Revolut Help Centre.\nSome of these currencies might not be available in Sandbox.\n\nFor more information, see the guides: [Exchange money](https://developer.revolut.com/docs/guides/manage-accounts/exchange-money)."
+        },
+        {
+          "info": {
+            "name": "Exchange money",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/exchange",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Exchange money using one of these methods: \n\n- **Sell currency**: You know the amount of currency to sell. \n  For example, you want to exchange 135.5 USD to some EUR. \n\n  Specify the amount in the `from` object.\n- **Buy currency**: You know the amount of currency to buy. \n  For example, you want to exchange some USD to 200 EUR. \n\n  Specify the amount in the `to` object.\n\n:::note\nYou must specify the `amount` field only once, either in the `from` object or in the `to` object.\n:::\n\nYou can check t"
+        },
+        {
+          "info": {
+            "name": "Get exchange reasons",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/exchange-reasons",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Depending on the country and the amount of funds to be exchanged, you might be required to provide an exchange reason. \nWith this endpoint, you can retrieve all exchange reasons available to your business account.\n\nAfter you retrieve the results, use the appropriate reason code in the `exchange_reason_code` field when [exchanging money](https://developer.revolut.com/docs/api/business#exchange-money) or [making a payment](https://developer.revolut.com/docs/api/business#create-payment) that involv"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

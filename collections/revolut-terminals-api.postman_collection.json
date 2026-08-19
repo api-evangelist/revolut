@@ -1,0 +1,257 @@
+{
+  "item": [
+    {
+      "id": "9d1883ce-98bf-4c0d-850c-0b936bdc33b1",
+      "name": "Terminals",
+      "description": {
+        "content": "Operations for managing Revolut Terminal devices and push payment integrations with Point of Sale (POS) systems.\n\nThe Terminals API enables POS software providers to integrate with Revolut Terminal devices for accepting in-person payments through a **push payments** model. This server-to-server integration allows your POS system to:\n\n- Discover available terminals at specific locations\n- Push payment requests to physical terminal devices\n- Track payment intent and payment status in real-time\n- Cancel pending payment requests when needed\n\n## Push payments workflow\n\n1. **Terminal discovery:** Use the [Retrieve terminal list](https://developer.revolut.com/docs/api/merchant#retrieve-terminal-list) endpoint to find available terminals at a location (filtered by `operation_mode=pos`)\n1. **Payment intent creation:** Push a payment request to a specific terminal using [Create a payment intent](https://developer.revolut.com/docs/api/merchant#create-payment-intent)\n1. **Status tracking:** Poll the payment intent status until completion using [Retrieve a payment intent](https://developer.revolut.com/docs/api/merchant#retrieve-payment-intent) endpoint\n1. **Payment confirmation:** Once the payment intent reaches `completed` state, [retrieve the final payment status](https://developer.revolut.com/docs/api/merchant#retrieve-payment-details) using the returned `payment_id`\n\n:::info\nFor detailed implementation guidance, see: [Push payments to Revolut Terminal](https://developer.revolut.com/docs/guides/merchant/accept-payments/in-person-payments/terminal/push-payments).\n:::",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "3cb2631d-fad8-425f-9fb8-87e93027530a",
+          "name": "Retrieve terminal list",
+          "request": {
+            "name": "Retrieve terminal list",
+            "description": {
+              "content": "Retrieve a list of Revolut Terminal devices available to the merchant.\n\nThis endpoint is primarily used for push payments to Revolut Terminal integration, allowing POS systems to discover available terminals at a specific location and in the correct operation mode.\n\n:::tip\nFor push payments integration, use the `operation_mode=pos` query parameter to filter only terminals in **Pay at Counter** mode that are ready to receive payment intents.\n:::\n\n:::info\nFor more information about integration, see: [Push payments to Revolut Terminal](https://developer.revolut.com/docs/guides/merchant/accept-payments/in-person-payments/terminal/push-payments).\n:::",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "terminals"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "operation_mode",
+                  "value": "<string>",
+                  "description": "Filter terminals by operation mode.\n\n| Value | Description |\n|-------|-------------|\n| `pos` | Returns only terminals in Pay at Counter mode |\n| `payment_acceptance` | Returns only terminals in standard checkout mode |"
+                },
+                {
+                  "disabled": false,
+                  "key": "location_id",
+                  "value": "<uuid>",
+                  "description": "Filter results by location ID."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                "key": "Revolut-Api-Version",
+                "value": "<date>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "64862b97-bdf2-4a03-86f2-45e89df904cd",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "terminals"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "operation_mode",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "location_id",
+                      "value": "<uuid>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"terminals\": [\n    {\n      \"id\": \"0e53f673-7705-473a-a263-89a3e7647c3d\",\n      \"name\": \"Terminal 1\",\n      \"type\": \"newland_n950\",\n      \"serial_number\": \"RT-00123456\",\n      \"battery_level\": 85,\n      \"online\": true,\n      \"last_online_at\": \"2025-01-15T14:30:00Z\"\n    },\n    {\n      \"id\": \"a7b2c8d1-4e5f-6a7b-8c9d-0e1f2a3b4c5d\",\n      \"name\": \"Terminal 2\",\n      \"type\": \"newland_n950\",\n      \"serial_number\": \"RT-00123457\",\n      \"battery_level\": 92,\n      \"online\": true,\n      \"last_online_at\": \"2025-01-15T14:32:00Z\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6080b8ca-69e1-4418-bf05-a7c2b7d222f6",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "terminals"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "operation_mode",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "location_id",
+                      "value": "<uuid>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 6224\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bfab4b76-d7ce-4076-bcca-acd3cf90d36f",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "terminals"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "operation_mode",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "location_id",
+                      "value": "<uuid>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 6224\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://b2b.revolut.com/api/1.0",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "cf9e2023-20bd-45e2-a8dc-16b42bfd58b1",
+    "name": "Business Accounting Terminals API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)",
+      "type": "text/plain"
+    }
+  }
+}

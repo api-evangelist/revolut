@@ -1,0 +1,2262 @@
+{
+  "item": [
+    {
+      "id": "4f4bdaab-0acc-4ccd-bdff-3548b8120c71",
+      "name": "Customers",
+      "description": {
+        "content": "The Customers resource in the Merchant API is a pivotal tool for tracking and managing customer-related transactions within your e-commerce or retail platform. This resource provides a structured approach to customer management, enabling you to maintain a consistent record of customer transactions.\n\nA `Customer` object can be created using the [Create a customer](https://developer.revolut.com/docs/api/merchant#create-customer) endpoint and you can then retrieve, update and delete a customer using its `id`. `Customer` objects enable you to track multiple transactions in your system associated with the same customer in the Merchant API.\n\nYou can save and store payment methods of a customer in the `payment_method` object, for more information, see: [Charge a customer's saved payment method](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/charge-saved-payment-method). A merchant can store the details of the payment securely and group transactions from the same payment method in their system.\n\nA payment method is unique for each customer. For example, if the same card is used for a transaction by two different customers, two payment method objects are created linked to each customer.\n\nSimilar principle applies when saving payment methods via Revolut Pay for merchant initiated transaction (MIT - useful for recurring payments). If a customer saves their details through Revolut Pay for MIT in separate sessions, each session will create a new payment method object linked to the customer.\n\n:::note\nYou cannot create a payment method explicitly because they are generated as part of a payment. You can only retrieve, update or delete a payment method, or you can retrieve all payment methods of a customer.\n:::",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "90c377fa-f30f-4870-b431-e56f2cdeb476",
+          "name": "Create a customer",
+          "request": {
+            "name": "Create a customer",
+            "description": {
+              "content": "Create a `customer` object.\n\n:::note [No automatic deduplication]\nThe API does not prevent creating multiple customers with the same email address or phone number.\n\nThis can be intentional, for example, to maintain separate customer records per storefront or brand under the same account.\n\nTo avoid unintentional duplicates, search for existing customers by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant/2024-09-01#retrieve-customer-list) endpoint before creating a new one.\n:::\n\n### Save payment methods\n\nIf you wish to save a customer's payment details using any of the available payment methods on the Revolut Checkout Widget ([Revolut Pay](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-pay/introduction), [Card payments](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/card-payments/introduction)), you need to meet one of the following requirements:\n\n  - [ ] Have a customer object with `email` and assign it to the order by providing `customer.id`\n  - [ ] Create a new customer with, at least, `customer.email` during [order creation](https://developer.revolut.com/docs/api/merchant/2024-09-01#create-order)\n\nFor more information, see: [Charge a customer's saved payment method](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/charge-saved-payment-method).\n\n<details>\n<summary>AFT processing requirements</summary>\n\nFor merchants in the following industries, `full_name` and `date_of_birth` are required for Account Funding Transaction (AFT) processing:\n\n| Industry | Required fields |\n| -------- | --------------- |\n| Crypto | `full_name`, `date_of_birth` |\n| Financial Institutions | `full_name`, `date_of_birth` |\n| Stored Value / Wallets | `full_name`, `date_of_birth` |\n\n</details>",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "customers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                "key": "Revolut-Api-Version",
+                "value": "<date>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"<email>\",\n  \"full_name\": \"<string>\",\n  \"phone\": \"<string>\",\n  \"date_of_birth\": \"<date>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "20ed11f5-37fe-467a-8602-7299931b81e3",
+              "name": "Created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"full_name\": \"Example Customer\",\n  \"email\": \"example.customer@example.com\",\n  \"phone\": \"+441234567890\",\n  \"date_of_birth\": \"1990-01-01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"6c7c97a8-cfc1-4cf3-8b38-26a74fdf1fae\",\n  \"full_name\": \"Example Customer\",\n  \"email\": \"example.customer@example.com\",\n  \"phone\": \"+441234567890\",\n  \"created_at\": \"2020-06-24T12:03:39.979397Z\",\n  \"updated_at\": \"2020-06-24T12:03:39.979397Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "62813acd-2ab3-48bf-aaa9-fcf3c10b44c4",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"full_name\": \"Example Customer\",\n  \"email\": \"example.customer@example.com\",\n  \"phone\": \"+441234567890\",\n  \"date_of_birth\": \"1990-01-01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f94de508-60d4-44d1-a037-fb324d338d0a",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"full_name\": \"Example Customer\",\n  \"email\": \"example.customer@example.com\",\n  \"phone\": \"+441234567890\",\n  \"date_of_birth\": \"1990-01-01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "999753b3-13a6-41b7-98ed-4907cc2226f9",
+          "name": "Retrieve a customer list",
+          "request": {
+            "name": "Retrieve a customer list",
+            "description": {
+              "content": "Get a paginated list of your customer profiles.\n\n| Filtering | Pagination |\n| --------- | ---------- |\n| Filter the customers that you want to retrieve, for example, only retrieve customers created within a specific date range. <br/><br/>Parameters used for filtering:<br/><ul><li>`from`</li><li>`to`</li></ul> | View customers without loading all of them at once, for example, return a specified number of customers per page. <br/><br/>Parameters used for pagination:<br/><ul><li>`limit`</li><li>`page_token`</li></ul> |\n\nTo paginate through all results:\n\n1. Make an initial request with the desired `limit` and any filter parameters.\n1. If more results are available, the response includes a `next_page_token`.\n1. Pass `next_page_token` as `page_token` in your next request, keeping all other parameters unchanged.\n1. Repeat until `next_page_token` is no longer present in the response.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "customers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "100",
+                  "description": "Maximum number of records to return. Used for **pagination**."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_token",
+                  "value": "<string>",
+                  "description": "Token for retrieving the next page of results. Used for **pagination**.\n\nTo paginate through results:\n\n  1. Make an initial request with the desired `limit`.\n  1. The response will include a `next_page_token` if more results are available.\n  1. Use that token in the `page_token` parameter of your next request.\n  1. Repeat until `next_page_token` is not present.\n\n:::note\nWhen using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.\n:::"
+                },
+                {
+                  "disabled": false,
+                  "key": "from",
+                  "value": "<dateTime>",
+                  "description": "Filter records created from this date/time. Used for **filtering**."
+                },
+                {
+                  "disabled": false,
+                  "key": "to",
+                  "value": "<dateTime>",
+                  "description": "Filter records created until this date/time. Used for **filtering**."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                "key": "Revolut-Api-Version",
+                "value": "<date>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "bcc5bca7-446b-4b1c-b45e-a38d58a01819",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "from",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "to",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"next_page_token\": \"9e5d2caa-bb60-4b5b-b7cf-6345bbdff67e\",\n  \"customers\": [\n    {\n      \"id\": \"9dfb8491-bfb0-4420-ad63-0fa7bdd3dffb\",\n      \"full_name\": \"First Customer\",\n      \"email\": \"first.customer@example.com\",\n      \"created_at\": \"2020-06-24T12:12:56.596703Z\",\n      \"updated_at\": \"2020-06-24T12:12:56.737082Z\"\n    },\n    {\n      \"id\": \"6c7c97a8-cfc1-4cf3-8b38-26a74fdf1fae\",\n      \"full_name\": \"Second Customer\",\n      \"email\": \"second.customer@example.com\",\n      \"phone\": \"+441234567890\",\n      \"created_at\": \"2020-06-24T12:03:39.979397Z\",\n      \"updated_at\": \"2020-06-25T10:03:39.134417Z\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "26ff3aa3-ce15-48d2-bfc6-671cf0e18d13",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "from",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "to",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f4c26bc2-0e76-45b7-826a-35d9f52ddb21",
+          "name": "Retrieve a customer",
+          "request": {
+            "name": "Retrieve a customer",
+            "description": {
+              "content": "Get the information about a specific customer, including their saved payment methods.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "customers",
+                ":customer_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "customer_id",
+                  "description": "(Required) The ID of the `Customer` object."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                "key": "Revolut-Api-Version",
+                "value": "<date>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "adeb2999-6b10-4fd8-b6af-1c98d2f5b1c0",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"6c7c97a8-cfc1-4cf3-8b38-26a74fdf1fae\",\n  \"full_name\": \"Example Customer\",\n  \"email\": \"example.customer@example.com\",\n  \"phone\": \"+441234567890\",\n  \"created_at\": \"2020-06-24T12:03:39.979397Z\",\n  \"updated_at\": \"2020-06-25T10:03:39.134417Z\",\n  \"payment_methods\": [\n    {\n      \"id\": \"648334a8-9546-a983-a81a-efc6d5bdd0be\",\n      \"type\": \"revolut_pay\",\n      \"saved_for\": \"merchant\",\n      \"created_at\": \"2023-06-09T14:18:16.577888Z\"\n    },\n    {\n      \"id\": \"edef3ba4-60a0-4df3-8f12-e5fc858c2420\",\n      \"type\": \"card\",\n      \"saved_for\": \"customer\",\n      \"created_at\": \"2023-03-24T14:15:22Z\",\n      \"bin\": \"459765\",\n      \"last_four\": \"6578\",\n      \"expiry_month\": 2,\n      \"expiry_year\": 2025,\n      \"cardholder_name\": \"Example Customer\",\n      \"brand\": \"visa\",\n      \"funding\": \"debit\",\n      \"issuer\": \"EXAMPLE ISSUER\",\n      \"issuer_country\": \"GB\",\n      \"billing_address\": {\n        \"street_line_1\": \"7 Westferry Circus\",\n        \"street_line_2\": \"Columbus Building\",\n        \"postcode\": \"E144HD\",\n        \"city\": \"London\",\n        \"region\": \"Greater London\",\n        \"country_code\": \"GB\"\n      }\n    },\n    {\n      \"id\": \"6a0fe961-a961-a8b6-ad17-ab2779165a82\",\n      \"type\": \"sepa_direct_debit\",\n      \"saved_for\": \"merchant\",\n      \"created_at\": \"2026-05-22T05:28:01.887482Z\",\n      \"debtor_iban_last_four\": \"3273\",\n      \"debtor_name\": \"John Doe\",\n      \"mandate_reference\": \"69F1CB61BD99A32C8E20D7FB9E21E146\",\n      \"billing_address\": {\n        \"street_line_1\": \"Bank of England\",\n        \"street_line_2\": \"Threadneedle St\",\n        \"postcode\": \"EC2R 8AH\",\n        \"city\": \"London\",\n        \"region\": \"Greater London\",\n        \"country_code\": \"GB\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b2e2d6e1-6fc0-40a0-a937-7ba1af9a382f",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8ac23284-c746-465e-a950-7bc50b2188ce",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6947a624-b6c6-45a9-a38a-0ce39565c13e",
+          "name": "Update a customer",
+          "request": {
+            "name": "Update a customer",
+            "description": {
+              "content": "Update the attributes of a specific customer.\n\nAll request body fields are optional. Only the fields provided will be updated.\n\n<details>\n<summary>AFT processing requirements</summary>\n\nFor merchants in the following industries, `full_name` and `date_of_birth` are required for Account Funding Transaction (AFT) processing:\n\n| Industry | Required fields |\n| -------- | --------------- |\n| Crypto | `full_name`, `date_of_birth` |\n| Financial Institutions | `full_name`, `date_of_birth` |\n| Stored Value / Wallets | `full_name`, `date_of_birth` |\n\n</details>",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "customers",
+                ":customer_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "customer_id",
+                  "description": "(Required) The ID of the `Customer` object."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                "key": "Revolut-Api-Version",
+                "value": "<date>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"<string>\",\n  \"email\": \"<email>\",\n  \"phone\": \"<string>\",\n  \"date_of_birth\": \"<date>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "916f6230-0898-41a7-9e9c-aa61433f4c70",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"updated.customer@example.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"6c7c97a8-cfc1-4cf3-8b38-26a74fdf1fae\",\n  \"full_name\": \"Example Customer\",\n  \"email\": \"example.customer@example.com\",\n  \"phone\": \"+441234567890\",\n  \"created_at\": \"2020-06-24T12:03:39.979397Z\",\n  \"updated_at\": \"2020-06-25T10:03:39.134417Z\",\n  \"payment_methods\": [\n    {\n      \"id\": \"648334a8-9546-a983-a81a-efc6d5bdd0be\",\n      \"type\": \"revolut_pay\",\n      \"saved_for\": \"merchant\",\n      \"created_at\": \"2023-06-09T14:18:16.577888Z\"\n    },\n    {\n      \"id\": \"edef3ba4-60a0-4df3-8f12-e5fc858c2420\",\n      \"type\": \"card\",\n      \"saved_for\": \"customer\",\n      \"created_at\": \"2023-03-24T14:15:22Z\",\n      \"bin\": \"459765\",\n      \"last_four\": \"6578\",\n      \"expiry_month\": 2,\n      \"expiry_year\": 2025,\n      \"cardholder_name\": \"Example Customer\",\n      \"brand\": \"visa\",\n      \"funding\": \"debit\",\n      \"issuer\": \"EXAMPLE ISSUER\",\n      \"issuer_country\": \"GB\",\n      \"billing_address\": {\n        \"street_line_1\": \"7 Westferry Circus\",\n        \"street_line_2\": \"Columbus Building\",\n        \"postcode\": \"E144HD\",\n        \"city\": \"London\",\n        \"region\": \"Greater London\",\n        \"country_code\": \"GB\"\n      }\n    },\n    {\n      \"id\": \"6a0fe961-a961-a8b6-ad17-ab2779165a82\",\n      \"type\": \"sepa_direct_debit\",\n      \"saved_for\": \"merchant\",\n      \"created_at\": \"2026-05-22T05:28:01.887482Z\",\n      \"debtor_iban_last_four\": \"3273\",\n      \"debtor_name\": \"John Doe\",\n      \"mandate_reference\": \"69F1CB61BD99A32C8E20D7FB9E21E146\",\n      \"billing_address\": {\n        \"street_line_1\": \"Bank of England\",\n        \"street_line_2\": \"Threadneedle St\",\n        \"postcode\": \"EC2R 8AH\",\n        \"city\": \"London\",\n        \"region\": \"Greater London\",\n        \"country_code\": \"GB\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "62baaaad-6518-403a-9f36-76dc8e68eb55",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"updated.customer@example.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4d563ce7-5436-4b7e-9b02-dd6d4a55a119",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"updated.customer@example.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a75e53fd-0d85-41fd-8f6f-5417488ce6a8",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"updated.customer@example.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6ad16faf-20d4-4429-a2ef-9084102d30c9",
+          "name": "Delete a customer",
+          "request": {
+            "name": "Delete a customer",
+            "description": {
+              "content": "Delete the profile of a specific customer.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "customers",
+                ":customer_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "customer_id",
+                  "description": "(Required) The ID of the `Customer` object."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                "key": "Revolut-Api-Version",
+                "value": "<date>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE"
+          },
+          "response": [
+            {
+              "id": "7be6e3d6-e9ca-41c1-95cb-22bcb306cfd8",
+              "name": "No Content",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4dfea42e-d2a6-40e3-8be7-b649abb80836",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "139c9f0e-caa1-4b96-a359-65b67409553a",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cc5c5c95-98a1-4bb2-9aa4-d5ad2d8bd132",
+          "name": "Retrieve payment method list of a customer",
+          "request": {
+            "name": "Retrieve payment method list of a customer",
+            "description": {
+              "content": "Retrieve all the saved payment methods for a specific customer.\nThis can be useful in the following example cases:\n\n- To show what payment information is stored for the customer.\n- To try a different payment method if the first payment method fails when a recurring transaction occurs.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "customers",
+                ":customer_id",
+                "payment-methods"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "only_merchant",
+                  "value": "<boolean>",
+                  "description": "If `true`, returns only the saved payment methods that can be used for\nmerchant-initiated transactions (MIT)."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "customer_id",
+                  "description": "(Required) The ID of the `Customer` object."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                "key": "Revolut-Api-Version",
+                "value": "<date>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "1fc9dba2-fcf2-4878-8477-829debd256e3",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id",
+                    "payment-methods"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "only_merchant",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"payment_methods\": [\n    {\n      \"id\": \"648334a8-9546-a983-a81a-efc6d5bdd0be\",\n      \"type\": \"revolut_pay\",\n      \"saved_for\": \"merchant\",\n      \"created_at\": \"2023-06-09T14:18:16.577888Z\"\n    },\n    {\n      \"id\": \"edef3ba4-60a0-4df3-8f12-e5fc858c2420\",\n      \"type\": \"card\",\n      \"saved_for\": \"customer\",\n      \"created_at\": \"2023-03-24T14:15:22Z\",\n      \"bin\": \"459678\",\n      \"last_four\": \"6896\",\n      \"expiry_month\": 3,\n      \"expiry_year\": 2025,\n      \"cardholder_name\": \"Example Customer\",\n      \"brand\": \"visa\",\n      \"funding\": \"debit\",\n      \"issuer\": \"EXAMPLE ISSUER\",\n      \"issuer_country\": \"GB\",\n      \"billing_address\": {\n        \"street_line_1\": \"7\",\n        \"street_line_2\": \"Westferry Circus\",\n        \"postcode\": \"E144HD\",\n        \"city\": \"London\",\n        \"region\": \"Greater London\",\n        \"country_code\": \"GB\"\n      }\n    },\n    {\n      \"id\": \"a04406c4-05be-498b-8207-cc1e02a9b3ca\",\n      \"type\": \"card\",\n      \"saved_for\": \"merchant\",\n      \"created_at\": \"2023-03-24T14:15:22Z\",\n      \"bin\": \"459885\",\n      \"last_four\": \"7653\",\n      \"expiry_month\": 12,\n      \"expiry_year\": 2026,\n      \"cardholder_name\": \"Example Holder\",\n      \"brand\": \"mastercard\",\n      \"funding\": \"credit\",\n      \"issuer\": \"EXAMPLE ISSUER\",\n      \"issuer_country\": \"GB\",\n      \"billing_address\": {\n        \"street_line_1\": \"Revolut\",\n        \"street_line_2\": \"1 Canada Square\",\n        \"postcode\": \"EC2V 6DN\",\n        \"city\": \"London\",\n        \"region\": \"Greater London\",\n        \"country_code\": \"GB\"\n      }\n    },\n    {\n      \"id\": \"6a0fe961-a961-a8b6-ad17-ab2779165a82\",\n      \"type\": \"sepa_direct_debit\",\n      \"saved_for\": \"merchant\",\n      \"created_at\": \"2026-05-22T05:28:01.887482Z\",\n      \"debtor_iban_last_four\": \"3273\",\n      \"debtor_name\": \"John Doe\",\n      \"mandate_reference\": \"69F1CB61BD99A32C8E20D7FB9E21E146\",\n      \"billing_address\": {\n        \"street_line_1\": \"Bank of England\",\n        \"street_line_2\": \"Threadneedle St\",\n        \"postcode\": \"EC2R 8AH\",\n        \"city\": \"London\",\n        \"region\": \"Greater London\",\n        \"country_code\": \"GB\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a2c5bcee-6033-4598-bcce-bd00c83b2feb",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id",
+                    "payment-methods"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "only_merchant",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a3036bfe-1ef2-4ada-94f7-a83c721f349a",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id",
+                    "payment-methods"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "only_merchant",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2216064a-e95b-4684-94ab-f6cbcf094088",
+          "name": "Retrieve a customer's payment method",
+          "request": {
+            "name": "Retrieve a customer's payment method",
+            "description": {
+              "content": "Retrieve the information of a specific saved payment method for a customer.  ",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "customers",
+                ":customer_id",
+                "payment-methods",
+                ":payment_method_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "customer_id",
+                  "description": "(Required) The ID of the `Customer` object."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payment_method_id",
+                  "description": "(Required) The ID of the payment method."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                "key": "Revolut-Api-Version",
+                "value": "<date>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "83ff6b32-bb80-4c40-b239-33f4374e117a",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id",
+                    "payment-methods",
+                    ":payment_method_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_method_id",
+                      "description": "(Required) The ID of the payment method."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"retrieved_card\": {\n    \"summary\": \"Retrieved card payment method\",\n    \"value\": {\n      \"id\": \"edef3ba4-60a0-4df3-8f12-e5fc858c2420\",\n      \"type\": \"card\",\n      \"saved_for\": \"customer\",\n      \"created_at\": \"2023-03-24T14:15:22Z\",\n      \"bin\": \"459678\",\n      \"last_four\": \"6896\",\n      \"expiry_month\": 3,\n      \"expiry_year\": 2025,\n      \"cardholder_name\": \"Example Customer\",\n      \"brand\": \"visa\",\n      \"funding\": \"debit\",\n      \"issuer\": \"EXAMPLE ISSUER\",\n      \"issuer_country\": \"GB\",\n      \"billing_address\": {\n        \"street_line_1\": \"7\",\n        \"street_line_2\": \"Westferry Circus\",\n        \"postcode\": \"E144HD\",\n        \"city\": \"London\",\n        \"region\": \"Greater London\",\n        \"country_code\": \"GB\"\n      }\n    }\n  },\n  \"retrieved_revolut_pay\": {\n    \"summary\": \"Retrieved Revolut Pay payment method\",\n    \"value\": {\n      \"id\": \"648334a8-9546-a983-a81a-efc6d5bdd0be\",\n      \"type\": \"revolut_pay\",\n      \"saved_for\": \"merchant\",\n      \"created_at\": \"2023-06-09T14:18:16.577888Z\"\n    }\n  },\n  \"retrieved_sepa_direct_debit\": {\n    \"summary\": \"Retrieved SEPA Direct Debit payment method\",\n    \"value\": {\n      \"id\": \"6a0fe961-a961-a8b6-ad17-ab2779165a82\",\n      \"type\": \"sepa_direct_debit\",\n      \"saved_for\": \"merchant\",\n      \"created_at\": \"2026-05-22T05:28:01.887482Z\",\n      \"debtor_iban_last_four\": \"3273\",\n      \"debtor_name\": \"John Doe\",\n      \"mandate_reference\": \"69F1CB61BD99A32C8E20D7FB9E21E146\",\n      \"billing_address\": {\n        \"street_line_1\": \"Bank of England\",\n        \"street_line_2\": \"Threadneedle St\",\n        \"postcode\": \"EC2R 8AH\",\n        \"city\": \"London\",\n        \"region\": \"Greater London\",\n        \"country_code\": \"GB\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "65f625a7-4018-4a96-8938-847b7d018855",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id",
+                    "payment-methods",
+                    ":payment_method_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_method_id",
+                      "description": "(Required) The ID of the payment method."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fa2dddb5-1e3f-4581-9d05-68bfc6d05b13",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id",
+                    "payment-methods",
+                    ":payment_method_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_method_id",
+                      "description": "(Required) The ID of the payment method."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ddc977b1-4467-4be8-b473-7a7c29580bee",
+          "name": "Update a customer's payment method",
+          "request": {
+            "name": "Update a customer's payment method",
+            "description": {
+              "content": "Update the attributes of a specific saved payment method for a customer.\n\n:::note\nUpdating `saved_for` to `customer` is a one-way operation — you can't change it back to `merchant`.\n\nOnce updated, this payment method can no longer be used for merchant-initiated transactions (MIT), for example, to charge recurring payments. It can only be used when the customer is on the checkout page.\n\nFor more information, see:\n- [Pay for an order](https://developer.revolut.com/docs/api/merchant/2024-09-01#pay-order)\n- [Charge a customer's saved payment method](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/charge-saved-payment-method)\n:::",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "customers",
+                ":customer_id",
+                "payment-methods",
+                ":payment_method_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "customer_id",
+                  "description": "(Required) The ID of the `Customer` object."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payment_method_id",
+                  "description": "(Required) The ID of the payment method."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                "key": "Revolut-Api-Version",
+                "value": "<date>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"saved_for\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "980e3812-1f33-4e92-b8dd-e9eef154f73d",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id",
+                    "payment-methods",
+                    ":payment_method_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_method_id",
+                      "description": "(Required) The ID of the payment method."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"saved_for\": \"customer\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"retrieved_card\": {\n    \"summary\": \"Retrieved card payment method\",\n    \"value\": {\n      \"id\": \"edef3ba4-60a0-4df3-8f12-e5fc858c2420\",\n      \"type\": \"card\",\n      \"saved_for\": \"customer\",\n      \"created_at\": \"2023-03-24T14:15:22Z\",\n      \"bin\": \"459678\",\n      \"last_four\": \"6896\",\n      \"expiry_month\": 3,\n      \"expiry_year\": 2025,\n      \"cardholder_name\": \"Example Customer\",\n      \"brand\": \"visa\",\n      \"funding\": \"debit\",\n      \"issuer\": \"EXAMPLE ISSUER\",\n      \"issuer_country\": \"GB\",\n      \"billing_address\": {\n        \"street_line_1\": \"7\",\n        \"street_line_2\": \"Westferry Circus\",\n        \"postcode\": \"E144HD\",\n        \"city\": \"London\",\n        \"region\": \"Greater London\",\n        \"country_code\": \"GB\"\n      }\n    }\n  },\n  \"retrieved_revolut_pay\": {\n    \"summary\": \"Retrieved Revolut Pay payment method\",\n    \"value\": {\n      \"id\": \"648334a8-9546-a983-a81a-efc6d5bdd0be\",\n      \"type\": \"revolut_pay\",\n      \"saved_for\": \"merchant\",\n      \"created_at\": \"2023-06-09T14:18:16.577888Z\"\n    }\n  },\n  \"retrieved_sepa_direct_debit\": {\n    \"summary\": \"Retrieved SEPA Direct Debit payment method\",\n    \"value\": {\n      \"id\": \"6a0fe961-a961-a8b6-ad17-ab2779165a82\",\n      \"type\": \"sepa_direct_debit\",\n      \"saved_for\": \"merchant\",\n      \"created_at\": \"2026-05-22T05:28:01.887482Z\",\n      \"debtor_iban_last_four\": \"3273\",\n      \"debtor_name\": \"John Doe\",\n      \"mandate_reference\": \"69F1CB61BD99A32C8E20D7FB9E21E146\",\n      \"billing_address\": {\n        \"street_line_1\": \"Bank of England\",\n        \"street_line_2\": \"Threadneedle St\",\n        \"postcode\": \"EC2R 8AH\",\n        \"city\": \"London\",\n        \"region\": \"Greater London\",\n        \"country_code\": \"GB\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f2c22d73-e869-4c00-a54f-49fe3f73782e",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id",
+                    "payment-methods",
+                    ":payment_method_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_method_id",
+                      "description": "(Required) The ID of the payment method."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"saved_for\": \"customer\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9d1294c9-6851-4968-bfd7-21b54ba7e829",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id",
+                    "payment-methods",
+                    ":payment_method_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_method_id",
+                      "description": "(Required) The ID of the payment method."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"saved_for\": \"customer\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ed192095-ac45-4fd6-876e-b41173d63e88",
+          "name": "Delete a customer's payment method",
+          "request": {
+            "name": "Delete a customer's payment method",
+            "description": {
+              "content": "Delete a specific saved payment method. The payment method is completely removed from the customer's saved payment methods.\n\nTo reuse a deleted payment method, direct your customer to the checkout page to save their card details again.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "customers",
+                ":customer_id",
+                "payment-methods",
+                ":payment_method_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "customer_id",
+                  "description": "(Required) The ID of the `Customer` object."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payment_method_id",
+                  "description": "(Required) The ID of the payment method."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                "key": "Revolut-Api-Version",
+                "value": "<date>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE"
+          },
+          "response": [
+            {
+              "id": "d6cee50a-ed34-4fb4-8b42-a1c5a7e29805",
+              "name": "No Content",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id",
+                    "payment-methods",
+                    ":payment_method_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_method_id",
+                      "description": "(Required) The ID of the payment method."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "229732ac-d4ea-4dfd-a478-184a21476748",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id",
+                    "payment-methods",
+                    ":payment_method_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_method_id",
+                      "description": "(Required) The ID of the payment method."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "96de20ea-b8f9-4e2a-b09d-32a7d48831ee",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "customers",
+                    ":customer_id",
+                    "payment-methods",
+                    ":payment_method_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) The ID of the `Customer` object."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_method_id",
+                      "description": "(Required) The ID of the payment method."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The version of the Merchant API, specified in `YYYY-MM-DD` format.\n\nThis endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.\n\nIf not specified, you will receive an error.\n\n\n:::info\nFor more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).\n:::",
+                    "key": "Revolut-Api-Version",
+                    "value": "2026-04-20"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8460\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://b2b.revolut.com/api/1.0",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "b1e53313-f86b-47f1-bef2-cc5673aa5fe2",
+    "name": "Business Accounting Customers API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)",
+      "type": "text/plain"
+    }
+  }
+}

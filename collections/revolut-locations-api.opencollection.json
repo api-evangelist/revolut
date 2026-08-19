@@ -1,0 +1,143 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Locations API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Locations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve location list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/locations",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Filter the list by location type."
+              }
+            ]
+          },
+          "docs": "Retrieve a list of locations registered for the merchant.\n\n:::note [Default behavior]\nWithout the `type` query parameter, this endpoint returns only **online** locations by default. To retrieve physical locations, you must explicitly specify `type=physical` in the query parameters.\n:::"
+        },
+        {
+          "info": {
+            "name": "Create a location",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/locations",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a `Location` object. Supports `online` and `physical` location types."
+        },
+        {
+          "info": {
+            "name": "Retrieve a location",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/locations/:location_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "location_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the location."
+              }
+            ]
+          },
+          "docs": "Retrieve details of a specific location, based on its ID."
+        },
+        {
+          "info": {
+            "name": "Update a location",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/api/locations/:location_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "location_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the location."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update details of a specific location, based on its ID. \n\nOnly the fields provided in the request will be updated. Any omitted fields will retain their current values.\n\n:::note\nThe value of the location's `type` parameter cannot be updated.\n:::"
+        },
+        {
+          "info": {
+            "name": "Delete a location",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/api/locations/:location_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "location_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the location."
+              }
+            ]
+          },
+          "docs": "Delete a specific location, based on its ID."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

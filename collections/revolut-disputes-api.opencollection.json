@@ -1,0 +1,199 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Disputes API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Disputes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a dispute list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/disputes",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return. Used for **pagination**."
+              },
+              {
+                "name": "from_created_date",
+                "value": "",
+                "type": "query",
+                "description": "Retrieve records with a `created_at` value ≥ `from_created_date`.\n\nUse the [ISO 8601 date-time format](https://en.wikipedia.org/wiki/ISO_8601): `yyyy-MM-ddTHH:mm:ss[.SSSSSS]Z`."
+              },
+              {
+                "name": "to_created_date",
+                "value": "",
+                "type": "query",
+                "description": "Retrieve records with a `created_at` value ≤ `to_created_date`.\n\nUse the [ISO 8601 date-time format](https://en.wikipedia.org/wiki/ISO_8601): `yyyy-MM-ddTHH:mm:ss[.SSSSSS]Z`."
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "Filter disputes by state. Repeat the parameter to filter by multiple states.\n\n| Value | Description |\n|-------|-------------|\n| `needs_response` | Dispute requires your response |\n| `under_review` | Dispute is being reviewed |\n| `won` | Dispute resolved in your favour |\n| `lost` | Dispute resolved against you |\n\nThe parameter is case sensitive."
+              },
+              {
+                "name": "payment_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter disputes by the ID of the associated payment. Repeat the parameter to filter by multiple payment IDs.\n\n```\nhttps://merchant.revolut.com/api/disputes?payment_id=123&payment_id=456\n```"
+              }
+            ]
+          },
+          "docs": "Retrieve a list of disputes associated with your merchant account. \n\n:::note\nThis endpoint is only available in **Production** environment.\n:::\n\nYou can also use the query parameters for:\n  \n  | Filtering | Pagination |\n  | --------- | ---------- |\n  | Filter the diputes that you want to retrieve, for example, only retrieve the disputes that have a specific state. <br/><br/>Parameters used for filtering:<br/><ul><li>`from_created_date`</li><li>`to_created_date`</li><li>`payment_id`</li><li>`stat"
+        },
+        {
+          "info": {
+            "name": "Retrieve a dispute",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/disputes/:dispute_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "dispute_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Dispute` object."
+              }
+            ]
+          },
+          "docs": "Retrieve the details of a specific dispute by its ID.\n\n:::note\nThis endpoint is only available in **Production** environment.\n:::"
+        },
+        {
+          "info": {
+            "name": "Accept a dispute",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/disputes/:dispute_id/accept",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "dispute_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Dispute` object."
+              }
+            ]
+          },
+          "docs": "Marks a specific dispute as accepted.\n\nAfter accepting a dispute, you cannot challenge it.\n\n:::note\nThis endpoint is only available in **Production** environment.\n:::"
+        },
+        {
+          "info": {
+            "name": "Upload evidence for a dispute",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/disputes/:dispute_id/evidences",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              },
+              {
+                "name": "Content-Type",
+                "value": "multipart/form-data"
+              }
+            ],
+            "params": [
+              {
+                "name": "dispute_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Dispute` object."
+              }
+            ],
+            "body": {
+              "type": "multipart-form",
+              "data": []
+            }
+          },
+          "docs": "Allows uploading a single evidence file for a specific dispute. \n\nUse these evidences to provide proof for claims when challenging a dispute.\n\n:::warning\n**Limitations:**\n  - Maximum `100` uploaded files are allowed per dispute.\n  - Maximum file size: `10MB`.\n  - Allowed file types: `PDF`, `PNG`, `JPEG`.\n:::\n\n:::note\nThis endpoint is only available in **Production** environment.\n:::"
+        },
+        {
+          "info": {
+            "name": "Challenge a dispute",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/disputes/:dispute_id/challenge",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "dispute_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Dispute` object."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Allows challenging a dispute with a reason, comment and associated evidences.\n\nUse the uploaded evidences to provide proof for the challenge.\n\nA dispute previously accepted, cannot be challenged.\n\n:::note\nThis endpoint is only available in **Production** environment.\n:::"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,2050 @@
+{
+  "item": [
+    {
+      "id": "ee965c13-e18c-46a3-8bdc-632c178d330a",
+      "name": "Counterparties",
+      "description": {
+        "content": "Manage counterparties that you intend to transact with.\n\nRequest and response examples can vary based on the account provider's location and type of the counterparty. \nFor more information, see the guides: [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty), [Retrieve counterparties](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/retrieve-counterparties), and [Update a counterparty's payment method](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/update-counterparty-payment-method).\n\n:::note\nIn the Sandbox environment, you cannot add real people and businesses as Revolut counterparties. \nTherefore, to help you simulate [Create a counterparty](https://developer.revolut.com/docs/api/business#add-counterparty) requests, we have created some test accounts for counterparties of profile type `personal`.\n\nTo add a counterparty via Revtag, use one of these pairs for the `name` and `revtag` fields respectively: \n- `Test User 1` & `john1pvki`\n- `Test User 2` & `john2pvki`\n-    ...\n- `Test User 9` & `john9pvki`\n:::",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2405639b-ff31-4ecc-9617-5170f70cfbea",
+          "name": "Validate an account name (CoP/VoP)",
+          "request": {
+            "name": "Validate an account name (CoP/VoP)",
+            "description": {
+              "content": "Validate a counterparty's account name against their account details when [adding a counterparty](https://developer.revolut.com/docs/api/business#add-counterparty) or [making a transfer](https://developer.revolut.com/docs/api/business#create-payment) to a new or existing counterparty.\n\n:::warning\nThe CoP check is **not** a complete fraud-prevention tool, and it does **not** guarantee the person is who they claim to be.\nIt only confirms that the name and account details your provide match the bank's records.\n\nEven if the counterparty's details match, you should still exercise due caution when transferring funds.\n:::\n\n:::note[Availability & Sandbox behaviour]\n- This feature is only available to businesses in the [supported regions](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/confirmation-of-payee#supported-regions-and-services).\n  Additionally, to get access to CoP in the UK, eligible businesses must contact [Revolut API Support](mailto:api-requests@revolut.com).\n- In Sandbox, this feature is only available for **testing**.\n  While **incomplete or invalid requests** will return production-like error responses, **complete and valid requests** in Sandbox do **not** undergo real validation and will always return `cannot_be_checked`.\n:::\n\nThe validation relies on different underlying services, depending on the recipient's payment scheme (region and currency).\nThese factors determine which fields you must provide and what response you get.\n- For examples, refer to the request body samples.\n- For more information, see the guides: [Validate an account name (CoP/VoP)](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/confirmation-of-payee).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "account-name-validation"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c5e3327b-c63f-4006-96f2-209ea730f80c",
+              "name": "Account name validation result\n\n:::note\n- The actual results returned in the response come from the CoP services, not from Revolut.\n  The Business API passes them on as received.\n\n  Because of this, the descriptions below should be treated as an approximation rather than complete documentation.\n- The responses differ depending on the CoP service, even when the schema appears the same.\n  Make sure that you refer to the appropriate response variant.\n:::",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account-name-validation"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sort_code\": \"54-01-05\",\n  \"account_no\": \"12345678\",\n  \"individual_name\": {\n    \"first_name\": \"John\",\n    \"last_name\": \"Smith\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"result_code\": \"matched\",\n  \"individual_name\": {\n    \"first_name\": \"John\",\n    \"last_name\": \"Smith\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a7fe902d-1236-4a8a-b229-fc5fa8a6aac6",
+              "name": "Bad request\n\nReturned, for example, when the data you provided is invalid or required data is missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account-name-validation"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sort_code\": \"54-01-05\",\n  \"account_no\": \"12345678\",\n  \"individual_name\": {\n    \"first_name\": \"John\",\n    \"last_name\": \"Smith\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Invalid sort code: 54-01-050\",\n  \"code\": 3000\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fe01b747-807a-47f5-8892-0457a1f3e200",
+              "name": "Unauthorized\n\nReturned, for example, when the credentials you used to make the request are invalid.\nFor more information, see the **Authorization** section.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account-name-validation"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sort_code\": \"54-01-05\",\n  \"account_no\": \"12345678\",\n  \"individual_name\": {\n    \"first_name\": \"John\",\n    \"last_name\": \"Smith\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"The request should be authorized.\",\n  \"status\": 401\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5eddb287-6a99-4581-8a6b-fe6234ff59b8",
+              "name": "Not found\n\nReturned, for example, when your account does not have access to CoP.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account-name-validation"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sort_code\": \"54-01-05\",\n  \"account_no\": \"12345678\",\n  \"individual_name\": {\n    \"first_name\": \"John\",\n    \"last_name\": \"Smith\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Resource not found\",\n  \"code\": 3006\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1a604dfd-d7a7-4b27-a6dd-e7588b6c9873",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account-name-validation"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sort_code\": \"54-01-05\",\n  \"account_no\": \"12345678\",\n  \"individual_name\": {\n    \"first_name\": \"John\",\n    \"last_name\": \"Smith\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 5257,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c317c73b-d0fb-4f15-b9ae-7f185e6381f0",
+          "name": "Retrieve a list of counterparties",
+          "request": {
+            "name": "Retrieve a list of counterparties",
+            "description": {
+              "content": "Get all the counterparties that you have created, or use the query parameters to filter the results. \n\nThe counterparties are sorted by the `created_at` date in reverse chronological order.\n\nThe returned counterparties are **paginated**. \nThe maximum number of counterparties returned per page is specified by the `limit` parameter.\nTo get to the next page, make a new request and use the `created_at` date of the last counterparty returned in the previous response.\n\nFor more information, see the guides: [Retrieve counterparties](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/retrieve-counterparties).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "counterparties"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>",
+                  "description": "The name of the counterparty to retrieve. It does not need to be an exact match, partial match is also supported. \n\n:::note\nSpecial characters must be properly URL-encoded.\n:::"
+                },
+                {
+                  "disabled": false,
+                  "key": "account_no",
+                  "value": "<string>",
+                  "description": "The exact account number of the counterparty to retrieve."
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_code",
+                  "value": "<string>",
+                  "description": "The exact sort code of the counterparty to retrieve. \nOnly allowed in combination with the `account_no` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "iban",
+                  "value": "<string>",
+                  "description": "The exact IBAN of the counterparty to retrieve."
+                },
+                {
+                  "disabled": false,
+                  "key": "bic",
+                  "value": "<string>",
+                  "description": "The exact BIC of the counterparty to retrieve. \nOnly allowed in combination with the `iban` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "created_before",
+                  "value": "the date-time at which the request is made",
+                  "description": "Retrieves counterparties with `created_at` < `created_before`.\nThe default value is the current date and time at which you are calling the endpoint. \n\nProvide it in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "100",
+                  "description": "The maximum number of counterparties returned per page.\n\nTo get to the next page, make a new request and use the `created_at` date of the last counterparty returned in the previous response as the value for `created_before`."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "01ed0102-93e3-40e2-b014-f63a3b575fc0",
+              "name": "List of your counterparties",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_no",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "iban",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "bic",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "created_before",
+                      "value": "the date-time at which the request is made"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"239d6f1f-2222-4ae6-1111-5cc603341b4e\",\n    \"name\": \"Jane Doe Co.\",\n    \"profile_type\": \"business\",\n    \"state\": \"created\",\n    \"created_at\": \"2022-09-14T14:47:12.273718Z\",\n    \"updated_at\": \"2022-09-14T14:47:12.273718Z\",\n    \"accounts\": [\n      {\n        \"iban\": \"GB66REVO00996995908786\",\n        \"bic\": \"REVOGB21\",\n        \"id\": \"b209281b-aakk-9911-8d83-ac72469cef8f\",\n        \"name\": \"Jane Doe Co.\",\n        \"bank_country\": \"GB\",\n        \"currency\": \"EUR\",\n        \"type\": \"external\",\n        \"address\": {\n          \"street_line1\": \"Revolut LTD\",\n          \"street_line2\": \"1 Canada Square\",\n          \"region\": \"Greater London\",\n          \"city\": \"London\",\n          \"country\": \"GB\",\n          \"postcode\": \"E14 5AB\"\n        }\n      }\n    ]\n  },\n  {\n    \"id\": \"8e0e9886-0af1-4b0c-acf4-111180d2892b\",\n    \"name\": \"John Smith\",\n    \"revtag\": \"johnsmith\",\n    \"profile_type\": \"personal\",\n    \"country\": \"GB\",\n    \"state\": \"created\",\n    \"created_at\": \"2022-09-14T14:41:39.312017Z\",\n    \"updated_at\": \"2022-09-14T14:41:39.312017Z\"\n  },\n  {\n    \"id\": \"11cae5ef-ec24-401d-98a3-e5baa0041671\",\n    \"name\": \"John Smith Co.\",\n    \"revtag\": \"jsmithco1\",\n    \"profile_type\": \"business\",\n    \"country\": \"GB\",\n    \"state\": \"created\",\n    \"created_at\": \"2025-09-16T09:34:41.790401Z\",\n    \"updated_at\": \"2025-09-16T09:34:41.790401Z\",\n    \"accounts\": [\n      {\n        \"id\": \"ad3c3b03-611e-461e-99b2-572f4785e44b\",\n        \"name\": \"Main GBP\",\n        \"currency\": \"GBP\",\n        \"type\": \"revolut\"\n      },\n      {\n        \"id\": \"67fe3eaa-c994-40c0-b3e0-7b6bfe0cedca\",\n        \"name\": \"Main EUR\",\n        \"currency\": \"EUR\",\n        \"type\": \"revolut\"\n      }\n    ]\n  },\n  {\n    \"id\": \"e7e36cce-2e9c-4e96-818e-1c2fed325852\",\n    \"name\": \"John Doe Co.\",\n    \"profile_type\": \"business\",\n    \"state\": \"created\",\n    \"created_at\": \"2022-08-14T14:34:11.168340Z\",\n    \"updated_at\": \"2022-08-14T14:34:11.168340Z\",\n    \"accounts\": [\n      {\n        \"account_no\": \"12345674\",\n        \"sort_code\": \"540107\",\n        \"id\": \"e277b2bd-3a6d-423b-933d-3d425094bb13\",\n        \"name\": \"John Doe Co.\",\n        \"bank_country\": \"GB\",\n        \"currency\": \"GBP\",\n        \"type\": \"external\",\n        \"address\": {\n          \"street_line1\": \"7 King's Road\",\n          \"region\": \"Greater London\",\n          \"city\": \"London\",\n          \"country\": \"GB\",\n          \"postcode\": \"SW3 4PQ\"\n        }\n      }\n    ]\n  },\n  {\n    \"id\": \"239d6f1f-2222-4ae6-1111-5cc603341b4e\",\n    \"name\": \"Bleu Blanc Conseil SARL\",\n    \"profile_type\": \"business\",\n    \"state\": \"created\",\n    \"created_at\": \"2022-09-14T14:47:12.273718Z\",\n    \"updated_at\": \"2022-09-14T14:47:12.273718Z\",\n    \"accounts\": [\n      {\n        \"iban\": \"FR1420041010050500013M02606\",\n        \"bic\": \"PSSTFRPPLIL\",\n        \"id\": \"b209281b-aakk-9911-8d83-ac72469cef8f\",\n        \"name\": \"Bleu Blanc Conseil SARL\",\n        \"bank_country\": \"FR\",\n        \"currency\": \"EUR\",\n        \"type\": \"external\",\n        \"address\": {\n          \"street_line1\": \"12 Rue de la Paix\",\n          \"city\": \"Paris\",\n          \"country\": \"FR\",\n          \"postcode\": \"75002\"\n        }\n      }\n    ]\n  },\n  {\n    \"id\": \"b8ce3922-d518-4ae6-9426-e8cc117e5332\",\n    \"name\": \"Johann Meier Co.\",\n    \"profile_type\": \"business\",\n    \"state\": \"created\",\n    \"created_at\": \"2023-08-10T12:43:20.273500Z\",\n    \"updated_at\": \"2026-01-30T12:43:20.273500Z\",\n    \"accounts\": [\n      {\n        \"iban\": \"CH9300762011623852957\",\n        \"bic\": \"UBSWCHZH80A\",\n        \"id\": \"d95bc455-f495-4f18-95fa-32f99479318c\",\n        \"name\": \"Johann Meier Co.\",\n        \"bank_country\": \"CH\",\n        \"currency\": \"EUR\",\n        \"type\": \"external\",\n        \"address\": {\n          \"street_line1\": \"Bahnhofstrasse 10\",\n          \"city\": \"Zurich\",\n          \"country\": \"CH\",\n          \"postcode\": \"8001\"\n        }\n      }\n    ]\n  },\n  {\n    \"id\": \"173e6a6b-d955-465f-8f31-7f6f7c03927c\",\n    \"name\": \"Edelweiss Handel GmbH\",\n    \"profile_type\": \"business\",\n    \"state\": \"created\",\n    \"created_at\": \"2023-08-10T12:43:20.273500Z\",\n    \"updated_at\": \"2026-01-32T10:54:03.350240Z\",\n    \"accounts\": [\n      {\n        \"iban\": \"CH5604835012345678009\",\n        \"bic\": \"UBSWCHZH80A\",\n        \"id\": \"b3cc43e8-f141-459b-9bd5-3505cf9797f8\",\n        \"name\": \"Edelweiss Handel GmbH\",\n        \"bank_country\": \"CH\",\n        \"currency\": \"CHF\",\n        \"type\": \"external\",\n        \"address\": {\n          \"street_line1\": \"Marktgasse 22\",\n          \"city\": \"Bern\",\n          \"country\": \"CH\",\n          \"postcode\": \"3011\"\n        }\n      }\n    ]\n  },\n  {\n    \"id\": \"1d9013c8-84bf-474c-b3d9-690f2ae2e65c\",\n    \"name\": \"Jane Doe\",\n    \"state\": \"created\",\n    \"created_at\": \"2024-01-10T15:32:10.172300Z\",\n    \"updated_at\": \"2024-01-10T15:32:10.172300Z\",\n    \"cards\": [\n      {\n        \"id\": \"0130f363-eeaf-4aa8-b77f-a6a629c603f5\",\n        \"name\": \"Jane Doe\",\n        \"last_digits\": 1234,\n        \"scheme\": \"visa\",\n        \"country\": \"GB\",\n        \"currency\": \"GBP\"\n      },\n      {\n        \"id\": \"fa05f2e5-d253-4661-85cc-bcff98b136ac\",\n        \"name\": \"Jane Doe\",\n        \"last_digits\": 5678,\n        \"scheme\": \"mastercard\",\n        \"country\": \"GB\",\n        \"currency\": \"GBP\"\n      }\n    ]\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f2659e46-48de-4e1e-bd77-e5f54f95cd2d",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_no",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "iban",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "bic",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "created_before",
+                      "value": "the date-time at which the request is made"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"limit must be between 1 and 1000\",\n  \"code\": 2101\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c007fd13-77d3-4101-8b1e-bbe0522b0f71",
+              "name": "Anauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_no",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "iban",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "bic",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "created_before",
+                      "value": "the date-time at which the request is made"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"The request should be authorized.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ec440dd6-0f76-4bc3-8bfe-c894935e140e",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_no",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "iban",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "bic",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "created_before",
+                      "value": "the date-time at which the request is made"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 5257,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ff454c84-c250-4327-8748-6d2974b4e32c",
+          "name": "Create a counterparty",
+          "request": {
+            "name": "Create a counterparty",
+            "description": {
+              "content": "Create a new counterparty to transact with.\n\n### Revtags in Sandbox\n\nIn the Sandbox environment, you cannot add real people and businesses as Revolut counterparties.\nTo help you simulate adding counterparties using Revtag, we created some test accounts of profile type `personal` that you can use.\n\n<details id='test-accounts-for-sandbox'>\n  <summary> \n  <b>Test accounts for Sandbox</b>\n  </summary>\n\n  To add a counterparty via Revtag, use one of these pairs for the `name` and `revtag` fields respectively:\n  - `Test User 1` & `john1pvki`\n  - `Test User 2` & `john2pvki`\n  -    ...\n  - `Test User 9` & `john9pvki`\n\n</details>\n\n### Address field recommendations\n\nSome payment rails may have stricter requirements regarding the `address` field – for example, by also requiring the `region` field.  \nThis is why we recommend that you use **all** available address fields (including `street_line1`, `region` and `city`) when creating a counterparty.\n\nThis significantly reduces the risk of any disruption to payments made via the API.\n\n### Multiple counterparties with the same details\n\nYou cannot create multiple counterparties with the same Revtag.\nThis restriction does not apply to other details. \nFor example:\n- **Revtag**: If you've already added `johnsmith` as a Revolut counterparty, you can't add another counterparty with the `johnsmith` Revtag.\n  If you try to do so, you'll get an error.\n- **Other details**: If you've added John Smith as an individual UK counterparty using GBP with `sort_code=54-01-05` and `account_no=12345678`, you can still use the same details to create another counterparty.\n\n### Counterparty name\n\nWhen creating a counterparty, ensure that you use the correct field to define the counterparty's name.\n\n<table>\n  <thead>\n    <tr>\n      <th rowSpan=\"2\"> Counterparty type</th>\n      <th colSpan=\"2\">Name field to use when added with:</th>\n    </tr>\n    <tr>\n      <th>Revtag</th>\n      <th>Other details</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>Individual</th>\n      <td><code>name</code> (string)</td>\n      <td><code>individual_name</code> (<b>object</b> with string subfields for first and last name)</td>\n    </tr>\n    <tr>\n      <th>Company</th>\n      <td><code>name</code> (string)</td>\n      <td><code>company_name</code> (string)</td>\n    </tr>\n  </tbody>\n</table>\n\n---\n\nFor more information, see the guides: [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "counterparty"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profile_type\": \"<string>\",\n  \"revtag\": \"<string>\",\n  \"name\": \"<string>\",\n  \"company_name\": \"<string>\",\n  \"individual_name\": {\n    \"first_name\": \"<string>\",\n    \"last_name\": \"<string>\"\n  },\n  \"bank_country\": \"<string>\",\n  \"currency\": \"<string>\",\n  \"account_no\": \"<string>\",\n  \"iban\": \"<string>\",\n  \"sort_code\": \"<string>\",\n  \"routing_number\": \"<string>\",\n  \"bic\": \"<string>\",\n  \"clabe\": \"<string>\",\n  \"ifsc\": \"<string>\",\n  \"bsb_code\": \"<string>\",\n  \"address\": {\n    \"country\": \"<string>\",\n    \"postcode\": \"<string>\",\n    \"street_line1\": \"<string>\",\n    \"street_line2\": \"<string>\",\n    \"region\": \"<string>\",\n    \"city\": \"<string>\"\n  },\n  \"route\": \"<string>\",\n  \"bank_number\": \"<string>\",\n  \"branch_code\": \"<string>\",\n  \"account_type\": \"<string>\",\n  \"tax_id\": \"<string>\",\n  \"national_id\": \"<string>\",\n  \"phone\": \"<string>\",\n  \"business_registration_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8e2ef42a-f078-4f63-8e7e-17703f291b3f",
+              "name": "Added counterparty",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparty"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"profile_type\": \"personal\",\n  \"name\": \"John Smith\",\n  \"revtag\": \"johnsmith\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"54ee57d7-1234-abcd-1234-0e1f79164d5e\",\n  \"name\": \"John Smith\",\n  \"revtag\": \"johnsmith\",\n  \"profile_type\": \"personal\",\n  \"country\": \"GB\",\n  \"state\": \"created\",\n  \"created_at\": \"2023-07-26T09:34:41.790401Z\",\n  \"updated_at\": \"2023-07-26T09:34:41.790401Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "89de0662-aefd-4f57-a651-664cd5b2eb63",
+              "name": "Bad Request\n\nReturned, for example, when the provided IBAN is invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparty"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"profile_type\": \"personal\",\n  \"name\": \"John Smith\",\n  \"revtag\": \"johnsmith\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 3000,\n  \"message\": \"FR66995908786 is not a valid IBAN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "49c55164-0e09-4150-be08-0dec735c6920",
+              "name": "Not Found\n\nReturned, for example, when the counterparty that you're trying to add doesn't exist, or when the name that you provide for the Revtag counterparty doesn't match the actual name on the account.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparty"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"profile_type\": \"personal\",\n  \"name\": \"John Smith\",\n  \"revtag\": \"johnsmith\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 3006,\n  \"message\": \"Resource not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b947015e-d253-49f5-943d-b30faae40fea",
+              "name": "Unprocessable Content\n\nReturned, for example, when the Revolut counterparty that you're trying to add using Revtag already exists, or when the counterparty cannot be added.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparty"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"profile_type\": \"personal\",\n  \"name\": \"John Smith\",\n  \"revtag\": \"johnsmith\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"This counterparty already exists\",\n  \"code\": 3012,\n  \"params\": {\n    \"counterparty_id\": \"878029d4-5972-4424-ae8c-80fe5f59407b\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4897d2c5-58bb-4040-80c1-b446772ed007",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparty"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"profile_type\": \"personal\",\n  \"name\": \"John Smith\",\n  \"revtag\": \"johnsmith\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 5257,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "053fa78d-1f19-4a9b-9f3f-947ce7edd7d5",
+          "name": "Check supported countries and currencies",
+          "request": {
+            "name": "Check supported countries and currencies",
+            "description": {
+              "content": "Retrieve all supported bank countries and their available currencies for counterparty creation.\n\n:::note [Note]\nThis feature is not available in Sandbox.\n:::\n\nUse this endpoint to discover which country and currency combinations are supported before checking field requirements with the [Check counterparty field requirements endpoint](https://developer.revolut.com/docs/api/business#get-counterparty-requirements).\n\nFor more details, see the guide: **Check supported counterparty countries and currencies** section in [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty#check-supported-counterparty-countries-and-currencies).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "counterparties",
+                "countries"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "8c1be0db-47f3-4372-9cdd-111b7e246bb1",
+              "name": "The list of supported bank countries and their available currencies",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparties",
+                    "countries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"countries\": [\n    {\n      \"country\": \"GB\",\n      \"currencies\": [\n        \"GBP\"\n      ]\n    },\n    {\n      \"country\": \"US\",\n      \"currencies\": [\n        \"USD\"\n      ]\n    },\n    {\n      \"country\": \"DE\",\n      \"currencies\": [\n        \"EUR\"\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b37f8455-b6ab-4fbe-8916-5615a65d8766",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparties",
+                    "countries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 348,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a2e9f04a-8233-483a-a361-99bd77d359ae",
+          "name": "Check counterparty field requirements",
+          "request": {
+            "name": "Check counterparty field requirements",
+            "description": {
+              "content": "Retrieve the list of conditionally required or applicable fields for creating a counterparty together with their constraints.\n\n:::note [Note]\nThis feature is not available in Sandbox.\n:::\n\nWhen creating a counterparty via the [Create a counterparty endpoint](https://developer.revolut.com/docs/api/business#add-counterparty), certain fields (such as `first_name`, `last_name`, `company_name`, `tax_id`, `route`, or `account_type`) become required depending on the counterparty's bank country, currency, and profile type.\nThis read-only endpoint allows you to discover these contextual fields dynamically, along with their validation rules and available options.\n\nOnly the fields relevant to the specific context are returned.\nThe input parameters (`country`, `currency`, and `recipient_type`) are intentionally excluded from the response.\n\nFor more details, see the guide: **Check counterparty field requirements** section in [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty#check-counterparty-field-requirements).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "counterparties",
+                "fields"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "country",
+                  "value": "<string>",
+                  "description": "(Required) The country where the counterparty's bank account is located."
+                },
+                {
+                  "disabled": false,
+                  "key": "currency",
+                  "value": "<string>",
+                  "description": "(Required) The currency of the counterparty's bank account."
+                },
+                {
+                  "disabled": false,
+                  "key": "recipient_type",
+                  "value": "<string>",
+                  "description": "(Required) The type of the counterparty profile.\nIndicates whether the counterparty is a personal or business account."
+                },
+                {
+                  "disabled": false,
+                  "key": "route",
+                  "value": "<string>",
+                  "description": "The routing method for the corridor. \nWhen omitted, the response includes fields for the default route.\nFor example, for USD to US, the default is `ach`."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "6d6b9c4e-5720-4ed2-8ff5-fc7573ec5d01",
+              "name": "The applicable and conditionally required fields for creating the counterparty",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparties",
+                    "fields"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "GB"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "recipient_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "route",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"fields\": [\n    {\n      \"name\": \"first_name\",\n      \"required\": true,\n      \"regex\": {\n        \"pattern\": \"^[-'\\\\p{L} ]{1,40}$\",\n        \"description\": \"Letters, hyphens and apostrophes only, up to 40 characters\"\n      }\n    },\n    {\n      \"name\": \"last_name\",\n      \"required\": true,\n      \"regex\": {\n        \"pattern\": \"^[-'\\\\p{L} ]{1,40}$\",\n        \"description\": \"Letters, hyphens and apostrophes only, up to 40 characters\"\n      }\n    },\n    {\n      \"name\": \"sort_code\",\n      \"required\": true,\n      \"regex\": {\n        \"pattern\": \"^\\\\d{6}$\",\n        \"description\": \"6-digit number\"\n      }\n    },\n    {\n      \"name\": \"account_no\",\n      \"required\": true,\n      \"regex\": {\n        \"pattern\": \"^\\\\d{8}$\",\n        \"description\": \"8-digit number\"\n      }\n    },\n    {\n      \"name\": \"address\",\n      \"required\": true\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3d75f3be-baff-4eaa-bc2d-97d13bb7dd22",
+              "name": "Bad request\n\nFor example:\n- missing or invalid query parameters\n- unsupported recipient type for country/currency combination",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparties",
+                    "fields"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "GB"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "recipient_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "route",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"40626b34-365b-43d0-b148-04dcbaeaf4df\",\n  \"code\": 2101,\n  \"message\": \"Invalid request (missing or invalid query parameters)\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c9b5079e-bf7d-4c3b-a086-dbf6dfd67b4c",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparties",
+                    "fields"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "GB"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "recipient_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "route",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"a29241ce-1f37-4ffb-8249-d09faec81aed\",\n  \"code\": 3006,\n  \"message\": \"Resource not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7b869664-fef8-483b-b3d8-29f034fef728",
+              "name": "Unprocessable entity\n\nFor example:\n- currency not supported for the given country",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparties",
+                    "fields"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "GB"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "recipient_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "route",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"2cd5330c-c4a9-45ce-88d3-8cbdaeba887c\",\n  \"code\": 4030,\n  \"message\": \"Currency for country is not supported\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f8b4bbe2-c61f-4657-8cf0-f46d7466ed8f",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparties",
+                    "fields"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "GB"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "recipient_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "route",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 348,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6c7fd9aa-e2c4-49cb-9801-6ad4d1577a83",
+          "name": "Retrieve a counterparty",
+          "request": {
+            "name": "Retrieve a counterparty",
+            "description": {
+              "content": "Get the information about a specific counterparty by ID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "counterparty",
+                ":counterparty_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "counterparty_id",
+                  "description": "(Required) The ID of the counterparty to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "5a34556f-e254-4b0b-a7db-2f1478465ffc",
+              "name": "The information about a specific counterparty",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparty",
+                    ":counterparty_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "counterparty_id",
+                      "description": "(Required) The ID of the counterparty to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"8e0e9886-0af1-4b0c-acf4-111180d2892b\",\n  \"name\": \"John Smith\",\n  \"revtag\": \"johnsmith\",\n  \"profile_type\": \"personal\",\n  \"country\": \"GB\",\n  \"state\": \"created\",\n  \"created_at\": \"2022-09-14T14:41:39.312017Z\",\n  \"updated_at\": \"2022-09-14T14:41:39.312017Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ee49d367-ef27-4d72-80a9-2ce8af26e281",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparty",
+                    ":counterparty_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "counterparty_id",
+                      "description": "(Required) The ID of the counterparty to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 5257,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f0266e90-13ed-4db9-ba04-48aab1e5df7b",
+          "name": "Delete a counterparty",
+          "request": {
+            "name": "Delete a counterparty",
+            "description": {
+              "content": "Delete a counterparty with the given ID. When a counterparty is deleted, you cannot make any payments to the counterparty.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "counterparty",
+                ":counterparty_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "counterparty_id",
+                  "description": "(Required) The ID of the counterparty to delete."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "52be4b91-8beb-464b-91ab-82653bf6ce50",
+              "name": "The counterparty deleted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparty",
+                    ":counterparty_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "counterparty_id",
+                      "description": "(Required) The ID of the counterparty to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "704b810e-7211-4441-aa7e-37d07e36065f",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparty",
+                    ":counterparty_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "counterparty_id",
+                      "description": "(Required) The ID of the counterparty to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 5257,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0c3c6a0e-ad5d-4e2f-8c19-fa8da9838372",
+          "name": "Update a counterparty's payment method",
+          "request": {
+            "name": "Update a counterparty's payment method",
+            "description": {
+              "content": "Update the **address** of a counterparty's payment method.\n\n:::tip [What is a payment method?]\nA payment method is an individual account or card linked to a counterparty. When you [retrieve a counterparty](https://developer.revolut.com/docs/api/business#get-counterparty), the response includes an `accounts` array and a `cards` array — each entry in these arrays is a payment method with its own `id`.\n:::\n\nAs only bank account payment methods have an address, you can use this endpoint to update the address of a counterparty's bank account.\n\nTo get the `payment_method_id` for the bank account, [retrieve the counterparty](https://developer.revolut.com/docs/api/business#get-counterparty) and use the `id` from the `accounts` array in the response.\n\nYou must provide the full address object — all required address fields must be present in the request.\nOmitted optional fields will retain their existing values.\n\nFor more information, see the guide: [Update a counterparty's payment method](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/update-counterparty-payment-method).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "counterparties",
+                ":counterparty_id",
+                "payment-methods",
+                ":payment_method_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "counterparty_id",
+                  "description": "(Required) The ID of the counterparty."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payment_method_id",
+                  "description": "(Required) The ID of the payment method to update. To get the `payment_method_id` for the bank account, [retrieve the counterparty](https://developer.revolut.com/docs/api/business#get-counterparty) and use the `id` from the `accounts` array in the response."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": {\n    \"country\": \"<string>\",\n    \"street_line1\": \"<string>\",\n    \"city\": \"<string>\",\n    \"postcode\": \"<string>\",\n    \"street_line2\": \"<string>\",\n    \"region\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "667dc88e-d2bd-48a6-a3f0-5910a4f57d28",
+              "name": "The address was updated",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparties",
+                    ":counterparty_id",
+                    "payment-methods",
+                    ":payment_method_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "counterparty_id",
+                      "description": "(Required) The ID of the counterparty."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_method_id",
+                      "description": "(Required) The ID of the payment method to update. To get the `payment_method_id` for the bank account, [retrieve the counterparty](https://developer.revolut.com/docs/api/business#get-counterparty) and use the `id` from the `accounts` array in the response."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"address\": {\n    \"country\": \"GB\",\n    \"street_line1\": \"7 Revolut Street\",\n    \"street_line2\": \"Floor 3\",\n    \"city\": \"London\",\n    \"postcode\": \"EC2V 8PH\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7e4f4688-4d0b-4acd-a5ca-bf298022152d",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "counterparties",
+                    ":counterparty_id",
+                    "payment-methods",
+                    ":payment_method_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "counterparty_id",
+                      "description": "(Required) The ID of the counterparty."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_method_id",
+                      "description": "(Required) The ID of the payment method to update. To get the `payment_method_id` for the bank account, [retrieve the counterparty](https://developer.revolut.com/docs/api/business#get-counterparty) and use the `id` from the `accounts` array in the response."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"address\": {\n    \"country\": \"GB\",\n    \"street_line1\": \"7 Revolut Street\",\n    \"street_line2\": \"Floor 3\",\n    \"city\": \"London\",\n    \"postcode\": \"EC2V 8PH\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 348,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://b2b.revolut.com/api/1.0",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "7e83a118-7815-4a29-80f1-5bc886a5c55a",
+    "name": "Business Accounting Counterparties API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Report runs API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Report runs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a report run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/report-runs",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Start generating a report of all transactions that match the filter and options specified in the request body.\n\nUse the returned `report_run_id` and the [Retrieve report run details](https://developer.revolut.com/docs/api/merchant#retrieve-report-run) operation to check the status of the generation.\n\nAfter generation is done, use the [Download report file](https://developer.revolut.com/docs/api/merchant#download-report-file) operation to retrieve the CSV. The `file_url` in the completed report r"
+        },
+        {
+          "info": {
+            "name": "Retrieve a report run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/report-runs/:report_run_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "report_run_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique ID of the report run."
+              }
+            ]
+          },
+          "docs": "Retrieve details of a report run, based on the `report_run_id`. \n\nUse this method to check the status of a report run.\n\nIf a report run's `status` is `completed`, the report file can be downloaded using the `file_url` for 24 hours after report generation finishes.\n\nOnce that 24-hour window elapses, the report run remains retrievable but transitions to `expired`, and the file can no longer be downloaded."
+        },
+        {
+          "info": {
+            "name": "Download report file",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/report-runs/:report_run_id/file",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "report_run_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique ID of the report run."
+              }
+            ]
+          },
+          "docs": "Use this endpoint to download the generated report file.\n\nA generated report file is available for 24 hours after report generation finishes. After that, the report run becomes `expired` and the file can no longer be downloaded.\n\nThe response is a raw `text/csv` file. The first row contains the column headers. The columns included depend on the report type used when creating the report run, and the `options.columns` list if specified.\n\n### IDs across report types\n\nRevolut uses two separate ID sy"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

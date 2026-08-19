@@ -1,0 +1,625 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Subscriptions API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Subscriptions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a subscription plan list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscription-plans",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return. Used for **pagination**."
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Filter records created from this date/time. Used for **filtering**."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "Filter records created until this date/time. Used for **filtering**."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Token for retrieving the next page of results. Used for **pagination**.\n\nTo paginate through results:\n\n  1. Make an initial request with the desired `limit`.\n  1. The response will include a `next_page_token` if more results are available.\n  1. Use that token in the `page_token` parameter of your next request.\n  1. Repeat until `next_page_token` is not present.\n\n:::note\nWhen using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.\n:::"
+              }
+            ]
+          },
+          "docs": "Retrieve all subscription plans configured for your merchant account. You can use the query parameters for:\n\n  | Filtering | Pagination |\n  | --------- | ---------- |\n  | Filter the subscription plans that you want to retrieve, for example, only retrieve plans created within a specific date range. <br/><br/>Parameters used for filtering:<br/><ul><li>`from`</li><li>`to`</li></ul> | View the subscription plans without loading all of them at once, for example, return a specified number of plans per"
+        },
+        {
+          "info": {
+            "name": "Create a subscription plan",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscription-plans",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new subscription plan with one or more pricing variations.\n\nA subscription plan defines the billing structure for subscriptions. Each plan can have multiple variations (e.g., monthly vs. yearly), and each variation can have multiple billing phases (e.g., trial period followed by regular billing). These plans are designed for flexibility, allowing you to combine fixed recurring fees with unit-based or usage-based charges into a single, unified subscription.\n\n## How subscription plans wor"
+        },
+        {
+          "info": {
+            "name": "Retrieve a subscription plan",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscription-plans/:subscription_plan_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription_plan_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the subscription plan."
+              }
+            ]
+          },
+          "docs": "Retrieve a specific subscription plan by its unique identifier.\n\nA subscription plan contains **variations** (different pricing options like monthly vs. yearly), and each variation contains **phases** (sequential billing stages).\n\nPhases execute based on their `ordinal` value. When a phase completes its `cycle_count`, the subscription moves to the next phase. If `cycle_count` is `null` or omitted, the phase continues indefinitely.\n\n:::note\nIf a `trial_duration` is defined, phases begin immediate"
+        },
+        {
+          "info": {
+            "name": "Retrieve a subscription list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscriptions",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return. Used for **pagination**."
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Filter records created from this date/time. Used for **filtering**."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "Filter records created until this date/time. Used for **filtering**."
+              },
+              {
+                "name": "external_reference",
+                "value": "",
+                "type": "query",
+                "description": "Return subscriptions with a specific `external_reference`. Used for **filtering**."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Token for retrieving the next page of results. Used for **pagination**.\n\nTo paginate through results:\n\n  1. Make an initial request with the desired `limit`.\n  1. The response will include a `next_page_token` if more results are available.\n  1. Use that token in the `page_token` parameter of your next request.\n  1. Repeat until `next_page_token` is not present.\n\n:::note\nWhen using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.\n:::"
+              }
+            ]
+          },
+          "docs": "Retrieve all subscriptions for the merchant account. You can use the query parameters for:\n\n  | Filtering | Pagination |\n  | --------- | ---------- |\n  | Filter the subscriptions that you want to retrieve, for example, only retrieve subscriptions created within a specific date range or with a specific external reference. <br/><br/>Parameters used for filtering:<br/><ul><li>`from`</li><li>`to`</li><li>`external_reference`</li></ul> | View the subscriptions without loading all of them at once, for"
+        },
+        {
+          "info": {
+            "name": "Create a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscriptions",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              },
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new subscription for a customer using a subscription plan variation.\n\nThere are several supported flows for creating and activating subscriptions, depending on your integration needs.\n\n:::note\nThe customer must already exist in the API. The `customer_id` is required for all subscription flows.\n:::\n\n<details>\n<summary>\n\n#### Flow 1: Hosted Payment Page (HPP)\n\n</summary>\n\nUse this flow to redirect the customer to Revolut's Hosted Payment Page to complete the first payment and save their p"
+        },
+        {
+          "info": {
+            "name": "Retrieve a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscriptions/:subscription_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the subscription."
+              }
+            ]
+          },
+          "docs": "Retrieve a subscription by its unique identifier.\n\nUse this endpoint to get the current state and details of a specific subscription."
+        },
+        {
+          "info": {
+            "name": "Update a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscriptions/:subscription_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the subscription."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a subscription's details.\n\nYou can update a subscription and specific parameters based on the value of the `state` parameter:\n\n| State parameter value | Modifiable parameters |\n| --------------------- | --------------------- |\n| `pending`, `active`, `overdue`, `paused` | You can modify all listed parameters. |\n| `cancelled`, `finished` | You cannot modify parameters. These are final states. |\n\n**Common use cases:**\n- **Update external reference**: When you need to sync with updated custom"
+        },
+        {
+          "info": {
+            "name": "Change a subscription plan",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscriptions/:subscription_id/change-plan",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the subscription."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Schedule a plan change for a subscription. The change is applied at the end of the current billing cycle.\n\n### Use cases\n\n- **Plan upgrades:** Moving a customer to a higher-tier plan with more features or capacity.\n- **Plan downgrades:** Moving a customer to a lower-tier plan that better fits their usage and budget.\n- **Customer requests:** Accommodating a customer's request to switch to a different plan variation.\n\n### How it works\n\nWhen you schedule a plan change, the subscription continues op"
+        },
+        {
+          "info": {
+            "name": "Update a subscription renewal date",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscriptions/:subscription_id/change-renewal-date",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the subscription."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Reschedule the upcoming payment date for an active subscription cycle. This is a command endpoint — the renewal date is not a direct field on the Subscription resource, but is derived from the current active cycle's `end_date`.\n\n### Use cases\n\n- **Payment extensions:** Granting a customer more time to pay.\n- **Service delays:** Adjusting the billing date if service delivery is delayed.\n- **Billing alignment:** Moving a payment date to better suit a customer's financial schedule.\n\n### How it work"
+        },
+        {
+          "info": {
+            "name": "Cancel a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscriptions/:subscription_id/cancel",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the subscription."
+              }
+            ]
+          },
+          "docs": "Cancel a subscription.\n\nYou can cancel a subscription in any state except `cancelled` or `finished`. When you cancel a subscription, it will be marked as `cancelled` and no further billing cycles will be created. Any pending orders will be cancelled."
+        },
+        {
+          "info": {
+            "name": "Retrieve a subscription cycle list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscriptions/:subscription_id/cycles",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the subscription."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return. Used for **pagination**."
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Filter records created from this date/time. Used for **filtering**."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "Filter records created until this date/time. Used for **filtering**."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Token for retrieving the next page of results. Used for **pagination**.\n\nTo paginate through results:\n\n  1. Make an initial request with the desired `limit`.\n  1. The response will include a `next_page_token` if more results are available.\n  1. Use that token in the `page_token` parameter of your next request.\n  1. Repeat until `next_page_token` is not present.\n\n:::note\nWhen using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.\n:::"
+              }
+            ]
+          },
+          "docs": "Retrieve all billing cycles for a specific subscription. \n\nYou can use the query parameters for:\n\n  | Filtering | Pagination |\n  | --------- | ---------- |\n  | Filter the subscription cycles that you want to retrieve, for example, only retrieve cycles that started within a specific date range. <br/><br/>Parameters used for filtering:<br/><ul><li>`from`</li><li>`to`</li></ul> | View the subscription cycles without loading all of them at once, for example, return a specified number of cycles per p"
+        },
+        {
+          "info": {
+            "name": "Retrieve a subscription cycle",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscriptions/:subscription_id/cycles/:cycle_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the subscription."
+              },
+              {
+                "name": "cycle_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the subscription cycle."
+              }
+            ]
+          },
+          "docs": "Retrieve a specific billing cycle for a subscription by its unique identifier.\n\nUse this endpoint to get the details and current state of a particular billing cycle."
+        },
+        {
+          "info": {
+            "name": "Retrieve a subscription usage list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscription-usages",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return. Used for **pagination**."
+              },
+              {
+                "name": "from_usage_date",
+                "value": "",
+                "type": "query",
+                "description": "Filter usage records with a `usage_date` on or after this date and time."
+              },
+              {
+                "name": "to_usage_date",
+                "value": "",
+                "type": "query",
+                "description": "Filter usage records with a `usage_date` before this date and time."
+              },
+              {
+                "name": "subscription_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter usages by the ID of the subscription."
+              },
+              {
+                "name": "subscription_cycle_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter usages by the ID of the subscription cycle."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Token for retrieving the next page of results. Used for **pagination**.\n\nTo paginate through results:\n\n  1. Make an initial request with the desired `limit`.\n  1. The response will include a `next_page_token` if more results are available.\n  1. Use that token in the `page_token` parameter of your next request.\n  1. Repeat until `next_page_token` is not present.\n\n:::note\nWhen using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.\n:::"
+              }
+            ]
+          },
+          "docs": "Retrieve all usage records for the merchant account. Results are ordered by `usage_date`, unlike other list endpoints which order by `created_at`. You can use the query parameters for:\n\n  | Filtering | Pagination |\n  | --------- | ---------- |\n  | Filter the usage records that you want to retrieve, for example, only retrieve records for a specific subscription or billing cycle. <br/><br/>Parameters used for filtering:<br/><ul><li>`subscription_id`</li><li>`subscription_cycle_id`</li><li>`from_us"
+        },
+        {
+          "info": {
+            "name": "Create a subscription usage",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscription-usages",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              },
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Report a unit of consumption against a usage-based subscription item. Revolut accumulates reported records throughout the billing cycle and processes the charge after the cycle's `usage_cutoff_date`.\n\n### Resolve the billing cycle\n\nRevolut automatically identifies the applicable billing cycle from the `usage_date` you provide. The following submission windows are accepted:\n\n| Window | Rule |\n| ------ | ---- |\n| Active cycle | `usage_date` falls within the current cycle (`start_date ≤ usage_date "
+        },
+        {
+          "info": {
+            "name": "Retrieve a subscription usage",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscription-usages/:usage_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "usage_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the usage record."
+              }
+            ]
+          },
+          "docs": "Retrieve a usage record by its unique identifier.\n\nUse this endpoint to get the details of a specific usage that was reported or updated."
+        },
+        {
+          "info": {
+            "name": "Update a subscription usage",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscription-usages/:usage_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "usage_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the usage record."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the quantity or metadata of a subscription usage record."
+        },
+        {
+          "info": {
+            "name": "Delete a subscription usage",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/api/subscription-usages/:usage_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "usage_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the usage record."
+              }
+            ]
+          },
+          "docs": "Delete a subscription usage record. This operation is only permitted while the billing cycle is still open."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

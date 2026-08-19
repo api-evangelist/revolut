@@ -1,0 +1,138 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Tax rates API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tax rates",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a list of tax rates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/tax-rates",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The page size, that is, the maximum number of tax rates to return per page.\n\nTo get the next page of results, use `page_token`."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get available tax rates based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 tax rates per request. \nThe default page size is 100.\n:::\n\nThe tax rates are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of tax rates returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response also returns a cursor for the next page under `next"
+        },
+        {
+          "info": {
+            "name": "Create a new tax rate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/tax-rates",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Add a new tax rate to the list of tax rates that can be applied to your financial records, such as expenses.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://dev"
+        },
+        {
+          "info": {
+            "name": "Retrieve tax rate details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/tax-rates/:tax_rate_id",
+            "params": [
+              {
+                "name": "tax_rate_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the tax rate to retrieve."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the details of a specific tax rate based on the tax rate ID.\n\nThe details include the tax rate name and percentage, as well as when the tax rate was added to your settings, and when it was last updated.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates)."
+        },
+        {
+          "info": {
+            "name": "Update tax rate settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/tax-rates/:tax_rate_id",
+            "params": [
+              {
+                "name": "tax_rate_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the tax rate to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update settings for a specific tax rate, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/acco"
+        },
+        {
+          "info": {
+            "name": "Delete a tax rate",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/tax-rates/:tax_rate_id",
+            "params": [
+              {
+                "name": "tax_rate_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the tax rate to delete."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a specific tax rate, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nOnce the tax rate is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to apply it to new financial records (e.g. expenses). \n- Existing records with this tax rate that have not been completed will be mar"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

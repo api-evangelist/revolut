@@ -1,0 +1,124 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Transfers API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Transfers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get exchange reasons",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/exchange-reasons",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Depending on the country and the amount of funds to be exchanged, you might be required to provide an exchange reason. \nWith this endpoint, you can retrieve all exchange reasons available to your business account.\n\nAfter you retrieve the results, use the appropriate reason code in the `exchange_reason_code` field when [exchanging money](https://developer.revolut.com/docs/api/business#exchange-money) or [making a payment](https://developer.revolut.com/docs/api/business#create-payment) that involv"
+        },
+        {
+          "info": {
+            "name": "Create a transfer to another account or card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/pay",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Make a payment to a counterparty. You can choose either a bank transfer or a card transfer. The resulting transaction has the type `transfer`.\n\nIf you make the payment to another Revolut account, either business or personal, the transaction is executed instantly.\n\nIf the counterparty has multiple payment methods available, for example, 2 accounts, or 1 account and 1 card, you **must specify the account or card** to which you want to transfer the money (`receiver.account_id` or `receiver.card_id`"
+        },
+        {
+          "info": {
+            "name": "Get an indicative quote for a transfer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/pay/indicative-quote",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get a non-binding estimate of fees, the exchange rate, and the expected delivery time for a potential [transfer](https://developer.revolut.com/docs/api/business#create-payment).\nNo money is moved and no resource is created.\n\nThe request mirrors the [`/pay` endpoint](https://developer.revolut.com/docs/api/business#create-payment) that is used to initiate a transfer, but it excludes irrelevant fields that do not affect pricing or delivery time, such as the request ID or reference.\n\nIf the counterp"
+        },
+        {
+          "info": {
+            "name": "Check transfer field requirements",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/pay/fields",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve the list of conditionally required or applicable fields for a specific transfer destination together with their constraints.\n\n:::note [Note]\nThis feature is not available in Sandbox.\n:::\n\nWhen creating a payment via the [`/pay` endpoint](https://developer.revolut.com/docs/api/business#create-payment), certain fields (such as `transfer_reason_code`, `charge_bearer`, or `exchange_reason_code`) become required or applicable depending on the source account, destination corridor, and busines"
+        },
+        {
+          "info": {
+            "name": "Move money between your accounts",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/transfer",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Move money between the Revolut accounts of the business in the same currency.\n\nThe resulting transaction has the type `transfer`.\n\nFor more information, see the guides: [Send money](https://developer.revolut.com/docs/guides/manage-accounts/transfers/send-money)."
+        },
+        {
+          "info": {
+            "name": "Get transfer reasons",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/transfer-reasons",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "In order to initiate a transfer in certain currencies and countries, you must provide a transfer reason. \nWith this endpoint you can retrieve all transfer reasons available to your business account per country and currency.\n\nAfter you retrieve the results, use the appropriate reason code in the `transfer_reason_code` field when [making a transfer to a counterparty](https://developer.revolut.com/docs/api/business#create-payment) or [creating a payout link](https://developer.revolut.com/docs/api/b"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

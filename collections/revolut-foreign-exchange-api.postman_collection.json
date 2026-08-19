@@ -1,0 +1,600 @@
+{
+  "item": [
+    {
+      "id": "47f79288-5789-44d9-92a6-cdbcefc476a2",
+      "name": "Foreign exchange",
+      "description": {
+        "content": "Retrieve information on exchange rates between currencies, buy and sell currencies.\n\nFor more information, see the guides: [Exchange money](https://developer.revolut.com/docs/guides/manage-accounts/exchange-money).",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "871ce6d8-598d-44f3-9b6c-8be5f64ecc0a",
+          "name": "Get an exchange rate",
+          "request": {
+            "name": "Get an exchange rate",
+            "description": {
+              "content": "Get the sell exchange rate between two currencies.\n\nYou can check the [currencies supported in Production](https://help.revolut.com/business/help/receiving-payments/currency-exchanges/which-currencies-can-i-exchange-and-keep-in-my-account/) in the Revolut Help Centre.\nSome of these currencies might not be available in Sandbox.\n\nFor more information, see the guides: [Exchange money](https://developer.revolut.com/docs/guides/manage-accounts/exchange-money).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "rate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "from",
+                  "value": "<string>",
+                  "description": "(Required) The currency that you exchange from in [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) format."
+                },
+                {
+                  "disabled": false,
+                  "key": "amount",
+                  "value": "1.00",
+                  "description": "The amount of the currency to exchange **from**. The default value is `1.00`."
+                },
+                {
+                  "disabled": false,
+                  "key": "to",
+                  "value": "<string>",
+                  "description": "(Required) The currency that you exchange to in [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) format."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f309c582-7779-48ce-ba77-275169490003",
+              "name": "The exchange rate information",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "rate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "amount",
+                      "value": "1.00"
+                    },
+                    {
+                      "key": "to",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"from\": {\n    \"amount\": 1,\n    \"currency\": \"EUR\"\n  },\n  \"to\": {\n    \"amount\": 1,\n    \"currency\": \"USD\"\n  },\n  \"rate\": 1.0044090351,\n  \"fee\": {\n    \"amount\": 0,\n    \"currency\": \"EUR\"\n  },\n  \"rate_date\": \"2022-08-31T17:30:34Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "30eaeff3-a315-4a79-9462-54e6c4ad5a34",
+              "name": "Not found\n\nReturned, for example, when the exchange rate is unknown",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "rate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "amount",
+                      "value": "1.00"
+                    },
+                    {
+                      "key": "to",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Exchange rate unknown\",\n  \"code\": 3472\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6f6093f4-6060-46e5-949f-544c02f8c0ad",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "rate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "amount",
+                      "value": "1.00"
+                    },
+                    {
+                      "key": "to",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 5674,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "017f5879-cf05-4bee-b796-ca8be704d6d3",
+          "name": "Exchange money",
+          "request": {
+            "name": "Exchange money",
+            "description": {
+              "content": "Exchange money using one of these methods: \n\n- **Sell currency**: You know the amount of currency to sell. \n  For example, you want to exchange 135.5 USD to some EUR. \n\n  Specify the amount in the `from` object.\n- **Buy currency**: You know the amount of currency to buy. \n  For example, you want to exchange some USD to 200 EUR. \n\n  Specify the amount in the `to` object.\n\n:::note\nYou must specify the `amount` field only once, either in the `from` object or in the `to` object.\n:::\n\nYou can check the [currencies supported in Production](https://help.revolut.com/business/help/receiving-payments/currency-exchanges/which-currencies-can-i-exchange-and-keep-in-my-account/) in the Revolut Help Centre.\nSome of these currencies might not be available in Sandbox.\n\nFor more information, see the guides: [Exchange money](https://developer.revolut.com/docs/guides/manage-accounts/exchange-money).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "exchange"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from\": {\n    \"account_id\": \"<uuid>\",\n    \"currency\": \"<string>\",\n    \"amount\": \"<double>\"\n  },\n  \"to\": {\n    \"account_id\": \"<uuid>\",\n    \"currency\": \"<string>\",\n    \"amount\": \"<double>\"\n  },\n  \"request_id\": \"<string>\",\n  \"reference\": \"<string>\",\n  \"exchange_reason_code\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "a8ad93c4-2cc4-4494-b092-6174edd1c7b3",
+              "name": "Exchange operation details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"from\": {\n    \"account_id\": \"af98333c-ea53-482b-93c2-1fa5e4eae671\",\n    \"currency\": \"USD\",\n    \"amount\": 135.5\n  },\n  \"to\": {\n    \"account_id\": \"b7ec67d3-5af1-42c8-bece-3d285774894d\",\n    \"currency\": \"EUR\"\n  },\n  \"reference\": \"exchange\",\n  \"request_id\": \"A1pH4num3ric2\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"630f9c2e-2e74-a06d-ab61-deb7ggkkd6cb\",\n  \"state\": \"completed\",\n  \"created_at\": \"2022-08-31T17:36:46.656876Z\",\n  \"completed_at\": \"2022-08-31T17:36:46.657239Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "80a09261-ac67-411a-a1fa-46ca04914e7c",
+              "name": "Bad request\n\nFor example, the exchange reason is required.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"from\": {\n    \"account_id\": \"af98333c-ea53-482b-93c2-1fa5e4eae671\",\n    \"currency\": \"USD\",\n    \"amount\": 135.5\n  },\n  \"to\": {\n    \"account_id\": \"b7ec67d3-5af1-42c8-bece-3d285774894d\",\n    \"currency\": \"EUR\"\n  },\n  \"reference\": \"exchange\",\n  \"request_id\": \"A1pH4num3ric2\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 3448,\n  \"message\": \"Exchange reason is required\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b8780604-e470-41f4-af9b-9ff7ba447814",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"from\": {\n    \"account_id\": \"af98333c-ea53-482b-93c2-1fa5e4eae671\",\n    \"currency\": \"USD\",\n    \"amount\": 135.5\n  },\n  \"to\": {\n    \"account_id\": \"b7ec67d3-5af1-42c8-bece-3d285774894d\",\n    \"currency\": \"EUR\"\n  },\n  \"reference\": \"exchange\",\n  \"request_id\": \"A1pH4num3ric2\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 5674,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a3a666d7-bf72-428e-beee-54a705e089ab",
+          "name": "Get exchange reasons",
+          "request": {
+            "name": "Get exchange reasons",
+            "description": {
+              "content": "Depending on the country and the amount of funds to be exchanged, you might be required to provide an exchange reason. \nWith this endpoint, you can retrieve all exchange reasons available to your business account.\n\nAfter you retrieve the results, use the appropriate reason code in the `exchange_reason_code` field when [exchanging money](https://developer.revolut.com/docs/api/business#exchange-money) or [making a payment](https://developer.revolut.com/docs/api/business#create-payment) that involves foreign currency exchange.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "exchange-reasons"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "fc5e238d-4fc7-45cb-a315-dc39f05e3213",
+              "name": "List of exchange reasons",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange-reasons"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"code\": \"business_expense_and_claims\",\n    \"name\": \"Business expense and claims\"\n  },\n  {\n    \"code\": \"fees_and_charges\",\n    \"name\": \"Fees and charges\"\n  },\n  {\n    \"code\": \"fund_transfer_and_intracompany_payment\",\n    \"name\": \"Fund transfer and intracompany payment\"\n  },\n  {\n    \"code\": \"gifts_and_donations\",\n    \"name\": \"Gifts and donations\"\n  },\n  {\n    \"code\": \"government_services_and_tax\",\n    \"name\": \"Government services and tax\"\n  },\n  {\n    \"code\": \"insurance\",\n    \"name\": \"Insurance\"\n  },\n  {\n    \"code\": \"inventory\",\n    \"name\": \"Inventory\"\n  },\n  {\n    \"code\": \"investment_dividend_and_interest\",\n    \"name\": \"Investment, dividend and interest\"\n  },\n  {\n    \"code\": \"loan_and_loan_repayment\",\n    \"name\": \"Loan and loan repayment\"\n  },\n  {\n    \"code\": \"marketing\",\n    \"name\": \"Marketing\"\n  },\n  {\n    \"code\": \"payment_for_goods_and_services\",\n    \"name\": \"Payment for goods and services\"\n  },\n  {\n    \"code\": \"payroll\",\n    \"name\": \"Payroll\"\n  },\n  {\n    \"code\": \"refund\",\n    \"name\": \"Refund\"\n  },\n  {\n    \"code\": \"rental_and_property\",\n    \"name\": \"Rental and property\"\n  },\n  {\n    \"code\": \"sales\",\n    \"name\": \"Sales\"\n  },\n  {\n    \"code\": \"service_provider_and_software\",\n    \"name\": \"Service provider and software\"\n  },\n  {\n    \"code\": \"travel_and_transportation\",\n    \"name\": \"Travel and transportation\"\n  },\n  {\n    \"code\": \"utilities\",\n    \"name\": \"Utilities\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3a231a30-f7bc-4f73-901c-e8df91c4630a",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "exchange-reasons"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 5674,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://b2b.revolut.com/api/1.0",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "79024b89-0ece-43a7-9afd-8e6d97ca93b8",
+    "name": "Business Accounting Foreign exchange API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)",
+      "type": "text/plain"
+    }
+  }
+}

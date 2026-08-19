@@ -1,0 +1,1239 @@
+{
+  "item": [
+    {
+      "id": "6dd752d3-13db-4f55-96f6-21aa4ba312e3",
+      "name": "Expenses",
+      "description": {
+        "content": "Get the list of all the expenses, or use the filters to narrow down the results.\nYou can also get a specific expense, or get a receipt related to an expense by providing their respective IDs.\n\n:::note\nThis feature is not available in Sandbox.\n:::\n\nFor more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses).",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "fdcd3d1f-257f-420a-8bb0-3207795e3380",
+          "name": "Retrieve a list of expenses",
+          "request": {
+            "name": "Retrieve a list of expenses",
+            "description": {
+              "content": "Get all your expenses, or use the query parameters to filter the results.\n\nThe expenses are sorted by the `expense_date` value in reverse chronological order, and they're **paginated**.\nThe maximum number of expenses returned per page is specified by the `count` parameter.\nTo get the next page of results, make a new request and use the `expense_date` value from the last item of the previous page as the value for the `to` parameter.\n\nThe data enriched by the user, for example, VAT and cost centre, is returned under `splits[].tax_rate` and `labels`, respectively.\n\n:::note\n- The API returns a maximum of 500 expenses per request.\n- This feature is not available in Sandbox.\n:::\n\nFor more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "expenses"
+              ],
+              "host": [
+                "{{expenses-Url}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "from",
+                  "value": "<dateTime>",
+                  "description": "The date and time to retrieve the expenses from, including this date-time.\nCorresponds to the value of `expense_date`.\nProvided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n\nUsed also for pagination.\nTo get back to the previous page of results, make a new request and use the `expense_date` value from the first item of the current page as the value for the `from` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "to",
+                  "value": "<dateTime>",
+                  "description": "The date and time to retrieve the expenses to, excluding this date-time.\nCorresponds to the value of `expense_date`.\nProvided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\nThe default value is the date and time at which you're calling the endpoint.\n\nUsed also for pagination.\nTo get back to the next page of results, make a new request and use the `expense_date` value from the last item of the previous (current) page as the value for the `to` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "count",
+                  "value": "100",
+                  "description": "The maximum number of the expenses to retrieve per page.\nTo get the next page of results, make a new request and use the `expense_date` value from the last item of the previous page as the value for the `to` parameter."
+                },
+                {
+                  "disabled": false,
+                  "key": "state",
+                  "value": "<string>",
+                  "description": "Retrieves the expenses in the specified state."
+                },
+                {
+                  "disabled": false,
+                  "key": "transaction_type",
+                  "value": "<string>",
+                  "description": "The type of the transaction related to the expense.\nIf provided, only expenses with transactions of this type are returned."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "be43be44-f795-4c32-a011-e9768162d7e3",
+              "name": "List of expenses",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses"
+                  ],
+                  "host": [
+                    "{{expenses-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "to",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "count",
+                      "value": "100"
+                    },
+                    {
+                      "key": "state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_type",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"8decf9f8-053e-46cb-92d8-a7b450fe5ae0\",\n    \"state\": \"approved\",\n    \"transaction_type\": \"card_payment\",\n    \"description\": \"Printer paper\",\n    \"submitted_at\": \"2024-09-13T20:48:40.912Z\",\n    \"completed_at\": \"2024-09-13T20:48:40.948Z\",\n    \"payer\": \"Ray Trenfield\",\n    \"merchant\": \"Best Printers Company\",\n    \"transaction_id\": \"163e0ef6-2414-4fcf-846f-1f871059d506\",\n    \"expense_date\": \"2024-09-13T18:47:01.782Z\",\n    \"splits\": [\n      {\n        \"amount\": {\n          \"amount\": 15.39,\n          \"currency\": \"GBP\"\n        },\n        \"category\": {\n          \"id\": \"71b9ec74-d5ff-4aa1-a489-f8dc39d4c9b7\",\n          \"name\": \"Printing & Stationery\",\n          \"code\": \"461\"\n        },\n        \"tax_rate\": {\n          \"id\": \"5704fdd2-bac2-42ec-bab0-e075182260be\",\n          \"name\": \"VAT\",\n          \"percentage\": 20\n        }\n      },\n      {\n        \"amount\": {\n          \"amount\": 8.99,\n          \"currency\": \"GBP\"\n        },\n        \"category\": {\n          \"id\": \"a5532a5e-d859-4795-967b-14723f8920ea\",\n          \"name\": \"Groceries\",\n          \"code\": \"555\"\n        },\n        \"tax_rate\": {\n          \"id\": \"d92efe31-fc26-4364-af4b-3630c1057ece\",\n          \"name\": \"No VAT\",\n          \"percentage\": 0\n        }\n      }\n    ],\n    \"labels\": {\n      \"Office supplies\": [\n        \"photocopying\"\n      ],\n      \"Department\": [\n        \"HR\"\n      ]\n    },\n    \"receipt_ids\": [\n      \"84c0169a-37f9-4bfa-ab1e-f2c81dbc34cf\"\n    ],\n    \"spent_amount\": {\n      \"amount\": 24.38,\n      \"currency\": \"GBP\"\n    }\n  },\n  {\n    \"id\": \"8498b232-28ba-4baf-b33d-22fb464e83c8\",\n    \"state\": \"missing_info\",\n    \"transaction_type\": \"fee\",\n    \"description\": \"Expenses app charges\",\n    \"payer\": \"Bingston Labs\",\n    \"transaction_id\": \"91b56d41-7b42-40e8-8970-0082cf965e6e\",\n    \"expense_date\": \"2024-09-04T13:39:18.606Z\",\n    \"splits\": [\n      {\n        \"amount\": {\n          \"amount\": 17.68,\n          \"currency\": \"EUR\"\n        },\n        \"category\": {\n          \"id\": \"95bf2a30-7284-4664-989a-1dcb51e2053a\",\n          \"name\": \"General Expenses\",\n          \"code\": \"429\"\n        },\n        \"tax_rate\": {\n          \"id\": \"812f50e7-37b3-480b-a7c4-2ad08442f7cf\",\n          \"name\": \"20% (VAT on Expenses)\",\n          \"percentage\": 20\n        }\n      }\n    ],\n    \"labels\": {},\n    \"receipt_ids\": [\n      \"d97d062f-5aae-4a0c-b5f3-52ae134d384d\"\n    ],\n    \"spent_amount\": {\n      \"amount\": 17.68,\n      \"currency\": \"EUR\"\n    }\n  },\n  {\n    \"id\": \"a0e0294e-0460-42f4-bd97-f969469f1afc\",\n    \"state\": \"missing_info\",\n    \"transaction_type\": \"mileage_reimbursement\",\n    \"payer\": \"John Smith\",\n    \"expense_date\": \"2025-10-6T08:34:18.123Z\",\n    \"splits\": [\n      {\n        \"amount\": {\n          \"amount\": 25.99,\n          \"currency\": \"EUR\"\n        },\n        \"category\": {\n          \"id\": \"dab86546-a442-464a-9bad-18a826542b03\",\n          \"name\": \"Vehicle Operating Expenses\"\n        },\n        \"tax_rate\": {\n          \"id\": \"728980d1-aa76-44f5-8902-53520160bfeb\",\n          \"name\": \"20% Fuel bills\",\n          \"percentage\": 20\n        }\n      }\n    ],\n    \"labels\": {},\n    \"receipt_ids\": [],\n    \"spent_amount\": {\n      \"amount\": 25.99,\n      \"currency\": \"EUR\"\n    }\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1f510a10-be88-4df3-8561-2d7287e998b4",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses"
+                  ],
+                  "host": [
+                    "{{expenses-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "to",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "count",
+                      "value": "100"
+                    },
+                    {
+                      "key": "state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_type",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8701,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6cc53758-295a-45a8-a801-196391058215",
+              "name": "Forbidden\n\nReturned, for example, when the Expenses API is disabled for the business that is trying to use it.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses"
+                  ],
+                  "host": [
+                    "{{expenses-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "to",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "count",
+                      "value": "100"
+                    },
+                    {
+                      "key": "state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_type",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Expenses API for business is disabled\",\n  \"code\": 9002\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "19159d41-c142-4129-a3ac-9738bae314e1",
+              "name": "Unprocessable content\n\nReturned, for example, when the Expenses feature (not just the API) is disabled for the business.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses"
+                  ],
+                  "host": [
+                    "{{expenses-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "to",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "count",
+                      "value": "100"
+                    },
+                    {
+                      "key": "state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_type",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Expenses feature is not enabled\",\n  \"code\": 3470\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "586dfa24-5200-4c31-a67d-b7a77e38b92f",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses"
+                  ],
+                  "host": [
+                    "{{expenses-Url}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "to",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "count",
+                      "value": "100"
+                    },
+                    {
+                      "key": "state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_type",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8701,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "55eab7a3-8658-44a9-9714-dedfbd23a784",
+          "name": "Retrieve an expense",
+          "request": {
+            "name": "Retrieve an expense",
+            "description": {
+              "content": "Get the information about a specific expense by ID.\n\nThe data enriched by the user, for example, VAT and cost centre, is returned under `splits[].tax_rate` and `labels`, respectively.\n\n:::note\nThis feature is not available in Sandbox.\n:::\n\nFor more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "expenses",
+                ":expense_id"
+              ],
+              "host": [
+                "{{expenses-expense_id-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "expense_id",
+                  "description": "(Required) The ID of the expense to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "4cbe805b-67c1-4134-ae74-8235fede5e3a",
+              "name": "Expense",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses",
+                    ":expense_id"
+                  ],
+                  "host": [
+                    "{{expenses-expense_id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "expense_id",
+                      "description": "(Required) The ID of the expense to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"8decf9f8-053e-46cb-92d8-a7b450fe5ae0\",\n  \"state\": \"approved\",\n  \"transaction_type\": \"card_payment\",\n  \"description\": \"Printer paper\",\n  \"submitted_at\": \"2024-09-13T20:48:40.912Z\",\n  \"completed_at\": \"2024-09-13T20:48:40.948Z\",\n  \"payer\": \"Ray Trenfield\",\n  \"merchant\": \"Best Printers Company\",\n  \"transaction_id\": \"163e0ef6-2414-4fcf-846f-1f871059d506\",\n  \"expense_date\": \"2024-09-13T18:47:01.782Z\",\n  \"splits\": [\n    {\n      \"amount\": {\n        \"amount\": 15.39,\n        \"currency\": \"GBP\"\n      },\n      \"category\": {\n        \"id\": \"71b9ec74-d5ff-4aa1-a489-f8dc39d4c9b7\",\n        \"name\": \"Printing & Stationery\",\n        \"code\": \"461\"\n      },\n      \"tax_rate\": {\n        \"id\": \"5704fdd2-bac2-42ec-bab0-e075182260be\",\n        \"name\": \"VAT\",\n        \"percentage\": 20\n      }\n    },\n    {\n      \"amount\": {\n        \"amount\": 8.99,\n        \"currency\": \"GBP\"\n      },\n      \"category\": {\n        \"id\": \"a5532a5e-d859-4795-967b-14723f8920ea\",\n        \"name\": \"Groceries\",\n        \"code\": \"555\"\n      },\n      \"tax_rate\": {\n        \"id\": \"d92efe31-fc26-4364-af4b-3630c1057ece\",\n        \"name\": \"No VAT\",\n        \"percentage\": 0\n      }\n    }\n  ],\n  \"labels\": {\n    \"Office supplies\": [\n      \"photocopying\"\n    ],\n    \"Department\": [\n      \"HR\"\n    ]\n  },\n  \"receipt_ids\": [\n    \"84c0169a-37f9-4bfa-ab1e-f2c81dbc34cf\"\n  ],\n  \"spent_amount\": {\n    \"amount\": 24.38,\n    \"currency\": \"GBP\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4cf26c83-6263-4f2a-8cc3-3a3018e92124",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses",
+                    ":expense_id"
+                  ],
+                  "host": [
+                    "{{expenses-expense_id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "expense_id",
+                      "description": "(Required) The ID of the expense to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8701,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "727caedb-0e01-4443-a3a6-8b4deb8d0580",
+              "name": "Forbidden\n\nReturned, for example, when the access token is missing the required [scope](https://developer.revolut.com/docs/api/business#access-token) or if the Expenses API is disabled for the business.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses",
+                    ":expense_id"
+                  ],
+                  "host": [
+                    "{{expenses-expense_id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "expense_id",
+                      "description": "(Required) The ID of the expense to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"This action is forbidden\",\n  \"code\": 9002\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b116fe5f-019f-404e-886e-d4f0ae88969d",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses",
+                    ":expense_id"
+                  ],
+                  "host": [
+                    "{{expenses-expense_id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "expense_id",
+                      "description": "(Required) The ID of the expense to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Expense 'bd415411-6e3e-46e7-af07-42f9b790c44e' not found\",\n  \"code\": 3006\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2b83e796-81c9-4762-99e8-62b6c29c1342",
+              "name": "Unprocessable content\n\nReturned, for example, when the Expenses feature (not just the API) is disabled for the business.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses",
+                    ":expense_id"
+                  ],
+                  "host": [
+                    "{{expenses-expense_id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "expense_id",
+                      "description": "(Required) The ID of the expense to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Expenses feature is not enabled\",\n  \"code\": 3470\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8403ecdd-fc03-4504-9d6e-3db7cb649865",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses",
+                    ":expense_id"
+                  ],
+                  "host": [
+                    "{{expenses-expense_id-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "expense_id",
+                      "description": "(Required) The ID of the expense to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8701,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f4a10ef9-452e-4eb3-a609-f0518ed66300",
+          "name": "Retrieve a receipt related to an expense",
+          "request": {
+            "name": "Retrieve a receipt related to an expense",
+            "description": {
+              "content": "Get the receipt related to an expense by providing the receipt's ID.\n\n:::note\nThis feature is not available in Sandbox.\n:::\n\nFor more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "expenses",
+                ":expense_id",
+                "receipts",
+                ":receipt_id",
+                "content"
+              ],
+              "host": [
+                "{{expenses-expense_id-receipts-receipt_id-content-Url}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "expense_id",
+                  "description": "(Required) The ID of the [expense](https://developer.revolut.com/docs/api/business#get-expense) to which the receipt is related."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "receipt_id",
+                  "description": "(Required) The ID of the receipt to retrieve.\n\nTo find the ID of a receipt related to a specific expense, refer to the [expense's details](https://developer.revolut.com/docs/api/business#get-expense#response).\nThe IDs of receipts related to that expense are returned under `receipt_ids`."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "*/*"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "2b7701ed-5e84-4dda-bcc9-3598300684af",
+              "name": "Receipt content. The exact format depends on the receipt.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses",
+                    ":expense_id",
+                    "receipts",
+                    ":receipt_id",
+                    "content"
+                  ],
+                  "host": [
+                    "{{expenses-expense_id-receipts-receipt_id-content-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "expense_id",
+                      "description": "(Required) The ID of the [expense](https://developer.revolut.com/docs/api/business#get-expense) to which the receipt is related."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "receipt_id",
+                      "description": "(Required) The ID of the receipt to retrieve.\n\nTo find the ID of a receipt related to a specific expense, refer to the [expense's details](https://developer.revolut.com/docs/api/business#get-expense#response).\nThe IDs of receipts related to that expense are returned under `receipt_ids`."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "*/*"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "body": "@sample-receipt.pdf",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "641c167b-aa0c-440f-86ad-e1f33935e454",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses",
+                    ":expense_id",
+                    "receipts",
+                    ":receipt_id",
+                    "content"
+                  ],
+                  "host": [
+                    "{{expenses-expense_id-receipts-receipt_id-content-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "expense_id",
+                      "description": "(Required) The ID of the [expense](https://developer.revolut.com/docs/api/business#get-expense) to which the receipt is related."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "receipt_id",
+                      "description": "(Required) The ID of the receipt to retrieve.\n\nTo find the ID of a receipt related to a specific expense, refer to the [expense's details](https://developer.revolut.com/docs/api/business#get-expense#response).\nThe IDs of receipts related to that expense are returned under `receipt_ids`."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8701,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4b4445aa-403b-43e6-820f-79bc177c49e7",
+              "name": "Forbidden\n\nReturned, for example, when the access token is missing the required [scope](https://developer.revolut.com/docs/api/business#access-token) or if the Expenses API is disabled for the business.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses",
+                    ":expense_id",
+                    "receipts",
+                    ":receipt_id",
+                    "content"
+                  ],
+                  "host": [
+                    "{{expenses-expense_id-receipts-receipt_id-content-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "expense_id",
+                      "description": "(Required) The ID of the [expense](https://developer.revolut.com/docs/api/business#get-expense) to which the receipt is related."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "receipt_id",
+                      "description": "(Required) The ID of the receipt to retrieve.\n\nTo find the ID of a receipt related to a specific expense, refer to the [expense's details](https://developer.revolut.com/docs/api/business#get-expense#response).\nThe IDs of receipts related to that expense are returned under `receipt_ids`."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"This action is forbidden\",\n  \"code\": 9002\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cfe9788c-c9d2-4c24-a5ae-c15300944d66",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses",
+                    ":expense_id",
+                    "receipts",
+                    ":receipt_id",
+                    "content"
+                  ],
+                  "host": [
+                    "{{expenses-expense_id-receipts-receipt_id-content-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "expense_id",
+                      "description": "(Required) The ID of the [expense](https://developer.revolut.com/docs/api/business#get-expense) to which the receipt is related."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "receipt_id",
+                      "description": "(Required) The ID of the receipt to retrieve.\n\nTo find the ID of a receipt related to a specific expense, refer to the [expense's details](https://developer.revolut.com/docs/api/business#get-expense#response).\nThe IDs of receipts related to that expense are returned under `receipt_ids`."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Receipt 'cea368fe-c757-44ce-b2cc-3da94b3d13a6' for expense '3e45f3d7-9919-46df-9793-300726c9fed1' not found\",\n  \"code\": 3006\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a1eaeb9f-aabb-4afa-8285-51f02489ff8c",
+              "name": "Unprocessable content\n\nReturned, for example, when the Expenses feature (not just the API) is disabled for the business.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses",
+                    ":expense_id",
+                    "receipts",
+                    ":receipt_id",
+                    "content"
+                  ],
+                  "host": [
+                    "{{expenses-expense_id-receipts-receipt_id-content-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "expense_id",
+                      "description": "(Required) The ID of the [expense](https://developer.revolut.com/docs/api/business#get-expense) to which the receipt is related."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "receipt_id",
+                      "description": "(Required) The ID of the receipt to retrieve.\n\nTo find the ID of a receipt related to a specific expense, refer to the [expense's details](https://developer.revolut.com/docs/api/business#get-expense#response).\nThe IDs of receipts related to that expense are returned under `receipt_ids`."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Expenses feature is not enabled\",\n  \"code\": 3470\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "291958d7-5de8-4475-9a17-f292f18cf2d7",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "expenses",
+                    ":expense_id",
+                    "receipts",
+                    ":receipt_id",
+                    "content"
+                  ],
+                  "host": [
+                    "{{expenses-expense_id-receipts-receipt_id-content-Url}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "expense_id",
+                      "description": "(Required) The ID of the [expense](https://developer.revolut.com/docs/api/business#get-expense) to which the receipt is related."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "receipt_id",
+                      "description": "(Required) The ID of the receipt to retrieve.\n\nTo find the ID of a receipt related to a specific expense, refer to the [expense's details](https://developer.revolut.com/docs/api/business#get-expense#response).\nThe IDs of receipts related to that expense are returned under `receipt_ids`."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8701,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://b2b.revolut.com/api/1.0",
+      "key": "baseUrl"
+    },
+    {
+      "type": "string",
+      "value": "https://b2b.revolut.com/api/1.0",
+      "key": "expenses-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://b2b.revolut.com/api/1.0",
+      "key": "expenses-expense_id-Url"
+    },
+    {
+      "type": "string",
+      "value": "https://b2b.revolut.com/api/1.0",
+      "key": "expenses-expense_id-receipts-receipt_id-content-Url"
+    }
+  ],
+  "info": {
+    "_postman_id": "1660b782-991a-4baa-8918-bdf36e458ca2",
+    "name": "Business Accounting Expenses API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)",
+      "type": "text/plain"
+    }
+  }
+}

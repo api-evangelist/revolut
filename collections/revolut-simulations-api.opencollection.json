@@ -1,0 +1,65 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Simulations API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Simulations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Simulate a transfer state update (Sandbox only)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/sandbox/transactions/:id/:action",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the transfer whose state you want to update."
+              },
+              {
+                "name": "action",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Simulate a transfer state change in the Sandbox environment. \n\nFor example, after you make a transfer in Sandbox, you can change its state to `completed`. The resulting state is final and cannot be changed.\n\nFor more information, see the guides: [Test your flows with simulations (Sandbox only)](https://developer.revolut.com/docs/guides/manage-accounts/api-usage-and-testing/test-flows-with-simulations)."
+        },
+        {
+          "info": {
+            "name": "Simulate an account top-up (Sandbox only)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/sandbox/topup",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Simulate a top-up of your account in the Sandbox environment. \n\nThis is useful during testing, when you run out of money in your test account and need to add more.\n\nFor more information, see the guides: [Test your flows with simulations (Sandbox only)](https://developer.revolut.com/docs/guides/manage-accounts/api-usage-and-testing/test-flows-with-simulations)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

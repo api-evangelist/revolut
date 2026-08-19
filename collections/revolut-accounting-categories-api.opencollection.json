@@ -1,0 +1,138 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Accounting categories API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Accounting categories",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a list of accounting categories",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/accounting-categories",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The page size, that is, the maximum number of accounting categories to return per page.\n\nTo get the next page of results, use `page_token`."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get available accounting categories based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 accounting categories per request. \nThe default page size is 100.\n:::\n\nThe accounting categories are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of accounting categories returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response als"
+        },
+        {
+          "info": {
+            "name": "Create an accounting category",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/accounting-categories",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Add a new accounting category to the list of accounting categories that can be assigned to your financial records, such as expenses.\n\n:::note\nThis operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-account"
+        },
+        {
+          "info": {
+            "name": "Retrieve accounting category details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/accounting-categories/:accounting_category_id",
+            "params": [
+              {
+                "name": "accounting_category_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the accounting category to retrieve."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the details of a specific accounting category based on its ID.\n\nThe details include the accounting category name, code, and default tax rate, as well as when the accounting category was added to your settings, and when it was last updated.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/ac"
+        },
+        {
+          "info": {
+            "name": "Update accounting category settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/accounting-categories/:accounting_category_id",
+            "params": [
+              {
+                "name": "accounting_category_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the accounting category to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update settings for a specific accounting category, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://develop"
+        },
+        {
+          "info": {
+            "name": "Delete an accounting category",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/accounting-categories/:accounting_category_id",
+            "params": [
+              {
+                "name": "accounting_category_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the accounting category to delete."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a specific accounting category, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).\n:::\n\nOnce the accounting category is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to assign it to new financial records (e.g. expenses). \n- Existing records assigned to "
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

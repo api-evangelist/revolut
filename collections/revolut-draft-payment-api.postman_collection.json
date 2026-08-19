@@ -1,0 +1,1953 @@
+{
+  "item": [
+    {
+      "id": "ed0ceb43-c0db-4779-8f11-f024633c94fb",
+      "name": "Draft payment",
+      "description": {
+        "content": "You can create a draft payment to initiate a payment on behalf of a user, and request the approval for the draft payment in the user account.\n\nThen, you can retrieve or delete a draft payment.\n\n:::note\nThe draft payments API is available only for Revolut Business customers.\nIf you'd like to use this endpoint, reach out to us.\n:::\n\nFor more information, see [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments).",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d498d88d-0841-47f2-b9a2-29c23e7fd4d0",
+          "name": "List draft payments",
+          "request": {
+            "name": "List draft payments",
+            "description": {
+              "content": "Get draft payments list sorted by creation time in descending order.\n\nSee also [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments) and [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment#6-get-list-of-draft-payments).",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "draft-payments"
+              ],
+              "host": [
+                "apis",
+                "revolut",
+                "com"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "from",
+                  "value": "<dateTime>",
+                  "description": "Creation time inclusive lower bound in UTC [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) Date Time format YYYY-MM-DDThh:mm:ssZ"
+                },
+                {
+                  "disabled": false,
+                  "key": "to",
+                  "value": "<dateTime>",
+                  "description": "Creation time exclusive upper bound in UTC [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) Date Time format YYYY-MM-DDThh:mm:ssZ"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Maximum number of items"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "8ca0dbba-3c9f-42ac-99c3-bc3fae04278a",
+              "name": "Draft Payment List",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "to",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Items\": [\n    {\n      \"Id\": \"27d92ade-xxxx-438c-xxxx-06d63a411d67\",\n      \"CreatedAt\": \"2022-09-29T12:24:31.985323Z\",\n      \"Status\": \"Awaiting\"\n    }\n  ],\n  \"Links\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5fb43966-3681-4355-9b4d-2731207749a9",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "to",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f09e4934-de2f-4e99-8f7c-1f6585b14e1b",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "to",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4cf81081-0f6b-42c4-8578-1d695aedfb7e",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "to",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8da64b61-0d3f-4fbb-92af-34eea75a0a67",
+          "name": "Create a draft payment",
+          "request": {
+            "name": "Create a draft payment",
+            "description": {
+              "content": "Before you begin, ensure that you've got an access token.\nFor information about getting the access token, see [Tutorial: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment).\nThen, you can use the `/draft_payments` endpoint to create a draft payment on behalf of a user, and the draft payment appears in the user account where they can approve or reject.\n\nIn addition, you can use this endpoint to make multiple draft payments by creating new rows for new drafts with the supported CSV format shown in the following tables.\n\nFor each draft payment request you make, ensure that the same currency is used.\nUpon a successful request for multiple draft payments, you receive a `DraftPaymentID` that represents all the draft payments associated with this request.\n\nPlease note that the maximum number of rows in a CSV file is 50 and all the payments must be in the same currency.\n\n:::note\nDownload an [example CSV file](https://assets.revolut.com/api-docs/oba-api/draft_payments.csv).\n:::\n\nFor the format of the CSV file, check the request body details.\n\nSee also [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments).",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "draft-payments"
+              ],
+              "host": [
+                "apis",
+                "revolut",
+                "com"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "scheduledDate",
+                  "value": "<YYYY-MM-DD>",
+                  "description": "The date and time when the draft payment is executed.\n\n:::note\nAny draft payment in the CSV file is created as a scheduled payment.\n:::"
+                },
+                {
+                  "disabled": false,
+                  "key": "title",
+                  "value": "<string>",
+                  "description": "The title of draft payment"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) Idempotency key in UUID format.",
+                "key": "x-idempotency-key",
+                "value": "<UUID>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "text/csv"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<string>"
+            }
+          },
+          "response": [
+            {
+              "id": "5238e704-3a4a-4091-89d0-6ffd5cc0e4e9",
+              "name": "Draft Payment Details",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [
+                    {
+                      "key": "scheduledDate",
+                      "value": "<YYYY-MM-DD>"
+                    },
+                    {
+                      "key": "title",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Idempotency key in UUID format.",
+                    "key": "x-idempotency-key",
+                    "value": "<UUID>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "@draft_payments.csv"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"DraftPaymentId\": \"27d92ade-xxxx-438c-xxxx-06d63a411d67\",\n  \"Status\": \"Awaiting\",\n  \"Transfers\": [\n    {\n      \"Id\": \"a1265ecc-1234-4cb2-bec8-1234b9c32f01\",\n      \"InstructedAmount\": {\n        \"Amount\": \"10.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"Reference\": \"reference1234\",\n      \"Status\": \"Created\",\n      \"Index\": 1\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "512a77cf-d441-40af-a0a9-45acf59f6708",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [
+                    {
+                      "key": "scheduledDate",
+                      "value": "<YYYY-MM-DD>"
+                    },
+                    {
+                      "key": "title",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Idempotency key in UUID format.",
+                    "key": "x-idempotency-key",
+                    "value": "<UUID>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "@draft_payments.csv"
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 3129,\n  \"Id\": \"string\",\n  \"Message\": \"string\",\n  \"Errors\": [\n    {\n      \"Errors\": [\n        {\n          \"Code\": 4338,\n          \"Message\": \"string\",\n          \"Field\": \"string\"\n        },\n        {\n          \"Code\": 3870,\n          \"Message\": \"string\",\n          \"Field\": \"string\"\n        }\n      ],\n      \"Row\": 6780\n    },\n    {\n      \"Errors\": [\n        {\n          \"Code\": 6129,\n          \"Message\": \"string\",\n          \"Field\": \"string\"\n        },\n        {\n          \"Code\": 1389,\n          \"Message\": \"string\",\n          \"Field\": \"string\"\n        }\n      ],\n      \"Row\": 8618\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6691a40a-7cd5-42f7-8b05-0b1348665b7c",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [
+                    {
+                      "key": "scheduledDate",
+                      "value": "<YYYY-MM-DD>"
+                    },
+                    {
+                      "key": "title",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Idempotency key in UUID format.",
+                    "key": "x-idempotency-key",
+                    "value": "<UUID>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "@draft_payments.csv"
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "670c9ae4-5203-4de1-a664-86e38ab55e3e",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [
+                    {
+                      "key": "scheduledDate",
+                      "value": "<YYYY-MM-DD>"
+                    },
+                    {
+                      "key": "title",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Idempotency key in UUID format.",
+                    "key": "x-idempotency-key",
+                    "value": "<UUID>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "@draft_payments.csv"
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6405805b-23fe-49be-868f-3e67127796b4",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [
+                    {
+                      "key": "scheduledDate",
+                      "value": "<YYYY-MM-DD>"
+                    },
+                    {
+                      "key": "title",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Idempotency key in UUID format.",
+                    "key": "x-idempotency-key",
+                    "value": "<UUID>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "@draft_payments.csv"
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ae3c31f9-2fe9-402e-82f5-88fc42263d6d",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [
+                    {
+                      "key": "scheduledDate",
+                      "value": "<YYYY-MM-DD>"
+                    },
+                    {
+                      "key": "title",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Idempotency key in UUID format.",
+                    "key": "x-idempotency-key",
+                    "value": "<UUID>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "@draft_payments.csv"
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "98c72996-347d-4185-a44d-ba5912a734e4",
+          "name": "Delete a draft payment transfer",
+          "request": {
+            "name": "Delete a draft payment transfer",
+            "description": {
+              "content": "Delete a specific draft payment transfer with the given draft payment transfer ID.\nA draft payment transfer can be deleted only if the user hasn't taken any action upon it, for example, approved or executed the draft payment.\n\nSee also [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments) and [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment).",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "draft-payments",
+                ":DraftPaymentId",
+                "transfers",
+                ":DraftPaymentTransferId"
+              ],
+              "host": [
+                "apis",
+                "revolut",
+                "com"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<UUID>",
+                  "key": "DraftPaymentId",
+                  "description": "(Required) The id of the draft payment"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<UUID>",
+                  "key": "DraftPaymentTransferId",
+                  "description": "(Required) The id of the draft payment transfer"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/plain"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "8845c575-454c-4185-89b1-8075cad41f65",
+              "name": "No content",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId",
+                    "transfers",
+                    ":DraftPaymentTransferId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The id of the draft payment"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentTransferId",
+                      "description": "(Required) The id of the draft payment transfer"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "text/plain"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "33d9ce73-1632-4b06-a5d5-7af94b81929f",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId",
+                    "transfers",
+                    ":DraftPaymentTransferId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The id of the draft payment"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentTransferId",
+                      "description": "(Required) The id of the draft payment transfer"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d8e071cc-9189-4b1b-b92d-09160e56b47a",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId",
+                    "transfers",
+                    ":DraftPaymentTransferId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The id of the draft payment"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentTransferId",
+                      "description": "(Required) The id of the draft payment transfer"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5f609a6c-d980-439d-b6fb-9b0c09bf661d",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId",
+                    "transfers",
+                    ":DraftPaymentTransferId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The id of the draft payment"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentTransferId",
+                      "description": "(Required) The id of the draft payment transfer"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ad8a2cbc-484d-4835-a8db-5ca03a36be77",
+              "name": "Unprocessable Entity",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId",
+                    "transfers",
+                    ":DraftPaymentTransferId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The id of the draft payment"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentTransferId",
+                      "description": "(Required) The id of the draft payment transfer"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "411c6e75-89db-4b78-8c8e-1e6c6266353e",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId",
+                    "transfers",
+                    ":DraftPaymentTransferId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The id of the draft payment"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentTransferId",
+                      "description": "(Required) The id of the draft payment transfer"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1fa65ee7-9d11-44f7-90c0-c9de27d32592",
+          "name": "Retrieve a draft payment",
+          "request": {
+            "name": "Retrieve a draft payment",
+            "description": {
+              "content": "Get the details about a specific draft payment with the given draft payment ID.\n\nSee also [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment#5-get-a-draft-payment) and [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments).",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "draft-payments",
+                ":DraftPaymentId"
+              ],
+              "host": [
+                "apis",
+                "revolut",
+                "com"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<UUID>",
+                  "key": "DraftPaymentId",
+                  "description": "(Required) The ID of the draft payment."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "5c390bd8-5f2e-40d5-a6d7-bd79601ab40b",
+              "name": "Draft Payment Details",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The ID of the draft payment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"DraftPaymentId\": \"27d92ade-xxxx-438c-xxxx-06d63a411d67\",\n  \"Status\": \"Awaiting\",\n  \"Transfers\": [\n    {\n      \"Id\": \"a1265ecc-1234-4cb2-bec8-1234b9c32f01\",\n      \"InstructedAmount\": {\n        \"Amount\": \"10.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"Reference\": \"reference1234\",\n      \"Status\": \"Created\",\n      \"Index\": 1\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "30e00120-bdec-40b0-90a8-4014f524958d",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The ID of the draft payment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d76ec24a-9ccd-419c-95e4-8d880db6bee7",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The ID of the draft payment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b9ed96ae-7eea-4cfc-ac03-f80982f8fbd2",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The ID of the draft payment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "01f3f406-1531-43bc-8195-ec6fb15446ff",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The ID of the draft payment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "faf66eb5-e43c-40b3-bef6-9c06910d21d3",
+          "name": "Delete a draft payment",
+          "request": {
+            "name": "Delete a draft payment",
+            "description": {
+              "content": "Delete a specific draft payment with the given draft payment ID.\nA draft payment can be deleted only if the user hasn't taken any action upon it, for example, approved or executed the draft payment.\n\nSee also [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments) and [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment).",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "draft-payments",
+                ":DraftPaymentId"
+              ],
+              "host": [
+                "apis",
+                "revolut",
+                "com"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<UUID>",
+                  "key": "DraftPaymentId",
+                  "description": "(Required) The ID of the draft payment."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/plain"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "505caee4-fc4d-427d-9f46-fab2e7c1213c",
+              "name": "No content",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The ID of the draft payment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "text/plain"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "74bfe852-1d8a-4b40-b0ac-8b068241a0b0",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The ID of the draft payment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7606f556-6204-4a3e-aa63-6fe014185908",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The ID of the draft payment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5a11190e-8856-4149-ab86-0cf2c59416cb",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The ID of the draft payment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4afb44e9-098b-405b-810b-56f9ff86bab0",
+              "name": "Unprocessable Entity",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The ID of the draft payment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "29982056-4ffe-45c0-bd41-05bd8f72c146",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "draft-payments",
+                    ":DraftPaymentId"
+                  ],
+                  "host": [
+                    "apis",
+                    "revolut",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<UUID>",
+                      "key": "DraftPaymentId",
+                      "description": "(Required) The ID of the draft payment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": 2440,\n  \"Id\": \"string\",\n  \"Message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://b2b.revolut.com/api/1.0",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "5a7e13f4-2a51-4eae-8490-d9813dd73005",
+    "name": "Business Accounting Draft payment API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)",
+      "type": "text/plain"
+    }
+  }
+}

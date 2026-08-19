@@ -1,0 +1,118 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Team members API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Team members",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a list of team members",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/team-members",
+            "params": [
+              {
+                "name": "created_before",
+                "value": "",
+                "type": "query",
+                "description": "Retrieves team members with `created_at` < `created_before`.\nThe default value is the current date and time at which you are calling the endpoint.\n\nProvided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of team members returned per page.\n\nTo get to the next page, make a new request and use the `created_at` date of the last team member returned in the previous response as the value for `created_before`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get information about all the team members of your business.\n\nThe results are paginated and sorted by the `created_at` date in reverse chronological order.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members)."
+        },
+        {
+          "info": {
+            "name": "Invite a new member to your business",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/team-members",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Invite a new member to your business account.\n\nWhen you invite a new team member to your business account, an invitation is sent to their email address that you provided in this request.\nTo join your business account, the new team member has to accept this invitation.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members)."
+        },
+        {
+          "info": {
+            "name": "Delete a team member",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/team-members/:team_member_id",
+            "params": [
+              {
+                "name": "team_member_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the team member to delete."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a specific member of your team.\n\n:::note\nThis action does not delete the person’s Revolut Business user account – it only removes them from your team.\nThey will lose access to your Revolut Business account and team but can still log in to Revolut Business.\nTheir user account will remain linked to any other teams and accounts it’s associated with.\n:::\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-mem"
+        },
+        {
+          "info": {
+            "name": "Retrieve team roles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/roles",
+            "params": [
+              {
+                "name": "created_before",
+                "value": "",
+                "type": "query",
+                "description": "Retrieves roles with `created_at` < `created_before`.\nThe default value is the current date and time at which you are calling the endpoint.\n\nProvided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of roles returned per page.\n\nTo get to the next page, make a new request and use the `created_at` date of the last role returned in the previous response as the value for `created_before`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the list of roles for your business.\n\nThe results are paginated and sorted by the `created_at` date in reverse chronological order.\n\nFor more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

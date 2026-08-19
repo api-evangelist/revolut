@@ -1,0 +1,1244 @@
+{
+  "item": [
+    {
+      "id": "0ef043dc-424b-4fa3-8dd2-d26bb2b6ad61",
+      "name": "Trades",
+      "description": {
+        "content": "Retrieve Revolut X trade history and execution details: view public market trades or your specific private trade executions (fills).",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a7d8ea83-7e5a-4b28-8b0d-6849ea97079b",
+          "name": "Get all public trades (market history)",
+          "request": {
+            "name": "Get all public trades (market history)",
+            "description": {
+              "content": "Retrieve a list of all trades for a specific symbol, not limited to the current client's activity.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "trades",
+                "all",
+                ":symbol"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_date",
+                  "value": "<long>",
+                  "description": "Start timestamp for the query range in Unix epoch milliseconds.\n\n:::note\nIf `start_date` is omitted, it defaults to 7 days prior to `end_date`.\nThe difference between `start_date` and `end_date` must be <= 30 days.\n:::"
+                },
+                {
+                  "disabled": false,
+                  "key": "end_date",
+                  "value": "<long>",
+                  "description": "End timestamp for the query range in Unix epoch milliseconds.\n\n:::note\nIf `end_date` is omitted, it defaults to `start_date` + 7 days (if `start_date` is provided) or the current date (if `start_date` is missing).\nThe duration between `start_date` and `end_date` must not exceed 30 days.\n:::"
+                },
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>",
+                  "description": "Pagination cursor obtained from the [`metadata.next_cursor`](https://developer.revolut.com/docs/api/revolut-x-crypto-exchange#get-all-trades#response) property of the previous response."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "1900",
+                  "description": "Maximum number of records to return."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "symbol",
+                  "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                "key": "X-Revx-Timestamp",
+                "value": "<integer>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                "key": "X-Revx-Signature",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e52e97ba-e539-49f1-91bf-f4432c8273b0",
+              "name": "OK\n\nThe list of trades.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "all",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw=="
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"tdt\": 3318215482991,\n      \"aid\": \"BTC\",\n      \"anm\": \"Bitcoin\",\n      \"p\": \"125056.76\",\n      \"pc\": \"USD\",\n      \"pn\": \"MONE\",\n      \"q\": \"0.00003999\",\n      \"qc\": \"BTC\",\n      \"qn\": \"UNIT\",\n      \"ve\": \"REVX\",\n      \"pdt\": 3318215482991,\n      \"vp\": \"REVX\",\n      \"tid\": \"80654a036323311cb0ea28462b42db6d\"\n    }\n  ],\n  \"metadata\": {\n    \"timestamp\": 3318215482991,\n    \"next_cursor\": \"GF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw==\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "84afded2-8eda-465b-906b-7af1c65ca3cb",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "all",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw=="
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"No such pair: BTC-BTC\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a1700aae-8593-4fb0-abd6-e8f8f4fa027c",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "all",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw=="
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"API key can only be used for authentication from whitelisted IP\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "72b735e4-5454-40d8-959e-9b6ea61d20c9",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "all",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw=="
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Forbidden\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0097b8a4-ea30-4c59-b49f-ee6f53f5ce30",
+              "name": "Conflict",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "all",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw=="
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Request timestamp is in the future\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bd1f9d34-eb63-492f-8c34-a476732b221b",
+              "name": "Rate Limit Exceeded",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "all",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw=="
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The number of milliseconds to wait before making a new request.",
+                  "key": "Retry-After",
+                  "value": "5000"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Rate Limit Exceeded\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "91f7ef51-fd4b-418d-9a56-2d82a8a77710",
+              "name": "Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "all",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw=="
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Something went wrong!\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b48aeb6f-a573-44a3-b1fc-fbdebf4444b9",
+          "name": "Get client trades (associated with the provided API key)",
+          "request": {
+            "name": "Get client trades (associated with the provided API key)",
+            "description": {
+              "content": "Retrieve the trade history (fills) for the authenticated client.\nThe user context is resolved based on the provided API key.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "trades",
+                "private",
+                ":symbol"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_date",
+                  "value": "<long>",
+                  "description": "Start timestamp for the query range in Unix epoch milliseconds.\n\n:::note\nIf `start_date` is omitted, it defaults to 7 days prior to `end_date`.\nThe difference between `start_date` and `end_date` must be <= 30 days.\n:::"
+                },
+                {
+                  "disabled": false,
+                  "key": "end_date",
+                  "value": "<long>",
+                  "description": "End timestamp for the query range in Unix epoch milliseconds.\n\n:::note\nIf `end_date` is omitted, it defaults to `start_date` + 7 days (if `start_date` is provided) or the current date (if `start_date` is missing).\nThe duration between `start_date` and `end_date` must not exceed 30 days.\n:::"
+                },
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>",
+                  "description": "Pagination cursor obtained from the [`metadata.next_cursor`](https://developer.revolut.com/docs/api/revolut-x-crypto-exchange#get-private-trades#response) property of the previous response."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "1900",
+                  "description": "Maximum number of records to return."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "symbol",
+                  "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                "key": "X-Revx-Timestamp",
+                "value": "<integer>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                "key": "X-Revx-Signature",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c38dbbfc-214d-4f23-8ceb-f5a7077420a9",
+              "name": "OK\n\nThe list of trades.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "private",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw=="
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"tdt\": 3318215482991,\n      \"aid\": \"BTC\",\n      \"anm\": \"Bitcoin\",\n      \"p\": \"125056.76\",\n      \"pc\": \"USD\",\n      \"pn\": \"MONE\",\n      \"q\": \"0.00003999\",\n      \"qc\": \"BTC\",\n      \"qn\": \"UNIT\",\n      \"ve\": \"REVX\",\n      \"pdt\": 3318215482991,\n      \"vp\": \"REVX\",\n      \"tid\": \"80654a036323311cb0ea28462b42db6d\",\n      \"oid\": \"2affb2ac-4cf7-4bbf-b7b2-fc1e885bdc2c\",\n      \"s\": \"buy\",\n      \"im\": false\n    }\n  ],\n  \"metadata\": {\n    \"timestamp\": 3318215482991,\n    \"next_cursor\": \"GF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw==\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bd907579-e7da-4f4b-9e3c-9a707ad8160e",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "private",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw=="
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"No such pair: BTC-BTC\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "49625ca6-6573-4f0d-8563-a4412bf7dab4",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "private",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw=="
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"API key can only be used for authentication from whitelisted IP\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2bcb1660-f214-4d3f-9946-19597fa3e673",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "private",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw=="
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Forbidden\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a39127b6-a90d-4659-98a5-173de691e59d",
+              "name": "Conflict",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "private",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw=="
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Request timestamp is in the future\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3c01feb9-aba7-467c-85fd-afbd2c10579b",
+              "name": "Rate Limit Exceeded",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "private",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw=="
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The number of milliseconds to wait before making a new request.",
+                  "key": "Retry-After",
+                  "value": "5000"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Rate Limit Exceeded\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "86cb12da-8dac-40d8-8a62-8653af3a374f",
+              "name": "Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "private",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "ZGF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw=="
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) Trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Something went wrong!\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://b2b.revolut.com/api/1.0",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "20a8d9eb-18b3-488a-a213-55449e894f2b",
+    "name": "Business Accounting Trades API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,325 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Customers API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Customers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a customer list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/customers",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return. Used for **pagination**."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Token for retrieving the next page of results. Used for **pagination**.\n\nTo paginate through results:\n\n  1. Make an initial request with the desired `limit`.\n  1. The response will include a `next_page_token` if more results are available.\n  1. Use that token in the `page_token` parameter of your next request.\n  1. Repeat until `next_page_token` is not present.\n\n:::note\nWhen using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.\n:::"
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Filter records created from this date/time. Used for **filtering**."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "Filter records created until this date/time. Used for **filtering**."
+              }
+            ]
+          },
+          "docs": "Get a paginated list of your customer profiles.\n\n| Filtering | Pagination |\n| --------- | ---------- |\n| Filter the customers that you want to retrieve, for example, only retrieve customers created within a specific date range. <br/><br/>Parameters used for filtering:<br/><ul><li>`from`</li><li>`to`</li></ul> | View customers without loading all of them at once, for example, return a specified number of customers per page. <br/><br/>Parameters used for pagination:<br/><ul><li>`limit`</li><li>`pa"
+        },
+        {
+          "info": {
+            "name": "Create a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/customers",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a `customer` object.\n\n:::note [No automatic deduplication]\nThe API does not prevent creating multiple customers with the same email address or phone number.\n\nThis can be intentional, for example, to maintain separate customer records per storefront or brand under the same account.\n\nTo avoid unintentional duplicates, search for existing customers by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant/2024-09-01#retrieve-customer-list) endpoint before c"
+        },
+        {
+          "info": {
+            "name": "Retrieve a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/customers/:customer_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Customer` object."
+              }
+            ]
+          },
+          "docs": "Get the information about a specific customer, including their saved payment methods."
+        },
+        {
+          "info": {
+            "name": "Update a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/api/customers/:customer_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Customer` object."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the attributes of a specific customer.\n\nAll request body fields are optional. Only the fields provided will be updated.\n\n<details>\n<summary>AFT processing requirements</summary>\n\nFor merchants in the following industries, `full_name` and `date_of_birth` are required for Account Funding Transaction (AFT) processing:\n\n| Industry | Required fields |\n| -------- | --------------- |\n| Crypto | `full_name`, `date_of_birth` |\n| Financial Institutions | `full_name`, `date_of_birth` |\n| Stored Valu"
+        },
+        {
+          "info": {
+            "name": "Delete a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/api/customers/:customer_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Customer` object."
+              }
+            ]
+          },
+          "docs": "Delete the profile of a specific customer."
+        },
+        {
+          "info": {
+            "name": "Retrieve payment method list of a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/customers/:customer_id/payment-methods",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Customer` object."
+              },
+              {
+                "name": "only_merchant",
+                "value": "",
+                "type": "query",
+                "description": "If `true`, returns only the saved payment methods that can be used for\nmerchant-initiated transactions (MIT)."
+              }
+            ]
+          },
+          "docs": "Retrieve all the saved payment methods for a specific customer.\nThis can be useful in the following example cases:\n\n- To show what payment information is stored for the customer.\n- To try a different payment method if the first payment method fails when a recurring transaction occurs."
+        },
+        {
+          "info": {
+            "name": "Retrieve a customer's payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/customers/:customer_id/payment-methods/:payment_method_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Customer` object."
+              },
+              {
+                "name": "payment_method_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the payment method."
+              }
+            ]
+          },
+          "docs": "Retrieve the information of a specific saved payment method for a customer.  "
+        },
+        {
+          "info": {
+            "name": "Update a customer's payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/api/customers/:customer_id/payment-methods/:payment_method_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Customer` object."
+              },
+              {
+                "name": "payment_method_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the payment method."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the attributes of a specific saved payment method for a customer.\n\n:::note\nUpdating `saved_for` to `customer` is a one-way operation — you can't change it back to `merchant`.\n\nOnce updated, this payment method can no longer be used for merchant-initiated transactions (MIT), for example, to charge recurring payments. It can only be used when the customer is on the checkout page.\n\nFor more information, see:\n- [Pay for an order](https://developer.revolut.com/docs/api/merchant/2024-09-01#pay-"
+        },
+        {
+          "info": {
+            "name": "Delete a customer's payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/api/customers/:customer_id/payment-methods/:payment_method_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Customer` object."
+              },
+              {
+                "name": "payment_method_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the payment method."
+              }
+            ]
+          },
+          "docs": "Delete a specific saved payment method. The payment method is completely removed from the customer's saved payment methods.\n\nTo reuse a deleted payment method, direct your customer to the checkout page to save their card details again."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

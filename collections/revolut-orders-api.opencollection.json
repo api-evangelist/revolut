@@ -1,0 +1,646 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Orders API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Orders",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve an order list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/orders",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return. Used for **pagination**."
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Filter records created from this date/time. Used for **filtering**."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "Filter records created until this date/time. Used for **filtering**."
+              },
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter orders by the ID of the customer."
+              },
+              {
+                "name": "merchant_order_data_reference",
+                "value": "",
+                "type": "query",
+                "description": "Filter orders by your own order reference set in `merchant_order_data.reference`."
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "Filter orders by state. Repeat the parameter to filter by multiple states."
+              },
+              {
+                "name": "location_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter results by location ID."
+              }
+            ]
+          },
+          "docs": "Get a paginated list of your orders, returned as a wrapped `orders` array.\n\nThe response contains simplified `Order` objects. To get the full details of a specific order, use the [Retrieve an order](https://developer.revolut.com/docs/api/merchant#retrieve-order) endpoint."
+        },
+        {
+          "info": {
+            "name": "Create an order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/orders",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create an `Order` object.\n\nCreating orders is one of the basic operations of the Merchant API. Most of the other operations are related to creating orders. Furthermore, the payment methods merchants can use to take payments for their orders are also built on order creation.\n\nTo learn more about how you can accept payments, see:\n  - [Revolut Pay](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-pay/introduction)\n  - [Card payments](https://developer.revol"
+        },
+        {
+          "info": {
+            "name": "Retrieve an order",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/orders/:order_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "order_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Order` object."
+              }
+            ]
+          },
+          "docs": "Retrieve the details of an order that has been created. Provide the unique\norder ID, and the corresponding order information is returned."
+        },
+        {
+          "info": {
+            "name": "Update an order",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/api/orders/:order_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "order_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Order` object."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the details of an order.\n\nYou can update an order and specific parameters based on the value of the `state` parameter:\n\n| State parameter value | Modifiable parameters |\n| --------------------- | --------------------- |\n| `pending` | You can modify all listed parameters. |\n| `authorised` | You can modify the following parameters: <br /><br /> <ul><li>`merchant_order_data.reference`</li><li>`description`</li><li>`metadata`</li><li>`shipping`</li><li>`industry_data`</li><li>`cancel_authoris"
+        },
+        {
+          "info": {
+            "name": "Increment authorisation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/orders/:order_id/increment-authorisation",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "order_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Order` object."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Increase the authorised amount on a pre-authorised order.\n\nThis operation allows you to increment the authorised amount for orders created with `authorisation_type: pre_authorisation` and `capture_mode: manual`.\n\n:::note\nCurrently, only card payments are supported.\n:::\n\n### Common use-cases\n\n- Hotel additional charges (e.g., minibar, room service)\n- Car rental damage or fuel charges\n- Equipment rental extensions\n\n### How it works\n\n1. Create an order with `capture_mode: manual` and `authorisation"
+        },
+        {
+          "info": {
+            "name": "Capture an order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/orders/:order_id/capture",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "order_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Order` object."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint is used to capture the funds of an existing, uncaptured order. When the payment for an order is authorised, you can capture the order to send it to the processing stage.\n\n:::info\nFor more information about the order and payment lifecycle, see: [Order and payment\nlifecycle](https://developer.revolut.com/docs/guides/merchant/reference/order-lifecycle).\n:::\n\n## Capture modes\n\nWhen you [create an order](https://developer.revolut.com/docs/api/merchant/2026-03-12#create-order), you can c"
+        },
+        {
+          "info": {
+            "name": "Cancel an order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/orders/:order_id/cancel",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "order_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Order` object."
+              }
+            ]
+          },
+          "docs": "Cancel an existing uncaptured order.\n\nYou can only cancel an order that is in one of the following states:\n\n  | Order state | Description |\n  | ----------- | ----------- |\n  | `pending` | The order does not have any successful payment. |\n  | `authorised` | The `capture_mode` of an order is set to `manual` and the customer has made a successful payment. |\n\n:::info\nFor more information about the order lifecycle, see: [Order and payment lifecycle](https://developer.revolut.com/docs/guides/merchant/"
+        },
+        {
+          "info": {
+            "name": "Refund an order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/orders/:order_id/refund",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              },
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "order_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Order` object."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Issue a refund for a completed order. This operation allows for either a full or partial refund, which will be processed back to the customer's original payment method.\n\n- The refund operation generates a new order with `type: refund`. This new order represents a full or partial refund of the original amount paid.\n- Multiple partial refunds can be issued for a single order, given the total refunded amount does not exceed the original order amount.\n- Refund orders will contain `related_order_id` "
+        },
+        {
+          "info": {
+            "name": "Retrieve payment list of an order",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/orders/:order_id/payments",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "order_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Order` object."
+              }
+            ]
+          },
+          "docs": "Retrieve a list of payments for a specific order, based on the order's ID.\n\n:::note\nThis endpoint is part of a new API, pay attention to the different endpoint URL.\n:::\n\nUse this endpoint to retrieve payment details for saved payment methods to make merchant and customer initiated transactions. For more information, see: \n  - [Speed up customer checkout by using saved card details](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/checkout-with-saved-card)"
+        },
+        {
+          "info": {
+            "name": "Pay for an order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/orders/:order_id/payments",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "order_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Order` object."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Initiate a payment to pay full amount for an order using a customer's saved payment method.\n\n:::note\nThe `/orders/{order_id}/confirm` endpoint has been deprecated. It will be only supported for already existing implementations.\n:::\n\n:::warning\nThis endpoint is part of a new API, pay attention to the different endpoint URL. \n:::\n\nFor more information about how to save and charge payment methods, see: [Charge a customer's saved payment method](https://developer.revolut.com/docs/guides/merchant/opt"
+        },
+        {
+          "info": {
+            "name": "Place order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/orders",
+            "headers": [
+              {
+                "name": "X-Revx-Timestamp",
+                "value": ""
+              },
+              {
+                "name": "X-Revx-Signature",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Place a new order.\nThe user is resolved by the provided API key.\n\n:::note\nRate limit for limit orders: 1000 requests/day.\n:::"
+        },
+        {
+          "info": {
+            "name": "Cancel all active orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/orders",
+            "headers": [
+              {
+                "name": "X-Revx-Timestamp",
+                "value": ""
+              },
+              {
+                "name": "X-Revx-Signature",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Cancels all open limit, conditional, and Take Profit/Stop Loss (TPSL) orders associated with the authenticated account."
+        },
+        {
+          "info": {
+            "name": "Get active orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/orders/active",
+            "headers": [
+              {
+                "name": "X-Revx-Timestamp",
+                "value": ""
+              },
+              {
+                "name": "X-Revx-Signature",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "symbols",
+                "value": "BTC-USD,ETH-USD",
+                "type": "query",
+                "description": "Filter active orders by specific currency pairs (comma-separated)."
+              },
+              {
+                "name": "order_states",
+                "value": "new,partially_filled",
+                "type": "query",
+                "description": "Filter orders by one or more specific states."
+              },
+              {
+                "name": "order_types",
+                "value": "limit,conditional",
+                "type": "query",
+                "description": "Filter orders by specific types (comma-separated)."
+              },
+              {
+                "name": "side",
+                "value": "buy",
+                "type": "query",
+                "description": "Filter by order direction (Buy or Sell)."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor obtained from the [`metadata.next_cursor`](https://developer.revolut.com/docs/api/revolut-x-crypto-exchange#get-active-orders#response) property of the previous response."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return."
+              }
+            ]
+          },
+          "docs": "Get active crypto exchange orders for the requesting user.\nThe user is resolved by the provided API key."
+        },
+        {
+          "info": {
+            "name": "Get historical orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/orders/historical",
+            "headers": [
+              {
+                "name": "X-Revx-Timestamp",
+                "value": ""
+              },
+              {
+                "name": "X-Revx-Signature",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "symbols",
+                "value": "BTC-USD,ETH-USD",
+                "type": "query",
+                "description": "Filter historical orders by specific currency pairs (comma-separated)."
+              },
+              {
+                "name": "order_states",
+                "value": "filled,rejected",
+                "type": "query",
+                "description": "Filter orders by one or more specific states."
+              },
+              {
+                "name": "order_types",
+                "value": "market,limit",
+                "type": "query",
+                "description": "Filter orders by specific types (comma-separated)."
+              },
+              {
+                "name": "start_date",
+                "value": "",
+                "type": "query",
+                "description": "Start timestamp for the query range in Unix epoch milliseconds.\n\n:::note\nIf `start_date` is omitted, it defaults to 7 days prior to `end_date`.\nThe difference between `start_date` and `end_date` must be <= 30 days.\n:::"
+              },
+              {
+                "name": "end_date",
+                "value": "",
+                "type": "query",
+                "description": "End timestamp for the query range in Unix epoch milliseconds.\n\n:::note\nIf `end_date` is omitted, it defaults to `start_date` + 7 days (if `start_date` is provided) or the current date (if `start_date` is missing).\nThe duration between `start_date` and `end_date` must not exceed 30 days.\n:::"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor obtained from the [`metadata.next_cursor`](https://developer.revolut.com/docs/api/revolut-x-crypto-exchange#get-historical-orders#response) property of the previous response."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return."
+              }
+            ]
+          },
+          "docs": "Get historical crypto exchange orders for the requesting user.\nThe user is resolved by the provided API key."
+        },
+        {
+          "info": {
+            "name": "Get order by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/orders/:venue_order_id",
+            "headers": [
+              {
+                "name": "X-Revx-Timestamp",
+                "value": ""
+              },
+              {
+                "name": "X-Revx-Signature",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "venue_order_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier (UUID) of the venue order."
+              }
+            ]
+          },
+          "docs": "Retrieve specific order details by ID.\nThe user context is resolved based on the provided API key."
+        },
+        {
+          "info": {
+            "name": "Replace order",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://b2b.revolut.com/api/1.0/orders/:venue_order_id",
+            "headers": [
+              {
+                "name": "X-Revx-Timestamp",
+                "value": ""
+              },
+              {
+                "name": "X-Revx-Signature",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "venue_order_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier (UUID) of the venue order to replace."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replace an existing order.\nThe user is resolved by the provided API key.\n\n:::note\nVenue order id of the order will be updated as well.\n:::"
+        },
+        {
+          "info": {
+            "name": "Cancel order by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/orders/:venue_order_id",
+            "headers": [
+              {
+                "name": "X-Revx-Timestamp",
+                "value": ""
+              },
+              {
+                "name": "X-Revx-Signature",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "venue_order_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier (UUID) of the venue order."
+              }
+            ]
+          },
+          "docs": "Cancel an active order by its Venue ID."
+        },
+        {
+          "info": {
+            "name": "Get fills of order by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/orders/fills/:venue_order_id",
+            "headers": [
+              {
+                "name": "X-Revx-Timestamp",
+                "value": ""
+              },
+              {
+                "name": "X-Revx-Signature",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "venue_order_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier (UUID) of the venue order"
+              }
+            ]
+          },
+          "docs": "Retrieves the fills (trades) associated with a specific order belonging to the client.\nThe user context is resolved based on the provided API key."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

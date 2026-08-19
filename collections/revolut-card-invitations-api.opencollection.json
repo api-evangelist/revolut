@@ -1,0 +1,145 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Card invitations API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Card invitations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a list of card invitations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/card-invitations",
+            "params": [
+              {
+                "name": "created_before",
+                "value": "2025-10-15T14:30:00Z",
+                "type": "query",
+                "description": "Retrieves only card invitations created before this timestamp (`created_at` < `created_before`).\nUsed for pagination.\nThe default value is the current date and time at which you are calling the endpoint.\nProvided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of card invitations to return per page.\n\nTo get to the next page, make a new request and use the `created_at` date of the last card invitation returned in the previous response as the value for `created_before`."
+              },
+              {
+                "name": "state",
+                "value": "state=created&state=redeemed",
+                "type": "query",
+                "description": "Retrieves card invitations filtered by the specified state(s).\nTo specify multiple values, follow this pattern: `state={VALUE1}&state={VALUE2}`. \nIf not provided, all states are returned."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the list of all card invitations in your organisation.\n\nThe results are paginated and sorted by the `created_at` date in reverse chronological order.\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations)."
+        },
+        {
+          "info": {
+            "name": "Create a card invitation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/card-invitations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create an invitation for a virtual [team member card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) for a new, not-yet-onboarded team member.\nWhen the team member completes onboarding before the invitation's expiry date, the invitation will automatically be claimed, and the card will then be issued for the team member immediately.\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact "
+        },
+        {
+          "info": {
+            "name": "Retrieve card invitation details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/card-invitations/:card_invitation_id",
+            "params": [
+              {
+                "name": "card_invitation_id",
+                "value": "4016b891-bb50-4bd2-8a1b-adb74f4aacdd",
+                "type": "path",
+                "description": "The ID of the card invitation."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the details of a specific card invitation, based on its ID.\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations)."
+        },
+        {
+          "info": {
+            "name": "Update card invitation settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/card-invitations/:card_invitation_id",
+            "params": [
+              {
+                "name": "card_invitation_id",
+                "value": "4016b891-bb50-4bd2-8a1b-adb74f4aacdd",
+                "type": "path",
+                "description": "The ID of the card invitation."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update settings for a specific card invitation, based on its ID.\nYou can update successfully created invitations that have not been claimed yet (`state=created`).\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\n:::warning\nSome spend control parameters can affect one another.\nWhen updating spend controls, review the resulting settings in the response to ensure they reflect th"
+        },
+        {
+          "info": {
+            "name": "Cancel a card invitation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/card-invitations/:cardInvitationId/cancel",
+            "params": [
+              {
+                "name": "card_invitation_id",
+                "value": "4016b891-bb50-4bd2-8a1b-adb74f4aacdd",
+                "type": "path",
+                "description": "The ID of the card invitation to cancel."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Cancel a specific card invitation, based on its ID.\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nYou can cancel successfully created invitations that have not been claimed yet (`state=created`).\n\nOnce the card invitation is cancelled, it cannot be claimed or reactivated.\n\nA successful response does not get any content in return.\n\nFor more information, see the guides: [Man"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,2878 @@
+{
+  "item": [
+    {
+      "id": "b6ab132c-b7f6-4ff7-b1b0-0444d257a3ec",
+      "name": "Tax rates",
+      "description": {
+        "content": "Manage tax rates for your business.\nCreate, retrieve, update, and delete tax rates that can be assigned to your financial records such as [expenses](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses) or bills.\n\nFor more information, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).\n\nSee also the Revolut Help Centre: [Expenses](https://help.revolut.com/business/help/managing-my-business/expenses/) and [BillPay](https://help.revolut.com/business/help/integrating-with-external-apps/introduction-to-billpay/).",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d2025b5d-d80b-4af1-9d6d-898361fc8281",
+          "name": "Create a new tax rate",
+          "request": {
+            "name": "Create a new tax rate",
+            "description": {
+              "content": "Add a new tax rate to the list of tax rates that can be applied to your financial records, such as expenses.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "tax-rates"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"percentage\": \"<double>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "800cbb70-2e2c-4c02-b484-50c266f9b7e7",
+              "name": "Resource created\n\nOn successful creation, the response returns only the ID of the new resource, even if the resource has more properties.\nTo get all details, use the returned resource ID with a GET request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% (VAT on Expenses)\",\n  \"percentage\": 20\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"6a37383e-cfd3-4a2f-aa81-e3a6e6939efa\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "705d59e4-768c-42b8-b2c2-3c4cdeaee4cd",
+              "name": "Bad Request\n\nReturned, for example, when a required parameter is missing or malformatted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% (VAT on Expenses)\",\n  \"percentage\": 20\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"fa12f45e-0ebf-4f7c-88e0-ebb7a1441a18\",\n  \"code\": 2101,\n  \"message\": \"'percentage' is required\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cb02f2ff-0a10-4cd6-95df-50361dd509ea",
+              "name": "Unauthorized – authentication credentials are missing or invalid\n\nReturned when the request was not fulfilled because authentication has failed or has not been provided.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% (VAT on Expenses)\",\n  \"percentage\": 20\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"9d66499d-3fc5-45e9-92f6-3ddcad4793c6\",\n  \"code\": 1000,\n  \"message\": \"Access token is invalid or has expired. Please refresh your access token or generate a new one following the 'Get a new access token' guide in the Revolut API docs.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "aa6a0c87-a578-4060-b1ff-efe674ff0cc9",
+              "name": "Action forbidden - insufficient permissions to perform this action\n\nReturned, for example, when you don't have permissions necessary to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% (VAT on Expenses)\",\n  \"percentage\": 20\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"c5deadcc-1934-4438-818a-3c7ca1e6c01c\",\n  \"code\": 9002,\n  \"message\": \"This action is forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "eef085ce-46b2-45cd-8add-681322ba736d",
+              "name": "Conflict\n\nRequest conflicts with the current state of the resource.\nReturned, for example, when a tax rate with the provided name already exists.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% (VAT on Expenses)\",\n  \"percentage\": 20\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"8c08b656-4e57-4768-ab6e-f281da25aa2b\",\n  \"code\": 3505,\n  \"message\": \"Tax rate with name My Unique Rate already exists\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "42b3cd27-3321-4b4f-9fe8-04ca3e86015c",
+              "name": "Unprocessable entity - tax rate cannot be created due to business rules \n\nReturned, for example, when you have an accounting software integration connected to your Revolut Business account, and tax rates are managed by that integration.\n\nThe request is well-formed and the server understands it, but the operation cannot be performed because the resource state doesn't permit it.\nRetrying the same request won't succeed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% (VAT on Expenses)\",\n  \"percentage\": 20\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"e950c41e-cfd6-4e04-bd79-2d57a3951774\",\n  \"code\": 3514,\n  \"message\": \"Tax rates are managed by your connected accounting integration and cannot be modified manually\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6dea09f3-ac3c-4d17-82ed-e186d724f431",
+              "name": "Too many requests\n\nReturned, for example, when the rate limit has been exceeded.\nIf the response includes the `Retry-After` instruction, please respect it and refrain from earlier retry attempts.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% (VAT on Expenses)\",\n  \"percentage\": 20\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"06153eec-c5cd-4db8-8898-7ae96b9d89ab\",\n  \"code\": 3162,\n  \"message\": \"Request rate limit has been reached. Try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2e42f94c-64f8-479d-ac10-25beef9b9ba9",
+              "name": "Internal server error\n\nAn unexpected application error occurred.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% (VAT on Expenses)\",\n  \"percentage\": 20\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"7f96652e-7518-4229-872b-4e4c867fb4da\",\n  \"code\": 5000,\n  \"message\": \"An unexpected error occurred while processing your request. If the issue persists, please contact support\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5069dc18-9c59-4b5c-94a8-93989eb9fcca",
+              "name": "Service Unavailable\n\nThe system is temporarily unavailable.\nIf the response includes the `Retry-After` header instruction, please respect it and refrain from earlier retry attempts.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% (VAT on Expenses)\",\n  \"percentage\": 20\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"201768bc-c5cd-4db8-8898-7ae96b9d89ab\",\n  \"code\": 5003,\n  \"message\": \"The service is temporarily unavailable. Try again in a few moments. If the issue persists, please contact support\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5e2289dc-21de-4996-9345-7920ffcab4de",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% (VAT on Expenses)\",\n  \"percentage\": 20\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8470,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "933e6db5-878e-4725-932e-4b7cce5fd47c",
+          "name": "Retrieve a list of tax rates",
+          "request": {
+            "name": "Retrieve a list of tax rates",
+            "description": {
+              "content": "Get available tax rates based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 tax rates per request. \nThe default page size is 100.\n:::\n\nThe tax rates are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of tax rates returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.        \n  To get the next page of results, make a new request using that `next_page_token` value in `page_token`.\n- If the number of results is smaller than the page size, `next_page_token` is not returned.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "tax-rates"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "100",
+                  "description": "The page size, that is, the maximum number of tax rates to return per page.\n\nTo get the next page of results, use `page_token`."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_token",
+                  "value": "<byte>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "a3c2f205-49c8-4def-b0b6-357ed817a343",
+              "name": "List of tax rates",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<byte>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"next_page_token\": \"MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA\",\n  \"tax_rates\": [\n    {\n      \"id\": \"f0e1d2c3-b4a5-4678-9012-3456789abcde\",\n      \"name\": \"Import Duty Surcharge\",\n      \"created_at\": \"2026-03-19T07:15:00.000000Z\",\n      \"updated_at\": \"2026-03-19T08:45:22.111444Z\",\n      \"percentage\": 12.75\n    },\n    {\n      \"id\": \"f09ad1ad3-a1c0-4c09-b8f8-24b439e72690\",\n      \"name\": \"20% (VAT on Expenses)\",\n      \"created_at\": \"2026-03-11T10:33:51.121090Z\",\n      \"updated_at\": \"2026-03-11T10:33:51.121090Z\",\n      \"percentage\": 20\n    },\n    {\n      \"id\": \"a1b2c3d4-e5f6-4a5b-bc6d-7e8f9a0b1c2d\",\n      \"name\": \"Reduced Rate Food & Beverage\",\n      \"created_at\": \"2026-02-01T08:00:00.000000Z\",\n      \"updated_at\": \"2026-02-01T08:00:00.000000Z\",\n      \"percentage\": 5.5\n    },\n    {\n      \"id\": \"5f4e3d2c-1b0a-4987-8765-43210fedcba9\",\n      \"name\": \"Standard Output Tax (High)\",\n      \"created_at\": \"2026-01-15T10:20:30.123456Z\",\n      \"updated_at\": \"2026-03-10T14:45:12.987654Z\",\n      \"percentage\": 20\n    },\n    {\n      \"id\": \"98765432-abcd-ef01-2345-67890abcdef0\",\n      \"name\": \"Exempt Financial Services\",\n      \"created_at\": \"2025-12-20T11:11:11.000Z\",\n      \"updated_at\": \"2026-03-15T09:30:00.555222Z\",\n      \"percentage\": 0\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e746148f-babd-4b32-ae8c-cfa5e2593c5b",
+              "name": "Bad Request\n\nReturned, for example, when a required parameter is missing or malformatted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<byte>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"29146977-8042-446f-b362-af224b14c830\",\n  \"code\": 2101,\n  \"message\": \"Query parameter 'limit' must be an integer\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6e9aea63-706a-46fa-90ba-c996c564868c",
+              "name": "Unauthorized – authentication credentials are missing or invalid\n\nReturned when the request was not fulfilled because authentication has failed or has not been provided.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<byte>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"9d66499d-3fc5-45e9-92f6-3ddcad4793c6\",\n  \"code\": 1000,\n  \"message\": \"Access token is invalid or has expired. Please refresh your access token or generate a new one following the 'Get a new access token' guide in the Revolut API docs.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ee293f1f-fa63-47e9-b7a5-bcb9d5c5b2d4",
+              "name": "Action forbidden - insufficient permissions to perform this action\n\nReturned, for example, when you don't have permissions necessary to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<byte>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"c5deadcc-1934-4438-818a-3c7ca1e6c01c\",\n  \"code\": 9002,\n  \"message\": \"This action is forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8ac12145-6230-4599-a881-e11967695e39",
+              "name": "Too many requests\n\nReturned, for example, when the rate limit has been exceeded.\nIf the response includes the `Retry-After` instruction, please respect it and refrain from earlier retry attempts.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<byte>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"06153eec-c5cd-4db8-8898-7ae96b9d89ab\",\n  \"code\": 3162,\n  \"message\": \"Request rate limit has been reached. Try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d9589d2d-e6a5-4f07-ab30-b2142d2d45a9",
+              "name": "Internal server error\n\nAn unexpected application error occurred.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<byte>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"7f96652e-7518-4229-872b-4e4c867fb4da\",\n  \"code\": 5000,\n  \"message\": \"An unexpected error occurred while processing your request. If the issue persists, please contact support\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c0d28efa-f622-4d85-9dda-00cb75923577",
+              "name": "Service Unavailable\n\nThe system is temporarily unavailable.\nIf the response includes the `Retry-After` header instruction, please respect it and refrain from earlier retry attempts.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<byte>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"201768bc-c5cd-4db8-8898-7ae96b9d89ab\",\n  \"code\": 5003,\n  \"message\": \"The service is temporarily unavailable. Try again in a few moments. If the issue persists, please contact support\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "78a33090-b40f-4c8a-ae9c-8b5de3236292",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<byte>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8470,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7c9efa69-ff88-4941-8467-e51b8bcc8d64",
+          "name": "Retrieve tax rate details",
+          "request": {
+            "name": "Retrieve tax rate details",
+            "description": {
+              "content": "Get the details of a specific tax rate based on the tax rate ID.\n\nThe details include the tax rate name and percentage, as well as when the tax rate was added to your settings, and when it was last updated.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "tax-rates",
+                ":tax_rate_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "tax_rate_id",
+                  "description": "(Required) The ID of the tax rate to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "595b57bb-131a-4f42-af95-37c82716404f",
+              "name": "Tax rate details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"09ad1ad3-a1c0-4c09-b8f8-24b439e72690\",\n  \"name\": \"20% (VAT on Expenses)\",\n  \"created_at\": \"2026-03-11T10:33:51.121090Z\",\n  \"updated_at\": \"2026-03-11T10:33:51.121090Z\",\n  \"percentage\": 20\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1e8f93df-488c-4fba-9299-ef521be00fbf",
+              "name": "Bad Request\n\nReturned, for example, when a required parameter is missing or malformatted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"f70973ea-c939-41f8-a106-1656ab5fae2f\",\n  \"code\": 2101,\n  \"message\": \"Path parameter 'id' must be a valid UUID\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1f00f0ec-259b-4de1-a277-bb849bde7820",
+              "name": "Unauthorized – authentication credentials are missing or invalid\n\nReturned when the request was not fulfilled because authentication has failed or has not been provided.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"9d66499d-3fc5-45e9-92f6-3ddcad4793c6\",\n  \"code\": 1000,\n  \"message\": \"Access token is invalid or has expired. Please refresh your access token or generate a new one following the 'Get a new access token' guide in the Revolut API docs.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "553fb087-4743-476e-b6df-4c1fe7f748a7",
+              "name": "Action forbidden - insufficient permissions to perform this action\n\nReturned, for example, when you don't have permissions necessary to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"c5deadcc-1934-4438-818a-3c7ca1e6c01c\",\n  \"code\": 9002,\n  \"message\": \"This action is forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8da3995c-6612-4ac3-87cb-07a74591c810",
+              "name": "Not found\n\nReturned when the tax rate that you're trying to retrieve cannot be found.\nThis can happen, for example, when the tax rate has been deleted, or the provided tax rate ID is incorrect.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"cbb15721-5f51-4588-a959-7494bb7ba827\",\n  \"code\": 3006,\n  \"message\": \"Tax rate with id 8945879d-6854-4e10-88d6-ce92c5f010ac not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "926b7d2e-8ade-4ab1-8073-a171255f34d6",
+              "name": "Too many requests\n\nReturned, for example, when the rate limit has been exceeded.\nIf the response includes the `Retry-After` instruction, please respect it and refrain from earlier retry attempts.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"06153eec-c5cd-4db8-8898-7ae96b9d89ab\",\n  \"code\": 3162,\n  \"message\": \"Request rate limit has been reached. Try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ff6bbd88-3576-4e1a-8a39-321c6ced5a4f",
+              "name": "Internal server error\n\nAn unexpected application error occurred.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"7f96652e-7518-4229-872b-4e4c867fb4da\",\n  \"code\": 5000,\n  \"message\": \"An unexpected error occurred while processing your request. If the issue persists, please contact support\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b4bb1891-39d7-4b3b-b77f-be5018f92023",
+              "name": "Service Unavailable\n\nThe system is temporarily unavailable.\nIf the response includes the `Retry-After` header instruction, please respect it and refrain from earlier retry attempts.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"201768bc-c5cd-4db8-8898-7ae96b9d89ab\",\n  \"code\": 5003,\n  \"message\": \"The service is temporarily unavailable. Try again in a few moments. If the issue persists, please contact support\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4b17f8f9-dbe3-4a35-af01-a84b24003cc3",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8470,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ac24fa2b-f08c-42fa-b87d-d6491a6af37b",
+          "name": "Update tax rate settings",
+          "request": {
+            "name": "Update tax rate settings",
+            "description": {
+              "content": "Update settings for a specific tax rate, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "tax-rates",
+                ":tax_rate_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "tax_rate_id",
+                  "description": "(Required) The ID of the tax rate to update."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1b5df98f-1f01-43f9-8d26-39f45c1ac3c7",
+              "name": "Tax rate updated",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% VAT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "86a758cf-6c0b-49b6-aa69-a23140ec9261",
+              "name": "Bad Request\n\nReturned, for example, when a required parameter is missing or malformatted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% VAT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"f1059c4b-4278-45d3-a17f-bd433ab33c15\",\n  \"code\": 2101,\n  \"message\": \"Request body must not be empty\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d80bfee0-153c-4c08-8bcf-c934194d72a0",
+              "name": "Unauthorized – authentication credentials are missing or invalid\n\nReturned when the request was not fulfilled because authentication has failed or has not been provided.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% VAT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"9d66499d-3fc5-45e9-92f6-3ddcad4793c6\",\n  \"code\": 1000,\n  \"message\": \"Access token is invalid or has expired. Please refresh your access token or generate a new one following the 'Get a new access token' guide in the Revolut API docs.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b3fa0615-318e-4a3a-8212-16a66d64e6f9",
+              "name": "Action forbidden - insufficient permissions to perform this action\n\nReturned, for example, when you don't have permissions necessary to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% VAT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"c5deadcc-1934-4438-818a-3c7ca1e6c01c\",\n  \"code\": 9002,\n  \"message\": \"This action is forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "787a6b46-78f5-4846-b287-887ccf630835",
+              "name": "Not found\n\nReturned when the tax rate that you're trying to update cannot be found.\nThis can happen, for example, when the tax rate doesn't exist, or the provided tax rate ID is incorrect.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% VAT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"ca73d8a4-a5cb-4f03-9a95-4d53aa1731b0\",\n  \"code\": 3006,\n  \"message\": \"Tax rate with id be6c9d90-df25-458a-b559-be61896c94b8 not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7779610f-5fbf-4f1a-b487-bbf28e21c688",
+              "name": "Conflict\n\nRequest conflicts with the current state of the resource.\nReturned, for example, when a tax rate with the provided name already exists.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% VAT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"8c08b656-4e57-4768-ab6e-f281da25aa2b\",\n  \"code\": 3505,\n  \"message\": \"Tax rate with name My Unique Rate already exists\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6264179e-9b36-4c66-b4b7-88e36f8a82be",
+              "name": "Unprocessable entity - tax rate cannot be updated due to business rules \n\nReturned, for example, when you have an accounting software integration connected to your Revolut Business account, and tax rates are managed by that integration.\n\nThe request is well-formed and the server understands it, but the operation cannot be performed because the resource state doesn't permit it.\nRetrying the same request won't succeed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% VAT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"e950c41e-cfd6-4e04-bd79-2d57a3951774\",\n  \"code\": 3514,\n  \"message\": \"Tax rates are managed by your connected accounting integration and cannot be modified manually\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6524f2c3-b3f3-4a45-85f8-c5432eff47ec",
+              "name": "Too many requests\n\nReturned, for example, when the rate limit has been exceeded.\nIf the response includes the `Retry-After` instruction, please respect it and refrain from earlier retry attempts.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% VAT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"06153eec-c5cd-4db8-8898-7ae96b9d89ab\",\n  \"code\": 3162,\n  \"message\": \"Request rate limit has been reached. Try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d5867bcf-5e61-4a1b-bde5-44f2bde6f674",
+              "name": "Internal server error\n\nAn unexpected application error occurred.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% VAT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"7f96652e-7518-4229-872b-4e4c867fb4da\",\n  \"code\": 5000,\n  \"message\": \"An unexpected error occurred while processing your request. If the issue persists, please contact support\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "053fc892-143c-481e-a4ce-d5b1f87ae6dc",
+              "name": "Service Unavailable\n\nThe system is temporarily unavailable.\nIf the response includes the `Retry-After` header instruction, please respect it and refrain from earlier retry attempts.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% VAT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"201768bc-c5cd-4db8-8898-7ae96b9d89ab\",\n  \"code\": 5003,\n  \"message\": \"The service is temporarily unavailable. Try again in a few moments. If the issue persists, please contact support\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9f41f77e-a295-4599-ac47-cdcfe8a8f6cb",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"20% VAT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8470,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "33213ce6-5d02-4eaf-832a-7276ec4f9a82",
+          "name": "Delete a tax rate",
+          "request": {
+            "name": "Delete a tax rate",
+            "description": {
+              "content": "Delete a specific tax rate, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nOnce the tax rate is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to apply it to new financial records (e.g. expenses). \n- Existing records with this tax rate that have not been completed will be marked as invalid, and you'll need to update them to use a different tax rate.\n- Completed records will not be affected by the change. \n\nA successful response does not get any content in return.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "tax-rates",
+                ":tax_rate_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "tax_rate_id",
+                  "description": "(Required) The ID of the tax rate to delete."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "a9409e7c-f7ee-4bca-83b5-9b17b9d89fc2",
+              "name": "Tax rate deleted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "223fc142-108d-4577-8308-71fdb023af9c",
+              "name": "Bad Request\n\nReturned, for example, when a required parameter is missing or malformatted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"f70973ea-c939-41f8-a106-1656ab5fae2f\",\n  \"code\": 2101,\n  \"message\": \"Path parameter 'id' must be a valid UUID\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "678c90dc-918d-4d5c-a870-b690c749d397",
+              "name": "Unauthorized – authentication credentials are missing or invalid\n\nReturned when the request was not fulfilled because authentication has failed or has not been provided.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"9d66499d-3fc5-45e9-92f6-3ddcad4793c6\",\n  \"code\": 1000,\n  \"message\": \"Access token is invalid or has expired. Please refresh your access token or generate a new one following the 'Get a new access token' guide in the Revolut API docs.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "35becc9f-ef3c-4024-af06-8bc274afef5c",
+              "name": "Action forbidden - insufficient permissions to perform this action\n\nReturned, for example, when you don't have permissions necessary to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"c5deadcc-1934-4438-818a-3c7ca1e6c01c\",\n  \"code\": 9002,\n  \"message\": \"This action is forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "68cd7b7b-61ff-4730-94f6-46e0f6ac858f",
+              "name": "Not found\n\nReturned when the tax rate that you're trying to delete cannot be found.\nThis can happen, for example, when the tax rate doesn't exist, or the provided tax rate ID is incorrect.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"ca73d8a4-a5cb-4f03-9a95-4d53aa1731b0\",\n  \"code\": 3006,\n  \"message\": \"Tax rate with id be6c9d90-df25-458a-b559-be61896c94b8 not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5ee9f24f-f18c-4d21-8d13-7f21f6596279",
+              "name": "Unprocessable entity - tax rate cannot be deleted due to business rules \n\nReturned, for example, when you have an accounting software integration connected to your Revolut Business account, and tax rates are managed by that integration.\n\nThe request is well-formed and the server understands it, but the operation cannot be performed because the resource state doesn't permit it.\nRetrying the same request won't succeed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"e950c41e-cfd6-4e04-bd79-2d57a3951774\",\n  \"code\": 3514,\n  \"message\": \"Tax rates are managed by your connected accounting integration and cannot be modified manually\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "473f43b2-386a-4dd0-ad81-e8c7b70fb95c",
+              "name": "Too many requests\n\nReturned, for example, when the rate limit has been exceeded.\nIf the response includes the `Retry-After` instruction, please respect it and refrain from earlier retry attempts.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"06153eec-c5cd-4db8-8898-7ae96b9d89ab\",\n  \"code\": 3162,\n  \"message\": \"Request rate limit has been reached. Try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7466f13c-0ddc-4473-9846-b78d1f5c9655",
+              "name": "Internal server error\n\nAn unexpected application error occurred.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"7f96652e-7518-4229-872b-4e4c867fb4da\",\n  \"code\": 5000,\n  \"message\": \"An unexpected error occurred while processing your request. If the issue persists, please contact support\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a6532569-9b59-4e81-aeaa-715c2db86c36",
+              "name": "Service Unavailable\n\nThe system is temporarily unavailable.\nIf the response includes the `Retry-After` header instruction, please respect it and refrain from earlier retry attempts.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_id\": \"201768bc-c5cd-4db8-8898-7ae96b9d89ab\",\n  \"code\": 5003,\n  \"message\": \"The service is temporarily unavailable. Try again in a few moments. If the issue persists, please contact support\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7fdf3b0d-f91f-4093-be74-1516116c012e",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tax-rates",
+                    ":tax_rate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "tax_rate_id",
+                      "description": "(Required) The ID of the tax rate to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 8470,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://b2b.revolut.com/api/1.0",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "95896a3d-2351-44d7-b9f7-77b9838247ac",
+    "name": "Business Accounting Tax rates API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)",
+      "type": "text/plain"
+    }
+  }
+}

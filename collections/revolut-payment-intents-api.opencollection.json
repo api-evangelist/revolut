@@ -1,0 +1,109 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Payment intents API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payment intents",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a payment intent",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/orders/:order_id/payment-intents",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "order_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Order` object."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a payment intent to push a payment request to a specific Revolut Terminal device.\n\nThis endpoint is used in push payments to Revolut Terminal integration, where a POS system sends payment requests to physical terminal devices. The terminal must be in Pay at Counter mode and assigned to the same location as the order.\n\n**Requirements:**\n- Order must be created with `channel: \"pos\"` and include a `location_id`\n- Terminal must be online, in `pos` operation mode, and assigned to the same loca"
+        },
+        {
+          "info": {
+            "name": "Retrieve a payment intent",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/payment-intents/:payment_intent_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment_intent_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the payment intent."
+              }
+            ]
+          },
+          "docs": "Retrieve the current state and details of a payment intent.\n\nThis endpoint is used to poll the payment intent status after pushing a payment request to a Revolut Terminal. You should poll this endpoint repeatedly until the payment intent reaches a final state.\n\n**Payment intent states:**\n\n| State | Description |\n|-------|-------------|\n| `pending` | Payment intent created and sent to terminal, customer has not yet started interacting |\n| `processing` | Customer is actively interacting with the t"
+        },
+        {
+          "info": {
+            "name": "Cancel a payment intent",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/api/payment-intents/:payment_intent_id/cancel",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment_intent_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the payment intent."
+              }
+            ]
+          },
+          "docs": "Cancel a payment intent while it's still in `pending` state, before the customer has completed the payment.\n\nThis is useful if the customer changes their mind or if there's an issue with the order before payment is completed.\n\n:::warning\n**Requirements:**\n- Payment intent must be in `pending` state\n- Cannot cancel payment intents that are already `completed`, `cancelled`, or `failed`\n:::\n\n:::info\nFor the complete push payments flow, see: [Push payments to Revolut Terminal](https://developer.revo"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

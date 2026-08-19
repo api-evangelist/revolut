@@ -1,0 +1,100 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Payouts API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payouts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a payout list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/payouts",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "currency",
+                "value": "",
+                "type": "query",
+                "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.\n\n:::info\nFor more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).\n:::"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of payouts returned per page. Used for **pagination**."
+              },
+              {
+                "name": "from_created_date",
+                "value": "",
+                "type": "query",
+                "description": "Retrieve all payouts with a `created_date` ≥ `from_created_date`. Used for **filtering**.\n\nUse the [ISO date format](https://en.wikipedia.org/wiki/ISO_8601): `yyyy-MM-ddTHH:mm:ss[.SSSSSS]Z`. For example, `2021-02-10T16:59:50.886826Z`."
+              },
+              {
+                "name": "to_created_date",
+                "value": "",
+                "type": "query",
+                "description": "Retrieve all payouts with a `created_date` ≤ `to_created_date`. Used for **filtering**.\n\nUse the [ISO date format](https://en.wikipedia.org/wiki/ISO_8601): `yyyy-MM-ddTHH:mm:ss[.SSSSSS]Z`. For example, `2021-02-10T16:59:50.886826Z`."
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "Retrieve all payouts with specific states. You can pass several states. Used for **filtering**.\n\nIf multiple states are selected, for example `completed` and `processing`, payouts with either of the selected values are returned. See this example of such a request URL: \n\n```curl\nhttps://merchant.revolut.com/api/payouts?state=completed&state=processing\n```\n\nThe parameter is case sensitive."
+              }
+            ]
+          },
+          "docs": "Retrieve all the payouts you made from your Merchant account. You can also use the query parameters for:\n\n  | Filtering | Pagination |\n  | --------- | ---------- |\n  | Filter the orders that you want to retrieve, for example, only retrieve the orders that have a specific email. <br/><br/>Parameters used for filtering:<br/><ul><li>`from_created_date`</li><li>`to_created_date`</li><li>`currency`</li><li>`state`</li></ul> | View the orders without loading all of them at once, for example, return a "
+        },
+        {
+          "info": {
+            "name": "Retrieve a payout",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/api/payouts/:payout_id",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Revolut-Api-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payout_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the `Payout` object."
+              }
+            ]
+          },
+          "docs": "Retrieve the details of a payout. Provide the unique payout ID, and the corresponding payout information is returned."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

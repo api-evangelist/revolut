@@ -1,0 +1,501 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Accounting",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a list of accounting categories",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/accounting-categories",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The page size, that is, the maximum number of accounting categories to return per page.\n\nTo get the next page of results, use `page_token`."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get available accounting categories based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 accounting categories per request. \nThe default page size is 100.\n:::\n\nThe accounting categories are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of accounting categories returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response als"
+        },
+        {
+          "info": {
+            "name": "Create an accounting category",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/accounting-categories",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Add a new accounting category to the list of accounting categories that can be assigned to your financial records, such as expenses.\n\n:::note\nThis operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-account"
+        },
+        {
+          "info": {
+            "name": "Retrieve accounting category details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/accounting-categories/:accounting_category_id",
+            "params": [
+              {
+                "name": "accounting_category_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the accounting category to retrieve."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the details of a specific accounting category based on its ID.\n\nThe details include the accounting category name, code, and default tax rate, as well as when the accounting category was added to your settings, and when it was last updated.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/ac"
+        },
+        {
+          "info": {
+            "name": "Update accounting category settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/accounting-categories/:accounting_category_id",
+            "params": [
+              {
+                "name": "accounting_category_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the accounting category to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update settings for a specific accounting category, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://develop"
+        },
+        {
+          "info": {
+            "name": "Delete an accounting category",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/accounting-categories/:accounting_category_id",
+            "params": [
+              {
+                "name": "accounting_category_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the accounting category to delete."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a specific accounting category, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).\n:::\n\nOnce the accounting category is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to assign it to new financial records (e.g. expenses). \n- Existing records assigned to "
+        },
+        {
+          "info": {
+            "name": "Retrieve a list of label groups",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/label-groups",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The page size, that is, the maximum number of label groups to return per page.\n\nTo get the next page of results, use `page_token`."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get available label groups based on the provided query criteria.\n\nThe label groups are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups)."
+        },
+        {
+          "info": {
+            "name": "Create a new label group",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/label-groups",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Add a new group of labels that can be applied to your financial records, such as expenses.\n\n:::note\n- This operation is not supported for [externally managed label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n- You can have up to 5 label groups at a time per business.\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/m"
+        },
+        {
+          "info": {
+            "name": "Retrieve label group details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/label-groups/:group_id",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label group to retrieve."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the details of a specific label group based on the label group ID.\n\nThe details include the label group name, as well as when the label group was added to your settings, and when it was last updated.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-group"
+        },
+        {
+          "info": {
+            "name": "Update label group settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/label-groups/:group_id",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label group to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update the name for a specific label group, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.co"
+        },
+        {
+          "info": {
+            "name": "Delete a label group",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/label-groups/:group_id",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label group to delete."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a specific label group, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n:::\n\nOnce the label group is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to apply labels from the group to new financial records (e.g. expenses). \n- Existing records that have not bee"
+        },
+        {
+          "info": {
+            "name": "Retrieve a list of labels from a label group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/label-groups/:group_id/labels",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label group from which to retrieve labels."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The page size, that is, the maximum number of labels to return per page.\n\nTo get the next page of results, use `page_token`."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get labels from a specific label group based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 labels per request. \nThe default page size is 100.\n:::\n\nThe labels are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of labels returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response also returns a cursor for the next page under"
+        },
+        {
+          "info": {
+            "name": "Create a new label",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/label-groups/:group_id/labels",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label group to which to add the new label."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Add a new label to a label group. \n\n:::note\nThis operation is not supported for [externally managed labels](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n:::\n\nThe labels are used for accounting and can be applied to your financial records, such as expenses.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-setting"
+        },
+        {
+          "info": {
+            "name": "Update a label",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/label-groups/:group_id/labels/:label_id",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label group to which the label belongs."
+              },
+              {
+                "name": "label_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update the name for a specific label, based on the IDs of the label and its label group.\n\n:::note\nThis operation is not supported for [externally managed labels]/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups(#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/"
+        },
+        {
+          "info": {
+            "name": "Delete a label",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/label-groups/:group_id/labels/:label_id",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label group to which the label belongs."
+              },
+              {
+                "name": "label_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label to delete."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a specific label, based on the IDs of the label and its label group.\n\n:::note\nThis operation is not supported for [externally managed labels](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n:::\n\nOnce the label is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to apply it to new financial records (e.g. expenses). \n- Existing records with this label that"
+        },
+        {
+          "info": {
+            "name": "Retrieve a list of tax rates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/tax-rates",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The page size, that is, the maximum number of tax rates to return per page.\n\nTo get the next page of results, use `page_token`."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get available tax rates based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 tax rates per request. \nThe default page size is 100.\n:::\n\nThe tax rates are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of tax rates returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response also returns a cursor for the next page under `next"
+        },
+        {
+          "info": {
+            "name": "Create a new tax rate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/tax-rates",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Add a new tax rate to the list of tax rates that can be applied to your financial records, such as expenses.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://dev"
+        },
+        {
+          "info": {
+            "name": "Retrieve tax rate details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/tax-rates/:tax_rate_id",
+            "params": [
+              {
+                "name": "tax_rate_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the tax rate to retrieve."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the details of a specific tax rate based on the tax rate ID.\n\nThe details include the tax rate name and percentage, as well as when the tax rate was added to your settings, and when it was last updated.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates)."
+        },
+        {
+          "info": {
+            "name": "Update tax rate settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/tax-rates/:tax_rate_id",
+            "params": [
+              {
+                "name": "tax_rate_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the tax rate to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update settings for a specific tax rate, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/acco"
+        },
+        {
+          "info": {
+            "name": "Delete a tax rate",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/tax-rates/:tax_rate_id",
+            "params": [
+              {
+                "name": "tax_rate_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the tax rate to delete."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a specific tax rate, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nOnce the tax rate is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to apply it to new financial records (e.g. expenses). \n- Existing records with this tax rate that have not been completed will be mar"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

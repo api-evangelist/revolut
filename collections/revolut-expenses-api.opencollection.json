@@ -1,0 +1,117 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Expenses API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Expenses",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a list of expenses",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/expenses",
+            "params": [
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "The date and time to retrieve the expenses from, including this date-time.\nCorresponds to the value of `expense_date`.\nProvided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n\nUsed also for pagination.\nTo get back to the previous page of results, make a new request and use the `expense_date` value from the first item of the current page as the value for the `from` parameter."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "The date and time to retrieve the expenses to, excluding this date-time.\nCorresponds to the value of `expense_date`.\nProvided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\nThe default value is the date and time at which you're calling the endpoint.\n\nUsed also for pagination.\nTo get back to the next page of results, make a new request and use the `expense_date` value from the last item of the previous (current) page as the value for the `to` parameter."
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of the expenses to retrieve per page.\nTo get the next page of results, make a new request and use the `expense_date` value from the last item of the previous page as the value for the `to` parameter."
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "Retrieves the expenses in the specified state."
+              },
+              {
+                "name": "transaction_type",
+                "value": "",
+                "type": "query",
+                "description": "The type of the transaction related to the expense.\nIf provided, only expenses with transactions of this type are returned."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all your expenses, or use the query parameters to filter the results.\n\nThe expenses are sorted by the `expense_date` value in reverse chronological order, and they're **paginated**.\nThe maximum number of expenses returned per page is specified by the `count` parameter.\nTo get the next page of results, make a new request and use the `expense_date` value from the last item of the previous page as the value for the `to` parameter.\n\nThe data enriched by the user, for example, VAT and cost centre"
+        },
+        {
+          "info": {
+            "name": "Retrieve an expense",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/expenses/:expense_id",
+            "params": [
+              {
+                "name": "expense_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the expense to retrieve."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the information about a specific expense by ID.\n\nThe data enriched by the user, for example, VAT and cost centre, is returned under `splits[].tax_rate` and `labels`, respectively.\n\n:::note\nThis feature is not available in Sandbox.\n:::\n\nFor more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses)."
+        },
+        {
+          "info": {
+            "name": "Retrieve a receipt related to an expense",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/expenses/:expense_id/receipts/:receipt_id/content",
+            "params": [
+              {
+                "name": "expense_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the [expense](https://developer.revolut.com/docs/api/business#get-expense) to which the receipt is related."
+              },
+              {
+                "name": "receipt_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the receipt to retrieve.\n\nTo find the ID of a receipt related to a specific expense, refer to the [expense's details](https://developer.revolut.com/docs/api/business#get-expense#response).\nThe IDs of receipts related to that expense are returned under `receipt_ids`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the receipt related to an expense by providing the receipt's ID.\n\n:::note\nThis feature is not available in Sandbox.\n:::\n\nFor more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

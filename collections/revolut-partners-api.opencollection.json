@@ -1,0 +1,263 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Partners API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Partners",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/config",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve Revolut Ramp configuration, such as available fiat currencies and crypto tokens with corresponding limits and supported countries.\n\nFor more information, see the guides: [Leverage the Crypto Ramp API -> Get your configuration details](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/use-the-api#get-your-configuration-details)."
+        },
+        {
+          "info": {
+            "name": "Retrieve an order quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/quote",
+            "params": [
+              {
+                "name": "fiat",
+                "value": "",
+                "type": "query",
+                "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code of the selected fiat currency to use for the purchase."
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "The fiat amount to exchange for crypto."
+              },
+              {
+                "name": "crypto",
+                "value": "",
+                "type": "query",
+                "description": "The ID of the crypto token to purchase, obtained from the [`/config`](https://developer.revolut.com/docs/api/crypto-ramp#retrieve-configuration) endpoint."
+              },
+              {
+                "name": "payment",
+                "value": "",
+                "type": "query",
+                "description": "The selected [payment option](https://developer.revolut.com/docs/guides/crypto-ramp/introduction-to-revolut-ramp/coverage-and-other-details/payment-options)."
+              },
+              {
+                "name": "region",
+                "value": "",
+                "type": "query",
+                "description": "The [ISO 3166 Alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code of the country of residence of the customer (end user) ordering the exchange."
+              },
+              {
+                "name": "feePercentage",
+                "value": "",
+                "type": "query",
+                "description": "The fee percentage that will be applied for the order as partner fee."
+              },
+              {
+                "name": "walletAddress",
+                "value": "",
+                "type": "query",
+                "description": "The address of the crypto wallet into which the purchased token should be transferred."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve an order quote representing current exchange rate, total crypto amount and fees.\nUse it to display potential exchange rate to your customer.\n\nFor more information, see the guides: [Leverage the Crypto Ramp API -> Get an order quote](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/use-the-api#get-an-order-quote)."
+        },
+        {
+          "info": {
+            "name": "Retrieve a redirect URL",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/buy",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "fiat",
+                "value": "",
+                "type": "query",
+                "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code of the selected fiat currency to use for the purchase."
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "The fiat amount to exchange for crypto."
+              },
+              {
+                "name": "crypto",
+                "value": "",
+                "type": "query",
+                "description": "The ID of the crypto token to purchase, obtained from the [`/config`](https://developer.revolut.com/docs/api/crypto-ramp#retrieve-configuration) endpoint."
+              },
+              {
+                "name": "payment",
+                "value": "",
+                "type": "query",
+                "description": "The selected [payment option](https://developer.revolut.com/docs/guides/crypto-ramp/introduction-to-revolut-ramp/coverage-and-other-details/payment-options)."
+              },
+              {
+                "name": "region",
+                "value": "",
+                "type": "query",
+                "description": "The [ISO 3166 Alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code of the country of residence of the customer (end user) ordering the exchange."
+              },
+              {
+                "name": "wallet",
+                "value": "",
+                "type": "query",
+                "description": "The address of the crypto wallet into which to transfer the purchased token."
+              },
+              {
+                "name": "orderId",
+                "value": "",
+                "type": "query",
+                "description": "The external identifier of the order to be made.\nShould be either UUID or ULID."
+              },
+              {
+                "name": "feePercentage",
+                "value": "",
+                "type": "query",
+                "description": "The fee percentage that will be applied for the order as partner fee."
+              },
+              {
+                "name": "partnerRedirectUrl",
+                "value": "",
+                "type": "query",
+                "description": "The URL to which to redirect the customer after the purchase – for example, your website. If not provided, the customer is shown transaction result in Revolut Ramp."
+              },
+              {
+                "name": "additionalProperties",
+                "value": "",
+                "type": "query",
+                "description": "A prefix that allows passing arbitrary key-value pairs. \nFor each pair, the prefix and key should be separated by `.`.\n\nIf such additional properties are provided, when you call the [`/orders`](https://developer.revolut.com/docs/api/crypto-ramp#retrieve-all-orders) endpoint, they are returned along with the order details."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve a redirect URL to the Ramp app widget for provided buy parameters. Use it to redirect the customer to Revolut Ramp to make the purchase.\n\n:::note\nThe `amount` in the Redirect URL is provided in minor currency units.\nFor example, GBP 12.00 is represented as `1200`.\n:::\n\nFor more information, see the guides: [Leverage the Crypto Ramp API -> Get a Revolut Ramp Redirect URL](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/use-the-api#get-a-revolut-ramp-redirect-url)."
+        },
+        {
+          "info": {
+            "name": "Retrieve an order",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/orders/:order_id",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "order_id",
+                "value": "",
+                "type": "path",
+                "description": "The external identifier of the order to retrieve.\nShould be either UUID or ULID."
+              },
+              {
+                "name": "wallet",
+                "value": "",
+                "type": "query",
+                "description": "The address of the crypto wallet into which the token transfer was ordered."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve an order by `order_id` provided in the path and the `wallet` address provided as a query parameter.\n\nFor more information, see the guides: [Leverage the Crypto Ramp API -> Get an order](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/use-the-api#get-an-order)."
+        },
+        {
+          "info": {
+            "name": "Retrieve all orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/orders",
+            "headers": [
+              {
+                "name": "X-API-KEY",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "The earliest date for the order creation date range (inclusive) in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n\nIn other words, the \"oldest\" order creation date you are interested in."
+              },
+              {
+                "name": "end",
+                "value": "",
+                "type": "query",
+                "description": "The latest date for the order creation date range (inclusive) in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n\nIn other words, the \"most recent\" order creation date you are interested in."
+              },
+              {
+                "name": "skip",
+                "value": "",
+                "type": "query",
+                "description": "The number of orders to skip at the beginning of the range when fetching orders (sorted by creation date, oldest first).\n\nThis means that if you set `skip=3`, the first three orders are skipped, and the list of orders that you get as a result will start with the order that would normally be 4th on the list."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of orders to fetch from the given range.\nMust be between `1` and `1000` (inclusive).\nDefault value is `100`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve all orders by date range.\n\nThe results are sorted chronologically by the `created_at` date (i.e. oldest first).\n\nFor more information, see the guides: [Leverage the Crypto Ramp API -> Get all orders](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/use-the-api#get-all-orders)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

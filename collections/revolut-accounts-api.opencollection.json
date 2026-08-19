@@ -1,0 +1,369 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Accounts API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Accounts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve all accounts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/accounts",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get a list of all your accounts.\n\nFor more information, see the guides: [Get your account details](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/manage-your-accounts)."
+        },
+        {
+          "info": {
+            "name": "Retrieve an account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/accounts/:account_id",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the account to retrieve."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the information about one of your accounts.\nSpecify the account by its ID.\n\nFor more information, see the guides: [Get your account details](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/manage-your-accounts)."
+        },
+        {
+          "info": {
+            "name": "Retrieve account's full bank details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/accounts/:account_id/bank-details",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the account to retrieve all bank details."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all the bank details of one of your accounts.\nSpecify the account by its ID.\n\nFor more information, see the guides: [Get your account details](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/manage-your-accounts)."
+        },
+        {
+          "info": {
+            "name": "Create an account access consent",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/account-access-consents",
+            "headers": [
+              {
+                "name": "x-fapi-financial-id",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-customer-last-logged-time",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-customer-ip-address",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-interaction-id",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "x-customer-user-agent",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Before you can access any data from a Revolut user, you must create an access consent to read data from the user's profile.\n\n:::note\nWhen you create an account access consent, you must include a specific permission that follows the rules in the table below; otherwise, you get a `400 Bad request` error.\n:::\n\n**Request Permissions**\n\n| PERMISSIONS | DEPENDENCIES |\n|--|--|\n| ReadAccountsBasic | None |\n| ReadAccountsDetail |None|\n| ReadBalances |None|\n| ReadBeneficiariesBasic |None|\n| ReadBeneficiar"
+        },
+        {
+          "info": {
+            "name": "Retrieve an account access consent",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/account-access-consents/:ConsentId",
+            "headers": [
+              {
+                "name": "x-fapi-financial-id",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-customer-last-logged-time",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-customer-ip-address",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-interaction-id",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "x-customer-user-agent",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "ConsentId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the account access consent."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the details of the account access consent as described in the Open Banking [official documentation](https://openbanking.atlassian.net/wiki/spaces/DZ/pages/999622968/Account+and+Transaction+API+Specification+-+v3.1.1).\n\nSee also [Tutorials: Get account and transaction information](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/get-account-and-transaction-information)."
+        },
+        {
+          "info": {
+            "name": "Delete an account access consent",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/account-access-consents/:ConsentId",
+            "headers": [
+              {
+                "name": "x-fapi-financial-id",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-customer-last-logged-time",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-customer-ip-address",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-interaction-id",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "x-customer-user-agent",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "ConsentId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the account access consent."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Use this endpoint to:\n\n- Reject a consent if it is in the `AwaitingAuthorisation` state or any error occurs while the consent is being authorised.\n- Revoke a consent if it is in the `Authorised` state.\n\nSee also [Tutorials: Get account and transaction information](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/get-account-and-transaction-information)."
+        },
+        {
+          "info": {
+            "name": "Retrieve an account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/accounts/:AccountId",
+            "headers": [
+              {
+                "name": "x-fapi-financial-id",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-customer-last-logged-time",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-customer-ip-address",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-interaction-id",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "x-customer-user-agent",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "AccountId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the account."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the information about a specific account by ID.\n\n:::note\nIn compliance with PSD2 SCA regulations, access to this endpoint is only allowed within the first 5 minutes after the Revolut user has authorised the consent.\nAfter those 5 minutes, access to this endpoint is denied, and an HTTP `403` error is returned.\n:::\n\nSee also [Tutorials: Get account and transaction information](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/get-account-and-transaction-information)."
+        },
+        {
+          "info": {
+            "name": "Retrieve an account balance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/accounts/:AccountId/balances",
+            "headers": [
+              {
+                "name": "x-fapi-financial-id",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-customer-last-logged-time",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-customer-ip-address",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-interaction-id",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "x-customer-user-agent",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "AccountId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the account."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the balance of an account.\n\nSee also [Tutorials: Get account and transaction information](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/get-account-and-transaction-information)."
+        },
+        {
+          "info": {
+            "name": "Retrieve all account's beneficiaries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/accounts/:AccountId/beneficiaries",
+            "headers": [
+              {
+                "name": "x-fapi-financial-id",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-customer-last-logged-time",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-customer-ip-address",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-interaction-id",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "x-customer-user-agent",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "AccountId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the account."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all the beneficiaries of a specific user account.\n\n:::note\nIn compliance with PSD2 SCA regulations, access to this endpoint is only allowed within the first 5 minutes after the Revolut user has authorised the consent.\nAfter those 5 minutes, access to this endpoint is denied, and an HTTP `403` error is returned.\n:::\n\nSee also [Tutorials: Get account and transaction information](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/get-account-and-transaction-information)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

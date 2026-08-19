@@ -1,0 +1,222 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Payment drafts API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payment drafts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a list of payment drafts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/payment-drafts",
+            "params": [
+              {
+                "name": "source",
+                "value": "",
+                "type": "query",
+                "description": "Filter payment drafts by the source from which they were created.\n\n- `api`: Only drafts created with the API (excluding the [Draft payment](https://developer.revolut.com/docs/api/open-banking#tag-draft-payment) endpoints).\n- `integration`: Drafts created via integrations (e.g., Xero) and [Draft payment](https://developer.revolut.com/docs/api/open-banking#tag-draft-payment) endpoints.\n- `email`: Only drafts created via email.\n- `all`: All payment drafts, **including drafts created in the Revolut Business app**."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the list of payment drafts that haven't been [sent for processing](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing).\n\nBy default, only payment drafts created with the API (including [Draft payment](https://developer.revolut.com/docs/api/open-banking#tag-draft-payment) endpoints) are returned. To retrieve drafts from other sources, use the `source` parameter.\n\nThe response lists the drafts with their details, such as the number of "
+        },
+        {
+          "info": {
+            "name": "Create a payment draft",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/payment-drafts",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a payment draft.\n\nWhen you create a payment draft, it stays a draft until you [send it for processing as payment](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing) in the [Revolut Business app](https://business.revolut.com/).\n\nUntil then, you can [delete](https://developer.revolut.com/docs/api/business#delete-payment-draft) the draft if you no longer wish to proceed with it.\n\n:::note\nIf you or the payment you're making is subjec"
+        },
+        {
+          "info": {
+            "name": "Retrieve a payment draft",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/payment-drafts/:payment_draft_id",
+            "params": [
+              {
+                "name": "payment_draft_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the payment draft to retrieve."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the information about a specific payment draft by ID.\n\nReturns drafts created with the API or via the [Revolut Business app](https://business.revolut.com/).\n\nThe response lists the details of the payment(s) included in the draft, as well as the draft details.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts)."
+        },
+        {
+          "info": {
+            "name": "Update a payment draft",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/payment-drafts/:payment_draft_id",
+            "params": [
+              {
+                "name": "payment_draft_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the payment draft to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update the metadata of a payment draft (`title` and/or `schedule_for`).\n\n:::note\n- You can update drafts created with the API or via the Revolut Business app.\n- The `schedule_for` date must be in the future.\n:::\n\nAll fields are optional — omitting a field leaves it unchanged.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts)."
+        },
+        {
+          "info": {
+            "name": "Delete a payment draft",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/payment-drafts/:payment_draft_id",
+            "params": [
+              {
+                "name": "payment_draft_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the payment draft to delete."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a payment draft with the given ID.\n\nYou can delete a payment draft only if it hasn't been [sent for processing](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing).\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts)."
+        },
+        {
+          "info": {
+            "name": "Add a payment to a payment draft",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/payment-drafts/:payment_draft_id/payments",
+            "params": [
+              {
+                "name": "payment_draft_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the payment draft to add the payment to."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Add a new payment to an existing payment draft.\n\n:::note\nYou can add payments to drafts created with the API or via the Revolut Business app.\n:::\n\nThe payment uses the same shape as the payments in the [create payment draft](#create-payment-draft) request.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts)."
+        },
+        {
+          "info": {
+            "name": "Update a payment in a payment draft",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/payment-drafts/:payment_draft_id/payments/:payment_id",
+            "params": [
+              {
+                "name": "payment_draft_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the payment draft that contains the payment."
+              },
+              {
+                "name": "payment_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the payment to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update the fields of a single payment within a payment draft.\n\n:::note\nYou can update payments in drafts created with the API or via the Revolut Business app.\n:::\n\nAll fields are optional — omit what should not change. Other payments in the draft are unaffected.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts)."
+        },
+        {
+          "info": {
+            "name": "Delete a payment from a payment draft",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/payment-drafts/:payment_draft_id/payments/:payment_id",
+            "params": [
+              {
+                "name": "payment_draft_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the payment draft that contains the payment."
+              },
+              {
+                "name": "payment_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the payment to delete."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a single payment from a payment draft. Other payments in the draft are unaffected.\n\n:::note\nYou can delete payments from drafts created with the API or via the Revolut Business app.\n:::\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

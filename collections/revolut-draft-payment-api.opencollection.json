@@ -1,0 +1,163 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Draft payment API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Draft payment",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List draft payments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/draft-payments",
+            "params": [
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Creation time inclusive lower bound in UTC [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) Date Time format YYYY-MM-DDThh:mm:ssZ"
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "Creation time exclusive upper bound in UTC [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) Date Time format YYYY-MM-DDThh:mm:ssZ"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get draft payments list sorted by creation time in descending order.\n\nSee also [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments) and [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment#6-get-list-of-draft-payments)."
+        },
+        {
+          "info": {
+            "name": "Create a draft payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/draft-payments",
+            "headers": [
+              {
+                "name": "x-idempotency-key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "scheduledDate",
+                "value": "",
+                "type": "query",
+                "description": "The date and time when the draft payment is executed.\n\n:::note\nAny draft payment in the CSV file is created as a scheduled payment.\n:::"
+              },
+              {
+                "name": "title",
+                "value": "",
+                "type": "query",
+                "description": "The title of draft payment"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Before you begin, ensure that you've got an access token.\nFor information about getting the access token, see [Tutorial: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment).\nThen, you can use the `/draft_payments` endpoint to create a draft payment on behalf of a user, and the draft payment appears in the user account where they can approve or reject.\n\nIn addition, you can use this endpoint to make multiple draf"
+        },
+        {
+          "info": {
+            "name": "Delete a draft payment transfer",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/draft-payments/:DraftPaymentId/transfers/:DraftPaymentTransferId",
+            "params": [
+              {
+                "name": "DraftPaymentId",
+                "value": "",
+                "type": "path",
+                "description": "The id of the draft payment"
+              },
+              {
+                "name": "DraftPaymentTransferId",
+                "value": "",
+                "type": "path",
+                "description": "The id of the draft payment transfer"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a specific draft payment transfer with the given draft payment transfer ID.\nA draft payment transfer can be deleted only if the user hasn't taken any action upon it, for example, approved or executed the draft payment.\n\nSee also [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments) and [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-yo"
+        },
+        {
+          "info": {
+            "name": "Retrieve a draft payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/draft-payments/:DraftPaymentId",
+            "params": [
+              {
+                "name": "DraftPaymentId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the draft payment."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the details about a specific draft payment with the given draft payment ID.\n\nSee also [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment#5-get-a-draft-payment) and [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments)."
+        },
+        {
+          "info": {
+            "name": "Delete a draft payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/draft-payments/:DraftPaymentId",
+            "params": [
+              {
+                "name": "DraftPaymentId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the draft payment."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a specific draft payment with the given draft payment ID.\nA draft payment can be deleted only if the user hasn't taken any action upon it, for example, approved or executed the draft payment.\n\nSee also [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments) and [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

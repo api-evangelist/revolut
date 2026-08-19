@@ -1,0 +1,308 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Cards API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Cards",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a list of cards",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/cards",
+            "params": [
+              {
+                "name": "created_before",
+                "value": "",
+                "type": "query",
+                "description": "Retrieves cards with `created_at` < `created_before`.\nThe default value is the current date and time at which you are calling the endpoint.\n\nProvided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of cards to return per page.\n\nTo get to the next page, make a new request and use the `created_at` date of the last card returned in the previous response as the value for `created_before`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the list of all cards in your organisation.\n\nThe results are paginated and sorted by the `created_at` date in reverse chronological order.\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards)."
+        },
+        {
+          "info": {
+            "name": "Create a card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/cards",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new [team member card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards), [company card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards), or [auto-issued card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards).\n\nWhen using the API, you can create only virtual cards.\nTo create a physical card, use the [Revolut Business app](https"
+        },
+        {
+          "info": {
+            "name": "Retrieve card details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/cards/:card_id",
+            "params": [
+              {
+                "name": "card_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the card."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the details of a specific card, based on its ID.\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards)."
+        },
+        {
+          "info": {
+            "name": "Update card settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/cards/:card_id",
+            "params": [
+              {
+                "name": "card_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the card."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update settings for a specific card, based on its ID.\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\n:::warning\nSome spend control parameters can affect one another.\nWhen updating spend controls, review the resulting settings in the response to ensure they reflect the configuration you intended.\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.rev"
+        },
+        {
+          "info": {
+            "name": "Terminate a card",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/cards/:card_id",
+            "params": [
+              {
+                "name": "card_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the card."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Terminate a specific card, based on its ID.\n\nOnce the card is terminated, it will not be returned by the API.\n\nA successful response does not get any content in return.\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards)."
+        },
+        {
+          "info": {
+            "name": "Update card contacts",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://b2b.revolut.com/api/1.0/cards/:card_id/contacts",
+            "params": [
+              {
+                "name": "card_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the card whose contacts should be updated."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update the list of card contacts (`contact_ids`) for a [company card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards).\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nYou can only update cards with existing contacts.\nIf a card does not have any contacts assigned, this operation is not allowed.\n\nOn success, the updated li"
+        },
+        {
+          "info": {
+            "name": "Update card references",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://b2b.revolut.com/api/1.0/cards/:card_id/references",
+            "params": [
+              {
+                "name": "card_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the card whose references should be amended."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update the list of [references (`references`)](https://developer.revolut.com/docs/api/business#get-card#response) for a [company](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) or [auto-issued card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards).\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact [Revolut API Support](mailto:ap"
+        },
+        {
+          "info": {
+            "name": "Freeze a card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/cards/:card_id/freeze",
+            "params": [
+              {
+                "name": "card_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the card to freeze."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Freeze a card to make it temporarily unavailable for spending.\nYou can only freeze a card that is in the state `active`.\n\nA successful freeze changes the card's state to `frozen`, and no content is returned in the response.\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-acc"
+        },
+        {
+          "info": {
+            "name": "Unfreeze a card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/cards/:card_id/unfreeze",
+            "params": [
+              {
+                "name": "card_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the card to unfreeze."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Unfreeze a card to re-enable spending for that card.\nYou can only unfreeze a card that is in the state `frozen`.\n\nA successful unfreeze changes the card's state back to `active`, and no content is returned in the response.\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-acco"
+        },
+        {
+          "info": {
+            "name": "Lock a card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/cards/:card_id/lock",
+            "params": [
+              {
+                "name": "card_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the card to lock."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Apply an admin lock to a card to make it temporarily unavailable for spending.\n\nA successful lock changes the card's state to `locked`, and no content is returned in the response.\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards)."
+        },
+        {
+          "info": {
+            "name": "Unlock a card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/cards/:card_id/unlock",
+            "params": [
+              {
+                "name": "card_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the card to unlock."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Unlock a card locked with an admin lock or spending period settings to make it available for spending again.\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\n:::warning\nIf a card has a `spending_period` set and is locked due to being outside of that period, unlocking the card removes this spending period completely, including the end date.\n\nIf you want to unlock such a card b"
+        },
+        {
+          "info": {
+            "name": "Retrieve sensitive card details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/cards/:card_id/sensitive-details",
+            "params": [
+              {
+                "name": "card_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the card for which to retrieve the sensitive details."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get sensitive details of a specific card, based on its ID.\n\nRequires the `READ_SENSITIVE_CARD_DATA` token scope. For more information, see the **Authorization** section.\n\n:::note\n- This feature is not available in Sandbox.\n- To increase your account's card limits, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::\n\nFor more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

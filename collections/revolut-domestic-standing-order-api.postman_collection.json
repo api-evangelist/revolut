@@ -1,0 +1,3566 @@
+{
+  "item": [
+    {
+      "id": "45c487b7-c286-4ab4-8aeb-2abdd3fe97bf",
+      "name": "Domestic standing order",
+      "description": {
+        "content": "*Domestic standing orders*, which you can use for local payments in the local currency of the user.\n\n:::note\nRevolut supports only GBP as local in the UK and EUR in Single Euro Payments Area (SEPA) countries.\n:::\n\nAs a regulated third party provider, you can use the provided endpoints to initiate a domestic payment in the following high-level workflow:\n\n- Create a consent.\n- Get the consent.\n- Create a payment.\n- Get the payment.\n\nBefore you begin, ensure that you've registered your application with the `payments` scope.\nFor more information, see [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment).\n\n:::tip\nSee also [Domestic payments](https://developer.revolut.com/docs/api/open-banking#tag-domestic-payment) and [Domestic scheduled payments](https://developer.revolut.com/docs/api/open-banking#tag-domestic-scheduled-payment).\n:::",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f34d3c99-ffd0-4afe-bc49-ef562fb88387",
+          "name": "Create a domestic standing order consent",
+          "request": {
+            "name": "Create a domestic standing order consent",
+            "description": {
+              "content": "Create a domestic standing order consent described in the [Open Banking API documentation: Account and Transaction API Specification](https://openbanking.atlassian.net/wiki/spaces/DZ/pages/999622968/Account+and+Transaction+API+Specification+-+v3.1.1).\n\nUse domestic standing orders for local recurring payments in the local currency of the user.\n\n:::note\nRevolut supports only GBP as local in the UK and EUR in Single Euro Payments Area (SEPA) countries.\n:::\n\nBecause Revolut Business users can have multiple accounts in the same currency, they can choose which account they want to be charged in the consent authorization UI.\n\nWhen you make the API call, ensure that you pass the corresponding JSON Web Signature (JWS) in the `x-jws-signature` request header. Note:\n- The JWS is generated from the request body with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) signing key that is specified in the JWS header.\n- The JWS consists of a header and a signature in the `<jws_header>..<jws_signature>` format.\n\nTo see how to create a JWS, see the guide: [Work with JSON Web Signatures](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures).\n\n\nThe following types of standing orders frequency are supported:\n\n|  FREQUENCY |  EXAMPLE | DETAILS  |\n|---|---|---|\n|  `EvryDay` | EvryDay  | daily, supported only for personal accounts  |\n| `IntrvlWkDay`  | IntrvlWkDay:01:03  | weekly on a specified week day, only 1 week interval is supported  |\n| `IntrvlMnthDay`  | IntrvlMnthDay:01:03  |  monthly on a specified day of month, only 1 month interval is supported |\n\nSee also [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment#2-create-a-domestic-payment-consent).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "domestic-standing-order-consents"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                "key": "x-fapi-financial-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                "key": "x-fapi-customer-last-logged-time",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                "key": "x-fapi-customer-ip-address",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                "key": "x-fapi-interaction-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                "key": "x-idempotency-key",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                "key": "x-jws-signature",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                "key": "x-customer-user-agent",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Data\": {\n    \"Initiation\": \"<object>\",\n    \"Permission\": \"<string>\"\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"<string>\",\n    \"MerchantCategoryCode\": \"<string>\",\n    \"MerchantCustomerIdentification\": \"<string>\",\n    \"DeliveryAddress\": {\n      \"Country\": \"<string>\",\n      \"TownName\": \"<string>\",\n      \"AddressLine\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"StreetName\": \"<string>\",\n      \"BuildingNumber\": \"<string>\",\n      \"PostCode\": \"<string>\",\n      \"CountrySubDivision\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4f753a4f-c418-4595-943c-f82ad77692ba",
+              "name": "Domestic Standing Order Consents Created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"Permission\": \"Create\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-23T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Header containing a [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                  "key": "x-jws-signature",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                  "key": "x-fapi-interaction-id",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Data\": {\n    \"Status\": \"AwaitingAuthorisation\",\n    \"StatusUpdateDateTime\": \"2022-09-23T17:29:11.18491Z\",\n    \"CreationDateTime\": \"2022-09-23T17:29:11.18491Z\",\n    \"Permission\": \"Create\",\n    \"ConsentId\": \"a8987204-xxxx-4c26-xxxx-f7a3effea6f3\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-24T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  },\n  \"Links\": {\n    \"Self\": \"https://oba-auth.revolut.com/domestic-standing-order-consents/a8987204-xxxx-4c26-xxxx-f7a3effea6f3\"\n  },\n  \"Meta\": {\n    \"TotalPages\": 1\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "407bcfad-3e71-40c1-8457-35a601a93a9c",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"Permission\": \"Create\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-23T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": \"400 Bad Request\",\n  \"Message\": \"Invalid request parameters\",\n  \"Id\": \"2CIH72EKKPW2\",\n  \"Errors\": [\n    {\n      \"ErrorCode\": \"UK.OBIE.Field.Invalid\",\n      \"Message\": \"Unsupported frequency\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e73e9bdb-c541-4c9a-8cbd-2de27db5f244",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"Permission\": \"Create\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-23T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3a17bfc8-5517-4d1b-8d30-5b80ba88a3fb",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"Permission\": \"Create\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-23T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3a91c884-73d1-4a80-b21a-4ca7b25fc2de",
+              "name": "Method Not Allowed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"Permission\": \"Create\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-23T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Method Not Allowed",
+              "code": 405,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "be08b49e-6f53-442c-a712-05b874de3f1b",
+              "name": "Not Acceptable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"Permission\": \"Create\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-23T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f8670f1f-79ac-44bb-ab6b-cffffc860eb8",
+              "name": "Unsupported Media Type",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"Permission\": \"Create\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-23T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unsupported Media Type",
+              "code": 415,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "8126fa8b-77e0-4920-a719-8d27408f14dc",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"Permission\": \"Create\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-23T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Time in seconds to wait before you make a new request.",
+                  "key": "Retry-After",
+                  "value": "4768"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f84ff89d-3267-4d7b-85ce-86c92cf498da",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"Permission\": \"Create\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-23T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": \"string\",\n  \"Errors\": [\n    {\n      \"ErrorCode\": \"strin\",\n      \"Message\": \"string\"\n    }\n  ],\n  \"Message\": \"string\",\n  \"Id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9d2cd66c-fd2f-47bf-8608-e760a18963b3",
+          "name": "Retrieve a domestic standing order consent",
+          "request": {
+            "name": "Retrieve a domestic standing order consent",
+            "description": {
+              "content": "Get the details of a domestic standing order consent.\n\nSee also [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "domestic-standing-order-consents",
+                ":ConsentId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "ConsentId",
+                  "description": "(Required) The ID of the account access consent."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                "key": "x-fapi-financial-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                "key": "x-fapi-customer-last-logged-time",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                "key": "x-fapi-customer-ip-address",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                "key": "x-fapi-interaction-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                "key": "x-customer-user-agent",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "5e263495-2992-48fe-a177-47b3833d14f4",
+              "name": "Domestic Standing Order Consents Read",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents",
+                    ":ConsentId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ConsentId",
+                      "description": "(Required) The ID of the account access consent."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Header containing a [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                  "key": "x-jws-signature",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                  "key": "x-fapi-interaction-id",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Data\": {\n    \"Status\": \"AwaitingAuthorisation\",\n    \"StatusUpdateDateTime\": \"2022-09-23T17:29:11.18491Z\",\n    \"CreationDateTime\": \"2022-09-23T17:29:11.18491Z\",\n    \"Permission\": \"Create\",\n    \"ConsentId\": \"a8987204-xxxx-4c26-xxxx-f7a3effea6f3\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"CreditorAccount\": {\n        \"Name\": \"Receiver Co.\",\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\"\n      },\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"FirstPaymentDateTime\": \"2022-09-24T14:15:22Z\"\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  },\n  \"Links\": {\n    \"Self\": \"https://oba-auth.revolut.com/domestic-standing-order-consents/a8987204-xxxx-4c26-xxxx-f7a3effea6f3\"\n  },\n  \"Meta\": {\n    \"TotalPages\": 1\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f564011b-12ec-476e-aecc-3e556fb679e0",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents",
+                    ":ConsentId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ConsentId",
+                      "description": "(Required) The ID of the account access consent."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": \"string\",\n  \"Errors\": [\n    {\n      \"ErrorCode\": \"strin\",\n      \"Message\": \"string\"\n    }\n  ],\n  \"Message\": \"string\",\n  \"Id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8236a2d9-2c25-412e-8af3-5654d6a595bd",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents",
+                    ":ConsentId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ConsentId",
+                      "description": "(Required) The ID of the account access consent."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "61e885b2-39db-4c22-b8eb-2c0224466c70",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents",
+                    ":ConsentId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ConsentId",
+                      "description": "(Required) The ID of the account access consent."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b40b74fd-b47c-4a41-98ff-440cb3a60d0d",
+              "name": "Method Not Allowed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents",
+                    ":ConsentId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ConsentId",
+                      "description": "(Required) The ID of the account access consent."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Method Not Allowed",
+              "code": 405,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f2549a1d-8852-4f34-ba97-88bf73f70c8b",
+              "name": "Not Acceptable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents",
+                    ":ConsentId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ConsentId",
+                      "description": "(Required) The ID of the account access consent."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c5eba23a-338e-4635-8d84-e1f8b0635869",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents",
+                    ":ConsentId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ConsentId",
+                      "description": "(Required) The ID of the account access consent."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Time in seconds to wait before you make a new request.",
+                  "key": "Retry-After",
+                  "value": "4768"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e50e7efd-4150-4c4f-88b8-6524e9143426",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-order-consents",
+                    ":ConsentId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ConsentId",
+                      "description": "(Required) The ID of the account access consent."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": \"string\",\n  \"Errors\": [\n    {\n      \"ErrorCode\": \"strin\",\n      \"Message\": \"string\"\n    }\n  ],\n  \"Message\": \"string\",\n  \"Id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "08d463a8-09e4-4a4b-a012-4edc3becf8a1",
+          "name": "Create a domestic standing order",
+          "request": {
+            "name": "Create a domestic standing order",
+            "description": {
+              "content": "Create a domestic standing order.\n\n:::note\nAs is defined in the Open Banking Specifications, the `/Data/Initiation` and the `/Data/Risk` sections of the request must be an exact match for the related consent passed in `ConsentId`.\n:::\n\nSee also [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment#6-initiate-the-domestic-payment).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "domestic-standing-orders"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                "key": "x-fapi-financial-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                "key": "x-fapi-customer-last-logged-time",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                "key": "x-fapi-customer-ip-address",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                "key": "x-fapi-interaction-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                "key": "x-idempotency-key",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                "key": "x-jws-signature",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                "key": "x-customer-user-agent",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Data\": {\n    \"ConsentId\": \"<string>\",\n    \"Initiation\": \"<object>\"\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"<string>\",\n    \"MerchantCategoryCode\": \"<string>\",\n    \"MerchantCustomerIdentification\": \"<string>\",\n    \"DeliveryAddress\": {\n      \"Country\": \"<string>\",\n      \"TownName\": \"<string>\",\n      \"AddressLine\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"StreetName\": \"<string>\",\n      \"BuildingNumber\": \"<string>\",\n      \"PostCode\": \"<string>\",\n      \"CountrySubDivision\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6ba80f26-6429-428d-af43-8da10423c3cf",
+              "name": "Domestic Standing Orders Created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"ConsentId\": \"a8987204-xxxx-4c26-xxxx-f7a3effea6f3\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-24T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Header containing a [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                  "key": "x-jws-signature",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                  "key": "x-fapi-interaction-id",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Data\": {\n    \"ConsentId\": \"a8987204-xxxx-4c26-xxxx-f7a3effea6f3\",\n    \"CreationDateTime\": \"2022-09-23T17:37:46.190063Z\",\n    \"DomesticStandingOrderId\": \"4c31965f-3de0-xxxx-8946-2f4f0e50dcda\",\n    \"Initiation\": {\n      \"CreditorAccount\": {\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\",\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\"\n      },\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"FirstPaymentDateTime\": \"2022-09-24T14:15:22Z\",\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"DebtorAccount\": {\n        \"SchemeName\": \"UK.OBIE.IBAN\",\n        \"Identification\": \"GB95REVO00997053872360\",\n        \"Name\": \"John Doe\"\n      }\n    },\n    \"Permission\": \"Create\",\n    \"Status\": \"InitiationCompleted\",\n    \"StatusUpdateDateTime\": \"2022-09-23T17:37:46.190063Z\"\n  },\n  \"Links\": {\n    \"Self\": \"https://oba-auth.revolut.com/domestic-standing-orders/4c31965f-3de0-xxxx-8946-2f4f0e50dcda\"\n  },\n  \"Meta\": {\n    \"TotalPages\": 1\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b7b410b4-3c0f-4731-ac10-28094b6d97b7",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"ConsentId\": \"a8987204-xxxx-4c26-xxxx-f7a3effea6f3\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-24T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": \"string\",\n  \"Errors\": [\n    {\n      \"ErrorCode\": \"strin\",\n      \"Message\": \"string\"\n    }\n  ],\n  \"Message\": \"string\",\n  \"Id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ad148360-6389-4991-b743-79e030f0c567",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"ConsentId\": \"a8987204-xxxx-4c26-xxxx-f7a3effea6f3\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-24T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cbedc1b3-c095-4910-acb0-11c110b566ab",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"ConsentId\": \"a8987204-xxxx-4c26-xxxx-f7a3effea6f3\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-24T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "989cd6b6-5fb1-4ad0-abea-7c59f1be09c2",
+              "name": "Method Not Allowed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"ConsentId\": \"a8987204-xxxx-4c26-xxxx-f7a3effea6f3\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-24T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Method Not Allowed",
+              "code": 405,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a8ee693e-1457-487a-8a2d-0a7d0756be9d",
+              "name": "Not Acceptable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"ConsentId\": \"a8987204-xxxx-4c26-xxxx-f7a3effea6f3\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-24T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "1f6d9cc3-d308-4a05-9746-788710c06dc7",
+              "name": "Unsupported Media Type",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"ConsentId\": \"a8987204-xxxx-4c26-xxxx-f7a3effea6f3\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-24T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unsupported Media Type",
+              "code": 415,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "453c4d75-24b7-4edf-ba19-4176afd40f34",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"ConsentId\": \"a8987204-xxxx-4c26-xxxx-f7a3effea6f3\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-24T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Time in seconds to wait before you make a new request.",
+                  "key": "Retry-After",
+                  "value": "4768"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3399e8eb-dc04-46ee-8203-15edb6d44e42",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Each request is processed only once per `x-idempotency-key`.\nThe idempotency key is valid for 24 hours.",
+                    "key": "x-idempotency-key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                    "key": "x-jws-signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"Data\": {\n    \"ConsentId\": \"a8987204-xxxx-4c26-xxxx-f7a3effea6f3\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"FirstPaymentDateTime\": \"2022-09-24T14:15:22Z\",\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"CreditorAccount\": {\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\",\n        \"Name\": \"Receiver Co.\"\n      }\n    }\n  },\n  \"Risk\": {\n    \"PaymentContextCode\": \"BillPayment\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": \"string\",\n  \"Errors\": [\n    {\n      \"ErrorCode\": \"strin\",\n      \"Message\": \"string\"\n    }\n  ],\n  \"Message\": \"string\",\n  \"Id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "feb2ffef-199a-42c5-8686-f3b6887c2ec4",
+          "name": "Retrieve a domestic standing order",
+          "request": {
+            "name": "Retrieve a domestic standing order",
+            "description": {
+              "content": "Get the status of a domestic standing order.\n\nSee also [Tutorials: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment#7-check-the-status-of-the-payment).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "domestic-standing-orders",
+                ":DomesticStandingOrderId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "DomesticStandingOrderId",
+                  "description": "(Required) The ID of the domestic standing order."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                "key": "x-fapi-financial-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                "key": "x-fapi-customer-last-logged-time",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                "key": "x-fapi-customer-ip-address",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                "key": "x-fapi-interaction-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                "key": "x-customer-user-agent",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e236cce7-35e0-42e6-8ba2-81ec01e32edb",
+              "name": "Domestic Standing Orders Read",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders",
+                    ":DomesticStandingOrderId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DomesticStandingOrderId",
+                      "description": "(Required) The ID of the domestic standing order."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Header containing a [detached JWS signature](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-json-web-signatures) of the body of the payload.",
+                  "key": "x-jws-signature",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UID used as a correlation id.",
+                  "key": "x-fapi-interaction-id",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Data\": {\n    \"Status\": \"InitiationCompleted\",\n    \"StatusUpdateDateTime\": \"2022-09-23T17:37:46.190063Z\",\n    \"CreationDateTime\": \"2022-09-23T17:37:46.190063Z\",\n    \"Permission\": \"Create\",\n    \"DomesticStandingOrderId\": \"4c31965f-3de0-xxxx-8946-2f4f0e50dcda\",\n    \"ConsentId\": \"a8987204-xxxx-4c26-xxxx-f7a3effea6f3\",\n    \"Initiation\": {\n      \"Frequency\": \"EvryDay\",\n      \"Reference\": \"Reference1234\",\n      \"CreditorAccount\": {\n        \"Name\": \"Receiver Co.\",\n        \"SchemeName\": \"UK.OBIE.SortCodeAccountNumber\",\n        \"Identification\": \"11223321325698\"\n      },\n      \"DebtorAccount\": {\n        \"SchemeName\": \"UK.OBIE.IBAN\",\n        \"Identification\": \"GB95REVO00997053872360\",\n        \"Name\": \"John Doe\"\n      },\n      \"FirstPaymentAmount\": {\n        \"Amount\": \"1.00\",\n        \"Currency\": \"GBP\"\n      },\n      \"FirstPaymentDateTime\": \"2022-09-24T14:15:22Z\"\n    }\n  },\n  \"Links\": {\n    \"Self\": \"https://oba-auth.revolut.com/domestic-standing-orders/4c31965f-3de0-xxxx-8946-2f4f0e50dcda\"\n  },\n  \"Meta\": {\n    \"TotalPages\": 1\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "04c86c0c-cc46-4451-8986-91b2ca539ca7",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders",
+                    ":DomesticStandingOrderId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DomesticStandingOrderId",
+                      "description": "(Required) The ID of the domestic standing order."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": \"string\",\n  \"Errors\": [\n    {\n      \"ErrorCode\": \"strin\",\n      \"Message\": \"string\"\n    }\n  ],\n  \"Message\": \"string\",\n  \"Id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1e5286a7-6c17-43c0-a9ba-764e70775bad",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders",
+                    ":DomesticStandingOrderId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DomesticStandingOrderId",
+                      "description": "(Required) The ID of the domestic standing order."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a1dd2c28-b504-4ef6-95b6-58527e61262b",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders",
+                    ":DomesticStandingOrderId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DomesticStandingOrderId",
+                      "description": "(Required) The ID of the domestic standing order."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a2d0ce18-3258-4e7f-92ec-2df4af7cf842",
+              "name": "Method Not Allowed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders",
+                    ":DomesticStandingOrderId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DomesticStandingOrderId",
+                      "description": "(Required) The ID of the domestic standing order."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Method Not Allowed",
+              "code": 405,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "fab15a2d-6fe2-4b34-961a-1f508fa45f49",
+              "name": "Not Acceptable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders",
+                    ":DomesticStandingOrderId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DomesticStandingOrderId",
+                      "description": "(Required) The ID of the domestic standing order."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c0a82e38-7047-4637-8b52-0111e4f1a985",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders",
+                    ":DomesticStandingOrderId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DomesticStandingOrderId",
+                      "description": "(Required) The ID of the domestic standing order."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Time in seconds to wait before you make a new request.",
+                  "key": "Retry-After",
+                  "value": "4768"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3b86b68e-7e88-4d86-a525-e2d8860cc3cc",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "domestic-standing-orders",
+                    ":DomesticStandingOrderId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DomesticStandingOrderId",
+                      "description": "(Required) The ID of the domestic standing order."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.\nThe ID of Revolut is `001580000103UAvAAM`.",
+                    "key": "x-fapi-financial-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).\n\nAll dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.\nFor example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.",
+                    "key": "x-fapi-customer-last-logged-time",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).",
+                    "key": "x-fapi-customer-ip-address",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.",
+                    "key": "x-fapi-interaction-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The access token that you've generated.\nFor more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.",
+                    "key": "x-customer-user-agent",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"Code\": \"string\",\n  \"Errors\": [\n    {\n      \"ErrorCode\": \"strin\",\n      \"Message\": \"string\"\n    }\n  ],\n  \"Message\": \"string\",\n  \"Id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://b2b.revolut.com/api/1.0",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "e87959ad-2a50-441c-86fa-9c822f425bd5",
+    "name": "Business Accounting Domestic standing order API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)",
+      "type": "text/plain"
+    }
+  }
+}

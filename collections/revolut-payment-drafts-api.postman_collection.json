@@ -1,0 +1,2190 @@
+{
+  "item": [
+    {
+      "id": "f242b3db-c8d2-45f2-bff7-17bacdbc409b",
+      "name": "Payment drafts",
+      "description": {
+        "content": "Payment drafts let you prepare payments for future processing, prepare payments that require an approval, or prepare bulk or scheduled payments.\n\nSimply create a draft, and when you're ready, [send it for processing as payment](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing).\nIf you or the payment you're making is subject to an [approval process](https://help.revolut.com/business/help/managing-my-business/users-and-employees/how-can-i-set-payment-approval-rules/), another team member designated as an approver must approve it in the [Revolut Business app](https://business.revolut.com/) before the payment can be processed.\n\nYou can also retrieve or delete the drafts created with the API.\n\nFor more information on use cases and other details, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "30f31b64-b7b7-4074-8711-6a7a399800d5",
+          "name": "Retrieve a list of payment drafts",
+          "request": {
+            "name": "Retrieve a list of payment drafts",
+            "description": {
+              "content": "Get the list of payment drafts that haven't been [sent for processing](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing).\n\nBy default, only payment drafts created with the API (including [Draft payment](https://developer.revolut.com/docs/api/open-banking#tag-draft-payment) endpoints) are returned. To retrieve drafts from other sources, use the `source` parameter.\n\nThe response lists the drafts with their details, such as the number of payments included in the draft, but not the payment details.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payment-drafts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "source",
+                  "value": "<string>",
+                  "description": "Filter payment drafts by the source from which they were created.\n\n- `api`: Only drafts created with the API (excluding the [Draft payment](https://developer.revolut.com/docs/api/open-banking#tag-draft-payment) endpoints).\n- `integration`: Drafts created via integrations (e.g., Xero) and [Draft payment](https://developer.revolut.com/docs/api/open-banking#tag-draft-payment) endpoints.\n- `email`: Only drafts created via email.\n- `all`: All payment drafts, **including drafts created in the Revolut Business app**."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "b3b8b839-3d8f-46c3-936f-067554db2d01",
+              "name": "List of payment drafts",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "source",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"payment_orders\": [\n    {\n      \"id\": \"e7e54cb2-861a-aaaa-80e9-3e6600f3db10\",\n      \"scheduled_for\": \"2026-06-24\",\n      \"title\": \"Draft Payment through API\",\n      \"payments_count\": 1,\n      \"source\": \"api\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f22f34bf-5618-4083-9c77-cda662fe385d",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "source",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 547,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "99c3909f-0352-47c5-851b-de80aef3ba81",
+          "name": "Create a payment draft",
+          "request": {
+            "name": "Create a payment draft",
+            "description": {
+              "content": "Create a payment draft.\n\nWhen you create a payment draft, it stays a draft until you [send it for processing as payment](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing) in the [Revolut Business app](https://business.revolut.com/).\n\nUntil then, you can [delete](https://developer.revolut.com/docs/api/business#delete-payment-draft) the draft if you no longer wish to proceed with it.\n\n:::note\nIf you or the payment you're making is subject to an [approval process](https://help.revolut.com/business/help/managing-my-business/users-and-employees/how-can-i-set-payment-approval-rules/), when you send the draft for processing, the payment goes into the `Pending review` state.\nBefore it can be processed, the business owner, administrator, or another team member designated as an approver must approve it in the Revolut Business app.\n:::\n\nFor more information on use cases and other details, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payment-drafts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payments\": [\n    {\n      \"account_id\": \"<uuid>\",\n      \"receiver\": {\n        \"counterparty_id\": \"<uuid>\",\n        \"account_id\": \"<uuid>\",\n        \"card_id\": \"<uuid>\"\n      },\n      \"amount\": \"<double>\",\n      \"currency\": \"<string>\",\n      \"reference\": \"<string>\",\n      \"charge_bearer\": \"<string>\",\n      \"transfer_reason_code\": \"<string>\"\n    },\n    {\n      \"account_id\": \"<uuid>\",\n      \"receiver\": {\n        \"counterparty_id\": \"<uuid>\",\n        \"account_id\": \"<uuid>\",\n        \"card_id\": \"<uuid>\"\n      },\n      \"amount\": \"<double>\",\n      \"currency\": \"<string>\",\n      \"reference\": \"<string>\",\n      \"charge_bearer\": \"<string>\",\n      \"transfer_reason_code\": \"<string>\"\n    }\n  ],\n  \"title\": \"<string>\",\n  \"schedule_for\": \"<date>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f992026c-56f7-48ff-aa6c-db4039817c4e",
+              "name": "The ID of the payment draft that was created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Payment Draft Title\",\n  \"payments\": [\n    {\n      \"account_id\": \"2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb\",\n      \"receiver\": {\n        \"counterparty_id\": \"a15bcac4-dd42-45ed-a828-6806ccc8bb7e\",\n        \"account_id\": \"2bf609f4-9825-4401-b6f7-960c61f8bee0\"\n      },\n      \"amount\": 10,\n      \"currency\": \"GBP\",\n      \"reference\": \"Payment #123\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"e7e54cb2-861a-aaaa-80e9-3e6600f3db10\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "deff7792-0bb1-4d2d-b792-f9770daf9ccd",
+              "name": "No payments provided",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Payment Draft Title\",\n  \"payments\": [\n    {\n      \"account_id\": \"2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb\",\n      \"receiver\": {\n        \"counterparty_id\": \"a15bcac4-dd42-45ed-a828-6806ccc8bb7e\",\n        \"account_id\": \"2bf609f4-9825-4401-b6f7-960c61f8bee0\"\n      },\n      \"amount\": 10,\n      \"currency\": \"GBP\",\n      \"reference\": \"Payment #123\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "aaf8d83b-90e1-4583-8e25-5a6117739f22",
+              "name": "Bad Request\n\nReturned, for example, when a required parameter is missing or malformatted, or when the request contains incompatible parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Payment Draft Title\",\n  \"payments\": [\n    {\n      \"account_id\": \"2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb\",\n      \"receiver\": {\n        \"counterparty_id\": \"a15bcac4-dd42-45ed-a828-6806ccc8bb7e\",\n        \"account_id\": \"2bf609f4-9825-4401-b6f7-960c61f8bee0\"\n      },\n      \"amount\": 10,\n      \"currency\": \"GBP\",\n      \"reference\": \"Payment #123\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 2101,\n  \"message\": \"Charge bearer is not supported for bulk payments.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6392006c-efcb-4c68-8f7d-69f59c6d2388",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Payment Draft Title\",\n  \"payments\": [\n    {\n      \"account_id\": \"2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb\",\n      \"receiver\": {\n        \"counterparty_id\": \"a15bcac4-dd42-45ed-a828-6806ccc8bb7e\",\n        \"account_id\": \"2bf609f4-9825-4401-b6f7-960c61f8bee0\"\n      },\n      \"amount\": 10,\n      \"currency\": \"GBP\",\n      \"reference\": \"Payment #123\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 547,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "60c4daff-6e62-4e33-a67c-51562a15157d",
+          "name": "Retrieve a payment draft",
+          "request": {
+            "name": "Retrieve a payment draft",
+            "description": {
+              "content": "Get the information about a specific payment draft by ID.\n\nReturns drafts created with the API or via the [Revolut Business app](https://business.revolut.com/).\n\nThe response lists the details of the payment(s) included in the draft, as well as the draft details.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payment-drafts",
+                ":payment_draft_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payment_draft_id",
+                  "description": "(Required) The ID of the payment draft to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "517dd393-24e8-4af3-867c-e098e5909330",
+              "name": "The information about a specific payment draft",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"title\": \"Draft Payment through API\",\n  \"scheduled_for\": \"2026-06-24\",\n  \"payments\": [\n    {\n      \"id\": \"67b38771-3db0-4cf0-bdc0-aaaa1284ab81\",\n      \"amount\": {\n        \"amount\": 123,\n        \"currency\": \"GBP\"\n      },\n      \"reference\": \"Draft Payment through API\",\n      \"account_id\": \"05018b0d-e67c-4fec-aaaa-415e9da9432c\",\n      \"receiver\": {\n        \"counterparty_id\": \"c71af44d-aaaa-4e1a-84bb-17589c81f022\"\n      },\n      \"state\": \"CREATED\",\n      \"current_charge_options\": {\n        \"from\": {\n          \"amount\": 123,\n          \"currency\": \"GBP\"\n        },\n        \"to\": {\n          \"amount\": 123,\n          \"currency\": \"GBP\"\n        },\n        \"rate\": \"1.0000\",\n        \"fee\": {\n          \"amount\": 0,\n          \"currency\": \"GBP\"\n        }\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "924cf3b6-c0bd-4abf-b38d-40f6a05e3122",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 547,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "14a24be0-f86f-48a3-89c4-8fe245de19a3",
+          "name": "Delete a payment draft",
+          "request": {
+            "name": "Delete a payment draft",
+            "description": {
+              "content": "Delete a payment draft with the given ID.\n\nYou can delete a payment draft only if it hasn't been [sent for processing](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#send-drafts-for-processing).\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payment-drafts",
+                ":payment_draft_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payment_draft_id",
+                  "description": "(Required) The ID of the payment draft to delete."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "6c792c1a-9b7a-4a6f-888b-a6c5de636590",
+              "name": "The payment draft was successfully deleted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "246bb862-4301-4110-ace6-acd4fa170b1d",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 547,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "afc246e2-f232-470c-863f-8a75036a9cf6",
+          "name": "Update a payment draft",
+          "request": {
+            "name": "Update a payment draft",
+            "description": {
+              "content": "Update the metadata of a payment draft (`title` and/or `schedule_for`).\n\n:::note\n- You can update drafts created with the API or via the Revolut Business app.\n- The `schedule_for` date must be in the future.\n:::\n\nAll fields are optional — omitting a field leaves it unchanged.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payment-drafts",
+                ":payment_draft_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payment_draft_id",
+                  "description": "(Required) The ID of the payment draft to update."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"<string>\",\n  \"schedule_for\": \"<date>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "84a5c64e-e024-4e71-9699-3da30ceb3eab",
+              "name": "The payment draft was successfully updated",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Updated Draft Title\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0c5a441a-f54c-4305-a147-02443423d089",
+              "name": "Bad Request\n\nReturned, for example, when a required parameter is missing or malformatted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Updated Draft Title\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 547,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3fff2338-966a-4e50-9188-196380942db2",
+              "name": "The specified payment draft was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Updated Draft Title\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 3006,\n  \"message\": \"The specified payment draft was not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "69ef6e44-674f-4c29-8afc-20bfac91e2f3",
+              "name": "Unprocessable Entity\n\nReturned when the payment draft cannot be modified.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Updated Draft Title\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 3100,\n  \"message\": \"Payment draft was created via Partner API and cannot be updated\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ccfd4e38-0634-4272-bfd3-d4bb5e509f1f",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Updated Draft Title\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 547,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "894c0401-1800-4a3a-9cb2-05defe5f7dae",
+          "name": "Add a payment to a payment draft",
+          "request": {
+            "name": "Add a payment to a payment draft",
+            "description": {
+              "content": "Add a new payment to an existing payment draft.\n\n:::note\nYou can add payments to drafts created with the API or via the Revolut Business app.\n:::\n\nThe payment uses the same shape as the payments in the [create payment draft](#create-payment-draft) request.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payment-drafts",
+                ":payment_draft_id",
+                "payments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payment_draft_id",
+                  "description": "(Required) The ID of the payment draft to add the payment to."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"account_id\": \"<uuid>\",\n  \"receiver\": {\n    \"counterparty_id\": \"<uuid>\",\n    \"account_id\": \"<uuid>\",\n    \"card_id\": \"<uuid>\"\n  },\n  \"amount\": \"<double>\",\n  \"currency\": \"<string>\",\n  \"reference\": \"<string>\",\n  \"charge_bearer\": \"<string>\",\n  \"transfer_reason_code\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7f89cd37-ba72-42a5-bd62-1f3a62af34ef",
+              "name": "The ID of the payment that was added to the draft",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id",
+                    "payments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft to add the payment to."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"account_id\": \"2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb\",\n  \"receiver\": {\n    \"counterparty_id\": \"a15bcac4-dd42-45ed-a828-6806ccc8bb7e\",\n    \"account_id\": \"2bf609f4-9825-4401-b6f7-960c61f8bee0\"\n  },\n  \"amount\": 50,\n  \"currency\": \"GBP\",\n  \"reference\": \"Payment #456\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a1b2c3d4-0000-0000-0000-000000000002\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4f5a4c4d-9ca9-4a0d-8dbf-253fb764caea",
+              "name": "Bad Request\n\nReturned, for example, when a required parameter is missing or malformatted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id",
+                    "payments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft to add the payment to."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"account_id\": \"2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb\",\n  \"receiver\": {\n    \"counterparty_id\": \"a15bcac4-dd42-45ed-a828-6806ccc8bb7e\",\n    \"account_id\": \"2bf609f4-9825-4401-b6f7-960c61f8bee0\"\n  },\n  \"amount\": 50,\n  \"currency\": \"GBP\",\n  \"reference\": \"Payment #456\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 547,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "14ce5ca7-a77a-4915-8933-9c046096c757",
+              "name": "The specified payment draft was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id",
+                    "payments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft to add the payment to."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"account_id\": \"2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb\",\n  \"receiver\": {\n    \"counterparty_id\": \"a15bcac4-dd42-45ed-a828-6806ccc8bb7e\",\n    \"account_id\": \"2bf609f4-9825-4401-b6f7-960c61f8bee0\"\n  },\n  \"amount\": 50,\n  \"currency\": \"GBP\",\n  \"reference\": \"Payment #456\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 3006,\n  \"message\": \"The specified payment draft was not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "589278a0-11f6-4938-945a-8a39c26793d9",
+              "name": "Unprocessable Entity\n\nReturned when the payment draft cannot be modified.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id",
+                    "payments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft to add the payment to."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"account_id\": \"2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb\",\n  \"receiver\": {\n    \"counterparty_id\": \"a15bcac4-dd42-45ed-a828-6806ccc8bb7e\",\n    \"account_id\": \"2bf609f4-9825-4401-b6f7-960c61f8bee0\"\n  },\n  \"amount\": 50,\n  \"currency\": \"GBP\",\n  \"reference\": \"Payment #456\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 3100,\n  \"message\": \"Payment draft was created via Partner API and cannot be updated\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "03ba9507-3bf0-452e-b1ed-bf7296e53329",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id",
+                    "payments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft to add the payment to."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"account_id\": \"2e6de1bf-97ad-478d-aad1-9d7a3cdf70cb\",\n  \"receiver\": {\n    \"counterparty_id\": \"a15bcac4-dd42-45ed-a828-6806ccc8bb7e\",\n    \"account_id\": \"2bf609f4-9825-4401-b6f7-960c61f8bee0\"\n  },\n  \"amount\": 50,\n  \"currency\": \"GBP\",\n  \"reference\": \"Payment #456\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 547,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e5e672cf-cb34-48d1-b1d6-930349397316",
+          "name": "Update a payment in a payment draft",
+          "request": {
+            "name": "Update a payment in a payment draft",
+            "description": {
+              "content": "Update the fields of a single payment within a payment draft.\n\n:::note\nYou can update payments in drafts created with the API or via the Revolut Business app.\n:::\n\nAll fields are optional — omit what should not change. Other payments in the draft are unaffected.\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payment-drafts",
+                ":payment_draft_id",
+                "payments",
+                ":payment_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payment_draft_id",
+                  "description": "(Required) The ID of the payment draft that contains the payment."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payment_id",
+                  "description": "(Required) The ID of the payment to update."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"receiver\": {\n    \"counterparty_id\": \"<uuid>\",\n    \"account_id\": \"<uuid>\",\n    \"card_id\": \"<uuid>\"\n  },\n  \"amount\": \"<double>\",\n  \"currency\": \"<string>\",\n  \"reference\": \"<string>\",\n  \"charge_bearer\": \"<string>\",\n  \"transfer_reason_code\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f126175f-f0be-4932-835f-91b1094df8d4",
+              "name": "The payment was successfully updated",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id",
+                    "payments",
+                    ":payment_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft that contains the payment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_id",
+                      "description": "(Required) The ID of the payment to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": 200\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d3573612-01d8-40be-915a-9476d356c683",
+              "name": "Bad Request\n\nReturned, for example, when a required parameter is missing or malformatted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id",
+                    "payments",
+                    ":payment_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft that contains the payment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_id",
+                      "description": "(Required) The ID of the payment to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": 200\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 547,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "82318bed-ff17-4ac8-b72b-845f060896a1",
+              "name": "The specified payment draft or payment was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id",
+                    "payments",
+                    ":payment_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft that contains the payment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_id",
+                      "description": "(Required) The ID of the payment to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": 200\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 3006,\n  \"message\": \"The specified payment draft or payment was not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f60932af-68f8-4e33-b332-b6eee9729488",
+              "name": "Unprocessable Entity\n\nReturned when the payment draft cannot be modified.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id",
+                    "payments",
+                    ":payment_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft that contains the payment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_id",
+                      "description": "(Required) The ID of the payment to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": 200\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 3100,\n  \"message\": \"Payment draft was created via Partner API and cannot be updated\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3fdd437a-8845-422d-a4c7-90beaa6e175e",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id",
+                    "payments",
+                    ":payment_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft that contains the payment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_id",
+                      "description": "(Required) The ID of the payment to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": 200\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 547,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "11958ea9-c220-4fb2-b935-dfe026c31aab",
+          "name": "Delete a payment from a payment draft",
+          "request": {
+            "name": "Delete a payment from a payment draft",
+            "description": {
+              "content": "Delete a single payment from a payment draft. Other payments in the draft are unaffected.\n\n:::note\nYou can delete payments from drafts created with the API or via the Revolut Business app.\n:::\n\nFor more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payment-drafts",
+                ":payment_draft_id",
+                "payments",
+                ":payment_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payment_draft_id",
+                  "description": "(Required) The ID of the payment draft that contains the payment."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payment_id",
+                  "description": "(Required) The ID of the payment to delete."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9fb0ee84-60f6-4358-a975-e4064558264c",
+              "name": "The payment was successfully removed from the draft",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id",
+                    "payments",
+                    ":payment_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft that contains the payment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_id",
+                      "description": "(Required) The ID of the payment to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7553a2ae-7364-4c80-9386-566ea8a05553",
+              "name": "The specified payment draft or payment was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id",
+                    "payments",
+                    ":payment_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft that contains the payment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_id",
+                      "description": "(Required) The ID of the payment to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 3006,\n  \"message\": \"The specified payment draft or payment was not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d45b5919-0b86-4bc7-8d0c-11dc2671070a",
+              "name": "Unprocessable Entity\n\nReturned when the payment draft cannot be modified.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id",
+                    "payments",
+                    ":payment_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft that contains the payment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_id",
+                      "description": "(Required) The ID of the payment to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 3100,\n  \"message\": \"Payment draft was created via Partner API and cannot be updated\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cd7cdcae-7971-4804-a47e-225c76a25a02",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-drafts",
+                    ":payment_draft_id",
+                    "payments",
+                    ":payment_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_draft_id",
+                      "description": "(Required) The ID of the payment draft that contains the payment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payment_id",
+                      "description": "(Required) The ID of the payment to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 547,\n  \"message\": \"string\",\n  \"error_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://b2b.revolut.com/api/1.0",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "44ae93a6-4aa8-4361-b491-9b881be0d56c",
+    "name": "Business Accounting Payment drafts API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)",
+      "type": "text/plain"
+    }
+  }
+}

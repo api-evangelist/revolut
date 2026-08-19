@@ -1,0 +1,129 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Market Data API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Market Data",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get order book snapshot",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/order-book/:symbol",
+            "headers": [
+              {
+                "name": "X-Revx-Timestamp",
+                "value": ""
+              },
+              {
+                "name": "X-Revx-Signature",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "symbol",
+                "value": "BTC-USD",
+                "type": "path",
+                "description": "The trading pair symbol (e.g., BTC-USD)."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Depth of the order book to return (number of levels)."
+              }
+            ]
+          },
+          "docs": "Retrieve the current order book snapshot (bids and asks) for a specific trading pair."
+        },
+        {
+          "info": {
+            "name": "Get historical OHLCV candles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/candles/:symbol",
+            "headers": [
+              {
+                "name": "X-Revx-Timestamp",
+                "value": ""
+              },
+              {
+                "name": "X-Revx-Signature",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "symbol",
+                "value": "BTC-USD",
+                "type": "path",
+                "description": "The trading pair symbol (e.g., BTC-USD)."
+              },
+              {
+                "name": "interval",
+                "value": "",
+                "type": "query",
+                "description": "Time interval between candles in minutes."
+              },
+              {
+                "name": "since",
+                "value": "",
+                "type": "query",
+                "description": "Start timestamp for the query in Unix epoch milliseconds.\n\n:::note\nIf omitted, up to 5000 candles leading up to the `until` parameter will be returned.\n:::"
+              },
+              {
+                "name": "until",
+                "value": "",
+                "type": "query",
+                "description": "End timestamp for the query in Unix epoch milliseconds.\n\n:::note\nIf omitted, this defaults to the current timestamp.\n:::"
+              }
+            ]
+          },
+          "docs": "Retrieve historical market data (Open, High, Low, Close, Volume) for a specific symbol.\nIf there is trading volume, the view is based on recent trades.\nIf there is no volume, the view is based on the Mid Price (Bid/Ask average)."
+        },
+        {
+          "info": {
+            "name": "Get all tickers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/tickers",
+            "headers": [
+              {
+                "name": "X-Revx-Timestamp",
+                "value": ""
+              },
+              {
+                "name": "X-Revx-Signature",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "symbols",
+                "value": "BTC-USD,ETH-USD",
+                "type": "query",
+                "description": "Filter tickers by specific currency pairs (comma-separated)."
+              }
+            ]
+          },
+          "docs": "Retrieves the latest market data snapshots for all supported currency pairs.\nThe response includes the current best bid and ask prices, the calculated mid-price, and the last traded price for each active symbol."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

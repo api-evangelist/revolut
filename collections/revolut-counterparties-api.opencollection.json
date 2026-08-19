@@ -1,0 +1,250 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Business Accounting Counterparties API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Counterparties",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Validate an account name (CoP/VoP)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/account-name-validation",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Validate a counterparty's account name against their account details when [adding a counterparty](https://developer.revolut.com/docs/api/business#add-counterparty) or [making a transfer](https://developer.revolut.com/docs/api/business#create-payment) to a new or existing counterparty.\n\n:::warning\nThe CoP check is **not** a complete fraud-prevention tool, and it does **not** guarantee the person is who they claim to be.\nIt only confirms that the name and account details your provide match the ban"
+        },
+        {
+          "info": {
+            "name": "Retrieve a list of counterparties",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/counterparties",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "The name of the counterparty to retrieve. It does not need to be an exact match, partial match is also supported. \n\n:::note\nSpecial characters must be properly URL-encoded.\n:::"
+              },
+              {
+                "name": "account_no",
+                "value": "",
+                "type": "query",
+                "description": "The exact account number of the counterparty to retrieve."
+              },
+              {
+                "name": "sort_code",
+                "value": "",
+                "type": "query",
+                "description": "The exact sort code of the counterparty to retrieve. \nOnly allowed in combination with the `account_no` parameter."
+              },
+              {
+                "name": "iban",
+                "value": "",
+                "type": "query",
+                "description": "The exact IBAN of the counterparty to retrieve."
+              },
+              {
+                "name": "bic",
+                "value": "",
+                "type": "query",
+                "description": "The exact BIC of the counterparty to retrieve. \nOnly allowed in combination with the `iban` parameter."
+              },
+              {
+                "name": "created_before",
+                "value": "",
+                "type": "query",
+                "description": "Retrieves counterparties with `created_at` < `created_before`.\nThe default value is the current date and time at which you are calling the endpoint. \n\nProvide it in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of counterparties returned per page.\n\nTo get to the next page, make a new request and use the `created_at` date of the last counterparty returned in the previous response as the value for `created_before`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all the counterparties that you have created, or use the query parameters to filter the results. \n\nThe counterparties are sorted by the `created_at` date in reverse chronological order.\n\nThe returned counterparties are **paginated**. \nThe maximum number of counterparties returned per page is specified by the `limit` parameter.\nTo get to the next page, make a new request and use the `created_at` date of the last counterparty returned in the previous response.\n\nFor more information, see the gu"
+        },
+        {
+          "info": {
+            "name": "Create a counterparty",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://b2b.revolut.com/api/1.0/counterparty",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new counterparty to transact with.\n\n### Revtags in Sandbox\n\nIn the Sandbox environment, you cannot add real people and businesses as Revolut counterparties.\nTo help you simulate adding counterparties using Revtag, we created some test accounts of profile type `personal` that you can use.\n\n<details id='test-accounts-for-sandbox'>\n  <summary> \n  <b>Test accounts for Sandbox</b>\n  </summary>\n\n  To add a counterparty via Revtag, use one of these pairs for the `name` and `revtag` fields resp"
+        },
+        {
+          "info": {
+            "name": "Check supported countries and currencies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/counterparties/countries",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve all supported bank countries and their available currencies for counterparty creation.\n\n:::note [Note]\nThis feature is not available in Sandbox.\n:::\n\nUse this endpoint to discover which country and currency combinations are supported before checking field requirements with the [Check counterparty field requirements endpoint](https://developer.revolut.com/docs/api/business#get-counterparty-requirements).\n\nFor more details, see the guide: **Check supported counterparty countries and curre"
+        },
+        {
+          "info": {
+            "name": "Check counterparty field requirements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/counterparties/fields",
+            "params": [
+              {
+                "name": "country",
+                "value": "",
+                "type": "query",
+                "description": "The country where the counterparty's bank account is located."
+              },
+              {
+                "name": "currency",
+                "value": "",
+                "type": "query",
+                "description": "The currency of the counterparty's bank account."
+              },
+              {
+                "name": "recipient_type",
+                "value": "",
+                "type": "query",
+                "description": "The type of the counterparty profile.\nIndicates whether the counterparty is a personal or business account."
+              },
+              {
+                "name": "route",
+                "value": "",
+                "type": "query",
+                "description": "The routing method for the corridor. \nWhen omitted, the response includes fields for the default route.\nFor example, for USD to US, the default is `ach`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve the list of conditionally required or applicable fields for creating a counterparty together with their constraints.\n\n:::note [Note]\nThis feature is not available in Sandbox.\n:::\n\nWhen creating a counterparty via the [Create a counterparty endpoint](https://developer.revolut.com/docs/api/business#add-counterparty), certain fields (such as `first_name`, `last_name`, `company_name`, `tax_id`, `route`, or `account_type`) become required depending on the counterparty's bank country, currenc"
+        },
+        {
+          "info": {
+            "name": "Retrieve a counterparty",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://b2b.revolut.com/api/1.0/counterparty/:counterparty_id",
+            "params": [
+              {
+                "name": "counterparty_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the counterparty to retrieve."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the information about a specific counterparty by ID."
+        },
+        {
+          "info": {
+            "name": "Delete a counterparty",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://b2b.revolut.com/api/1.0/counterparty/:counterparty_id",
+            "params": [
+              {
+                "name": "counterparty_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the counterparty to delete."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a counterparty with the given ID. When a counterparty is deleted, you cannot make any payments to the counterparty."
+        },
+        {
+          "info": {
+            "name": "Update a counterparty's payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://b2b.revolut.com/api/1.0/counterparties/:counterparty_id/payment-methods/:payment_method_id",
+            "params": [
+              {
+                "name": "counterparty_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the counterparty."
+              },
+              {
+                "name": "payment_method_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the payment method to update. To get the `payment_method_id` for the bank account, [retrieve the counterparty](https://developer.revolut.com/docs/api/business#get-counterparty) and use the `id` from the `accounts` array in the response."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update the **address** of a counterparty's payment method.\n\n:::tip [What is a payment method?]\nA payment method is an individual account or card linked to a counterparty. When you [retrieve a counterparty](https://developer.revolut.com/docs/api/business#get-counterparty), the response includes an `accounts` array and a `cards` array — each entry in these arrays is a payment method with its own `id`.\n:::\n\nAs only bank account payment methods have an address, you can use this endpoint to update th"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

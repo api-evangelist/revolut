@@ -1,0 +1,1464 @@
+{
+  "item": [
+    {
+      "id": "7da77460-ba6e-4351-b74b-97d29f488ecc",
+      "name": "Market Data",
+      "description": {
+        "content": "Retrieve real-time and historical market data for Revolut X.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f1929bf9-014e-4d01-b1e1-32c1b5368e13",
+          "name": "Get order book snapshot",
+          "request": {
+            "name": "Get order book snapshot",
+            "description": {
+              "content": "Retrieve the current order book snapshot (bids and asks) for a specific trading pair.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "order-book",
+                ":symbol"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Depth of the order book to return (number of levels)."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "symbol",
+                  "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                "key": "X-Revx-Timestamp",
+                "value": "<integer>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                "key": "X-Revx-Signature",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "15f94682-610e-4027-b01f-3489fdde3ddc",
+              "name": "OK\n\nThe Order Book snapshot for the given trading pair.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "order-book",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"asks\": [\n      {\n        \"aid\": \"ETH\",\n        \"anm\": \"Ethereum\",\n        \"s\": \"SELL\",\n        \"p\": \"4600\",\n        \"pc\": \"USD\",\n        \"pn\": \"MONE\",\n        \"q\": \"17\",\n        \"qc\": \"ETH\",\n        \"qn\": \"UNIT\",\n        \"ve\": \"REVX\",\n        \"no\": \"3\",\n        \"ts\": \"CLOB\",\n        \"pdt\": 3318215482991\n      },\n      {\n        \"aid\": \"ETH\",\n        \"anm\": \"Ethereum\",\n        \"s\": \"SELL\",\n        \"p\": \"4555\",\n        \"pc\": \"USD\",\n        \"pn\": \"MONE\",\n        \"q\": \"2.1234\",\n        \"qc\": \"ETH\",\n        \"qn\": \"UNIT\",\n        \"ve\": \"REVX\",\n        \"no\": \"2\",\n        \"ts\": \"CLOB\",\n        \"pdt\": 3318215482991\n      }\n    ],\n    \"bids\": [\n      {\n        \"aid\": \"ETH\",\n        \"anm\": \"Ethereum\",\n        \"s\": \"BUYI\",\n        \"p\": \"4550\",\n        \"pc\": \"USD\",\n        \"pn\": \"MONE\",\n        \"q\": \"0.25\",\n        \"qc\": \"ETH\",\n        \"qn\": \"UNIT\",\n        \"ve\": \"REVX\",\n        \"no\": \"1\",\n        \"ts\": \"CLOB\",\n        \"pdt\": 3318215482991\n      },\n      {\n        \"aid\": \"ETH\",\n        \"anm\": \"Ethereum\",\n        \"s\": \"BUYI\",\n        \"p\": \"4500\",\n        \"pc\": \"USD\",\n        \"pn\": \"MONE\",\n        \"q\": \"24.42\",\n        \"qc\": \"ETH\",\n        \"qn\": \"UNIT\",\n        \"ve\": \"REVX\",\n        \"no\": \"5\",\n        \"ts\": \"CLOB\",\n        \"pdt\": 3318215482991\n      }\n    ]\n  },\n  \"metadata\": {\n    \"timestamp\": 3318215482991\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0c8dbdeb-deb7-4d98-b539-140f0a687f13",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "order-book",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"No such pair: BTC-BTC\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "35917557-f5cd-44ed-925d-a557749def2e",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "order-book",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"API key can only be used for authentication from whitelisted IP\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3471f4e4-946b-4bff-95a4-680824e94d6f",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "order-book",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Forbidden\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f7f090db-cd41-41b2-812a-0e3d60eeddfd",
+              "name": "Conflict",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "order-book",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Request timestamp is in the future\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6e5c3ae8-7333-41bf-ac34-a49268db5c06",
+              "name": "Rate Limit Exceeded",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "order-book",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The number of milliseconds to wait before making a new request.",
+                  "key": "Retry-After",
+                  "value": "5000"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Rate Limit Exceeded\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fcb88c8a-29af-4044-9954-705234f86d30",
+              "name": "Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "order-book",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Something went wrong!\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fb537e82-8c0d-45af-9448-4b3159098bd3",
+          "name": "Get historical OHLCV candles",
+          "request": {
+            "name": "Get historical OHLCV candles",
+            "description": {
+              "content": "Retrieve historical market data (Open, High, Low, Close, Volume) for a specific symbol.\nIf there is trading volume, the view is based on recent trades.\nIf there is no volume, the view is based on the Mid Price (Bid/Ask average).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "candles",
+                ":symbol"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "interval",
+                  "value": "5",
+                  "description": "Time interval between candles in minutes."
+                },
+                {
+                  "disabled": false,
+                  "key": "since",
+                  "value": "<long>",
+                  "description": "Start timestamp for the query in Unix epoch milliseconds.\n\n:::note\nIf omitted, up to 5000 candles leading up to the `until` parameter will be returned.\n:::"
+                },
+                {
+                  "disabled": false,
+                  "key": "until",
+                  "value": "<long>",
+                  "description": "End timestamp for the query in Unix epoch milliseconds.\n\n:::note\nIf omitted, this defaults to the current timestamp.\n:::"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "symbol",
+                  "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                "key": "X-Revx-Timestamp",
+                "value": "<integer>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                "key": "X-Revx-Signature",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5bb476fc-2ea9-4ba2-96a5-58a838ea2042",
+              "name": "OK\n\nList of OHLCV candles.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "candles",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "interval",
+                      "value": "5"
+                    },
+                    {
+                      "key": "since",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "until",
+                      "value": "3318215482991"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"start\": 3318215482991,\n      \"open\": \"92087.81\",\n      \"high\": \"92133.89\",\n      \"low\": \"92052.39\",\n      \"close\": \"92067.31\",\n      \"volume\": \"0.00067964\"\n    },\n    {\n      \"start\": 3318215782991,\n      \"open\": \"90390.46\",\n      \"high\": \"90395\",\n      \"low\": \"90358.84\",\n      \"close\": \"90395\",\n      \"volume\": \"0.00230816\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8254f012-bb71-491f-b7eb-d0d64fb04103",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "candles",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "interval",
+                      "value": "5"
+                    },
+                    {
+                      "key": "since",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "until",
+                      "value": "3318215482991"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"No such pair: BTC-BTC\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "64e6dfe4-8d7d-4c55-9aa7-de4aa495d069",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "candles",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "interval",
+                      "value": "5"
+                    },
+                    {
+                      "key": "since",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "until",
+                      "value": "3318215482991"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"API key can only be used for authentication from whitelisted IP\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "36821e78-986a-4ecf-8959-1fb0127c30c4",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "candles",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "interval",
+                      "value": "5"
+                    },
+                    {
+                      "key": "since",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "until",
+                      "value": "3318215482991"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Forbidden\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8765c8d0-ed88-47d2-953b-edb1d720c823",
+              "name": "Conflict",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "candles",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "interval",
+                      "value": "5"
+                    },
+                    {
+                      "key": "since",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "until",
+                      "value": "3318215482991"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Request timestamp is in the future\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "90aae067-d2d7-411a-b4f3-3945ebbd1cbb",
+              "name": "Rate Limit Exceeded",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "candles",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "interval",
+                      "value": "5"
+                    },
+                    {
+                      "key": "since",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "until",
+                      "value": "3318215482991"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The number of milliseconds to wait before making a new request.",
+                  "key": "Retry-After",
+                  "value": "5000"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Rate Limit Exceeded\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b56ab038-f113-4c85-935a-1ad818bc67ff",
+              "name": "Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "candles",
+                    ":symbol"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "interval",
+                      "value": "5"
+                    },
+                    {
+                      "key": "since",
+                      "value": "3318215482991"
+                    },
+                    {
+                      "key": "until",
+                      "value": "3318215482991"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "symbol",
+                      "description": "(Required) The trading pair symbol (e.g., BTC-USD)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Something went wrong!\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "215f417d-f315-4e98-a7a5-f133a5fd1afe",
+          "name": "Get all tickers",
+          "request": {
+            "name": "Get all tickers",
+            "description": {
+              "content": "Retrieves the latest market data snapshots for all supported currency pairs.\nThe response includes the current best bid and ask prices, the calculated mid-price, and the last traded price for each active symbol.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "tickers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "symbols",
+                  "value": "<string>,<string>",
+                  "description": "Filter tickers by specific currency pairs (comma-separated)."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                "key": "X-Revx-Timestamp",
+                "value": "<integer>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                "key": "X-Revx-Signature",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0e0ce072-8b86-4e8c-a1c0-50af0668eaec",
+              "name": "OK\n\nThe list of tickers.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tickers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbols",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"symbol\": \"BTC/USD\",\n      \"bid\": \"0.02\",\n      \"ask\": \"0.02\",\n      \"mid\": \"0.02\",\n      \"last_price\": \"0.02\"\n    },\n    {\n      \"symbol\": \"ETH/USD\",\n      \"bid\": \"0.02\",\n      \"ask\": \"0.02\",\n      \"mid\": \"0.02\",\n      \"last_price\": \"0.02\"\n    }\n  ],\n  \"metadata\": {\n    \"timestamp\": 1770201294631\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5a7516cd-a1c1-4883-9d1b-44c068f99b87",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tickers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbols",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"No such pair: BTC-BTC\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6ccc50f3-38a1-41ba-8433-7544175b91eb",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tickers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbols",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"API key can only be used for authentication from whitelisted IP\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9414ce41-f4ce-44f6-a681-40d0b5f5c82f",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tickers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbols",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Forbidden\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2f0214e5-6456-42ab-9bce-c1e2c58a3a9d",
+              "name": "Rate Limit Exceeded",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tickers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbols",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The number of milliseconds to wait before making a new request.",
+                  "key": "Retry-After",
+                  "value": "5000"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Rate Limit Exceeded\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "80323bd2-195a-46e9-96f7-73423c5571c3",
+              "name": "Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tickers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbols",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers.",
+                    "key": "X-Revx-Timestamp",
+                    "value": "1746007718237"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::",
+                    "key": "X-Revx-Signature",
+                    "value": "2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Something went wrong!\",\n  \"error_id\": \"7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e\",\n  \"timestamp\": 3318215482991\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://b2b.revolut.com/api/1.0",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "d8e2e2d5-c5d0-4492-a9f1-ede480723e4e",
+    "name": "Business Accounting Market Data API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)",
+      "type": "text/plain"
+    }
+  }
+}

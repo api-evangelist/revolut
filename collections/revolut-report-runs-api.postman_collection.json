@@ -1,0 +1,781 @@
+{
+  "item": [
+    {
+      "id": "81ad08ed-d854-4736-95b6-3155528d4221",
+      "name": "Report runs",
+      "description": {
+        "content": "Use **Report runs** operations to generate CSV reports of your Merchant account transactions. Choose from the following report types based on your use case:\n\n| Report type | Description |\n| ----------- | ----------- |\n| `custom_report` | Settled and processing transactions with a configurable set of columns. |\n| `settlement_report` | All settled transactions, with a configurable set of columns. |\n| `payments_report` | All payments, including failed and declined ones. |\n| `payout_statement_report` | All transactions that contributed to a specific payout. |\n| `icpp_fee_breakdown_report` | IC++ fee components broken down per transaction for a specific IC++ charge. |\n\n:::info\nFor more information about how to generate CSV reports, see: [Create CSV reports of transactions](https://developer.revolut.com/docs/guides/merchant/monitor-and-observe/reports-reconciliation).\n:::",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "08477af6-dd75-4c6f-8389-39a01892e191",
+          "name": "Create a report run",
+          "request": {
+            "name": "Create a report run",
+            "description": {
+              "content": "Start generating a report of all transactions that match the filter and options specified in the request body.\n\nUse the returned `report_run_id` and the [Retrieve report run details](https://developer.revolut.com/docs/api/merchant#retrieve-report-run) operation to check the status of the generation.\n\nAfter generation is done, use the [Download report file](https://developer.revolut.com/docs/api/merchant#download-report-file) operation to retrieve the CSV. The `file_url` in the completed report run object is the request URL for that endpoint and requires the same authorisation as any other Merchant API request. \n\n### Report types\n\nThe table below helps to choose the right report type for your use case:\n\n| Report type | What it covers |\n| ----------- | -------------- |\n| `custom_report` | Settled and processing transactions with configurable columns |\n| `settlement_report` | All settled transactions, with a configurable set of columns |\n| `payments_report` | All payments including failed and declined ones |\n| `payout_statement_report` | All transactions contributing to a specific payout |\n| `icpp_fee_breakdown_report` | IC++ fees per transaction for a specific IC++ charge |\n\n### IDs across report types\n\nEach report type uses a different primary ID, depending on which system the data comes from:\n\n| ID column | System | Report types |\n| --------- | ------ | ------------ |\n| `payment_id`, `id` | **Acquiring system** - identifies a payment attempt | `payments_report`, `icpp_fee_breakdown_report` |\n| `transaction_id` | **Core ledger** - identifies the settlement entry created when a payment is captured | `settlement_report`, `payout_statement_report`, `custom_report` |\n| `order_id` | **Both systems** - bridges the acquiring and ledger perspectives | `settlement_report`, `payments_report`, `payout_statement_report`, `custom_report` |",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "report-runs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filter\": {\n    \"from\": \"<dateTime>\",\n    \"to\": \"<dateTime>\",\n    \"entity_types\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"entity_states\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"currency\": \"<string>\",\n    \"location_id\": \"<uuid>\"\n  },\n  \"format\": \"<string>\",\n  \"type\": \"<string>\",\n  \"options\": {\n    \"timezone\": \"<string>\",\n    \"columns\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f063ab8a-1ae6-456d-a786-f2607cc88bc8",
+              "name": "Report run created, report started generating",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "report-runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filter\": {\n    \"from\": \"2020-01-01T00:00:00Z\",\n    \"to\": \"2020-01-02T00:00:00Z\",\n    \"entity_types\": [\n      \"payment\"\n    ],\n    \"entity_states\": [\n      \"completed\",\n      \"processing\"\n    ]\n  },\n  \"format\": \"csv\",\n  \"type\": \"custom_report\",\n  \"options\": {\n    \"timezone\": \"Europe/London\",\n    \"columns\": [\n      \"transaction_id\",\n      \"amount\",\n      \"currency\",\n      \"metadata.custom_attribute\"\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"report_run_id\": \"d6f6ef64-f668-4e64-8967-1cdf8afb2561\",\n  \"status\": \"processing\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4d4bf5ab-30df-4e3c-bd9f-32f5357ae3b1",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "report-runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filter\": {\n    \"from\": \"2020-01-01T00:00:00Z\",\n    \"to\": \"2020-01-02T00:00:00Z\",\n    \"entity_types\": [\n      \"payment\"\n    ],\n    \"entity_states\": [\n      \"completed\",\n      \"processing\"\n    ]\n  },\n  \"format\": \"csv\",\n  \"type\": \"custom_report\",\n  \"options\": {\n    \"timezone\": \"Europe/London\",\n    \"columns\": [\n      \"transaction_id\",\n      \"amount\",\n      \"currency\",\n      \"metadata.custom_attribute\"\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8548\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ba7008d3-2e3d-4605-9ee4-ad18a748f404",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "report-runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filter\": {\n    \"from\": \"2020-01-01T00:00:00Z\",\n    \"to\": \"2020-01-02T00:00:00Z\",\n    \"entity_types\": [\n      \"payment\"\n    ],\n    \"entity_states\": [\n      \"completed\",\n      \"processing\"\n    ]\n  },\n  \"format\": \"csv\",\n  \"type\": \"custom_report\",\n  \"options\": {\n    \"timezone\": \"Europe/London\",\n    \"columns\": [\n      \"transaction_id\",\n      \"amount\",\n      \"currency\",\n      \"metadata.custom_attribute\"\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8548\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d2a6ffce-9f8c-48cb-b56c-2fbd9900f365",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "report-runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filter\": {\n    \"from\": \"2020-01-01T00:00:00Z\",\n    \"to\": \"2020-01-02T00:00:00Z\",\n    \"entity_types\": [\n      \"payment\"\n    ],\n    \"entity_states\": [\n      \"completed\",\n      \"processing\"\n    ]\n  },\n  \"format\": \"csv\",\n  \"type\": \"custom_report\",\n  \"options\": {\n    \"timezone\": \"Europe/London\",\n    \"columns\": [\n      \"transaction_id\",\n      \"amount\",\n      \"currency\",\n      \"metadata.custom_attribute\"\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8548\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "363d5629-c9fb-4172-b09a-49fa9865abbc",
+          "name": "Retrieve a report run",
+          "request": {
+            "name": "Retrieve a report run",
+            "description": {
+              "content": "Retrieve details of a report run, based on the `report_run_id`. \n\nUse this method to check the status of a report run.\n\nIf a report run's `status` is `completed`, the report file can be downloaded using the `file_url` for 24 hours after report generation finishes.\n\nOnce that 24-hour window elapses, the report run remains retrievable but transitions to `expired`, and the file can no longer be downloaded.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "report-runs",
+                ":report_run_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "report_run_id",
+                  "description": "(Required) Unique ID of the report run."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "292506a8-de44-4a5a-ab69-76b7b182dc67",
+              "name": "Report run found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "report-runs",
+                    ":report_run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "report_run_id",
+                      "description": "(Required) Unique ID of the report run."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"report_run_id\": \"d6f6ef64-f668-4e64-8967-1cdf8afb2561\",\n  \"status\": \"processing\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7c85c447-ac7c-4078-ba6e-f1bc1c6386fe",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "report-runs",
+                    ":report_run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "report_run_id",
+                      "description": "(Required) Unique ID of the report run."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8548\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "604a19f7-fcef-4c02-b1b5-26fb3bacb1c5",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "report-runs",
+                    ":report_run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "report_run_id",
+                      "description": "(Required) Unique ID of the report run."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8548\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "187e981f-7fdc-4fa7-b639-3750bfa05a7b",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "report-runs",
+                    ":report_run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "report_run_id",
+                      "description": "(Required) Unique ID of the report run."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8548\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "52aea655-3ec5-4cd5-96cc-c831888157d4",
+          "name": "Download report file",
+          "request": {
+            "name": "Download report file",
+            "description": {
+              "content": "Use this endpoint to download the generated report file.\n\nA generated report file is available for 24 hours after report generation finishes. After that, the report run becomes `expired` and the file can no longer be downloaded.\n\nThe response is a raw `text/csv` file. The first row contains the column headers. The columns included depend on the report type used when creating the report run, and the `options.columns` list if specified.\n\n### IDs across report types\n\nRevolut uses two separate ID systems across report types:\n\n| ID column | System | Report types |\n| --------- | ------ | ------------ |\n| `payment_id`, `id` | **Acquiring system** - identifies a payment attempt | `payments_report`, `icpp_fee_breakdown_report` |\n| `transaction_id` | **Core ledger** - identifies the settlement entry created when a payment is captured | `settlement_report`, `payout_statement_report`, `custom_report` |\n| `order_id` | **Both systems** - bridges the acquiring and ledger perspectives | `settlement_report`, `payments_report`, `payout_statement_report`, `custom_report` |\n\n:::tip\nA payment and its resulting ledger transaction represent the same event but have **different UUIDs**. To reconcile `payments_report` data against `settlement_report` data, join on `order_id`.\n:::\n\nUse the schema selector below to see the available columns for each report type.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "report-runs",
+                ":report_run_id",
+                "file"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "report_run_id",
+                  "description": "(Required) Unique ID of the report run."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/csv"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "b8ca792d-d02a-4fc0-9221-ca76d975d5f8",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "report-runs",
+                    ":report_run_id",
+                    "file"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "report_run_id",
+                      "description": "(Required) Unique ID of the report run."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "text/csv"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/csv"
+                }
+              ],
+              "body": "transaction_id,order_id,original_order_id,started_date,updated_date,completed_date,payment_created_date,payment_captured_date,type,state,description,merchant_order_ext_ref,customer_id,amount,currency,settlement_amount,settlement_currency,payment_method,fee_amount,fee_currency,processing_fee_amount,processing_fee_currency,browser_url,location_id\n67f66fa6-200c-aaef-8708-cb78366f8a30,67f66f41-3022-a623-827e-e0616c0d04e7,67f66f41-3022-a623-827e-e0616c0d04e7,2025-04-09T13:01:26.288638Z,2025-04-10T13:02:09.843018Z,2025-04-10T13:02:09.837719Z,2025-04-09T13:01:26.186Z,2025-04-10T13:02:09.837719Z,SETTLEMENT,COMPLETED,Summer hat,ORD-2025-0042,,100.00,GBP,99.00,GBP,CARD,1.00,GBP,1.00,GBP,https://sandbox-checkout.revolut.com/payment-link/1ae44a1c-3ea8-47ac-b736-7d7d4c992bb4,\n67f66fb7-300d-bbff-9819-dc89477a9b41,67f67052-4133-b734-938f-f1727d1e15f8,67f66f41-3022-a623-827e-e0616c0d04e7,2025-04-10T09:10:00.000000Z,2025-04-10T09:12:00.000000Z,2025-04-10T09:12:00.000000Z,,,REFUND,COMPLETED,Refund for Summer hat,ORD-2025-0042-R1,,25.00,GBP,-25.00,GBP,CARD,0.00,GBP,0.00,GBP,https://sandbox-checkout.revolut.com/payment-link/1ae44a1c-3ea8-47ac-b736-7d7d4c992bb4,\n67f66fc8-411e-cc10-a92a-ed9a588b0c52,67f67063-5244-c845-a49a-a2838e2f26a9,67f66f41-3022-a623-827e-e0616c0d04e7,2025-04-11T08:30:00.000000Z,2025-04-11T08:45:00.000000Z,2025-04-11T08:45:00.000000Z,,,CHARGEBACK,COMPLETED,Chargeback for Summer hat,ORD-2025-0042-CB1,,75.00,GBP,-75.00,GBP,CARD,0.00,GBP,0.00,GBP,https://sandbox-checkout.revolut.com/payment-link/1ae44a1c-3ea8-47ac-b736-7d7d4c992bb4,\n67f66fd9-522f-dd21-ba3b-feab699a1d63,67f67074-6355-d956-b50a-a3949f3a37a0,67f66f41-3022-a623-827e-e0616c0d04e7,2025-04-15T10:00:00.000000Z,2025-04-15T10:05:00.000000Z,2025-04-15T10:05:00.000000Z,,,CHARGEBACK_REVERSAL,COMPLETED,Chargeback reversal for Summer hat,ORD-2025-0042-CBR1,,75.00,GBP,75.00,GBP,CARD,0.00,GBP,0.00,GBP,https://sandbox-checkout.revolut.com/payment-link/1ae44a1c-3ea8-47ac-b736-7d7d4c992bb4,",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "1ef7c26e-8155-482f-a2c1-8d9579fa5135",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "report-runs",
+                    ":report_run_id",
+                    "file"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "report_run_id",
+                      "description": "(Required) Unique ID of the report run."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8548\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "80f88636-363d-4a5b-b844-a50cd03a966d",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "report-runs",
+                    ":report_run_id",
+                    "file"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "report_run_id",
+                      "description": "(Required) Unique ID of the report run."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8548\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ca5b4b2f-8d69-4fb7-b20a-7a4566aa8326",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "report-runs",
+                    ":report_run_id",
+                    "file"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "report_run_id",
+                      "description": "(Required) Unique ID of the report run."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::",
+                    "key": "Authorization",
+                    "value": "Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"message\": \"string\",\n  \"timestamp\": 8548\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://b2b.revolut.com/api/1.0",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "87d2c5b7-d32b-4b0a-a237-babe6fd3ae2d",
+    "name": "Business Accounting Report runs API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)",
+      "type": "text/plain"
+    }
+  }
+}
