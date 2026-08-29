@@ -1,14 +1,79 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  version: '1.0'
-  title: Business Accounting Other API
-  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  title: Merchant Other API
+  version: '2026-04-20'
+  description: 'Welcome to the Revolut Merchant API - your solution to managing the core aspects of e-commerce and accepting online payments. Whether you''re a startup, a growing business, or an established enterprise in the e-commerce industry, our API helps you streamline your operations.
+
+
+    As a Revolut Business customer with a Merchant Account, you can use the
+
+    Merchant API to leverage the following features:
+
+
+    - [Order management](https://developer.revolut.com/docs/api/merchant#tag-orders)
+
+    - [Customer management](https://developer.revolut.com/docs/api/merchant#tag-customers)
+
+    - [Payment management](https://developer.revolut.com/docs/api/merchant#tag-payments)
+
+    - [Subscription management](https://developer.revolut.com/docs/api/merchant#tag-subscriptions)
+
+    - [Payout management](https://developer.revolut.com/docs/api/merchant#tag-payouts)
+
+    - [Dispute management](https://developer.revolut.com/docs/api/merchant#tag-disputes)
+
+    - [Reporting analytics](https://developer.revolut.com/docs/api/merchant#tag-report-runs)
+
+    - [Webhook management](https://developer.revolut.com/docs/api/merchant#tag-webhooks)
+
+    - [Location management](https://developer.revolut.com/docs/api/merchant#tag-locations)
+
+
+    ... and more.
+
+
+    ### API versions
+
+
+    :::warning
+
+    We highly recommend using versioning in your API calls. If you don''t provide a version header on the operations where it''s required, you will receive an error response.
+
+    :::
+
+
+    The Merchant API uses request header versioning. Where it is required you need to use the `Revolut-Api-Version` header parameter to specify an API version. Each request, where it is indicated in the API specification, must contain a version header in the following format:
+
+
+    ```
+
+    ''Revolut-Api-Version: 2026-04-20''
+
+    ```
+
+
+    :::info
+
+    For more information, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions)
+
+    :::
+
+
+    ### Test the Merchant API
+
+
+    You can test the Merchant API in Postman by forking this collection:
+
+
+    [![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)'
   contact: {}
 servers:
-- url: https://b2b.revolut.com/api/1.0
-  description: Production server (uses live data)
-- url: https://sandbox-b2b.revolut.com/api/1.0
-  description: Sandbox server (uses test data)
+- description: Production server (uses live data)
+  url: https://merchant.revolut.com
+- description: Sandbox server (uses test data)
+  url: https://sandbox-merchant.revolut.com
+security:
+- Api-Key: []
 tags:
 - name: Other
   description: Other operations that can be done with the Merchant API.
@@ -149,7 +214,91 @@ paths:
       tags:
       - Other
 components:
+  parameters:
+    Authorization:
+      name: Authorization
+      in: header
+      schema:
+        type: string
+        format: Bearer <yourSecretApiKey>
+        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
+      required: true
+      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
+    Synchronous-Webhook-Id:
+      name: synchronous_webhook_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the synchronous webhook.
   schemas:
+    Synchronous-Webhook-Creation:
+      title: SynchronousWebhookCreation
+      type: object
+      description: 'The `SynchronousWebhook` object allows merchants to register endpoints on their backend for receiving predefined event types. Currently, only address validation events are available.
+
+
+        In addition, merchants can specify locations representing their online stores, enabling them to set up different webhooks for different stores.'
+      properties:
+        event_type:
+          type: string
+          enum:
+          - fast_checkout.validate_address
+          description: "Type of event this synchronous webhook is configured for.\n\n:::note\nAt the moment, synchronous webhooks only support address validation events. \n:::"
+        url:
+          type: string
+          format: uri
+          pattern: ^https:\/{2}.+/gi
+          maxLength: 2000
+          description: 'The valid URL of the endpoint, that uses HTTPS URL schema. Revolut sends the shipping address of the customer to this URL for validation.
+
+
+            :::warning
+
+            Restrictions:
+
+            - Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)
+
+            - URI scheme is required and must be `https`
+
+            - URI host is required and cannot be `localhost` or an IP address
+
+            - Max length: `2000`
+
+            - Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)
+
+            :::'
+        location_id:
+          $ref: '#/components/schemas/Location-Id'
+      required:
+      - event_type
+      - url
+    Location-Id:
+      type: string
+      format: uuid
+      description: 'Unique ID representing the location where merchants sells products.
+
+
+        :::info
+
+        For more information, see: [Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).
+
+        :::        '
+    Error:
+      title: Error
+      type: object
+      properties:
+        errorId:
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        timestamp:
+          type: integer
+          description: The date and time the error happened.
+      required:
+      - errorId
+      - timestamp
     Synchronous-Webhook:
       title: SynchronousWebhook
       type: object
@@ -197,92 +346,26 @@ components:
       - signing_key
       - url
       - event_type
-    Location-Id:
-      type: string
-      format: uuid
-      description: 'Unique ID representing the location where merchants sells products.
+  securitySchemes:
+    Api-Key:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Each Merchant API request must contain an authorization header in the following format:
+
+
+        ```
+
+        ''Authorization: Bearer <yourSecretApiKey>''
+
+        ```
+
+
+        To use this API, you need to generate API keys from your Revolut Business account. The Secret key is used in the authorization header for all server calls, while the Public key is provided with payment methods at checkout.
 
 
         :::info
 
-        For more information, see: [Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).
+        For detailed instructions on generating your API keys, see: [Generate API keys](https://developer.revolut.com/docs/guides/merchant/get-started#generate-api-keys).
 
-        :::        '
-    Synchronous-Webhook-Creation:
-      title: SynchronousWebhookCreation
-      type: object
-      description: 'The `SynchronousWebhook` object allows merchants to register endpoints on their backend for receiving predefined event types. Currently, only address validation events are available.
-
-
-        In addition, merchants can specify locations representing their online stores, enabling them to set up different webhooks for different stores.'
-      properties:
-        event_type:
-          type: string
-          enum:
-          - fast_checkout.validate_address
-          description: "Type of event this synchronous webhook is configured for.\n\n:::note\nAt the moment, synchronous webhooks only support address validation events. \n:::"
-        url:
-          type: string
-          format: uri
-          pattern: ^https:\/{2}.+/gi
-          maxLength: 2000
-          description: 'The valid URL of the endpoint, that uses HTTPS URL schema. Revolut sends the shipping address of the customer to this URL for validation.
-
-
-            :::warning
-
-            Restrictions:
-
-            - Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)
-
-            - URI scheme is required and must be `https`
-
-            - URI host is required and cannot be `localhost` or an IP address
-
-            - Max length: `2000`
-
-            - Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)
-
-            :::'
-        location_id:
-          $ref: '#/components/schemas/Location-Id'
-      required:
-      - event_type
-      - url
-    Error:
-      title: Error
-      type: object
-      properties:
-        errorId:
-          type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        timestamp:
-          type: integer
-          description: The date and time the error happened.
-      required:
-      - errorId
-      - timestamp
-  parameters:
-    Authorization:
-      name: Authorization
-      in: header
-      schema:
-        type: string
-        format: Bearer <yourSecretApiKey>
-        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
-      required: true
-      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
-    Synchronous-Webhook-Id:
-      name: synchronous_webhook_id
-      in: path
-      schema:
-        type: string
-        format: uuid
-        description: A UUID string, typically used to identify resources.
-      required: true
-      description: The ID of the synchronous webhook.
-  securitySchemes:
-    AccessToken:
-      type: http
-      scheme: bearer
-      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"
+        :::'

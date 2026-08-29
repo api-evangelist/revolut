@@ -1,13 +1,12 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  version: '1.0'
-  title: Business Accounting Applications API
-  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
-  contact: {}
+  title: Open Banking Applications API
+  description: "The Revolut Open Banking API is the gateway for third-party providers to interact with Revolut customers and products.\n\n:::tip[Before you get started]\nTo learn more about the Open Banking API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/build-banking-apps/introduction-to-the-open-banking-api/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Open Banking**.\n:::\n\nYou can take advantage of the Open Banking API to build your banking applications whether you are:\n- A regulated third party provider that wants to get account and transaction information of Revolut customers and initiate different types of payments, or\n- An innovative service provider that is looking to seamlessly integrate Revolut functions into your own applications.\n\nAs such, you can use the Open Banking API to leverage the following features:\n- [Account management](https://developer.revolut.com/docs/api/open-banking#tag-accounts)\n- [Transaction management](https://developer.revolut.com/docs/api/open-banking#tag-transactions)\n- Payment management:\n  - Domestic: [Domestic payments](https://developer.revolut.com/docs/api/open-banking#tag-domestic-payment), [Domestic scheduled payments](https://developer.revolut.com/docs/api/open-banking#tag-domestic-scheduled-payment), [Domestic standing orders](https://developer.revolut.com/docs/api/open-banking#tag-domestic-standing-order)\n  - International: [International payments](https://developer.revolut.com/docs/api/open-banking#tag-international-payment), [International scheduled payments](https://developer.revolut.com/docs/api/open-banking#tag-international-scheduled-payment), [International standing orders](https://developer.revolut.com/docs/api/open-banking#tag-international-standing-order)\n  - Other: [Draft payments](https://developer.revolut.com/docs/api/open-banking#tag-draft-payment), [File payments](https://developer.revolut.com/docs/api/open-banking#tag-file-payment)\n- [Application management](https://developer.revolut.com/docs/api/open-banking#tag-applications)\n\nBrowse the menu on the left to see the reference for the specific endpoints and operations of this API.\nYou can also go to [Updates](https://developer.revolut.com/blog) to learn about upcoming changes and other news related to the Open Banking API.\n\n### Test the Open Banking API\n\nYou can test the Open Banking API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)\n\n## Get Access token\n\n### Certificates\n\nYou must use a transport certificate and its private key in order to request an access token.\n\n- For Sandbox testing, you can use the `transport.pem` certificate file which you obtained in [Convert certificates](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/prepare-sandbox-environment#convert-certificates) together with the private key generated in step [Generate a CSR](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/prepare-sandbox-environment#generate-a-csr).\n\n- For Production, you will need to use a valid OBIE or eIDAS transport certificate from a regulated Certificate Authority, and its corresponding private key.\n\n:::note\nRevolut Open Banking API servers use certificates issued by Open Banking Limited.\n\nYou can find the root and issuing certificates [here](https://openbanking.atlassian.net/wiki/spaces/DZ/pages/23494678/Certificates+and+Software+Statements) if you need to add them to your truststore.\n:::\n\n### Headers\n\n- `Content-Type: application/x-www-form-urlencoded`\n\n### Parameters\n\n- `grant_type`: Must be set to `client_credentials` to get the access token.\n- `scope`: Must be set to `accounts`.\n\n### Example\n\n:::note\nThe parameters `-k` or `--insecure` are not necessary if you added Open Banking Root and Issuing certificates to your truststore.\n:::\n\n**For production:**\n\n```shell\ncurl -k --cert transport.pem --key private.key \\\n--location -X POST 'https://oba-auth.revolut.com/token' \\\n--header 'Content-Type: application/x-www-form-urlencoded' \\\n-d 'grant_type=client_credentials' \\\n-d 'scope=accounts' \\\n```\n\n**For sandbox:**\n\n```shell\ncurl -k --cert transport.pem --key private.key \\\n--location -X POST 'https://sandbox-oba-auth.revolut.com/token' \\\n--header 'Content-Type: application/x-www-form-urlencoded' \\\n-d 'grant_type=client_credentials' \\\n-d 'scope=accounts' \\\n```\n\n## Response\n\nThe response contains the following JSON object:\n\n```json\n{\n    \"access_token\":\"<access token>\",\n    \"token_type\":\"Bearer\",\n    \"expires_in\":2399\n}\n```\n\n**What's next**\n\nUse this access token as the authentication bearer for all subsequent requests to the API, as described in the [Tutorials](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/get-account-and-transaction-information) section.\nWhen your certificate expires, repeat the steps above to create a new one."
+  version: v3.1.0
 servers:
-- url: https://b2b.revolut.com/api/1.0
+- url: https://oba-auth.revolut.com
   description: Production server (uses live data)
-- url: https://sandbox-b2b.revolut.com/api/1.0
+- url: https://sandbox-oba-auth.revolut.com
   description: Sandbox server (uses test data)
 tags:
 - name: Applications
@@ -270,7 +269,33 @@ paths:
                 - ErrorCode: UK.OBIE.Resource.Forbidden
                   Message: Access forbidden
 components:
+  parameters:
+    ClientId:
+      name: ClientId
+      in: path
+      description: The Client ID of the application.
+      required: true
+      schema:
+        type: string
   schemas:
+    OBError1:
+      required:
+      - ErrorCode
+      - Message
+      type: object
+      properties:
+        ErrorCode:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The error code in low level, for example, `UK.OBIE.Field.Missing`.
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'The description of the error that occurred.
+
+            For example, `A mandatory field isn''t supplied`, `RequestedExecutionDateTime must be in future`, and `OBIE doesn''t standardise this field`.'
     OBErrorResponse1:
       required:
       - Code
@@ -301,24 +326,6 @@ components:
           items:
             $ref: '#/components/schemas/OBError1'
       description: The detailed information about the error to help troubleshooting.
-    OBError1:
-      required:
-      - ErrorCode
-      - Message
-      type: object
-      properties:
-        ErrorCode:
-          maxLength: 128
-          minLength: 1
-          type: string
-          description: The error code in low level, for example, `UK.OBIE.Field.Missing`.
-        Message:
-          maxLength: 500
-          minLength: 1
-          type: string
-          description: 'The description of the error that occurred.
-
-            For example, `A mandatory field isn''t supplied`, `RequestedExecutionDateTime must be in future`, and `OBIE doesn''t standardise this field`.'
     GetApplicationResponse:
       type: object
       properties:
@@ -438,16 +445,24 @@ components:
         scope:
           type: string
           description: List of scopes that the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) has access to, separated by spaces.
-  parameters:
-    ClientId:
-      name: ClientId
-      in: path
-      description: The Client ID of the application.
-      required: true
-      schema:
-        type: string
   securitySchemes:
     AccessToken:
-      type: http
-      scheme: bearer
-      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"
+      type: apiKey
+      description: 'Each Open Banking API must contain an authorization header in the following format to make a call: `Bearer <yourAccessToken>`.
+
+
+        Before you start, ensure that you''ve got an access token with the correct `scope` using the `/token` endpoint.
+
+        You need to get the authorization code first and exchange it for an access token.
+
+
+        For more information, see [Tutorial: Get account and transaction information](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/get-account-and-transaction-information) and [Tutorial: Initiate your first payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/initiate-your-first-payment) as examples.'
+      name: Authorization
+      in: header
+    JWS:
+      type: apiKey
+      description: 'Open Banking API Payment requests additionally require a JSON Web Signature (JWS) which needs to be added to the header of the request.
+
+        The JWS signature must be obtained using the full content of the payload.'
+      name: x-jws-signature
+      in: header

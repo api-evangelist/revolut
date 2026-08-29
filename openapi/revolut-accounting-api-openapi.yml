@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
   version: '1.0'
   title: Business Accounting API
@@ -2458,6 +2458,47 @@ paths:
       - Accounting
 components:
   schemas:
+    TaxRateResponse:
+      type: object
+      required:
+      - id
+      - name
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique ID of the tax rate.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the tax.
+          minLength: 1
+          maxLength: 20
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the tax rate was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the tax rate was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          readOnly: true
+        percentage:
+          type: number
+          format: double
+          description: "The tax rate percentage applied to the taxable amount. For example, `23` for 23%.\n\n:::note\nYou cannot create negative tax rates manually. \nHowever, negative tax rates might be synced from your accounting software, if integrated. \n:::"
+          minimum: -100
+          maximum: 100
+    CreateTaxRateRequest:
+      allOf:
+      - $ref: '#/components/schemas/AccountingTaxRate'
+      - description: The tax rate to create.
+        required:
+        - name
+        - percentage
     CreateLabelRequest:
       type: object
       required:
@@ -2468,6 +2509,29 @@ components:
           type: string
           minLength: 1
           maxLength: 100
+    CreateLabelGroupRequest:
+      type: object
+      required:
+      - name
+      - labels
+      properties:
+        name:
+          description: The name for the new label group.
+          type: string
+          minLength: 1
+          maxLength: 100
+        labels:
+          description: 'The labels to create in the new group.
+
+
+            The maximum number of labels you can create for a new group is 200.
+
+            If you need to add more, you can add them later by [creating new labels individually](https://developer.revolut.com/docs/api/business#create-label).'
+          type: array
+          minItems: 1
+          maxItems: 200
+          items:
+            $ref: '#/components/schemas/CreateLabelRequest'
     AccountingCategoryResponse:
       type: object
       required:
@@ -2504,95 +2568,14 @@ components:
           format: uuid
           description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) applied to items in this accounting category unless overridden for a specific item.
           example: 2a3520af-e6f7-416c-821e-0e83ffac1dfa
-    TaxRateResponse:
+    ResourceCreatedResponse:
+      description: Successfully created resource.
       type: object
-      required:
-      - id
-      - name
-      - created_at
-      - updated_at
       properties:
         id:
           type: string
           format: uuid
-          description: The unique ID of the tax rate.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the tax.
-          minLength: 1
-          maxLength: 20
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time the tax rate was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          description: The date and time the tax rate was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-          readOnly: true
-        percentage:
-          type: number
-          format: double
-          description: "The tax rate percentage applied to the taxable amount. For example, `23` for 23%.\n\n:::note\nYou cannot create negative tax rates manually. \nHowever, negative tax rates might be synced from your accounting software, if integrated. \n:::"
-          minimum: -100
-          maximum: 100
-    ErrorWithId:
-      required:
-      - code
-      - message
-      - error_id
-      type: object
-      properties:
-        error_id:
-          type: string
-          description: The ID of the specific error instance. Used for traceability.
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
-    CreateLabelGroupRequest:
-      type: object
-      required:
-      - name
-      - labels
-      properties:
-        name:
-          description: The name for the new label group.
-          type: string
-          minLength: 1
-          maxLength: 100
-        labels:
-          description: 'The labels to create in the new group.
-
-
-            The maximum number of labels you can create for a new group is 200.
-
-            If you need to add more, you can add them later by [creating new labels individually](https://developer.revolut.com/docs/api/business#create-label).'
-          type: array
-          minItems: 1
-          maxItems: 200
-          items:
-            $ref: '#/components/schemas/CreateLabelRequest'
-    UpdateLabelGroupRequest:
-      type: object
-      description: The new name for the label group.
-      required:
-      - name
-      properties:
-        name:
-          description: The new name for the label group.
-          type: string
-          minLength: 1
-          maxLength: 100
-    PageToken:
-      type: string
-      format: byte
-      description: "Cursor for the next page. \nUsed for pagination when the total number of results exceeds the maximum number per page.\n\nTo get the next page of results, make a new request and set `page_token` to the `next_page_token` value returned in the previous response.\n:::note\nIf there are no more results to fetch, `next_page_token` is not returned in the response.\n:::"
-      example: MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA
+          description: The ID of the created resource.
     LabelGroupResponse:
       type: object
       required:
@@ -2621,105 +2604,6 @@ components:
           format: date-time
           description: The date and time the label group was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
           readOnly: true
-    UpdateLabelRequest:
-      type: object
-      description: The new name for the label.
-      required:
-      - name
-      properties:
-        name:
-          description: The new name for the label.
-          type: string
-          minLength: 1
-          maxLength: 100
-    AccountingTaxRate:
-      type: object
-      description: The tax rate that can be applied to financial records, such as expenses.
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of the tax.
-          minLength: 1
-          maxLength: 20
-        percentage:
-          type: number
-          format: double
-          minimum: 0
-          maximum: 100
-          description: The tax rate percentage applied to the taxable amount. For example, `23` for 23%.
-    UpdateAccountingCategoryRequest:
-      type: object
-      description: The new settings for the accounting category.
-      minProperties: 1
-      properties:
-        name:
-          type: string
-          description: The new full name for the accounting category.
-          minLength: 1
-          maxLength: 60
-          example: Work From Home equipment
-        code:
-          type: string
-          description: The new code name for the accounting category.
-          minLength: 1
-          maxLength: 50
-          example: WFH
-        default_tax_rate_id:
-          type: string
-          format: uuid
-          description: The ID of the new default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
-          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
-    ResourceCreatedResponse:
-      description: Successfully created resource.
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the created resource.
-    UpdateTaxRateRequest:
-      type: object
-      description: The new setting for the tax rate.
-      minProperties: 1
-      properties:
-        name:
-          description: The new name for the tax rate.
-          type: string
-          minLength: 1
-          maxLength: 20
-    CreateTaxRateRequest:
-      allOf:
-      - $ref: '#/components/schemas/AccountingTaxRate'
-      - description: The tax rate to create.
-        required:
-        - name
-        - percentage
-    CreateAccountingCategoryRequest:
-      type: object
-      description: The accounting category to create.
-      required:
-      - name
-      - code
-      properties:
-        name:
-          type: string
-          description: The full name for the accounting category.
-          minLength: 1
-          maxLength: 60
-          example: Work From Home equipment
-        code:
-          type: string
-          description: The code name for the accounting category.
-          minLength: 1
-          maxLength: 50
-          example: WFH
-        default_tax_rate_id:
-          type: string
-          format: uuid
-          description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
-          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
     LabelResponse:
       type: object
       required:
@@ -2748,6 +2632,122 @@ components:
           format: date-time
           description: The date and time the label was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
           readOnly: true
+    UpdateTaxRateRequest:
+      type: object
+      description: The new setting for the tax rate.
+      minProperties: 1
+      properties:
+        name:
+          description: The new name for the tax rate.
+          type: string
+          minLength: 1
+          maxLength: 20
+    CreateAccountingCategoryRequest:
+      type: object
+      description: The accounting category to create.
+      required:
+      - name
+      - code
+      properties:
+        name:
+          type: string
+          description: The full name for the accounting category.
+          minLength: 1
+          maxLength: 60
+          example: Work From Home equipment
+        code:
+          type: string
+          description: The code name for the accounting category.
+          minLength: 1
+          maxLength: 50
+          example: WFH
+        default_tax_rate_id:
+          type: string
+          format: uuid
+          description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
+          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
+    UpdateAccountingCategoryRequest:
+      type: object
+      description: The new settings for the accounting category.
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          description: The new full name for the accounting category.
+          minLength: 1
+          maxLength: 60
+          example: Work From Home equipment
+        code:
+          type: string
+          description: The new code name for the accounting category.
+          minLength: 1
+          maxLength: 50
+          example: WFH
+        default_tax_rate_id:
+          type: string
+          format: uuid
+          description: The ID of the new default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
+          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
+    PageToken:
+      type: string
+      format: byte
+      description: "Cursor for the next page. \nUsed for pagination when the total number of results exceeds the maximum number per page.\n\nTo get the next page of results, make a new request and set `page_token` to the `next_page_token` value returned in the previous response.\n:::note\nIf there are no more results to fetch, `next_page_token` is not returned in the response.\n:::"
+      example: MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA
+    UpdateLabelRequest:
+      type: object
+      description: The new name for the label.
+      required:
+      - name
+      properties:
+        name:
+          description: The new name for the label.
+          type: string
+          minLength: 1
+          maxLength: 100
+    UpdateLabelGroupRequest:
+      type: object
+      description: The new name for the label group.
+      required:
+      - name
+      properties:
+        name:
+          description: The new name for the label group.
+          type: string
+          minLength: 1
+          maxLength: 100
+    AccountingTaxRate:
+      type: object
+      description: The tax rate that can be applied to financial records, such as expenses.
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the tax.
+          minLength: 1
+          maxLength: 20
+        percentage:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 100
+          description: The tax rate percentage applied to the taxable amount. For example, `23` for 23%.
+    ErrorWithId:
+      required:
+      - code
+      - message
+      - error_id
+      type: object
+      properties:
+        error_id:
+          type: string
+          description: The ID of the specific error instance. Used for traceability.
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
   responses:
     Forbidden:
       description: 'Action forbidden - insufficient permissions to perform this action

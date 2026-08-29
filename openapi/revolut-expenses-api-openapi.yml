@@ -1,7 +1,7 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
   version: '1.0'
-  title: Business Accounting Expenses API
+  title: Business Expenses API
   description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
   contact: {}
 servers:
@@ -590,91 +590,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Category:
-      type: object
-      description: The [accounting category](https://developer.revolut.com/docs/api/business#delete-accounting-category) of the expense split.
-      required:
-      - id
-      - name
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the accounting category.
-        name:
-          type: string
-          description: The name of the accounting category.
-        code:
-          type: string
-          description: The code of the accounting category.
-    ExpenseState:
-      enum:
-      - missing_info
-      - awaiting_review
-      - rejected
-      - pending_reimbursement
-      - refund_requested
-      - refunded
-      - approved
-      - reverted
-      description: "Indicates the state of the expense. Possible values:\n\n  - `missing_info`: The expense is missing some required information.\n\n    This is the initial state of the expense when it's first created.\n    Once the missing information is provided, the expense is ready to be submitted.\n\n  - `awaiting_review`: The expense is awaiting approval before it can be completed.\n\n    The approver can approve, reject, or request repayment for the expense.\n    It is also possible for the submitter to undo the submission at this stage.\n\n  - `rejected`: The expense has been rejected by the approver. \n\n    The expense submitter (typically, the payer) should fix the issue that was the reason for the rejection and resubmit the expense.\n\n  - `pending_reimbursement`: The reimbursement request has been approved, and the expense is awaiting reimbursement.\n\n    This state is possible for reimbursements (transaction type = `External`). \n\n  - `refund_requested`: The expense has been rejected and repayment has been requested.*\n\n    This state is possible for card transactions.\n    It indicates that following the review, the approver rejected the expense and requested that it be paid back to the business account.\n    This can happen, for example, if an employee accidentally makes a personal purchase with their business card.\n    Once the money has been returned, the **admin** can mark this expense as repaid.\n\n  - `refunded`: The expense has been repaid.*\n\n    This state indicates that the admin has marked the expense as repaid.\n\n  - `approved`: The expense has been approved and is now completed.*\n\n  - `reverted`: The expense has been reverted. \n\n    This status indicates that the transaction related to the expense has been reverted.\n    In such a case, the expense status is automatically set to `reverted`, and the expense is completed.\n    This can happen, for example, when the transaction has been reverted by the merchant.\n\n_*Additionally, if an admin has previously approved the expense, marked it as repaid/completed, or requested repayment, they can revert their decision.\nIn such a case, the expense goes back to the initial `missing_info` state._\n\nFor more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses#expense-state)."
-      type: string
-    ExpenseTransactionType:
-      enum:
-      - atm
-      - card_payment
-      - fee
-      - transfer
-      - external
-      - mileage_reimbursement
-      - rev_payment
-      description: The type of the [transaction](https://developer.revolut.com/docs/api/business#get-transaction) related to the expense.
-      type: string
-    ExpenseSplit:
-      type: object
-      required:
-      - amount
-      - category
-      - tax_rate
-      properties:
-        amount:
-          type: object
-          description: The original amount of the expense split.
-          properties:
-            amount:
-              $ref: '#/components/schemas/Amount'
-            currency:
-              $ref: '#/components/schemas/Currency'
-        category:
-          $ref: '#/components/schemas/Category'
-        tax_rate:
-          $ref: '#/components/schemas/TaxRate'
-    Expenses:
-      type: array
-      items:
-        $ref: '#/components/schemas/Expense'
-    TaxRate:
-      type: object
-      description: The [tax rate](https://developer.revolut.com/docs/api/business#delete-tax-rate) applied to the expense split.
-      required:
-      - id
-      - name
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the tax rate.
-        name:
-          type: string
-          description: The name of the tax.
-          minLength: 1
-          maxLength: 20
-        percentage:
-          type: number
-          format: double
-          minimum: 0
-          maximum: 100
-          description: The tax rate percentage applied to the taxable amount. For example, `23` for 23%.
     Expense:
       type: object
       properties:
@@ -772,26 +687,67 @@ components:
       - splits
       - spent_amount
       - receipt_ids
+    TaxRate:
+      type: object
+      description: The [tax rate](https://developer.revolut.com/docs/api/business#delete-tax-rate) applied to the expense split.
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the tax rate.
+        name:
+          type: string
+          description: The name of the tax.
+          minLength: 1
+          maxLength: 20
+        percentage:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 100
+          description: The tax rate percentage applied to the taxable amount. For example, `23` for 23%.
+    ExpenseState:
+      enum:
+      - missing_info
+      - awaiting_review
+      - rejected
+      - pending_reimbursement
+      - refund_requested
+      - refunded
+      - approved
+      - reverted
+      description: "Indicates the state of the expense. Possible values:\n\n  - `missing_info`: The expense is missing some required information.\n\n    This is the initial state of the expense when it's first created.\n    Once the missing information is provided, the expense is ready to be submitted.\n\n  - `awaiting_review`: The expense is awaiting approval before it can be completed.\n\n    The approver can approve, reject, or request repayment for the expense.\n    It is also possible for the submitter to undo the submission at this stage.\n\n  - `rejected`: The expense has been rejected by the approver. \n\n    The expense submitter (typically, the payer) should fix the issue that was the reason for the rejection and resubmit the expense.\n\n  - `pending_reimbursement`: The reimbursement request has been approved, and the expense is awaiting reimbursement.\n\n    This state is possible for reimbursements (transaction type = `External`). \n\n  - `refund_requested`: The expense has been rejected and repayment has been requested.*\n\n    This state is possible for card transactions.\n    It indicates that following the review, the approver rejected the expense and requested that it be paid back to the business account.\n    This can happen, for example, if an employee accidentally makes a personal purchase with their business card.\n    Once the money has been returned, the **admin** can mark this expense as repaid.\n\n  - `refunded`: The expense has been repaid.*\n\n    This state indicates that the admin has marked the expense as repaid.\n\n  - `approved`: The expense has been approved and is now completed.*\n\n  - `reverted`: The expense has been reverted. \n\n    This status indicates that the transaction related to the expense has been reverted.\n    In such a case, the expense status is automatically set to `reverted`, and the expense is completed.\n    This can happen, for example, when the transaction has been reverted by the merchant.\n\n_*Additionally, if an admin has previously approved the expense, marked it as repaid/completed, or requested repayment, they can revert their decision.\nIn such a case, the expense goes back to the initial `missing_info` state._\n\nFor more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses#expense-state)."
+      type: string
+    Expenses:
+      type: array
+      items:
+        $ref: '#/components/schemas/Expense'
+    ExpenseSplit:
+      type: object
+      required:
+      - amount
+      - category
+      - tax_rate
+      properties:
+        amount:
+          type: object
+          description: The original amount of the expense split.
+          properties:
+            amount:
+              $ref: '#/components/schemas/Amount'
+            currency:
+              $ref: '#/components/schemas/Currency'
+        category:
+          $ref: '#/components/schemas/Category'
+        tax_rate:
+          $ref: '#/components/schemas/TaxRate'
     Currency:
       type: string
       pattern: ^[A-Z]{3}$
       description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
-    Amount:
-      description: The amount of money.
-      type: number
-      format: double
-    Error:
-      type: object
-      properties:
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
-      required:
-      - code
-      - message
     LabelGroup:
       type: array
       description: 'A label group with the selected label from that group.
@@ -806,6 +762,50 @@ components:
         type: string
         description: The name of the selected label.
         example: HR
+    Category:
+      type: object
+      description: The [accounting category](https://developer.revolut.com/docs/api/business#delete-accounting-category) of the expense split.
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the accounting category.
+        name:
+          type: string
+          description: The name of the accounting category.
+        code:
+          type: string
+          description: The code of the accounting category.
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
+    ExpenseTransactionType:
+      enum:
+      - atm
+      - card_payment
+      - fee
+      - transfer
+      - external
+      - mileage_reimbursement
+      - rev_payment
+      description: The type of the [transaction](https://developer.revolut.com/docs/api/business#get-transaction) related to the expense.
+      type: string
+    Amount:
+      description: The amount of money.
+      type: number
+      format: double
   securitySchemes:
     AccessToken:
       type: http

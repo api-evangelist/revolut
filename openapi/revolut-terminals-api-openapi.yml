@@ -1,14 +1,79 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  version: '1.0'
-  title: Business Accounting Terminals API
-  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  title: Merchant Terminals API
+  version: '2026-04-20'
+  description: 'Welcome to the Revolut Merchant API - your solution to managing the core aspects of e-commerce and accepting online payments. Whether you''re a startup, a growing business, or an established enterprise in the e-commerce industry, our API helps you streamline your operations.
+
+
+    As a Revolut Business customer with a Merchant Account, you can use the
+
+    Merchant API to leverage the following features:
+
+
+    - [Order management](https://developer.revolut.com/docs/api/merchant#tag-orders)
+
+    - [Customer management](https://developer.revolut.com/docs/api/merchant#tag-customers)
+
+    - [Payment management](https://developer.revolut.com/docs/api/merchant#tag-payments)
+
+    - [Subscription management](https://developer.revolut.com/docs/api/merchant#tag-subscriptions)
+
+    - [Payout management](https://developer.revolut.com/docs/api/merchant#tag-payouts)
+
+    - [Dispute management](https://developer.revolut.com/docs/api/merchant#tag-disputes)
+
+    - [Reporting analytics](https://developer.revolut.com/docs/api/merchant#tag-report-runs)
+
+    - [Webhook management](https://developer.revolut.com/docs/api/merchant#tag-webhooks)
+
+    - [Location management](https://developer.revolut.com/docs/api/merchant#tag-locations)
+
+
+    ... and more.
+
+
+    ### API versions
+
+
+    :::warning
+
+    We highly recommend using versioning in your API calls. If you don''t provide a version header on the operations where it''s required, you will receive an error response.
+
+    :::
+
+
+    The Merchant API uses request header versioning. Where it is required you need to use the `Revolut-Api-Version` header parameter to specify an API version. Each request, where it is indicated in the API specification, must contain a version header in the following format:
+
+
+    ```
+
+    ''Revolut-Api-Version: 2026-04-20''
+
+    ```
+
+
+    :::info
+
+    For more information, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions)
+
+    :::
+
+
+    ### Test the Merchant API
+
+
+    You can test the Merchant API in Postman by forking this collection:
+
+
+    [![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)'
   contact: {}
 servers:
-- url: https://b2b.revolut.com/api/1.0
-  description: Production server (uses live data)
-- url: https://sandbox-b2b.revolut.com/api/1.0
-  description: Sandbox server (uses test data)
+- description: Production server (uses live data)
+  url: https://merchant.revolut.com
+- description: Sandbox server (uses test data)
+  url: https://sandbox-merchant.revolut.com
+security:
+- Api-Key: []
 tags:
 - name: Terminals
   description: 'Operations for managing Revolut Terminal devices and push payment integrations with Point of Sale (POS) systems.
@@ -99,162 +164,7 @@ paths:
       tags:
       - Terminals
 components:
-  schemas:
-    Terminal-Serial-Number:
-      title: Terminal serial number
-      type: string
-      description: The serial number of the terminal device.
-      example: RT-00123456
-    Terminal:
-      title: Terminal
-      type: object
-      description: Represents a Revolut Terminal device.
-      properties:
-        id:
-          $ref: '#/components/schemas/Terminal-Id'
-        name:
-          $ref: '#/components/schemas/Terminal-Name'
-        type:
-          $ref: '#/components/schemas/Terminal-Type'
-        serial_number:
-          $ref: '#/components/schemas/Terminal-Serial-Number'
-        battery_level:
-          $ref: '#/components/schemas/Terminal-Battery-Level'
-        online:
-          $ref: '#/components/schemas/Terminal-Online'
-        last_online_at:
-          $ref: '#/components/schemas/Terminal-Last-Online-At'
-      required:
-      - id
-      - name
-      - type
-      - serial_number
-      - battery_level
-      - online
-      - last_online_at
-    Terminal-Id:
-      title: Terminal ID
-      type: string
-      format: uuid
-      description: The unique identifier of the terminal.
-    Terminal-Online:
-      title: Terminal online status
-      type: boolean
-      description: 'Indicates whether the terminal is currently online and connected.
-
-
-        | Value | Description |
-
-        |-------|-------------|
-
-        | `true` | Terminal is online and available |
-
-        | `false` | Terminal is offline |'
-    Terminal-Operation-Mode:
-      title: Terminal operation mode
-      type: string
-      description: "The operation mode of the terminal.\n\n  | Value | Description |\n|-------|-------------|\n| `pos` | Returns only terminals in Pay at Counter mode |\n| `payment_acceptance` | Returns only terminals in standard checkout mode |"
-      enum:
-      - pos
-      - payment_acceptance
-    Terminal-Type:
-      title: Terminal type
-      type: string
-      description: The hardware type/model of the terminal device.
-      enum:
-      - youtransactor_ucube_touch
-      - newland_n950
-      - newland_n750
-      - newland_r25p
-    Terminal-Last-Online-At:
-      title: Terminal last online timestamp
-      type: string
-      format: date-time
-      description: The date and time when the terminal was last seen online.
-    Terminal-Name:
-      title: Terminal name
-      type: string
-      description: The name of the terminal device.
-    Terminal-Battery-Level:
-      title: Terminal battery level
-      type: integer
-      description: The current battery level of the terminal as a percentage (0-100).
-      minimum: 0
-      maximum: 100
-    Terminals-Response:
-      title: Terminals response
-      type: object
-      description: Response containing a list of terminals.
-      properties:
-        terminals:
-          $ref: '#/components/schemas/Terminals'
-      required:
-      - terminals
-    Terminals:
-      type: array
-      description: List of terminal devices.
-      items:
-        $ref: '#/components/schemas/Terminal'
-    Error-v2:
-      title: Error
-      type: object
-      properties:
-        code:
-          type: string
-          description: 'An identifier that can be used to determine what went wrong.
-
-
-            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
-        message:
-          type: string
-          description: Some human readable text describing what went wrong.
-        timestamp:
-          type: integer
-          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
-  examples:
-    Res-Terminals-List:
-      summary: List of terminals at a location
-      value:
-        terminals:
-        - id: 0e53f673-7705-473a-a263-89a3e7647c3d
-          name: Terminal 1
-          type: newland_n950
-          serial_number: RT-00123456
-          battery_level: 85
-          online: true
-          last_online_at: '2025-01-15T14:30:00Z'
-        - id: a7b2c8d1-4e5f-6a7b-8c9d-0e1f2a3b4c5d
-          name: Terminal 2
-          type: newland_n950
-          serial_number: RT-00123457
-          battery_level: 92
-          online: true
-          last_online_at: '2025-01-15T14:32:00Z'
   parameters:
-    Revolut-Api-Version-Optional:
-      name: Revolut-Api-Version
-      in: header
-      schema:
-        type: string
-        format: date
-        example: '2026-04-20'
-        enum:
-        - '2023-09-01'
-        - '2024-05-01'
-        - '2024-09-01'
-        - '2025-10-16'
-        - '2025-12-04'
-        - '2026-03-12'
-        - '2026-04-20'
-      description: 'The version of the Merchant API, specified in `YYYY-MM-DD` format.
-
-
-        :::info
-
-        For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).
-
-        :::'
-      x-config-always-visible-in-example: true
     Authorization:
       name: Authorization
       in: header
@@ -290,8 +200,181 @@ components:
       in: query
       required: false
       description: Filter results by location ID.
+    Revolut-Api-Version-Optional:
+      name: Revolut-Api-Version
+      in: header
+      schema:
+        type: string
+        format: date
+        example: '2026-04-20'
+        enum:
+        - '2023-09-01'
+        - '2024-05-01'
+        - '2024-09-01'
+        - '2025-10-16'
+        - '2025-12-04'
+        - '2026-03-12'
+        - '2026-04-20'
+      description: 'The version of the Merchant API, specified in `YYYY-MM-DD` format.
+
+
+        :::info
+
+        For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).
+
+        :::'
+      x-config-always-visible-in-example: true
+  schemas:
+    Terminal-Type:
+      title: Terminal type
+      type: string
+      description: The hardware type/model of the terminal device.
+      enum:
+      - youtransactor_ucube_touch
+      - newland_n950
+      - newland_n750
+      - newland_r25p
+    Terminal-Id:
+      title: Terminal ID
+      type: string
+      format: uuid
+      description: The unique identifier of the terminal.
+    Terminal-Operation-Mode:
+      title: Terminal operation mode
+      type: string
+      description: "The operation mode of the terminal.\n\n  | Value | Description |\n|-------|-------------|\n| `pos` | Returns only terminals in Pay at Counter mode |\n| `payment_acceptance` | Returns only terminals in standard checkout mode |"
+      enum:
+      - pos
+      - payment_acceptance
+    Terminal:
+      title: Terminal
+      type: object
+      description: Represents a Revolut Terminal device.
+      properties:
+        id:
+          $ref: '#/components/schemas/Terminal-Id'
+        name:
+          $ref: '#/components/schemas/Terminal-Name'
+        type:
+          $ref: '#/components/schemas/Terminal-Type'
+        serial_number:
+          $ref: '#/components/schemas/Terminal-Serial-Number'
+        battery_level:
+          $ref: '#/components/schemas/Terminal-Battery-Level'
+        online:
+          $ref: '#/components/schemas/Terminal-Online'
+        last_online_at:
+          $ref: '#/components/schemas/Terminal-Last-Online-At'
+      required:
+      - id
+      - name
+      - type
+      - serial_number
+      - battery_level
+      - online
+      - last_online_at
+    Terminal-Online:
+      title: Terminal online status
+      type: boolean
+      description: 'Indicates whether the terminal is currently online and connected.
+
+
+        | Value | Description |
+
+        |-------|-------------|
+
+        | `true` | Terminal is online and available |
+
+        | `false` | Terminal is offline |'
+    Terminals-Response:
+      title: Terminals response
+      type: object
+      description: Response containing a list of terminals.
+      properties:
+        terminals:
+          $ref: '#/components/schemas/Terminals'
+      required:
+      - terminals
+    Error-v2:
+      title: Error
+      type: object
+      properties:
+        code:
+          type: string
+          description: 'An identifier that can be used to determine what went wrong.
+
+
+            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
+        message:
+          type: string
+          description: Some human readable text describing what went wrong.
+        timestamp:
+          type: integer
+          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
+    Terminal-Name:
+      title: Terminal name
+      type: string
+      description: The name of the terminal device.
+    Terminal-Battery-Level:
+      title: Terminal battery level
+      type: integer
+      description: The current battery level of the terminal as a percentage (0-100).
+      minimum: 0
+      maximum: 100
+    Terminal-Last-Online-At:
+      title: Terminal last online timestamp
+      type: string
+      format: date-time
+      description: The date and time when the terminal was last seen online.
+    Terminals:
+      type: array
+      description: List of terminal devices.
+      items:
+        $ref: '#/components/schemas/Terminal'
+    Terminal-Serial-Number:
+      title: Terminal serial number
+      type: string
+      description: The serial number of the terminal device.
+      example: RT-00123456
+  examples:
+    Res-Terminals-List:
+      summary: List of terminals at a location
+      value:
+        terminals:
+        - id: 0e53f673-7705-473a-a263-89a3e7647c3d
+          name: Terminal 1
+          type: newland_n950
+          serial_number: RT-00123456
+          battery_level: 85
+          online: true
+          last_online_at: '2025-01-15T14:30:00Z'
+        - id: a7b2c8d1-4e5f-6a7b-8c9d-0e1f2a3b4c5d
+          name: Terminal 2
+          type: newland_n950
+          serial_number: RT-00123457
+          battery_level: 92
+          online: true
+          last_online_at: '2025-01-15T14:32:00Z'
   securitySchemes:
-    AccessToken:
-      type: http
-      scheme: bearer
-      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"
+    Api-Key:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Each Merchant API request must contain an authorization header in the following format:
+
+
+        ```
+
+        ''Authorization: Bearer <yourSecretApiKey>''
+
+        ```
+
+
+        To use this API, you need to generate API keys from your Revolut Business account. The Secret key is used in the authorization header for all server calls, while the Public key is provided with payment methods at checkout.
+
+
+        :::info
+
+        For detailed instructions on generating your API keys, see: [Generate API keys](https://developer.revolut.com/docs/guides/merchant/get-started#generate-api-keys).
+
+        :::'

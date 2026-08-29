@@ -1,7 +1,7 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
   version: '1.0'
-  title: Business Accounting Transfers API
+  title: Business Transfers API
   description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
   contact: {}
 servers:
@@ -707,32 +707,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    ErrorWithId:
-      required:
-      - code
-      - message
-      - error_id
-      type: object
-      properties:
-        error_id:
-          type: string
-          description: The ID of the specific error instance. Used for traceability.
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
-    TransactionState:
-      enum:
-      - created
-      - pending
-      - completed
-      - declined
-      - failed
-      - reverted
-      description: "Indicates the transaction state. Possible values:\n  - `created`: The transaction has been created and is either processed asynchronously or scheduled for a later time.\n  - `pending`: The transaction is pending until it's being processed. If the transfer is made between Revolut accounts, this state is skipped and the transaction is executed instantly.\n  - `completed`: The transaction was successful.\n  - `declined`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, insufficient account balance, wrong receiver information, etc.\n  - `failed`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, invalid API calls, blocked payments, etc.\n  - `reverted`: The transaction was reverted. This can happen for a variety of reasons, for example, the receiver being inaccessible."
-      type: string
     Money:
       type: object
       description: A monetary amount and its associated currency.
@@ -746,178 +720,6 @@ components:
       required:
       - amount
       - currency
-    Currency:
-      type: string
-      pattern: ^[A-Z]{3}$
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
-    TransferResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the transaction created.
-        state:
-          $ref: '#/components/schemas/TransactionState'
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time the transaction was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-        completed_at:
-          type: string
-          format: date-time
-          description: The date and time the transaction was completed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-      required:
-      - id
-      - state
-      - created_at
-    Error:
-      type: object
-      properties:
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
-      required:
-      - code
-      - message
-    PaymentRequirementsFieldRegex:
-      type: object
-      description: Regular expression validation rules.
-      properties:
-        pattern:
-          type: string
-          description: The regex pattern the field value must match.
-        description:
-          type: string
-          description: A human-readable description of the regex constraint.
-      required:
-      - pattern
-      - description
-    IndicativeQuoteRequest:
-      type: object
-      description: The request details for an indicative quote.
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          description: The ID of the account from which the transfer will be made.
-        receiver:
-          $ref: '#/components/schemas/PaymentReceiver'
-        amount:
-          type: number
-          format: double
-          description: The transfer amount in major units.
-        currency:
-          $ref: '#/components/schemas/Currency'
-        charge_bearer:
-          $ref: '#/components/schemas/ChargeBearer'
-        transfer_reason_code:
-          $ref: '#/components/schemas/TransferReasonCode'
-        exchange_reason_code:
-          $ref: '#/components/schemas/ExchangeReasonCode'
-      required:
-      - account_id
-      - receiver
-      - amount
-      - currency
-    TransferReasons:
-      type: array
-      items:
-        $ref: '#/components/schemas/TransferReason'
-    PaymentRequirementsRequest:
-      type: object
-      description: The request details to evaluate payment requirements.
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          description: The ID of the account from which the transfer will be made.
-        receiver:
-          $ref: '#/components/schemas/PaymentReceiver'
-      required:
-      - account_id
-      - receiver
-    ExchangeReason:
-      type: object
-      required:
-      - code
-      - name
-      properties:
-        code:
-          type: string
-          enum:
-          - business_expense_and_claims
-          - fees_and_charges
-          - fund_transfer_and_intracompany_payment
-          - gifts_and_donations
-          - government_services_and_tax
-          - insurance
-          - inventory
-          - investment_dividend_and_interest
-          - loan_and_loan_repayment
-          - marketing
-          - payment_for_goods_and_services
-          - payroll
-          - refund
-          - rental_and_property
-          - sales
-          - service_provider_and_software
-          - travel_and_transportation
-          - utilities
-          description: Category code of the reason for the exchange.
-        name:
-          type: string
-          description: Category name of the reason for the exchange.
-    ExchangeReasons:
-      type: array
-      items:
-        $ref: '#/components/schemas/ExchangeReason'
-      description: The list of available exchange reasons.
-      example:
-      - code: business_expense_and_claims
-        name: Business expense and claims
-      - code: fees_and_charges
-        name: Fees and charges
-      - code: fund_transfer_and_intracompany_payment
-        name: Fund transfer and intracompany payment
-      - code: gifts_and_donations
-        name: Gifts and donations
-      - code: government_services_and_tax
-        name: Government services and tax
-      - code: insurance
-        name: Insurance
-      - code: inventory
-        name: Inventory
-      - code: investment_dividend_and_interest
-        name: Investment, dividend and interest
-      - code: loan_and_loan_repayment
-        name: Loan and loan repayment
-      - code: marketing
-        name: Marketing
-      - code: payment_for_goods_and_services
-        name: Payment for goods and services
-      - code: payroll
-        name: Payroll
-      - code: refund
-        name: Refund
-      - code: rental_and_property
-        name: Rental and property
-      - code: sales
-        name: Sales
-      - code: service_provider_and_software
-        name: Service provider and software
-      - code: travel_and_transportation
-        name: Travel and transportation
-      - code: utilities
-        name: Utilities
-    ChargeBearer:
-      type: string
-      enum:
-      - shared
-      - debtor
-      description: "The party to which any transaction fees are charged if the resulting transaction route has associated fees: \n- `shared`: Also known as **SHA**. The transaction route fees are split between the sender and the recipient. \n  The sender pays the fees charged by their bank, while the recipient pays the fees charged by the receiving and any intermediary banks.\n- `debtor`: Also known as **OUR**. The sender pays all explicit transaction fees.\nSome transactions with fees might not be possible with the specified option, in which case error `3287` is returned."
     IndicativeQuoteEstimatedArrival:
       type: object
       description: 'Estimated time and speed of funds arrival in relation to the current date and time.
@@ -953,18 +755,143 @@ components:
       required:
       - date
       - speed
-    PaymentRequirementsFieldOption:
+    TransferRequest:
       type: object
-      description: An allowed value option for the field.
+      description: Transfer the funds between accounts of the business in the same currency.
       properties:
-        value:
+        request_id:
           type: string
-          description: The accepted value to be passed to the API.
-        default: null
-        type: boolean
-        description: Indicates the default option for the field if there is one.
+          description: 'The ID of the request, provided by you.
+
+            It helps you identify the transaction in your system.
+
+
+            :::warning
+
+            To ensure that a transfer is not processed multiple times if there are network or system errors,
+
+            the same `request_id` should be used for requests related to the same transfer.
+
+            :::'
+          maxLength: 40
+        source_account_id:
+          type: string
+          format: uuid
+          description: The ID of the source account that you transfer the funds from.
+        target_account_id:
+          type: string
+          format: uuid
+          description: The ID of the target account that you transfer the funds to.
+        amount:
+          type: number
+          format: double
+          description: The amount of the funds to be transferred.
+        currency:
+          $ref: '#/components/schemas/Currency'
+        reference:
+          type: string
+          description: The reference for the funds transfer.
       required:
-      - value
+      - request_id
+      - source_account_id
+      - target_account_id
+      - amount
+      - currency
+    ExchangeReason:
+      type: object
+      required:
+      - code
+      - name
+      properties:
+        code:
+          type: string
+          enum:
+          - business_expense_and_claims
+          - fees_and_charges
+          - fund_transfer_and_intracompany_payment
+          - gifts_and_donations
+          - government_services_and_tax
+          - insurance
+          - inventory
+          - investment_dividend_and_interest
+          - loan_and_loan_repayment
+          - marketing
+          - payment_for_goods_and_services
+          - payroll
+          - refund
+          - rental_and_property
+          - sales
+          - service_provider_and_software
+          - travel_and_transportation
+          - utilities
+          description: Category code of the reason for the exchange.
+        name:
+          type: string
+          description: Category name of the reason for the exchange.
+    PaymentRequirementsResponse:
+      type: object
+      description: The response containing applicable payment fields and their validation rules.
+      properties:
+        fields:
+          type: array
+          description: A list of applicable and conditionally required fields for the specific payment context.
+          items:
+            $ref: '#/components/schemas/PaymentRequirementsField'
+      required:
+      - fields
+    IndicativeQuoteFeeBreakdown:
+      type: object
+      description: 'Breakdown of transfer and exchange fees.
+
+
+        When the total `fee` is zero, this field is omitted from the response.'
+      properties:
+        transfer_fee:
+          $ref: '#/components/schemas/SimpleFee'
+        exchange_fee:
+          $ref: '#/components/schemas/SimpleFee'
+    PaymentRequirementsRequest:
+      type: object
+      description: The request details to evaluate payment requirements.
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          description: The ID of the account from which the transfer will be made.
+        receiver:
+          $ref: '#/components/schemas/PaymentReceiver'
+      required:
+      - account_id
+      - receiver
+    PaymentReceiver:
+      type: object
+      description: 'The details of the transfer recipient.
+
+
+        If the counterparty has multiple payment methods available (e.g. 2 accounts, or 1 account and 1 card), you must specify the account (`account_id`) or card (`card_id`) to which you want to transfer the money.'
+      properties:
+        counterparty_id:
+          type: string
+          format: uuid
+          description: The ID of the receiving counterparty.
+        account_id:
+          type: string
+          format: uuid
+          description: 'The ID of the receiving counterparty''s account. Used for bank transfers.
+
+
+            If the counterparty has multiple payment methods available, use it to specify the account to which you want to send the money.'
+        card_id:
+          type: string
+          format: uuid
+          description: 'The ID of the receiving counterparty''s card.
+
+            Used for card transfers.
+
+
+            If the counterparty has multiple payment methods available, use it to specify the card to which you want to send the money.'
+      required:
+      - counterparty_id
     SimpleFee:
       type: object
       description: A specific fee component.
@@ -978,84 +905,26 @@ components:
       required:
       - amount
       - currency
-    IndicativeQuoteResponse:
+    Currency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    TransferReasonCode:
+      type: string
+      description: "The reason code for the transaction. Transactions to certain countries and currencies might require you to provide a transfer reason. \nYou can check available reason codes with the [`GET /transfer-reasons` operation](https://developer.revolut.com/docs/api/business#get-transfer-reasons).\n\nIf a transfer reason is not required for the given currency and country, this field is ignored."
+      example: property_rental
+    PaymentRequirementsFieldValidation:
       type: object
-      description: The expected processing attributes for a potential transfer.
+      description: Validation rules applied to the field.
       properties:
-        amount:
-          $ref: '#/components/schemas/Money'
-          description: Amount the recipient receives before fees are deducted, in major units.
-        fee:
-          $ref: '#/components/schemas/IndicativeQuoteFee'
-          description: Total fee for the transfer (in source or target currency).
-        estimated_total:
-          $ref: '#/components/schemas/Money'
-          description: Total amount of money which will be charged on the sender's account.
-        estimated_exchange_rate:
-          type: string
-          description: 'Exchange rate for the transfer.
-
-
-            For same-currency transfers, this field is omitted from the response.'
-        estimated_amount_after_exchange:
-          $ref: '#/components/schemas/Money'
-          description: 'Amount of the money converted to the sender''s currency.
-
-
-            For same-currency transfers, this field is omitted from the response.'
-        estimated_arrival:
-          $ref: '#/components/schemas/IndicativeQuoteEstimatedArrival'
-        warnings:
-          type: array
-          description: 'Potential warnings regarding the quote:
-
-
-            - `volatile_fx_rate`: Returned when the specified FX rate is volatile.'
-          items:
-            type: string
-            enum:
-            - volatile_fx_rate
-      required:
-      - amount
-      - fee
-      - estimated_total
-    IndicativeQuoteFee:
-      type: object
-      description: Details of the total fee for the transfer.
-      properties:
-        amount:
-          type: number
-          format: double
-          description: Fee amount in major units.
-        currency:
-          $ref: '#/components/schemas/Currency'
-        breakdown:
-          $ref: '#/components/schemas/IndicativeQuoteFeeBreakdown'
-      required:
-      - amount
-      - currency
-    PaymentRequirementsField:
-      type: object
-      description: Represents a contextual field and its rules.
-      properties:
-        name:
-          type: string
-          description: "The name of the field to be provided in the [`/pay` endpoint](https://developer.revolut.com/docs/business#create-payment) request body. \nMatches the field names in the `/pay` endpoint exactly (e.g. `reference`, `transfer_reason_code`)."
-        required:
-          type: boolean
-          description: Indicates whether this field must be provided for the given transfer.
-        validation:
-          $ref: '#/components/schemas/PaymentRequirementsFieldValidation'
-        options:
-          type: array
-          description: 'A list of allowed values for the field (enum).
-
-            If provided, the field value must be one of these options.'
-          items:
-            $ref: '#/components/schemas/PaymentRequirementsFieldOption'
-      required:
-      - name
-      - required
+        min_length:
+          type: integer
+          description: The minimum allowed character length for the field value.
+        max_length:
+          type: integer
+          description: The maximum allowed character length for the field value.
+        regex:
+          $ref: '#/components/schemas/PaymentRequirementsFieldRegex'
     TransactionPaymentRequest:
       type: object
       properties:
@@ -1100,39 +969,6 @@ components:
       - receiver
       - amount
       - currency
-    PaymentReceiver:
-      type: object
-      description: 'The details of the transfer recipient.
-
-
-        If the counterparty has multiple payment methods available (e.g. 2 accounts, or 1 account and 1 card), you must specify the account (`account_id`) or card (`card_id`) to which you want to transfer the money.'
-      properties:
-        counterparty_id:
-          type: string
-          format: uuid
-          description: The ID of the receiving counterparty.
-        account_id:
-          type: string
-          format: uuid
-          description: 'The ID of the receiving counterparty''s account. Used for bank transfers.
-
-
-            If the counterparty has multiple payment methods available, use it to specify the account to which you want to send the money.'
-        card_id:
-          type: string
-          format: uuid
-          description: 'The ID of the receiving counterparty''s card.
-
-            Used for card transfers.
-
-
-            If the counterparty has multiple payment methods available, use it to specify the card to which you want to send the money.'
-      required:
-      - counterparty_id
-    ExchangeReasonCode:
-      type: string
-      description: "The reason code for the exchange.\nDepending on the country and the amount of funds to be exchanged, you might be required to provide an exchange reason. \nYou can check available reason codes with the [`GET /exchange-reasons` operation](https://developer.revolut.com/docs/api/business#get-exchange-reasons).\n\nIf an exchange reason is not required, this field is ignored."
-      example: fund_transfer_and_intracompany_payment
     TransferReason:
       type: object
       properties:
@@ -1181,90 +1017,254 @@ components:
       - currency
       - code
       - description
-    PaymentRequirementsResponse:
+    TransferReasons:
+      type: array
+      items:
+        $ref: '#/components/schemas/TransferReason'
+    ChargeBearer:
+      type: string
+      enum:
+      - shared
+      - debtor
+      description: "The party to which any transaction fees are charged if the resulting transaction route has associated fees: \n- `shared`: Also known as **SHA**. The transaction route fees are split between the sender and the recipient. \n  The sender pays the fees charged by their bank, while the recipient pays the fees charged by the receiving and any intermediary banks.\n- `debtor`: Also known as **OUR**. The sender pays all explicit transaction fees.\nSome transactions with fees might not be possible with the specified option, in which case error `3287` is returned."
+    PaymentRequirementsFieldRegex:
       type: object
-      description: The response containing applicable payment fields and their validation rules.
+      description: Regular expression validation rules.
       properties:
-        fields:
-          type: array
-          description: A list of applicable and conditionally required fields for the specific payment context.
-          items:
-            $ref: '#/components/schemas/PaymentRequirementsField'
+        pattern:
+          type: string
+          description: The regex pattern the field value must match.
+        description:
+          type: string
+          description: A human-readable description of the regex constraint.
       required:
-      - fields
+      - pattern
+      - description
+    ExchangeReasonCode:
+      type: string
+      description: "The reason code for the exchange.\nDepending on the country and the amount of funds to be exchanged, you might be required to provide an exchange reason. \nYou can check available reason codes with the [`GET /exchange-reasons` operation](https://developer.revolut.com/docs/api/business#get-exchange-reasons).\n\nIf an exchange reason is not required, this field is ignored."
+      example: fund_transfer_and_intracompany_payment
     CountryCode:
       type: string
       pattern: ^[A-Z]{2}$
       description: The counterparty's bank country, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
-    IndicativeQuoteFeeBreakdown:
+    PaymentRequirementsFieldOption:
       type: object
-      description: 'Breakdown of transfer and exchange fees.
-
-
-        When the total `fee` is zero, this field is omitted from the response.'
+      description: An allowed value option for the field.
       properties:
-        transfer_fee:
-          $ref: '#/components/schemas/SimpleFee'
-        exchange_fee:
-          $ref: '#/components/schemas/SimpleFee'
-    TransferRequest:
-      type: object
-      description: Transfer the funds between accounts of the business in the same currency.
-      properties:
-        request_id:
+        value:
           type: string
-          description: 'The ID of the request, provided by you.
-
-            It helps you identify the transaction in your system.
-
-
-            :::warning
-
-            To ensure that a transfer is not processed multiple times if there are network or system errors,
-
-            the same `request_id` should be used for requests related to the same transfer.
-
-            :::'
-          maxLength: 40
-        source_account_id:
+          description: The accepted value to be passed to the API.
+        default: null
+        type: boolean
+        description: Indicates the default option for the field if there is one.
+      required:
+      - value
+    IndicativeQuoteRequest:
+      type: object
+      description: The request details for an indicative quote.
+      properties:
+        account_id:
           type: string
           format: uuid
-          description: The ID of the source account that you transfer the funds from.
-        target_account_id:
-          type: string
-          format: uuid
-          description: The ID of the target account that you transfer the funds to.
+          description: The ID of the account from which the transfer will be made.
+        receiver:
+          $ref: '#/components/schemas/PaymentReceiver'
         amount:
           type: number
           format: double
-          description: The amount of the funds to be transferred.
+          description: The transfer amount in major units.
         currency:
           $ref: '#/components/schemas/Currency'
-        reference:
-          type: string
-          description: The reference for the funds transfer.
+        charge_bearer:
+          $ref: '#/components/schemas/ChargeBearer'
+        transfer_reason_code:
+          $ref: '#/components/schemas/TransferReasonCode'
+        exchange_reason_code:
+          $ref: '#/components/schemas/ExchangeReasonCode'
       required:
-      - request_id
-      - source_account_id
-      - target_account_id
+      - account_id
+      - receiver
       - amount
       - currency
-    PaymentRequirementsFieldValidation:
+    ExchangeReasons:
+      type: array
+      items:
+        $ref: '#/components/schemas/ExchangeReason'
+      description: The list of available exchange reasons.
+      example:
+      - code: business_expense_and_claims
+        name: Business expense and claims
+      - code: fees_and_charges
+        name: Fees and charges
+      - code: fund_transfer_and_intracompany_payment
+        name: Fund transfer and intracompany payment
+      - code: gifts_and_donations
+        name: Gifts and donations
+      - code: government_services_and_tax
+        name: Government services and tax
+      - code: insurance
+        name: Insurance
+      - code: inventory
+        name: Inventory
+      - code: investment_dividend_and_interest
+        name: Investment, dividend and interest
+      - code: loan_and_loan_repayment
+        name: Loan and loan repayment
+      - code: marketing
+        name: Marketing
+      - code: payment_for_goods_and_services
+        name: Payment for goods and services
+      - code: payroll
+        name: Payroll
+      - code: refund
+        name: Refund
+      - code: rental_and_property
+        name: Rental and property
+      - code: sales
+        name: Sales
+      - code: service_provider_and_software
+        name: Service provider and software
+      - code: travel_and_transportation
+        name: Travel and transportation
+      - code: utilities
+        name: Utilities
+    Error:
       type: object
-      description: Validation rules applied to the field.
       properties:
-        min_length:
+        code:
           type: integer
-          description: The minimum allowed character length for the field value.
-        max_length:
-          type: integer
-          description: The maximum allowed character length for the field value.
-        regex:
-          $ref: '#/components/schemas/PaymentRequirementsFieldRegex'
-    TransferReasonCode:
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
+    PaymentRequirementsField:
+      type: object
+      description: Represents a contextual field and its rules.
+      properties:
+        name:
+          type: string
+          description: "The name of the field to be provided in the [`/pay` endpoint](https://developer.revolut.com/docs/business#create-payment) request body. \nMatches the field names in the `/pay` endpoint exactly (e.g. `reference`, `transfer_reason_code`)."
+        required:
+          type: boolean
+          description: Indicates whether this field must be provided for the given transfer.
+        validation:
+          $ref: '#/components/schemas/PaymentRequirementsFieldValidation'
+        options:
+          type: array
+          description: 'A list of allowed values for the field (enum).
+
+            If provided, the field value must be one of these options.'
+          items:
+            $ref: '#/components/schemas/PaymentRequirementsFieldOption'
+      required:
+      - name
+      - required
+    IndicativeQuoteFee:
+      type: object
+      description: Details of the total fee for the transfer.
+      properties:
+        amount:
+          type: number
+          format: double
+          description: Fee amount in major units.
+        currency:
+          $ref: '#/components/schemas/Currency'
+        breakdown:
+          $ref: '#/components/schemas/IndicativeQuoteFeeBreakdown'
+      required:
+      - amount
+      - currency
+    IndicativeQuoteResponse:
+      type: object
+      description: The expected processing attributes for a potential transfer.
+      properties:
+        amount:
+          $ref: '#/components/schemas/Money'
+          description: Amount the recipient receives before fees are deducted, in major units.
+        fee:
+          $ref: '#/components/schemas/IndicativeQuoteFee'
+          description: Total fee for the transfer (in source or target currency).
+        estimated_total:
+          $ref: '#/components/schemas/Money'
+          description: Total amount of money which will be charged on the sender's account.
+        estimated_exchange_rate:
+          type: string
+          description: 'Exchange rate for the transfer.
+
+
+            For same-currency transfers, this field is omitted from the response.'
+        estimated_amount_after_exchange:
+          $ref: '#/components/schemas/Money'
+          description: 'Amount of the money converted to the sender''s currency.
+
+
+            For same-currency transfers, this field is omitted from the response.'
+        estimated_arrival:
+          $ref: '#/components/schemas/IndicativeQuoteEstimatedArrival'
+        warnings:
+          type: array
+          description: 'Potential warnings regarding the quote:
+
+
+            - `volatile_fx_rate`: Returned when the specified FX rate is volatile.'
+          items:
+            type: string
+            enum:
+            - volatile_fx_rate
+      required:
+      - amount
+      - fee
+      - estimated_total
+    TransactionState:
+      enum:
+      - created
+      - pending
+      - completed
+      - declined
+      - failed
+      - reverted
+      description: "Indicates the transaction state. Possible values:\n  - `created`: The transaction has been created and is either processed asynchronously or scheduled for a later time.\n  - `pending`: The transaction is pending until it's being processed. If the transfer is made between Revolut accounts, this state is skipped and the transaction is executed instantly.\n  - `completed`: The transaction was successful.\n  - `declined`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, insufficient account balance, wrong receiver information, etc.\n  - `failed`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, invalid API calls, blocked payments, etc.\n  - `reverted`: The transaction was reverted. This can happen for a variety of reasons, for example, the receiver being inaccessible."
       type: string
-      description: "The reason code for the transaction. Transactions to certain countries and currencies might require you to provide a transfer reason. \nYou can check available reason codes with the [`GET /transfer-reasons` operation](https://developer.revolut.com/docs/api/business#get-transfer-reasons).\n\nIf a transfer reason is not required for the given currency and country, this field is ignored."
-      example: property_rental
+    TransferResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the transaction created.
+        state:
+          $ref: '#/components/schemas/TransactionState'
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the transaction was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        completed_at:
+          type: string
+          format: date-time
+          description: The date and time the transaction was completed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+      required:
+      - id
+      - state
+      - created_at
+    ErrorWithId:
+      required:
+      - code
+      - message
+      - error_id
+      type: object
+      properties:
+        error_id:
+          type: string
+          description: The ID of the specific error instance. Used for traceability.
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
   securitySchemes:
     AccessToken:
       type: http

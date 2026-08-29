@@ -1,7 +1,7 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
   version: '1.0'
-  title: Business Accounting Accounting categories API
+  title: Business Accounting categories API
   description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
   contact: {}
 servers:
@@ -727,114 +727,50 @@ paths:
       tags:
       - Accounting categories
 components:
-  responses:
-    ServiceUnavailable:
-      description: 'Service Unavailable
-
-
-        The system is temporarily unavailable.
-
-        If the response includes the `Retry-After` header instruction, please respect it and refrain from earlier retry attempts.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorWithId'
-          examples:
-            service_unavailable:
-              summary: System temporarily unavailable
-              value:
-                error_id: 201768bc-c5cd-4db8-8898-7ae96b9d89ab
-                code: 5003
-                message: The service is temporarily unavailable. Try again in a few moments. If the issue persists, please contact support
-    Unauthorized:
-      description: 'Unauthorized – authentication credentials are missing or invalid
-
-
-        Returned when the request was not fulfilled because authentication has failed or has not been provided.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorWithId'
-          examples:
-            access_token_invalid_or_expired:
-              summary: Access token invalid or expired
-              value:
-                error_id: 9d66499d-3fc5-45e9-92f6-3ddcad4793c6
-                code: 1000
-                message: Access token is invalid or has expired. Please refresh your access token or generate a new one following the 'Get a new access token' guide in the Revolut API docs.
-            invalid_token:
-              summary: Invalid token
-              value:
-                error_id: 7835beae-98ed-42dc-b993-95f4ded951a1
-                code: 1000
-                message: Invalid token. The authorization header must follow the 'Bearer <token>' format.
-    TooManyRequests:
-      description: 'Too many requests
-
-
-        Returned, for example, when the rate limit has been exceeded.
-
-        If the response includes the `Retry-After` instruction, please respect it and refrain from earlier retry attempts.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorWithId'
-          examples:
-            rateLimitExceededNoRetryAfter:
-              summary: Rate limit exceeded (no Retry-After)
-              value:
-                error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
-                code: 3162
-                message: Request rate limit has been reached. Try again later.
-            rateLimitExceededWithRetryAfter:
-              summary: Rate limit exceeded (with Retry-After)
-              value:
-                error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
-                code: 3162
-                message: Request rate limit has been reached. Try again after 30 seconds.
-    InternalServerError:
-      description: 'Internal server error
-
-
-        An unexpected application error occurred.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorWithId'
-          example:
-            error_id: 7f96652e-7518-4229-872b-4e4c867fb4da
-            code: 5000
-            message: An unexpected error occurred while processing your request. If the issue persists, please contact support
-    Forbidden:
-      description: 'Action forbidden - insufficient permissions to perform this action
-
-
-        Returned, for example, when you don''t have permissions necessary to perform this action.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorWithId'
-          example:
-            error_id: c5deadcc-1934-4438-818a-3c7ca1e6c01c
-            code: 9002
-            message: This action is forbidden
-    ResourceCreatedResponse:
-      description: 'Resource created
-
-
-        On successful creation, the response returns only the ID of the new resource, even if the resource has more properties.
-
-        To get all details, use the returned resource ID with a GET request.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ResourceCreatedResponse'
-          examples:
-            resource_created:
-              summary: Resource created
-              value:
-                id: 6a37383e-cfd3-4a2f-aa81-e3a6e6939efa
   schemas:
+    UpdateAccountingCategoryRequest:
+      type: object
+      description: The new settings for the accounting category.
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          description: The new full name for the accounting category.
+          minLength: 1
+          maxLength: 60
+          example: Work From Home equipment
+        code:
+          type: string
+          description: The new code name for the accounting category.
+          minLength: 1
+          maxLength: 50
+          example: WFH
+        default_tax_rate_id:
+          type: string
+          format: uuid
+          description: The ID of the new default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
+          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
+    ErrorWithId:
+      required:
+      - code
+      - message
+      - error_id
+      type: object
+      properties:
+        error_id:
+          type: string
+          description: The ID of the specific error instance. Used for traceability.
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+    PageToken:
+      type: string
+      format: byte
+      description: "Cursor for the next page. \nUsed for pagination when the total number of results exceeds the maximum number per page.\n\nTo get the next page of results, make a new request and set `page_token` to the `next_page_token` value returned in the previous response.\n:::note\nIf there are no more results to fetch, `next_page_token` is not returned in the response.\n:::"
+      example: MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA
     AccountingCategoryResponse:
       type: object
       required:
@@ -879,49 +815,6 @@ components:
           type: string
           format: uuid
           description: The ID of the created resource.
-    ErrorWithId:
-      required:
-      - code
-      - message
-      - error_id
-      type: object
-      properties:
-        error_id:
-          type: string
-          description: The ID of the specific error instance. Used for traceability.
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
-    PageToken:
-      type: string
-      format: byte
-      description: "Cursor for the next page. \nUsed for pagination when the total number of results exceeds the maximum number per page.\n\nTo get the next page of results, make a new request and set `page_token` to the `next_page_token` value returned in the previous response.\n:::note\nIf there are no more results to fetch, `next_page_token` is not returned in the response.\n:::"
-      example: MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA
-    UpdateAccountingCategoryRequest:
-      type: object
-      description: The new settings for the accounting category.
-      minProperties: 1
-      properties:
-        name:
-          type: string
-          description: The new full name for the accounting category.
-          minLength: 1
-          maxLength: 60
-          example: Work From Home equipment
-        code:
-          type: string
-          description: The new code name for the accounting category.
-          minLength: 1
-          maxLength: 50
-          example: WFH
-        default_tax_rate_id:
-          type: string
-          format: uuid
-          description: The ID of the new default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
-          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
     CreateAccountingCategoryRequest:
       type: object
       description: The accounting category to create.
@@ -946,6 +839,113 @@ components:
           format: uuid
           description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
           example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
+  responses:
+    ServiceUnavailable:
+      description: 'Service Unavailable
+
+
+        The system is temporarily unavailable.
+
+        If the response includes the `Retry-After` header instruction, please respect it and refrain from earlier retry attempts.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          examples:
+            service_unavailable:
+              summary: System temporarily unavailable
+              value:
+                error_id: 201768bc-c5cd-4db8-8898-7ae96b9d89ab
+                code: 5003
+                message: The service is temporarily unavailable. Try again in a few moments. If the issue persists, please contact support
+    ResourceCreatedResponse:
+      description: 'Resource created
+
+
+        On successful creation, the response returns only the ID of the new resource, even if the resource has more properties.
+
+        To get all details, use the returned resource ID with a GET request.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResourceCreatedResponse'
+          examples:
+            resource_created:
+              summary: Resource created
+              value:
+                id: 6a37383e-cfd3-4a2f-aa81-e3a6e6939efa
+    Unauthorized:
+      description: 'Unauthorized – authentication credentials are missing or invalid
+
+
+        Returned when the request was not fulfilled because authentication has failed or has not been provided.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          examples:
+            access_token_invalid_or_expired:
+              summary: Access token invalid or expired
+              value:
+                error_id: 9d66499d-3fc5-45e9-92f6-3ddcad4793c6
+                code: 1000
+                message: Access token is invalid or has expired. Please refresh your access token or generate a new one following the 'Get a new access token' guide in the Revolut API docs.
+            invalid_token:
+              summary: Invalid token
+              value:
+                error_id: 7835beae-98ed-42dc-b993-95f4ded951a1
+                code: 1000
+                message: Invalid token. The authorization header must follow the 'Bearer <token>' format.
+    Forbidden:
+      description: 'Action forbidden - insufficient permissions to perform this action
+
+
+        Returned, for example, when you don''t have permissions necessary to perform this action.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          example:
+            error_id: c5deadcc-1934-4438-818a-3c7ca1e6c01c
+            code: 9002
+            message: This action is forbidden
+    InternalServerError:
+      description: 'Internal server error
+
+
+        An unexpected application error occurred.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          example:
+            error_id: 7f96652e-7518-4229-872b-4e4c867fb4da
+            code: 5000
+            message: An unexpected error occurred while processing your request. If the issue persists, please contact support
+    TooManyRequests:
+      description: 'Too many requests
+
+
+        Returned, for example, when the rate limit has been exceeded.
+
+        If the response includes the `Retry-After` instruction, please respect it and refrain from earlier retry attempts.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          examples:
+            rateLimitExceededNoRetryAfter:
+              summary: Rate limit exceeded (no Retry-After)
+              value:
+                error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
+                code: 3162
+                message: Request rate limit has been reached. Try again later.
+            rateLimitExceededWithRetryAfter:
+              summary: Rate limit exceeded (with Retry-After)
+              value:
+                error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
+                code: 3162
+                message: Request rate limit has been reached. Try again after 30 seconds.
   parameters:
     PageToken:
       in: query

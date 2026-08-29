@@ -1,13 +1,16 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
+  title: Revolut Accounts API
   version: '1.0'
-  title: Business Accounting Accounts API
-  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
-  contact: {}
+  description: 'Operations tagged Accounts across 2 of this provider''s published API definitions: revolut-business-openapi.yaml, revolut-open-banking-openapi.yaml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://b2b.revolut.com/api/1.0
   description: Production server (uses live data)
 - url: https://sandbox-b2b.revolut.com/api/1.0
+  description: Sandbox server (uses test data)
+- url: https://oba-auth.revolut.com
+  description: Production server (uses live data)
+- url: https://sandbox-oba-auth.revolut.com
   description: Sandbox server (uses test data)
 tags:
 - name: Accounts
@@ -56,6 +59,11 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
       - Accounts
+    servers:
+    - url: https://b2b.revolut.com/api/1.0
+      description: Production server (uses live data)
+    - url: https://sandbox-b2b.revolut.com/api/1.0
+      description: Sandbox server (uses test data)
   /accounts/{account_id}:
     get:
       summary: Retrieve an account
@@ -101,6 +109,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    servers:
+    - url: https://b2b.revolut.com/api/1.0
+      description: Production server (uses live data)
+    - url: https://sandbox-b2b.revolut.com/api/1.0
+      description: Sandbox server (uses test data)
   /accounts/{account_id}/bank-details:
     get:
       summary: Retrieve account's full bank details
@@ -155,6 +168,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    servers:
+    - url: https://b2b.revolut.com/api/1.0
+      description: Production server (uses live data)
+    - url: https://sandbox-b2b.revolut.com/api/1.0
+      description: Sandbox server (uses test data)
   /account-access-consents:
     post:
       tags:
@@ -298,6 +316,11 @@ paths:
       - AccessToken:
         - accounts
       x-codegen-request-body-name: OBReadConsent1Param
+    servers:
+    - url: https://oba-auth.revolut.com
+      description: Production server (uses live data)
+    - url: https://sandbox-oba-auth.revolut.com
+      description: Sandbox server (uses test data)
   /account-access-consents/{ConsentId}:
     get:
       tags:
@@ -491,6 +514,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OBErrorResponse1'
+    servers:
+    - url: https://oba-auth.revolut.com
+      description: Production server (uses live data)
+    - url: https://sandbox-oba-auth.revolut.com
+      description: Sandbox server (uses test data)
   /accounts/{AccountId}:
     get:
       tags:
@@ -671,6 +699,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OBErrorResponse1'
+    servers:
+    - url: https://oba-auth.revolut.com
+      description: Production server (uses live data)
+    - url: https://sandbox-oba-auth.revolut.com
+      description: Sandbox server (uses test data)
   /accounts/{AccountId}/balances:
     get:
       tags:
@@ -811,6 +844,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OBErrorResponse1'
+    servers:
+    - url: https://oba-auth.revolut.com
+      description: Production server (uses live data)
+    - url: https://sandbox-oba-auth.revolut.com
+      description: Sandbox server (uses test data)
   /accounts/{AccountId}/beneficiaries:
     get:
       tags:
@@ -965,163 +1003,162 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OBErrorResponse1'
+    servers:
+    - url: https://oba-auth.revolut.com
+      description: Production server (uses live data)
+    - url: https://sandbox-oba-auth.revolut.com
+      description: Sandbox server (uses test data)
 components:
-  parameters:
-    x-customer-user-agent-Param:
-      name: x-customer-user-agent
-      in: header
-      description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
-      schema:
-        type: string
-    x-fapi-customer-ip-address-Param:
-      name: x-fapi-customer-ip-address
-      in: header
-      description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
-      schema:
-        type: string
-    x-fapi-interaction-id-Param:
-      name: x-fapi-interaction-id
-      in: header
-      description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
-      schema:
-        type: string
-    x-fapi-customer-last-logged-time-Param:
-      name: x-fapi-customer-last-logged-time
-      in: header
-      description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
-
-
-        All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
-
-        For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
-      schema:
-        pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
-        type: string
-    x-fapi-financial-id-Param:
-      name: x-fapi-financial-id
-      in: header
-      description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
-
-        The ID of Revolut is `001580000103UAvAAM`.'
-      required: true
-      schema:
-        type: string
-    AuthorizationParam:
-      name: Authorization
-      in: header
-      description: 'The access token that you''ve generated.
-
-        For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).'
-      required: true
-      schema:
-        type: string
   schemas:
-    Meta:
-      title: MetaData
+    AccountBankDetailsItem:
       type: object
+      description: ''
       properties:
-        TotalPages:
-          type: integer
-          description: Used for pagination. Indicates how many pages of results are available.
-          format: int32
-      description: Meta data relevant to the payload.
-    OBActiveOrHistoricCurrencyAndAmount:
+        iban:
+          type: string
+          description: The IBAN number.
+        bic:
+          type: string
+          description: The BIC number, also known as SWIFT code.
+        account_no:
+          type: string
+          description: The account number.
+        sort_code:
+          type: string
+          description: The sort code of the account.
+        routing_number:
+          type: string
+          description: The routing number of the account.
+        beneficiary:
+          type: string
+          description: The name of the counterparty.
+        beneficiary_address:
+          $ref: '#/components/schemas/BeneficiaryAddress'
+        bank_country:
+          $ref: '#/components/schemas/BankCountryCode'
+        pooled:
+          type: boolean
+          description: Indicates whether the account address is pooled or unique.
+        unique_reference:
+          type: string
+          description: The reference of the pooled account.
+        schemes:
+          type: array
+          description: The schemes that are available for this currency account.
+          uniqueItems: false
+          items:
+            $ref: '#/components/schemas/PaymentSystem'
+        estimated_time:
+          $ref: '#/components/schemas/EstimatedTime'
       required:
-      - Amount
-      - Currency
+      - beneficiary
+      - beneficiary_address
+      - schemes
+      - estimated_time
+    BeneficiaryAddress:
       type: object
+      description: The address of the counterparty.
       properties:
-        Amount:
-          $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
-        Currency:
-          pattern: ^[A-Z]{3,3}$
+        street_line1:
           type: string
-          description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
-      description: The amount of the cash balance after a transaction entry is applied to the account.
-    AccountId:
-      maxLength: 40
-      minLength: 1
-      type: string
-      description: 'The unique and immutable ID to identify the account resource.
-
-        This ID has no meaning to the account owner.'
-    OBExternalPermissions1Code:
-      type: string
-      description: The type of data access to the account.
-      enum:
-      - ReadAccountsBasic
-      - ReadAccountsDetail
-      - ReadBalances
-      - ReadBeneficiariesBasic
-      - ReadBeneficiariesDetail
-      - ReadDirectDebits
-      - ReadOffers
-      - ReadPAN
-      - ReadParty
-      - ReadPartyPSU
-      - ReadProducts
-      - ReadScheduledPaymentsBasic
-      - ReadScheduledPaymentsDetail
-      - ReadStandingOrdersBasic
-      - ReadStandingOrdersDetail
-      - ReadStatementsBasic
-      - ReadStatementsDetail
-      - ReadTransactionsBasic
-      - ReadTransactionsCredits
-      - ReadTransactionsDebits
-      - ReadTransactionsDetail
-    OBExternalAccountSubType1Code:
-      type: string
-      description: The sub-type of the account.
-      enum:
-      - CurrentAccount
-      - Savings
-      - CreditCard
-    OBCashAccount5:
+          description: Street line 1 information.
+          example: Revolut LTD
+        street_line2:
+          type: string
+          description: Street line 2 information.
+          example: 1 Canada Square
+        region:
+          type: string
+          description: The name of the region (state or province), for example, Ontario for Canada.
+          example: Ontario
+        city:
+          type: string
+          description: The name of the city.
+          example: London
+        country:
+          type: string
+          pattern: ^[A-Z]{2}$
+          description: The country of the counterparty, as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+          example: GB
+        postcode:
+          type: string
+          description: The postcode of the counterparty address.
+          example: E14 5AB
       required:
-      - Identification
-      - SchemeName
+      - country
+      - postcode
+    Account:
       type: object
+      description: ''
       properties:
-        SchemeName:
-          $ref: '#/components/schemas/OBRevolutAccountIdentificationCode'
-        Identification:
-          maxLength: 256
-          minLength: 1
+        id:
           type: string
-          description: 'The identification of the account.
-
-
-            :::warning[Unique account identifier]
-
-            This field will typically contain an account number or an IBAN which must not be considered as a unique identifier for the account. Several currency subacounts can share this same identifier.
-
-
-            If you need a unique identifier for each account, ensure you use the `Data.Account.AccountId` instead.
-
-            :::
-
-            '
-        Name:
-          maxLength: 70
-          minLength: 1
+          format: uuid
+          description: The account ID.
+        name:
           type: string
-          description: 'The account name that the account servicing institution assigns.
-
-
-            The account name is the name or names of the account owner(s) represented at an account level.
-
-
-            The account name is not the product name or the nickname of the account.'
-        SecondaryIdentification:
-          maxLength: 34
-          minLength: 1
+          description: The account name.
+        balance:
+          type: number
+          format: double
+          description: The current balance on the account.
+        currency:
+          $ref: '#/components/schemas/AccountCurrency'
+        state:
           type: string
-          description: 'The secondary account ID that the account servicing institution assigns.
-
-
-            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
-      description: The details to identify the account.
+          enum:
+          - active
+          - inactive
+          description: Indicates the state of the account.
+        public:
+          type: boolean
+          description: Indicates whether the account is visible to other businesses on Revolut.
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the account was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the account was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+      required:
+      - id
+      - balance
+      - currency
+      - state
+      - public
+      - created_at
+      - updated_at
+    Accounts:
+      type: array
+      items:
+        $ref: '#/components/schemas/Account'
+    BankCountryCode:
+      type: string
+      pattern: ^[A-Z]{2}$
+      description: The country of the bank, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+      example: GB
+    PaymentSystem:
+      enum:
+      - chaps
+      - bacs
+      - faster_payments
+      - sepa
+      - swift
+      - ach
+      - elixir
+      - sorbnet
+      - nics
+      - rix
+      - sumclearing
+      example: swift
+      type: string
+      description: Indicates the payment scheme used to execute transactions.
+    AccountBankDetailsItems:
+      type: array
+      description: Indicates the payment scheme used to execute transactions.
+      items:
+        $ref: '#/components/schemas/AccountBankDetailsItem'
     Error:
       type: object
       properties:
@@ -1134,25 +1171,6 @@ components:
       required:
       - code
       - message
-    OBReadBeneficiary3:
-      required:
-      - Data
-      - Links
-      - Meta
-      type: object
-      properties:
-        Data:
-          type: object
-          properties:
-            Beneficiary:
-              type: array
-              items:
-                $ref: '#/components/schemas/OBBeneficiary3'
-          description: A list of beneficiaries.
-        Links:
-          $ref: '#/components/schemas/Links'
-        Meta:
-          $ref: '#/components/schemas/Meta'
     EstimatedTime:
       type: object
       description: The estimated time of the inbound transfer of the funds, i.e. when we expect the recipient to receive the transfer.
@@ -1174,69 +1192,30 @@ components:
           example: 3
       required:
       - unit
-    OBReadBalance1:
-      required:
-      - Data
-      - Links
-      - Meta
-      type: object
-      properties:
-        Data:
-          required:
-          - Balance
-          type: object
-          properties:
-            Balance:
-              minItems: 1
-              type: array
-              description: A list of elements to define the balance details.
-              items:
-                $ref: '#/components/schemas/OBCashBalance1'
-          description: The balance details.
-        Links:
-          $ref: '#/components/schemas/Links'
-        Meta:
-          $ref: '#/components/schemas/Meta'
-    OBActiveCurrencyAndAmount_SimpleType:
-      pattern: ^\d{1,13}\.\d{1,5}$
-      type: string
-      description: The amount of money where the unit of currency is explicit and compliant with [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217).
     AccountCurrency:
       type: string
       pattern: ^[A-Z]{3}$
       description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
-    OBAccount3:
+    OBExternalAccountSubType1Code:
+      type: string
+      description: The sub-type of the account.
+      enum:
+      - CurrentAccount
+      - Savings
+      - CreditCard
+    OBActiveOrHistoricCurrencyAndAmount:
       required:
-      - AccountId
-      - AccountSubType
-      - AccountType
+      - Amount
       - Currency
       type: object
       properties:
-        AccountId:
-          $ref: '#/components/schemas/AccountId'
+        Amount:
+          $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
         Currency:
           pattern: ^[A-Z]{3,3}$
           type: string
-          description: 'The currency that the account is held in ([ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case).
-
-
-            This value is used only when one account number covers multiple accounts for different currencies, and the initiating party needs to identify which currency to use for settlement on the account.'
-        AccountType:
-          $ref: '#/components/schemas/OBExternalAccountType1Code'
-        AccountSubType:
-          $ref: '#/components/schemas/OBExternalAccountSubType1Code'
-        Nickname:
-          maxLength: 70
-          minLength: 1
-          type: string
-          description: The nickname of the account that the account owner assigns to easily identify the account.
-        Account:
-          type: array
-          description: The details to identify an account.
-          items:
-            $ref: '#/components/schemas/OBCashAccount5'
-      description: The unique ID of the account that credit and debit entries are made to.
+          description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+      description: The amount of the cash balance after a transaction entry is applied to the account.
     OBReadData1:
       required:
       - Permissions
@@ -1292,89 +1271,24 @@ components:
 
             For example: `2017-04-05T10:43:07+00:00`.'
           format: date-time
-    OBBalanceType1Code:
-      type: string
-      description: The balance type.
-      enum:
-      - InterimAvailable
-      - InterimBooked
-      - ClosingAvailable
-      - ClosingBooked
-      - ClosingCleared
-      - Expected
-      - ForwardAvailable
-      - Information
-      - InterimAvailable
-      - InterimBooked
-      - InterimCleared
-      - OpeningAvailable
-      - OpeningBooked
-      - OpeningCleared
-      - PreviouslyClosedBooked
-    OBCashBalance1:
+    OBReadConsent1:
       required:
-      - AccountId
-      - Amount
-      - CreditDebitIndicator
-      - DateTime
-      - Type
+      - Data
+      - Risk
       type: object
       properties:
-        AccountId:
-          $ref: '#/components/schemas/AccountId'
-        CreditDebitIndicator:
-          type: string
-          description: 'Indicates whether the balance is a credit or a debit balance.
-
-
-            :::note
-
-            A zero balance is considered a credit balance.
-
-            :::'
-          enum:
-          - Credit
-          - Debit
-        Type:
-          $ref: '#/components/schemas/OBBalanceType1Code'
-        DateTime:
-          type: string
-          description: 'The date and time for the balance.
-
-
-            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
-
-            All date-time fields in responses must include the timezone.
-
-
-            For example: `2017-04-05T10:43:07+00:00`.'
-          format: date-time
-        Amount:
-          $ref: '#/components/schemas/OBActiveOrHistoricCurrencyAndAmount'
-        CreditLine:
-          type: array
-          description: A list of elements to provide details on the credit line.
-          items:
-            $ref: '#/components/schemas/OBCreditLine1'
-      description: A list of elements to define the balance details.
-    OBExternalRequestStatus1Code:
+        Data:
+          $ref: '#/components/schemas/OBReadData1'
+        Risk:
+          $ref: '#/components/schemas/OBRisk2'
+    OBRisk2:
+      type: object
+      description: The Risk section contains the risk indicators that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which can be used to specify additional details for risk scoring for account information.
+    OBExternalLimitType1Code:
       type: string
-      description: The status of the account access consent.
+      description: The limit type.
       enum:
-      - Authorised
-      - AwaitingAuthorisation
-      - Rejected
-      - Revoked
-    Accounts:
-      type: array
-      items:
-        $ref: '#/components/schemas/Account'
-    OBExternalAccountType1Code:
-      type: string
-      description: The type of the account.
-      enum:
-      - Business
-      - Personal
+      - Available
     OBCreditLine1:
       required:
       - Included
@@ -1395,95 +1309,7 @@ components:
         Amount:
           $ref: '#/components/schemas/OBActiveOrHistoricCurrencyAndAmount'
       description: Set of elements used to provide details on the credit line.
-    OBReadConsent1:
-      required:
-      - Data
-      - Risk
-      type: object
-      properties:
-        Data:
-          $ref: '#/components/schemas/OBReadData1'
-        Risk:
-          $ref: '#/components/schemas/OBRisk2'
-    OBErrorResponse1:
-      required:
-      - Code
-      - Errors
-      - Message
-      type: object
-      properties:
-        Code:
-          maxLength: 40
-          minLength: 1
-          type: string
-          description: The error code in high level that helps categorize the error.
-        Id:
-          maxLength: 40
-          minLength: 1
-          type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        Message:
-          maxLength: 500
-          minLength: 1
-          type: string
-          description: 'The error message.
-
-            For example, `There is something wrong with the request parameters provided`.'
-        Errors:
-          minItems: 1
-          type: array
-          items:
-            $ref: '#/components/schemas/OBError1'
-      description: The detailed information about the error to help troubleshooting.
-    OBBeneficiary3:
-      type: object
-      properties:
-        AccountId:
-          $ref: '#/components/schemas/AccountId'
-        BeneficiaryId:
-          maxLength: 40
-          minLength: 1
-          type: string
-          description: 'The unique and immutable ID to identify the beneficiary resource.
-
-            This ID has no meaning to the account owner.'
-        CreditorAccount:
-          $ref: '#/components/schemas/OBCashAccount5'
-    Links:
-      required:
-      - Self
-      type: object
-      properties:
-        Self:
-          type: string
-          description: The absolute URI to the resource.
-          format: uri
-        Next:
-          type: string
-          description: The absolute URI to the next pagination resource.
-          format: uri
-        Prev:
-          type: string
-          description: The absolute URI to the previous pagination resource.
-          format: uri
-      description: Links relevant to the payload.
-    PaymentSystem:
-      enum:
-      - chaps
-      - bacs
-      - faster_payments
-      - sepa
-      - swift
-      - ach
-      - elixir
-      - sorbnet
-      - nics
-      - rix
-      - sumclearing
-      example: swift
-      type: string
-      description: Indicates the payment scheme used to execute transactions.
-    OBReadAccount3:
+    OBReadBeneficiary3:
       required:
       - Data
       - Links
@@ -1493,15 +1319,56 @@ components:
         Data:
           type: object
           properties:
-            Account:
+            Beneficiary:
               type: array
-              description: The unique ID of the account that credit and debit entries are made to.
               items:
-                $ref: '#/components/schemas/OBAccount3'
+                $ref: '#/components/schemas/OBBeneficiary3'
+          description: A list of beneficiaries.
         Links:
           $ref: '#/components/schemas/Links'
         Meta:
           $ref: '#/components/schemas/Meta'
+    OBActiveCurrencyAndAmount_SimpleType:
+      pattern: ^\d{1,13}\.\d{1,5}$
+      type: string
+      description: The amount of money where the unit of currency is explicit and compliant with [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217).
+    OBBalanceType1Code:
+      type: string
+      description: The balance type.
+      enum:
+      - InterimAvailable
+      - InterimBooked
+      - ClosingAvailable
+      - ClosingBooked
+      - ClosingCleared
+      - Expected
+      - ForwardAvailable
+      - Information
+      - InterimAvailable
+      - InterimBooked
+      - InterimCleared
+      - OpeningAvailable
+      - OpeningBooked
+      - OpeningCleared
+      - PreviouslyClosedBooked
+    OBError1:
+      required:
+      - ErrorCode
+      - Message
+      type: object
+      properties:
+        ErrorCode:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The error code in low level, for example, `UK.OBIE.Field.Missing`.
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'The description of the error that occurred.
+
+            For example, `A mandatory field isn''t supplied`, `RequestedExecutionDateTime must be in future`, and `OBIE doesn''t standardise this field`.'
     OBReadConsentResponse1:
       required:
       - Data
@@ -1604,114 +1471,264 @@ components:
           $ref: '#/components/schemas/Links'
         Meta:
           $ref: '#/components/schemas/Meta'
-    AccountBankDetailsItem:
-      type: object
-      description: ''
-      properties:
-        iban:
-          type: string
-          description: The IBAN number.
-        bic:
-          type: string
-          description: The BIC number, also known as SWIFT code.
-        account_no:
-          type: string
-          description: The account number.
-        sort_code:
-          type: string
-          description: The sort code of the account.
-        routing_number:
-          type: string
-          description: The routing number of the account.
-        beneficiary:
-          type: string
-          description: The name of the counterparty.
-        beneficiary_address:
-          $ref: '#/components/schemas/BeneficiaryAddress'
-        bank_country:
-          $ref: '#/components/schemas/BankCountryCode'
-        pooled:
-          type: boolean
-          description: Indicates whether the account address is pooled or unique.
-        unique_reference:
-          type: string
-          description: The reference of the pooled account.
-        schemes:
-          type: array
-          description: The schemes that are available for this currency account.
-          uniqueItems: false
-          items:
-            $ref: '#/components/schemas/PaymentSystem'
-        estimated_time:
-          $ref: '#/components/schemas/EstimatedTime'
-      required:
-      - beneficiary
-      - beneficiary_address
-      - schemes
-      - estimated_time
-    AccountBankDetailsItems:
-      type: array
-      description: Indicates the payment scheme used to execute transactions.
-      items:
-        $ref: '#/components/schemas/AccountBankDetailsItem'
-    OBRisk2:
-      type: object
-      description: The Risk section contains the risk indicators that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which can be used to specify additional details for risk scoring for account information.
-    OBExternalLimitType1Code:
+    OBExternalPermissions1Code:
       type: string
-      description: The limit type.
+      description: The type of data access to the account.
       enum:
-      - Available
-    OBError1:
+      - ReadAccountsBasic
+      - ReadAccountsDetail
+      - ReadBalances
+      - ReadBeneficiariesBasic
+      - ReadBeneficiariesDetail
+      - ReadDirectDebits
+      - ReadOffers
+      - ReadPAN
+      - ReadParty
+      - ReadPartyPSU
+      - ReadProducts
+      - ReadScheduledPaymentsBasic
+      - ReadScheduledPaymentsDetail
+      - ReadStandingOrdersBasic
+      - ReadStandingOrdersDetail
+      - ReadStatementsBasic
+      - ReadStatementsDetail
+      - ReadTransactionsBasic
+      - ReadTransactionsCredits
+      - ReadTransactionsDebits
+      - ReadTransactionsDetail
+    OBAccount3:
       required:
-      - ErrorCode
+      - AccountId
+      - AccountSubType
+      - AccountType
+      - Currency
+      type: object
+      properties:
+        AccountId:
+          $ref: '#/components/schemas/AccountId'
+        Currency:
+          pattern: ^[A-Z]{3,3}$
+          type: string
+          description: 'The currency that the account is held in ([ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case).
+
+
+            This value is used only when one account number covers multiple accounts for different currencies, and the initiating party needs to identify which currency to use for settlement on the account.'
+        AccountType:
+          $ref: '#/components/schemas/OBExternalAccountType1Code'
+        AccountSubType:
+          $ref: '#/components/schemas/OBExternalAccountSubType1Code'
+        Nickname:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: The nickname of the account that the account owner assigns to easily identify the account.
+        Account:
+          type: array
+          description: The details to identify an account.
+          items:
+            $ref: '#/components/schemas/OBCashAccount5'
+      description: The unique ID of the account that credit and debit entries are made to.
+    OBCashBalance1:
+      required:
+      - AccountId
+      - Amount
+      - CreditDebitIndicator
+      - DateTime
+      - Type
+      type: object
+      properties:
+        AccountId:
+          $ref: '#/components/schemas/AccountId'
+        CreditDebitIndicator:
+          type: string
+          description: 'Indicates whether the balance is a credit or a debit balance.
+
+
+            :::note
+
+            A zero balance is considered a credit balance.
+
+            :::'
+          enum:
+          - Credit
+          - Debit
+        Type:
+          $ref: '#/components/schemas/OBBalanceType1Code'
+        DateTime:
+          type: string
+          description: 'The date and time for the balance.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Amount:
+          $ref: '#/components/schemas/OBActiveOrHistoricCurrencyAndAmount'
+        CreditLine:
+          type: array
+          description: A list of elements to provide details on the credit line.
+          items:
+            $ref: '#/components/schemas/OBCreditLine1'
+      description: A list of elements to define the balance details.
+    OBBeneficiary3:
+      type: object
+      properties:
+        AccountId:
+          $ref: '#/components/schemas/AccountId'
+        BeneficiaryId:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: 'The unique and immutable ID to identify the beneficiary resource.
+
+            This ID has no meaning to the account owner.'
+        CreditorAccount:
+          $ref: '#/components/schemas/OBCashAccount5'
+    Meta:
+      title: MetaData
+      type: object
+      properties:
+        TotalPages:
+          type: integer
+          description: Used for pagination. Indicates how many pages of results are available.
+          format: int32
+      description: Meta data relevant to the payload.
+    OBCashAccount5:
+      required:
+      - Identification
+      - SchemeName
+      type: object
+      properties:
+        SchemeName:
+          $ref: '#/components/schemas/OBRevolutAccountIdentificationCode'
+        Identification:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: 'The identification of the account.
+
+
+            :::warning[Unique account identifier]
+
+            This field will typically contain an account number or an IBAN which must not be considered as a unique identifier for the account. Several currency subacounts can share this same identifier.
+
+
+            If you need a unique identifier for each account, ensure you use the `Data.Account.AccountId` instead.
+
+            :::
+
+            '
+        Name:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: 'The account name that the account servicing institution assigns.
+
+
+            The account name is the name or names of the account owner(s) represented at an account level.
+
+
+            The account name is not the product name or the nickname of the account.'
+        SecondaryIdentification:
+          maxLength: 34
+          minLength: 1
+          type: string
+          description: 'The secondary account ID that the account servicing institution assigns.
+
+
+            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
+      description: The details to identify the account.
+    OBReadBalance1:
+      required:
+      - Data
+      - Links
+      - Meta
+      type: object
+      properties:
+        Data:
+          required:
+          - Balance
+          type: object
+          properties:
+            Balance:
+              minItems: 1
+              type: array
+              description: A list of elements to define the balance details.
+              items:
+                $ref: '#/components/schemas/OBCashBalance1'
+          description: The balance details.
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+    OBErrorResponse1:
+      required:
+      - Code
+      - Errors
       - Message
       type: object
       properties:
-        ErrorCode:
-          maxLength: 128
+        Code:
+          maxLength: 40
           minLength: 1
           type: string
-          description: The error code in low level, for example, `UK.OBIE.Field.Missing`.
+          description: The error code in high level that helps categorize the error.
+        Id:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
         Message:
           maxLength: 500
           minLength: 1
           type: string
-          description: 'The description of the error that occurred.
+          description: 'The error message.
 
-            For example, `A mandatory field isn''t supplied`, `RequestedExecutionDateTime must be in future`, and `OBIE doesn''t standardise this field`.'
-    BeneficiaryAddress:
-      type: object
-      description: The address of the counterparty.
-      properties:
-        street_line1:
-          type: string
-          description: Street line 1 information.
-          example: Revolut LTD
-        street_line2:
-          type: string
-          description: Street line 2 information.
-          example: 1 Canada Square
-        region:
-          type: string
-          description: The name of the region (state or province), for example, Ontario for Canada.
-          example: Ontario
-        city:
-          type: string
-          description: The name of the city.
-          example: London
-        country:
-          type: string
-          pattern: ^[A-Z]{2}$
-          description: The country of the counterparty, as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
-          example: GB
-        postcode:
-          type: string
-          description: The postcode of the counterparty address.
-          example: E14 5AB
+            For example, `There is something wrong with the request parameters provided`.'
+        Errors:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OBError1'
+      description: The detailed information about the error to help troubleshooting.
+    OBExternalRequestStatus1Code:
+      type: string
+      description: The status of the account access consent.
+      enum:
+      - Authorised
+      - AwaitingAuthorisation
+      - Rejected
+      - Revoked
+    OBReadAccount3:
       required:
-      - country
-      - postcode
+      - Data
+      - Links
+      - Meta
+      type: object
+      properties:
+        Data:
+          type: object
+          properties:
+            Account:
+              type: array
+              description: The unique ID of the account that credit and debit entries are made to.
+              items:
+                $ref: '#/components/schemas/OBAccount3'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+    AccountId:
+      maxLength: 40
+      minLength: 1
+      type: string
+      description: 'The unique and immutable ID to identify the account resource.
+
+        This ID has no meaning to the account owner.'
     OBRevolutAccountIdentificationCode:
       type: string
       description: 'The name of the identification scheme.
@@ -1729,63 +1746,80 @@ components:
       - US.BranchCodeAccountNumber
       - UK.Revolut.InternalAccountId
       example: UK.OBIE.IBAN
-    BankCountryCode:
+    OBExternalAccountType1Code:
       type: string
-      pattern: ^[A-Z]{2}$
-      description: The country of the bank, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
-      example: GB
-    Account:
-      type: object
-      description: ''
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The account ID.
-        name:
-          type: string
-          description: The account name.
-        balance:
-          type: number
-          format: double
-          description: The current balance on the account.
-        currency:
-          $ref: '#/components/schemas/AccountCurrency'
-        state:
-          type: string
-          enum:
-          - active
-          - inactive
-          description: Indicates the state of the account.
-        public:
-          type: boolean
-          description: Indicates whether the account is visible to other businesses on Revolut.
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time the account was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-        updated_at:
-          type: string
-          format: date-time
-          description: The date and time the account was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+      description: The type of the account.
+      enum:
+      - Business
+      - Personal
+    Links:
       required:
-      - id
-      - balance
-      - currency
-      - state
-      - public
-      - created_at
-      - updated_at
+      - Self
+      type: object
+      properties:
+        Self:
+          type: string
+          description: The absolute URI to the resource.
+          format: uri
+        Next:
+          type: string
+          description: The absolute URI to the next pagination resource.
+          format: uri
+        Prev:
+          type: string
+          description: The absolute URI to the previous pagination resource.
+          format: uri
+      description: Links relevant to the payload.
+  parameters:
+    x-customer-user-agent-Param:
+      name: x-customer-user-agent
+      in: header
+      description: The user agent that the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) is using.
+      schema:
+        type: string
+    x-fapi-customer-last-logged-time-Param:
+      name: x-fapi-customer-last-logged-time
+      in: header
+      description: 'The date and time when the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) last logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+
+
+        All dates in the HTTP headers are represented as [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1) Full Dates.
+
+        For example: <nobr>`Sun, 10 Sep 2017 19:43:31 UTC`</nobr>.'
+      schema:
+        pattern: ^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|UTC)$
+        type: string
+    x-fapi-financial-id-Param:
+      name: x-fapi-financial-id
+      in: header
+      description: 'The unique ID of the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) that the request is issued to.
+
+        The ID of Revolut is `001580000103UAvAAM`.'
+      required: true
+      schema:
+        type: string
+    x-fapi-customer-ip-address-Param:
+      name: x-fapi-customer-ip-address
+      in: header
+      description: The IP address of the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) if the PSU is logged in with the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+      schema:
+        type: string
+    AuthorizationParam:
+      name: Authorization
+      in: header
+      description: 'The access token that you''ve generated.
+
+        For more information, see [Generate an access token](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/get-access-token).'
+      required: true
+      schema:
+        type: string
+    x-fapi-interaction-id-Param:
+      name: x-fapi-interaction-id
+      in: header
+      description: An [RFC4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID used as a correlation ID.
+      schema:
+        type: string
   examples:
-    Error401ConsentLacksPermissions:
-      summary: Consent lacks permissions
-      value:
-        Code: 401 Unauthorized
-        Message: Consent has no permissions
-        Id: XXXXXXXXXXXX
-        Errors:
-        - ErrorCode: UK.OBIE.Resource.Unauthorized
-          Message: Consent has no permissions
     Error401InvalidRevokedOrExpiredToken:
       summary: Token invalid, revoked or expired
       value:
@@ -1804,8 +1838,27 @@ components:
         Errors:
         - ErrorCode: UK.OBIE.Resource.Forbidden
           Message: Access forbidden
+    Error401ConsentLacksPermissions:
+      summary: Consent lacks permissions
+      value:
+        Code: 401 Unauthorized
+        Message: Consent has no permissions
+        Id: XXXXXXXXXXXX
+        Errors:
+        - ErrorCode: UK.OBIE.Resource.Unauthorized
+          Message: Consent has no permissions
   securitySchemes:
     AccessToken:
       type: http
       scheme: bearer
       description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"
+    JWS:
+      type: apiKey
+      description: 'Open Banking API Payment requests additionally require a JSON Web Signature (JWS) which needs to be added to the header of the request.
+
+        The JWS signature must be obtained using the full content of the payload.'
+      name: x-jws-signature
+      in: header
+x-refined-from:
+- revolut-business-openapi.yaml
+- revolut-open-banking-openapi.yaml

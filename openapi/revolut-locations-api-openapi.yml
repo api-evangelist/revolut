@@ -1,14 +1,79 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  version: '1.0'
-  title: Business Accounting Locations API
-  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  title: Merchant Locations API
+  version: '2026-04-20'
+  description: 'Welcome to the Revolut Merchant API - your solution to managing the core aspects of e-commerce and accepting online payments. Whether you''re a startup, a growing business, or an established enterprise in the e-commerce industry, our API helps you streamline your operations.
+
+
+    As a Revolut Business customer with a Merchant Account, you can use the
+
+    Merchant API to leverage the following features:
+
+
+    - [Order management](https://developer.revolut.com/docs/api/merchant#tag-orders)
+
+    - [Customer management](https://developer.revolut.com/docs/api/merchant#tag-customers)
+
+    - [Payment management](https://developer.revolut.com/docs/api/merchant#tag-payments)
+
+    - [Subscription management](https://developer.revolut.com/docs/api/merchant#tag-subscriptions)
+
+    - [Payout management](https://developer.revolut.com/docs/api/merchant#tag-payouts)
+
+    - [Dispute management](https://developer.revolut.com/docs/api/merchant#tag-disputes)
+
+    - [Reporting analytics](https://developer.revolut.com/docs/api/merchant#tag-report-runs)
+
+    - [Webhook management](https://developer.revolut.com/docs/api/merchant#tag-webhooks)
+
+    - [Location management](https://developer.revolut.com/docs/api/merchant#tag-locations)
+
+
+    ... and more.
+
+
+    ### API versions
+
+
+    :::warning
+
+    We highly recommend using versioning in your API calls. If you don''t provide a version header on the operations where it''s required, you will receive an error response.
+
+    :::
+
+
+    The Merchant API uses request header versioning. Where it is required you need to use the `Revolut-Api-Version` header parameter to specify an API version. Each request, where it is indicated in the API specification, must contain a version header in the following format:
+
+
+    ```
+
+    ''Revolut-Api-Version: 2026-04-20''
+
+    ```
+
+
+    :::info
+
+    For more information, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions)
+
+    :::
+
+
+    ### Test the Merchant API
+
+
+    You can test the Merchant API in Postman by forking this collection:
+
+
+    [![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)'
   contact: {}
 servers:
-- url: https://b2b.revolut.com/api/1.0
-  description: Production server (uses live data)
-- url: https://sandbox-b2b.revolut.com/api/1.0
-  description: Sandbox server (uses test data)
+- description: Production server (uses live data)
+  url: https://merchant.revolut.com
+- description: Sandbox server (uses test data)
+  url: https://sandbox-merchant.revolut.com
+security:
+- Api-Key: []
 tags:
 - name: Locations
   description: "The Locations API is designed to help merchants manage multiple points of sale, including both **online storefronts** and **physical stores**. Registering locations lets you differentiate and group your orders from different stores. You can also introduce custom business logic for each location, such as different inventory management, pricing, or shipping rules.\n\nTo start using locations, follow the relevant use case for your business:\n\n### Online locations\n\n  1. Register an online location using the [Create a location](https://developer.revolut.com/docs/api/merchant#create-location) endpoint, setting the `type` to `online`.\n  1. Configure your custom processes on your backend for each registered location (e.g., grouping orders, custom pricing, etc.).\n  1. Send the `location_id` parameter in the request body during [order creation](https://developer.revolut.com/docs/api/merchant#create-order) to assign the order to a specific location.\n\n### Physical locations\n\n  1. Register a physical location using the [Create a location](https://developer.revolut.com/docs/api/merchant#create-location) endpoint, setting the `type` to `physical`.\n  1. In case of Revolut POS, our system handles order creation including `location_id` to associate the order with your location.\n\n## Fast checkout for multiple storefronts\n\nLocations are particularly useful for tailoring the user experience on each of your online storefronts, especially when using features like [**Fast checkout**](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/fast-checkout).\n\nFor example, if you operate two online stores with different shipping rules, you can register two separate `online` locations. By then using the `location_id` to [register a distinct address validation endpoint](https://developer.revolut.com/docs/api/merchant#register-address-validation-endpoint) for each one, your backend can apply the correct shipping logic and pricing for the specific storefront a customer is buying from."
@@ -282,43 +347,30 @@ paths:
       - Locations
 components:
   schemas:
-    Location-Update-Physical:
-      title: Location
+    Location-Online-Details:
       type: object
-      description: Location object represents merchant locations depending on type.
-      oneOf:
-      - $ref: '#/components/schemas/Location-Online'
-      - $ref: '#/components/schemas/Location-Physical'
-      discriminator:
-        propertyName: type
-        mapping:
-          online: '#/components/schemas/Location-Online'
-          physical: '#/components/schemas/Location-Physical'
-    Location-Creation:
-      type: object
-      description: Request body for creating a location. The structure of the `details` object depends on the `type` of the location.
-      oneOf:
-      - $ref: '#/components/schemas/Location-Creation-Online'
-      - $ref: '#/components/schemas/Location-Creation-Physical'
-      discriminator:
-        propertyName: type
-        mapping:
-          online: '#/components/schemas/Location-Creation-Online'
-          physical: '#/components/schemas/Location-Creation-Physical'
-    Error:
-      title: Error
+      description: Additional details of the location.
+      properties:
+        domain:
+          type: string
+          description: 'Domain address of the location. Required for online locations.
+
+
+            :::warning
+
+            The `domain` parameter''s value must be unique across all locations.
+
+            :::'
+      required:
+      - domain
+    Location-Update-Online:
       type: object
       properties:
-        errorId:
-          type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        timestamp:
-          type: integer
-          description: The date and time the error happened.
-      required:
-      - errorId
-      - timestamp
-    Location-Creation-Online:
+        name:
+          $ref: '#/components/schemas/Location-Name'
+        details:
+          $ref: '#/components/schemas/Location-Online-Details'
+    Location-Creation-Physical:
       type: object
       properties:
         name:
@@ -326,67 +378,12 @@ components:
         type:
           $ref: '#/components/schemas/Location-Type'
         details:
-          $ref: '#/components/schemas/Location-Online-Details'
+          $ref: '#/components/schemas/Location-Physical-Details'
       required:
       - name
       - type
       - details
-    Location:
-      title: Location
-      type: object
-      description: Location object represents merchant locations depending on type.
-      oneOf:
-      - $ref: '#/components/schemas/Location-Online'
-      - $ref: '#/components/schemas/Location-Physical'
-      discriminator:
-        propertyName: type
-        mapping:
-          online: '#/components/schemas/Location-Online'
-          physical: '#/components/schemas/Location-Physical'
-    Location-Physical-Details:
-      type: object
-      description: Additional details of the location.
-      properties:
-        address:
-          $ref: '#/components/schemas/Address-v3'
-        geo_location:
-          $ref: '#/components/schemas/Geo-Location'
-        opening_hours:
-          $ref: '#/components/schemas/Opening-Hours'
-      required:
-      - address
-      - geo_location
-      - opening_hours
-    Opening-Hours:
-      type: object
-      description: 'An object containing the opening hours for each day of the week.
-
-
-        A day can have multiple intervals (e.g., closing for a lunch break).'
-      properties:
-        monday:
-          description: Opening hours for Monday.
-          $ref: '#/components/schemas/Day-Opening-Hours'
-        tuesday:
-          description: Opening hours for Tuesday.
-          $ref: '#/components/schemas/Day-Opening-Hours'
-        wednesday:
-          description: Opening hours for Wednesday.
-          $ref: '#/components/schemas/Day-Opening-Hours'
-        thursday:
-          description: Opening hours for Thursday.
-          $ref: '#/components/schemas/Day-Opening-Hours'
-        friday:
-          description: Opening hours for Friday.
-          $ref: '#/components/schemas/Day-Opening-Hours'
-        saturday:
-          description: Opening hours for Saturday.
-          $ref: '#/components/schemas/Day-Opening-Hours'
-        sunday:
-          description: Opening hours for Sunday.
-          $ref: '#/components/schemas/Day-Opening-Hours'
-    Location-Physical:
-      title: Location
+    Location-Online:
       type: object
       properties:
         id:
@@ -396,12 +393,15 @@ components:
         type:
           $ref: '#/components/schemas/Location-Type'
         details:
-          $ref: '#/components/schemas/Location-Physical-Details'
+          $ref: '#/components/schemas/Location-Online-Details'
       required:
       - id
       - name
       - type
       - details
+    Location-Name:
+      type: string
+      description: "Name of the location. \n\n:::warning\nThe `name` parameter's value must be unique across all locations.\n:::"
     Geo-Location:
       type: object
       description: Coordinates of the location.
@@ -421,49 +421,12 @@ components:
       required:
       - lat
       - lon
-    Location-Update-Online:
+    Location-Physical:
+      title: Location
       type: object
       properties:
-        name:
-          $ref: '#/components/schemas/Location-Name'
-        details:
-          $ref: '#/components/schemas/Location-Online-Details'
-    Day-Opening-Hours:
-      type: array
-      description: "A list of one or more time intervals for a single day. \n\nA day can have multiple intervals (e.g., closing for a lunch break)."
-      items:
-        type: object
-        properties:
-          from:
-            type: string
-            format: time
-            description: 'The local time when the interval begins.
-
-
-              :::note
-
-              The format is `hh:mm[:ss]`; seconds are optional and must be `00` if provided.
-
-              :::'
-            example: 09:00:00
-          to:
-            type: string
-            format: time
-            description: 'The local time when the interval ends.
-
-
-              :::note
-
-              The format is `hh:mm[:ss]`; seconds are optional and must be `00` if provided.
-
-              :::'
-            example: '18:00:00'
-        required:
-        - from
-        - to
-    Location-Creation-Physical:
-      type: object
-      properties:
+        id:
+          $ref: '#/components/schemas/Location-Id'
         name:
           $ref: '#/components/schemas/Location-Name'
         type:
@@ -471,24 +434,24 @@ components:
         details:
           $ref: '#/components/schemas/Location-Physical-Details'
       required:
+      - id
       - name
       - type
       - details
-    Location-Type:
-      type: string
-      description: 'Type of the location.
-
-
-        | Value | Description |
-
-        | ----- | ----------- |
-
-        | `online` | Represents an online store. |
-
-        | `physical` | Represents a physical point of sale. |'
-      enum:
-      - online
-      - physical
+    Location-Physical-Details:
+      type: object
+      description: Additional details of the location.
+      properties:
+        address:
+          $ref: '#/components/schemas/Address-v3'
+        geo_location:
+          $ref: '#/components/schemas/Geo-Location'
+        opening_hours:
+          $ref: '#/components/schemas/Opening-Hours'
+      required:
+      - address
+      - geo_location
+      - opening_hours
     Address-v3:
       type: object
       description: Details of a physical address.
@@ -524,36 +487,6 @@ components:
       - city
       - country_code
       - postcode
-    Location-Name:
-      type: string
-      description: "Name of the location. \n\n:::warning\nThe `name` parameter's value must be unique across all locations.\n:::"
-    Location-Update:
-      type: object
-      description: Request body for updating a location. The structure of the `details` object depends on the `type` of the location.
-      oneOf:
-      - $ref: '#/components/schemas/Location-Update-Online'
-      - $ref: '#/components/schemas/Location-Update-Physical'
-      discriminator:
-        propertyName: type
-        mapping:
-          online: '#/components/schemas/Location-Update-Online'
-          physical: '#/components/schemas/Location-Update-Physical'
-    Location-Online:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/Location-Id'
-        name:
-          $ref: '#/components/schemas/Location-Name'
-        type:
-          $ref: '#/components/schemas/Location-Type'
-        details:
-          $ref: '#/components/schemas/Location-Online-Details'
-      required:
-      - id
-      - name
-      - type
-      - details
     Location-Id:
       type: string
       format: uuid
@@ -565,23 +498,190 @@ components:
         For more information, see: [Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).
 
         :::        '
-    Location-Online-Details:
+    Location-Update:
       type: object
-      description: Additional details of the location.
+      description: Request body for updating a location. The structure of the `details` object depends on the `type` of the location.
+      oneOf:
+      - $ref: '#/components/schemas/Location-Update-Online'
+      - $ref: '#/components/schemas/Location-Update-Physical'
+      discriminator:
+        propertyName: type
+        mapping:
+          online: '#/components/schemas/Location-Update-Online'
+          physical: '#/components/schemas/Location-Update-Physical'
+    Opening-Hours:
+      type: object
+      description: 'An object containing the opening hours for each day of the week.
+
+
+        A day can have multiple intervals (e.g., closing for a lunch break).'
       properties:
-        domain:
+        monday:
+          description: Opening hours for Monday.
+          $ref: '#/components/schemas/Day-Opening-Hours'
+        tuesday:
+          description: Opening hours for Tuesday.
+          $ref: '#/components/schemas/Day-Opening-Hours'
+        wednesday:
+          description: Opening hours for Wednesday.
+          $ref: '#/components/schemas/Day-Opening-Hours'
+        thursday:
+          description: Opening hours for Thursday.
+          $ref: '#/components/schemas/Day-Opening-Hours'
+        friday:
+          description: Opening hours for Friday.
+          $ref: '#/components/schemas/Day-Opening-Hours'
+        saturday:
+          description: Opening hours for Saturday.
+          $ref: '#/components/schemas/Day-Opening-Hours'
+        sunday:
+          description: Opening hours for Sunday.
+          $ref: '#/components/schemas/Day-Opening-Hours'
+    Error:
+      title: Error
+      type: object
+      properties:
+        errorId:
           type: string
-          description: 'Domain address of the location. Required for online locations.
-
-
-            :::warning
-
-            The `domain` parameter''s value must be unique across all locations.
-
-            :::'
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        timestamp:
+          type: integer
+          description: The date and time the error happened.
       required:
-      - domain
+      - errorId
+      - timestamp
+    Location:
+      title: Location
+      type: object
+      description: Location object represents merchant locations depending on type.
+      oneOf:
+      - $ref: '#/components/schemas/Location-Online'
+      - $ref: '#/components/schemas/Location-Physical'
+      discriminator:
+        propertyName: type
+        mapping:
+          online: '#/components/schemas/Location-Online'
+          physical: '#/components/schemas/Location-Physical'
+    Location-Creation-Online:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Location-Name'
+        type:
+          $ref: '#/components/schemas/Location-Type'
+        details:
+          $ref: '#/components/schemas/Location-Online-Details'
+      required:
+      - name
+      - type
+      - details
+    Day-Opening-Hours:
+      type: array
+      description: "A list of one or more time intervals for a single day. \n\nA day can have multiple intervals (e.g., closing for a lunch break)."
+      items:
+        type: object
+        properties:
+          from:
+            type: string
+            format: time
+            description: 'The local time when the interval begins.
+
+
+              :::note
+
+              The format is `hh:mm[:ss]`; seconds are optional and must be `00` if provided.
+
+              :::'
+            example: 09:00:00
+          to:
+            type: string
+            format: time
+            description: 'The local time when the interval ends.
+
+
+              :::note
+
+              The format is `hh:mm[:ss]`; seconds are optional and must be `00` if provided.
+
+              :::'
+            example: '18:00:00'
+        required:
+        - from
+        - to
+    Location-Creation:
+      type: object
+      description: Request body for creating a location. The structure of the `details` object depends on the `type` of the location.
+      oneOf:
+      - $ref: '#/components/schemas/Location-Creation-Online'
+      - $ref: '#/components/schemas/Location-Creation-Physical'
+      discriminator:
+        propertyName: type
+        mapping:
+          online: '#/components/schemas/Location-Creation-Online'
+          physical: '#/components/schemas/Location-Creation-Physical'
+    Location-Update-Physical:
+      title: Location
+      type: object
+      description: Location object represents merchant locations depending on type.
+      oneOf:
+      - $ref: '#/components/schemas/Location-Online'
+      - $ref: '#/components/schemas/Location-Physical'
+      discriminator:
+        propertyName: type
+        mapping:
+          online: '#/components/schemas/Location-Online'
+          physical: '#/components/schemas/Location-Physical'
+    Location-Type:
+      type: string
+      description: 'Type of the location.
+
+
+        | Value | Description |
+
+        | ----- | ----------- |
+
+        | `online` | Represents an online store. |
+
+        | `physical` | Represents a physical point of sale. |'
+      enum:
+      - online
+      - physical
+  parameters:
+    Authorization:
+      name: Authorization
+      in: header
+      schema:
+        type: string
+        format: Bearer <yourSecretApiKey>
+        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
+      required: true
+      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
+    Location-Type:
+      name: type
+      in: query
+      schema:
+        type: string
+        enum:
+        - online
+        - physical
+      description: Filter the list by location type.
+    Location-Id:
+      name: location_id
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      in: path
+      required: true
+      description: The ID of the location.
   examples:
+    Req-Location-Online:
+      summary: Online location request example
+      value:
+        name: Grocery website
+        type: online
+        details:
+          domain: groceries.example.com
     Res-Location-Online:
       summary: Online location request example
       value:
@@ -590,38 +690,6 @@ components:
         type: online
         details:
           domain: groceries.example.com
-    Req-Location-Online:
-      summary: Online location request example
-      value:
-        name: Grocery website
-        type: online
-        details:
-          domain: groceries.example.com
-    Req-Location-Physical:
-      summary: Physical location request example
-      value:
-        name: Example Street Store
-        type: physical
-        details:
-          address:
-            street_line_1: 123 Example Street
-            city: Example city
-            postcode: '12345'
-            country_code: GB
-          geo_location:
-            lat: 12.3456
-            lon: -12.3456
-          opening_hours:
-            monday:
-            - from: 09:00
-              to: '15:00'
-            - from: '16:00'
-              to: '18:00'
-            tuesday:
-            - from: '10:00'
-              to: '13:00'
-            - from: '16:00'
-              to: '18:00'
     Res-Location-Physical:
       summary: Physical location request example
       value:
@@ -648,36 +716,51 @@ components:
               to: '13:00'
             - from: '16:00'
               to: '18:00'
-  parameters:
-    Authorization:
-      name: Authorization
-      in: header
-      schema:
-        type: string
-        format: Bearer <yourSecretApiKey>
-        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
-      required: true
-      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
-    Location-Id:
-      name: location_id
-      schema:
-        type: string
-        format: uuid
-        description: A UUID string, typically used to identify resources.
-      in: path
-      required: true
-      description: The ID of the location.
-    Location-Type:
-      name: type
-      in: query
-      schema:
-        type: string
-        enum:
-        - online
-        - physical
-      description: Filter the list by location type.
+    Req-Location-Physical:
+      summary: Physical location request example
+      value:
+        name: Example Street Store
+        type: physical
+        details:
+          address:
+            street_line_1: 123 Example Street
+            city: Example city
+            postcode: '12345'
+            country_code: GB
+          geo_location:
+            lat: 12.3456
+            lon: -12.3456
+          opening_hours:
+            monday:
+            - from: 09:00
+              to: '15:00'
+            - from: '16:00'
+              to: '18:00'
+            tuesday:
+            - from: '10:00'
+              to: '13:00'
+            - from: '16:00'
+              to: '18:00'
   securitySchemes:
-    AccessToken:
-      type: http
-      scheme: bearer
-      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"
+    Api-Key:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Each Merchant API request must contain an authorization header in the following format:
+
+
+        ```
+
+        ''Authorization: Bearer <yourSecretApiKey>''
+
+        ```
+
+
+        To use this API, you need to generate API keys from your Revolut Business account. The Secret key is used in the authorization header for all server calls, while the Public key is provided with payment methods at checkout.
+
+
+        :::info
+
+        For detailed instructions on generating your API keys, see: [Generate API keys](https://developer.revolut.com/docs/guides/merchant/get-started#generate-api-keys).
+
+        :::'

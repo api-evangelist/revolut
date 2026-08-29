@@ -1,14 +1,79 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  version: '1.0'
-  title: Business Accounting Disputes API
-  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  title: Merchant Disputes API
+  version: '2026-04-20'
+  description: 'Welcome to the Revolut Merchant API - your solution to managing the core aspects of e-commerce and accepting online payments. Whether you''re a startup, a growing business, or an established enterprise in the e-commerce industry, our API helps you streamline your operations.
+
+
+    As a Revolut Business customer with a Merchant Account, you can use the
+
+    Merchant API to leverage the following features:
+
+
+    - [Order management](https://developer.revolut.com/docs/api/merchant#tag-orders)
+
+    - [Customer management](https://developer.revolut.com/docs/api/merchant#tag-customers)
+
+    - [Payment management](https://developer.revolut.com/docs/api/merchant#tag-payments)
+
+    - [Subscription management](https://developer.revolut.com/docs/api/merchant#tag-subscriptions)
+
+    - [Payout management](https://developer.revolut.com/docs/api/merchant#tag-payouts)
+
+    - [Dispute management](https://developer.revolut.com/docs/api/merchant#tag-disputes)
+
+    - [Reporting analytics](https://developer.revolut.com/docs/api/merchant#tag-report-runs)
+
+    - [Webhook management](https://developer.revolut.com/docs/api/merchant#tag-webhooks)
+
+    - [Location management](https://developer.revolut.com/docs/api/merchant#tag-locations)
+
+
+    ... and more.
+
+
+    ### API versions
+
+
+    :::warning
+
+    We highly recommend using versioning in your API calls. If you don''t provide a version header on the operations where it''s required, you will receive an error response.
+
+    :::
+
+
+    The Merchant API uses request header versioning. Where it is required you need to use the `Revolut-Api-Version` header parameter to specify an API version. Each request, where it is indicated in the API specification, must contain a version header in the following format:
+
+
+    ```
+
+    ''Revolut-Api-Version: 2026-04-20''
+
+    ```
+
+
+    :::info
+
+    For more information, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions)
+
+    :::
+
+
+    ### Test the Merchant API
+
+
+    You can test the Merchant API in Postman by forking this collection:
+
+
+    [![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)'
   contact: {}
 servers:
-- url: https://b2b.revolut.com/api/1.0
-  description: Production server (uses live data)
-- url: https://sandbox-b2b.revolut.com/api/1.0
-  description: Sandbox server (uses test data)
+- description: Production server (uses live data)
+  url: https://merchant.revolut.com
+- description: Sandbox server (uses test data)
+  url: https://sandbox-merchant.revolut.com
+security:
+- Api-Key: []
 tags:
 - name: Disputes
   description: "Endpoints that allow merchants to view customer payment disputes.\n\n It provides a robust framework with high-level states (e.g., `won`, `lost`, `needs_response`, `under_review`) and detailed substates (e.g., `lost_expired`, `pre_arbitration`, `won_pre_arbitration`, etc.) to accurately track the dispute lifecycle.\n\n Additionally, the API integrates standard dispute reason codes and human-readable descriptions, offering a customisable approach to dispute resolution that facilitates effective dispute management."
@@ -376,59 +441,371 @@ paths:
       tags:
       - Disputes
 components:
+  parameters:
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 500
+        default: 100
+      description: Maximum number of records to return. Used for **pagination**.
+      required: false
+    Authorization:
+      name: Authorization
+      in: header
+      schema:
+        type: string
+        format: Bearer <yourSecretApiKey>
+        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
+      required: true
+      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
+    From-Created-Date:
+      name: from_created_date
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date-time
+      description: 'Retrieve records with a `created_at` value ≥ `from_created_date`.
+
+
+        Use the [ISO 8601 date-time format](https://en.wikipedia.org/wiki/ISO_8601): `yyyy-MM-ddTHH:mm:ss[.SSSSSS]Z`.'
+    Dispute-Id:
+      name: dispute_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the `Dispute` object.
+    To-Created-Date:
+      name: to_created_date
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date-time
+      description: 'Retrieve records with a `created_at` value ≤ `to_created_date`.
+
+
+        Use the [ISO 8601 date-time format](https://en.wikipedia.org/wiki/ISO_8601): `yyyy-MM-ddTHH:mm:ss[.SSSSSS]Z`.'
+    Dispute-State-Query:
+      name: state
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+          - needs_response
+          - under_review
+          - won
+          - lost
+      style: form
+      explode: true
+      description: 'Filter disputes by state. Repeat the parameter to filter by multiple states.
+
+
+        | Value | Description |
+
+        |-------|-------------|
+
+        | `needs_response` | Dispute requires your response |
+
+        | `under_review` | Dispute is being reviewed |
+
+        | `won` | Dispute resolved in your favour |
+
+        | `lost` | Dispute resolved against you |
+
+
+        The parameter is case sensitive.'
+    Content-Type:
+      name: Content-Type
+      in: header
+      required: true
+      schema:
+        type: string
+      description: The content type sent in the request.
+      example: multipart/form-data
+    Revolut-Api-Version:
+      name: Revolut-Api-Version
+      in: header
+      schema:
+        type: string
+        format: date
+        example: '2026-04-20'
+        enum:
+        - '2023-09-01'
+        - '2024-05-01'
+        - '2024-09-01'
+        - '2025-10-16'
+        - '2025-12-04'
+        - '2026-03-12'
+        - '2026-04-20'
+      required: true
+      description: 'The version of the Merchant API, specified in `YYYY-MM-DD` format.
+
+
+        If not specified, you will receive an error.
+
+
+
+        :::info
+
+        For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).
+
+        :::'
+      x-config-always-visible-in-example: true
+    Payment-Id-Query:
+      name: payment_id
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          format: uuid
+      style: form
+      explode: true
+      description: 'Filter disputes by the ID of the associated payment. Repeat the parameter to filter by multiple payment IDs.
+
+
+        ```
+
+        https://merchant.revolut.com/api/disputes?payment_id=123&payment_id=456
+
+        ```'
+  examples:
+    Res-Dispute-Evidence:
+      summary: Uploaded evidence
+      value:
+        id: 121ac27c-b00a-44d0-9120-efeeec7c912d
+    Res-Dispute-Sepa-Direct-Debit:
+      summary: Dispute for a SEPA Direct Debit payment
+      value:
+        id: 7a2d8f4b-1c3e-4a56-b789-0d1e2f3a4b5c
+        state: needs_response
+        substate: new
+        created_at: '2026-05-22T09:00:00Z'
+        updated_at: '2026-05-22T09:00:00Z'
+        response_due_date: '2026-06-05T09:00:00Z'
+        reason_code: OTHER
+        reason_description: merchant_dispute
+        amount: 10000
+        currency: EUR
+        payment:
+          id: 6a0f2bc4-2137-a1ad-9eb6-b34cf4ca6597
+          order_id: 2bcaf93a-aa87-4d3d-b5c6-62e06051cff2
+          created_at: '2026-05-21T15:59:00.451602Z'
+          amount: 10000
+          currency: EUR
+          payment_method:
+            type: sepa_direct_debit
+            debtor_iban_last_four: '3273'
+            debtor_name: John Doe
+            mandate_reference: 69F1CB61BD99A32C8E20D7FB9E21E146
+    Res-Dispute-List:
+      summary: List of disputes
+      value:
+      - id: ab934829-e4ba-4e7f-8a21-365cad85c763
+        state: under_review
+        substate: arbitration
+        created_at: '2024-06-13T12:06:18.732706Z'
+        updated_at: '2024-09-12T22:27:10.005680Z'
+        response_due_date: '2024-10-12T22:27:10.005625Z'
+        reason_code: '50'
+        reason_description: Fraud
+        amount: 50
+        currency: EUR
+        payment:
+          id: 6666f6c7-3898-a094-9c83-dc0152e0185c
+          order_id: 6666f685-46a7-a7b9-9860-a28a4f3495a4
+          created_at: '2024-06-10T12:51:19.960490Z'
+          amount: 50
+          currency: EUR
+          payment_method:
+            type: revolut_pay_account
+      - id: 340b85dc-da99-4c5f-9d47-37a45d52a455
+        state: lost
+        substate: lost_expired
+        created_at: '2024-09-11T21:20:05.659978Z'
+        updated_at: '2024-09-12T22:35:31.721921Z'
+        response_due_date: '2024-09-22T22:35:31.721860Z'
+        reason_code: '12.4'
+        reason_description: Incorrect Account Number
+        amount: 40
+        currency: EUR
+        payment:
+          id: 66e1fc66-7606-a7fb-b2e8-b48fb637783a
+          order_id: 66e1fc4d-5cbe-a692-80aa-1cb912291d55
+          created_at: '2024-09-11T20:24:06.271746Z'
+          amount: 40
+          currency: EUR
+          payment_method:
+            type: card
+            card_brand: visa
+            card_last_four: '1234'
+      - id: e9b5472b-7308-4aea-86a0-d4427bc04c24
+        state: lost
+        substate: lost_pre_arbitration
+        created_at: '2026-05-22T09:00:00Z'
+        updated_at: '2026-05-22T10:15:00Z'
+        response_due_date: '2030-12-15T00:00:00Z'
+        reason_code: OTHER
+        reason_description: merchant_dispute
+        amount: 91700
+        currency: GBP
+        payment:
+          id: 6a0f2bc4-2137-a1ad-9eb6-b34cf4ca6597
+          order_id: 2bcaf93a-aa87-4d3d-b5c6-62e06051cff2
+          created_at: '2026-05-21T15:59:00.451602Z'
+          amount: 1000
+          currency: GBP
+          payment_method:
+            type: sepa_direct_debit
+            debtor_iban_last_four: '3273'
+            debtor_name: John Doe
+            mandate_reference: 69F1CB61BD99A32C8E20D7FB9E21E146
+    Req-Dispute-Challenge-Min:
+      summary: Minimal dispute challenge with reason and evidence
+      value:
+        reason: refund_already_issued
+        evidences:
+        - 121ac27c-b00a-44d0-9120-efeeec7c912d
+    Req-Dispute-Challenge-With-Evidence:
+      summary: Dispute challenge with reason, multiple evidences, and comment
+      value:
+        reason: product_already_delivered
+        comment: The customer received the product on 2026-05-10 as confirmed by our delivery records.
+        evidences:
+        - 121ac27c-b00a-44d0-9120-efeeec7c912d
+        - 0010e98d-0653-4dbe-8a4f-70cd5e9491f2
+    Res-Dispute-Card:
+      summary: Dispute for a card payment
+      value:
+        id: fccc53e9-00e0-4847-9d54-6938e9cdd3ef
+        state: lost
+        substate: lost_accepted
+        created_at: '2025-03-12T07:00:00.000000Z'
+        updated_at: '2025-03-13T10:00:00.000000Z'
+        response_due_date: '2025-03-15T12:00:00.000000Z'
+        reason_code: '50'
+        reason_description: Fraud
+        amount: 1500
+        currency: EUR
+        payment:
+          id: 67810850-4c48-a25d-8765-d03d36ca6719
+          order_id: 38bd1186-a276-4b14-91b4-5da886481f85
+          created_at: '2025-01-02T10:00:00Z'
+          arn: P58PC241502Q7800000000A
+          amount: 3000
+          currency: EUR
+          payment_method:
+            type: card
+            card_brand: visa
+            card_last_four: '1234'
   schemas:
-    Dispute-Payment-Method:
+    Dispute-Payment:
       type: object
-      description: 'Payment method used for the original payment.
-
-
-        Use the `type` field to determine the specific payment method variant.'
-      discriminator:
-        propertyName: type
-        mapping:
-          apple_pay: '#/components/schemas/Dispute-Payment-Method-Apple-Pay'
-          apple_tap_to_pay: '#/components/schemas/Dispute-Payment-Method-Apple-Tap-To-Pay'
-          card: '#/components/schemas/Dispute-Payment-Method-Card'
-          google_pay: '#/components/schemas/Dispute-Payment-Method-Google-Pay'
-          revolut_pay_account: '#/components/schemas/Dispute-Payment-Method-Revolut-Pay-Account'
-          revolut_pay_card: '#/components/schemas/Dispute-Payment-Method-Revolut-Pay-Card'
-          sepa_direct_debit: '#/components/schemas/Dispute-Payment-Method-Sepa-Direct-Debit'
-      oneOf:
-      - $ref: '#/components/schemas/Dispute-Payment-Method-Apple-Pay'
-      - $ref: '#/components/schemas/Dispute-Payment-Method-Apple-Tap-To-Pay'
-      - $ref: '#/components/schemas/Dispute-Payment-Method-Card'
-      - $ref: '#/components/schemas/Dispute-Payment-Method-Google-Pay'
-      - $ref: '#/components/schemas/Dispute-Payment-Method-Revolut-Pay-Account'
-      - $ref: '#/components/schemas/Dispute-Payment-Method-Revolut-Pay-Card'
-      - $ref: '#/components/schemas/Dispute-Payment-Method-Sepa-Direct-Debit'
-    Disputes:
-      type: array
-      description: An array containing a list of disputes.
-      items:
-        $ref: '#/components/schemas/Dispute'
-    Sepa-Direct-Debit-Debtor-Name:
+      description: Object containing the details of the original payment associated with the dispute.
+      properties:
+        id:
+          $ref: '#/components/schemas/Dispute-Payment-Id'
+        order_id:
+          $ref: '#/components/schemas/Dispute-Payment-Order-Id'
+        created_at:
+          $ref: '#/components/schemas/Dispute-Payment-Created-At'
+        arn:
+          $ref: '#/components/schemas/Dispute-Payment-Arn'
+        amount:
+          $ref: '#/components/schemas/Dispute-Payment-Amount'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        payment_method:
+          $ref: '#/components/schemas/Dispute-Payment-Method'
+    Sepa-Direct-Debit-Mandate-Reference:
       type: string
-      description: The full name of the debtor as provided in the mandate.
+      description: The unique mandate reference generated by Revolut. Include this in pre-debit notifications sent to your customers.
+    Card-Brand-v2:
+      type: string
+      description: The brand of the payment card.
+      enum:
+      - visa
+      - mastercard
+      - american_express
+    Dispute-Payment-Order-Id:
+      type: string
+      format: uuid
+      description: The ID of the order linked to the original disputed payment.
     Sepa-Direct-Debit-Debtor-Iban-Last-Four:
       type: string
       description: The last four digits of the debtor's IBAN.
       minLength: 4
       maxLength: 4
-    Card-Last-Four:
+    Dispute-Payment-Method-Sepa-Direct-Debit:
+      type: object
+      description: Object containing details of a SEPA Direct Debit payment.
+      properties:
+        type:
+          $ref: '#/components/schemas/Dispute-Payment-Method-Type'
+        debtor_iban_last_four:
+          $ref: '#/components/schemas/Sepa-Direct-Debit-Debtor-Iban-Last-Four'
+        debtor_name:
+          $ref: '#/components/schemas/Sepa-Direct-Debit-Debtor-Name'
+        mandate_reference:
+          $ref: '#/components/schemas/Sepa-Direct-Debit-Mandate-Reference'
+      required:
+      - type
+    Currency:
       type: string
-      minLength: 4
-      maxLength: 4
-      description: The last four digits of the payment card number.
-    Dispute-Payment-Amount:
-      type: integer
-      description: 'Amount of the original payment expressed in minor currency units, according to the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217). For example, `7034` in `EUR` corresponds to €70.34.
+      format: ISO 4217
+      minLength: 3
+      maxLength: 3
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
 
 
         :::info
 
-        Conversion between major and minor units varies by currency. For instance, `100` minor units equal £1.00 in `GBP`, whereas in `ISK` they represent 100 units. For more details, see the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217).
+        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
 
         :::'
+    Dispute-Payment-Id:
+      type: string
+      format: uuid
+      description: The ID of the original payment that was disputed.
+    Dispute-Challenge-Evidences:
+      type: array
+      description: 'A list of IDs of previously uploaded evidence files to associate with this challenge.
+
+
+        :::warning
+
+        Each evidence ID can only be used for **a single challenge**. This means, that evidences already assigned to a challenge **cannot be reused** for other challenges.
+
+        :::'
+      items:
+        type: string
+        format: uuid
+        description: ID of a previously uploaded evidence file.
+      minItems: 1
+      maxItems: 10
+      uniqueItems: true
+      example:
+      - 121ac27c-b00a-44d0-9120-efeeec7c912d
+      - 0010e98d-0653-4dbe-8a4f-70cd5e9491f2
+    Dispute-Challenge-Comment:
+      type: string
+      description: Additional explanation or comment for the challenge, if needed.
+      example: Refund PDF attached as evidence.
+      maxLength: 250
+    Sepa-Direct-Debit-Debtor-Name:
+      type: string
+      description: The full name of the debtor as provided in the mandate.
     Dispute:
       type: object
       properties:
@@ -535,69 +912,19 @@ components:
           $ref: '#/components/schemas/Currency'
         payment:
           $ref: '#/components/schemas/Dispute-Payment'
-    Currency:
-      type: string
-      format: ISO 4217
-      minLength: 3
-      maxLength: 3
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
+    Dispute-Payment-Amount:
+      type: integer
+      description: 'Amount of the original payment expressed in minor currency units, according to the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217). For example, `7034` in `EUR` corresponds to €70.34.
 
 
         :::info
 
-        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
+        Conversion between major and minor units varies by currency. For instance, `100` minor units equal £1.00 in `GBP`, whereas in `ISK` they represent 100 units. For more details, see the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217).
 
         :::'
-    Dispute-Payment-Method-Apple-Tap-To-Pay:
+    Dispute-Payment-Method-Card:
       type: object
-      description: Object containing details of a payment made via Apple Tap to Pay.
-      properties:
-        type:
-          $ref: '#/components/schemas/Dispute-Payment-Method-Type'
-      required:
-      - type
-    Error-v2:
-      title: Error
-      type: object
-      properties:
-        code:
-          type: string
-          description: 'An identifier that can be used to determine what went wrong.
-
-
-            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
-        message:
-          type: string
-          description: Some human readable text describing what went wrong.
-        timestamp:
-          type: integer
-          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
-    Dispute-Payment-Created-At:
-      type: string
-      format: date-time
-      description: '[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date and time when the original disputed payment was created.'
-    Dispute-Evidence-Creation:
-      type: object
-      properties:
-        file:
-          type: string
-          format: binary
-          description: 'The single evidence file to upload.
-
-
-            The client must ensure this part has its own `Content-Type` header specifying the media type of the file (e.g., `application/pdf`, `image/png`, `image/jpeg`).
-
-
-            Must be one of the allowed types: `PDF`, `PNG`, `JPEG`.'
-      required:
-      - file
-    Dispute-Payment-Order-Id:
-      type: string
-      format: uuid
-      description: The ID of the order linked to the original disputed payment.
-    Dispute-Payment-Method-Google-Pay:
-      type: object
-      description: Object containing details of a card used via Google Pay.
+      description: Object containing details of the card used for the payment.
       properties:
         type:
           $ref: '#/components/schemas/Dispute-Payment-Method-Type'
@@ -607,14 +934,67 @@ components:
           $ref: '#/components/schemas/Card-Last-Four'
       required:
       - type
-    Dispute-Payment-Method-Revolut-Pay-Account:
+    Dispute-Challenge:
       type: object
-      description: Object containing details of a payment made via Revolut Pay account.
+      required:
+      - reason
+      - evidences
+      properties:
+        reason:
+          $ref: '#/components/schemas/Dispute-Challenge-Reason'
+        comment:
+          $ref: '#/components/schemas/Dispute-Challenge-Comment'
+        evidences:
+          $ref: '#/components/schemas/Dispute-Challenge-Evidences'
+    Dispute-Challenge-Reason:
+      type: string
+      description: The reason for challenging the dispute.
+      enum:
+      - product_already_delivered
+      - refund_already_issued
+      - disagree_with_customers_claim
+      example: refund_already_issued
+    Card-Last-Four:
+      type: string
+      minLength: 4
+      maxLength: 4
+      description: The last four digits of the payment card number.
+    Dispute-Payment-Method-Apple-Pay:
+      type: object
+      description: Object containing details of a card used via Apple Pay.
       properties:
         type:
           $ref: '#/components/schemas/Dispute-Payment-Method-Type'
+        card_brand:
+          $ref: '#/components/schemas/Card-Brand-v2'
+        card_last_four:
+          $ref: '#/components/schemas/Card-Last-Four'
       required:
       - type
+    Dispute-Payment-Method:
+      type: object
+      description: 'Payment method used for the original payment.
+
+
+        Use the `type` field to determine the specific payment method variant.'
+      discriminator:
+        propertyName: type
+        mapping:
+          apple_pay: '#/components/schemas/Dispute-Payment-Method-Apple-Pay'
+          apple_tap_to_pay: '#/components/schemas/Dispute-Payment-Method-Apple-Tap-To-Pay'
+          card: '#/components/schemas/Dispute-Payment-Method-Card'
+          google_pay: '#/components/schemas/Dispute-Payment-Method-Google-Pay'
+          revolut_pay_account: '#/components/schemas/Dispute-Payment-Method-Revolut-Pay-Account'
+          revolut_pay_card: '#/components/schemas/Dispute-Payment-Method-Revolut-Pay-Card'
+          sepa_direct_debit: '#/components/schemas/Dispute-Payment-Method-Sepa-Direct-Debit'
+      oneOf:
+      - $ref: '#/components/schemas/Dispute-Payment-Method-Apple-Pay'
+      - $ref: '#/components/schemas/Dispute-Payment-Method-Apple-Tap-To-Pay'
+      - $ref: '#/components/schemas/Dispute-Payment-Method-Card'
+      - $ref: '#/components/schemas/Dispute-Payment-Method-Google-Pay'
+      - $ref: '#/components/schemas/Dispute-Payment-Method-Revolut-Pay-Account'
+      - $ref: '#/components/schemas/Dispute-Payment-Method-Revolut-Pay-Card'
+      - $ref: '#/components/schemas/Dispute-Payment-Method-Sepa-Direct-Debit'
     Dispute-Payment-Method-Type:
       type: string
       enum:
@@ -648,24 +1028,52 @@ components:
         | `revolut_pay_account` | The customer paid the order via Revolut Pay using their Revolut account. |
 
         | `sepa_direct_debit` | The customer paid the order via SEPA Direct Debit. |'
-    Dispute-Payment:
+    Dispute-Payment-Created-At:
+      type: string
+      format: date-time
+      description: '[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date and time when the original disputed payment was created.'
+    Dispute-Payment-Method-Google-Pay:
       type: object
-      description: Object containing the details of the original payment associated with the dispute.
+      description: Object containing details of a card used via Google Pay.
       properties:
-        id:
-          $ref: '#/components/schemas/Dispute-Payment-Id'
-        order_id:
-          $ref: '#/components/schemas/Dispute-Payment-Order-Id'
-        created_at:
-          $ref: '#/components/schemas/Dispute-Payment-Created-At'
-        arn:
-          $ref: '#/components/schemas/Dispute-Payment-Arn'
-        amount:
-          $ref: '#/components/schemas/Dispute-Payment-Amount'
-        currency:
-          $ref: '#/components/schemas/Currency'
-        payment_method:
-          $ref: '#/components/schemas/Dispute-Payment-Method'
+        type:
+          $ref: '#/components/schemas/Dispute-Payment-Method-Type'
+        card_brand:
+          $ref: '#/components/schemas/Card-Brand-v2'
+        card_last_four:
+          $ref: '#/components/schemas/Card-Last-Four'
+      required:
+      - type
+    Dispute-Payment-Arn:
+      type: string
+      description: 'Acquirer Reference Number (ARN) of the original payment.
+
+
+        :::note
+
+        Only returned for payments made by a card.
+
+        :::'
+    Dispute-Evidence-Creation:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+          description: 'The single evidence file to upload.
+
+
+            The client must ensure this part has its own `Content-Type` header specifying the media type of the file (e.g., `application/pdf`, `image/png`, `image/jpeg`).
+
+
+            Must be one of the allowed types: `PDF`, `PNG`, `JPEG`.'
+      required:
+      - file
+    Disputes:
+      type: array
+      description: An array containing a list of disputes.
+      items:
+        $ref: '#/components/schemas/Dispute'
     Dispute-Payment-Method-Revolut-Pay-Card:
       type: object
       description: Object containing details of a card used via Revolut Pay.
@@ -678,113 +1086,38 @@ components:
           $ref: '#/components/schemas/Card-Last-Four'
       required:
       - type
-    Dispute-Challenge-Reason:
-      type: string
-      description: The reason for challenging the dispute.
-      enum:
-      - product_already_delivered
-      - refund_already_issued
-      - disagree_with_customers_claim
-      example: refund_already_issued
-    Dispute-Payment-Id:
-      type: string
-      format: uuid
-      description: The ID of the original payment that was disputed.
-    Dispute-Challenge-Comment:
-      type: string
-      description: Additional explanation or comment for the challenge, if needed.
-      example: Refund PDF attached as evidence.
-      maxLength: 250
-    Dispute-Challenge:
+    Error-v2:
+      title: Error
       type: object
-      required:
-      - reason
-      - evidences
       properties:
-        reason:
-          $ref: '#/components/schemas/Dispute-Challenge-Reason'
-        comment:
-          $ref: '#/components/schemas/Dispute-Challenge-Comment'
-        evidences:
-          $ref: '#/components/schemas/Dispute-Challenge-Evidences'
-    Dispute-Payment-Method-Card:
+        code:
+          type: string
+          description: 'An identifier that can be used to determine what went wrong.
+
+
+            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
+        message:
+          type: string
+          description: Some human readable text describing what went wrong.
+        timestamp:
+          type: integer
+          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
+    Dispute-Payment-Method-Apple-Tap-To-Pay:
       type: object
-      description: Object containing details of the card used for the payment.
+      description: Object containing details of a payment made via Apple Tap to Pay.
       properties:
         type:
           $ref: '#/components/schemas/Dispute-Payment-Method-Type'
-        card_brand:
-          $ref: '#/components/schemas/Card-Brand-v2'
-        card_last_four:
-          $ref: '#/components/schemas/Card-Last-Four'
       required:
       - type
-    Dispute-Payment-Method-Apple-Pay:
+    Dispute-Payment-Method-Revolut-Pay-Account:
       type: object
-      description: Object containing details of a card used via Apple Pay.
+      description: Object containing details of a payment made via Revolut Pay account.
       properties:
         type:
           $ref: '#/components/schemas/Dispute-Payment-Method-Type'
-        card_brand:
-          $ref: '#/components/schemas/Card-Brand-v2'
-        card_last_four:
-          $ref: '#/components/schemas/Card-Last-Four'
       required:
       - type
-    Dispute-Payment-Method-Sepa-Direct-Debit:
-      type: object
-      description: Object containing details of a SEPA Direct Debit payment.
-      properties:
-        type:
-          $ref: '#/components/schemas/Dispute-Payment-Method-Type'
-        debtor_iban_last_four:
-          $ref: '#/components/schemas/Sepa-Direct-Debit-Debtor-Iban-Last-Four'
-        debtor_name:
-          $ref: '#/components/schemas/Sepa-Direct-Debit-Debtor-Name'
-        mandate_reference:
-          $ref: '#/components/schemas/Sepa-Direct-Debit-Mandate-Reference'
-      required:
-      - type
-    Card-Brand-v2:
-      type: string
-      description: The brand of the payment card.
-      enum:
-      - visa
-      - mastercard
-      - american_express
-    Dispute-Payment-Arn:
-      type: string
-      description: 'Acquirer Reference Number (ARN) of the original payment.
-
-
-        :::note
-
-        Only returned for payments made by a card.
-
-        :::'
-    Sepa-Direct-Debit-Mandate-Reference:
-      type: string
-      description: The unique mandate reference generated by Revolut. Include this in pre-debit notifications sent to your customers.
-    Dispute-Challenge-Evidences:
-      type: array
-      description: 'A list of IDs of previously uploaded evidence files to associate with this challenge.
-
-
-        :::warning
-
-        Each evidence ID can only be used for **a single challenge**. This means, that evidences already assigned to a challenge **cannot be reused** for other challenges.
-
-        :::'
-      items:
-        type: string
-        format: uuid
-        description: ID of a previously uploaded evidence file.
-      minItems: 1
-      maxItems: 10
-      uniqueItems: true
-      example:
-      - 121ac27c-b00a-44d0-9120-efeeec7c912d
-      - 0010e98d-0653-4dbe-8a4f-70cd5e9491f2
     Dispute-Evidence:
       type: object
       properties:
@@ -795,276 +1128,26 @@ components:
           example: ad2ca3d0-67e9-4cea-b455-e39dd319113d
       required:
       - id
-  examples:
-    Res-Dispute-Card:
-      summary: Dispute for a card payment
-      value:
-        id: fccc53e9-00e0-4847-9d54-6938e9cdd3ef
-        state: lost
-        substate: lost_accepted
-        created_at: '2025-03-12T07:00:00.000000Z'
-        updated_at: '2025-03-13T10:00:00.000000Z'
-        response_due_date: '2025-03-15T12:00:00.000000Z'
-        reason_code: '50'
-        reason_description: Fraud
-        amount: 1500
-        currency: EUR
-        payment:
-          id: 67810850-4c48-a25d-8765-d03d36ca6719
-          order_id: 38bd1186-a276-4b14-91b4-5da886481f85
-          created_at: '2025-01-02T10:00:00Z'
-          arn: P58PC241502Q7800000000A
-          amount: 3000
-          currency: EUR
-          payment_method:
-            type: card
-            card_brand: visa
-            card_last_four: '1234'
-    Res-Dispute-Sepa-Direct-Debit:
-      summary: Dispute for a SEPA Direct Debit payment
-      value:
-        id: 7a2d8f4b-1c3e-4a56-b789-0d1e2f3a4b5c
-        state: needs_response
-        substate: new
-        created_at: '2026-05-22T09:00:00Z'
-        updated_at: '2026-05-22T09:00:00Z'
-        response_due_date: '2026-06-05T09:00:00Z'
-        reason_code: OTHER
-        reason_description: merchant_dispute
-        amount: 10000
-        currency: EUR
-        payment:
-          id: 6a0f2bc4-2137-a1ad-9eb6-b34cf4ca6597
-          order_id: 2bcaf93a-aa87-4d3d-b5c6-62e06051cff2
-          created_at: '2026-05-21T15:59:00.451602Z'
-          amount: 10000
-          currency: EUR
-          payment_method:
-            type: sepa_direct_debit
-            debtor_iban_last_four: '3273'
-            debtor_name: John Doe
-            mandate_reference: 69F1CB61BD99A32C8E20D7FB9E21E146
-    Res-Dispute-Evidence:
-      summary: Uploaded evidence
-      value:
-        id: 121ac27c-b00a-44d0-9120-efeeec7c912d
-    Res-Dispute-List:
-      summary: List of disputes
-      value:
-      - id: ab934829-e4ba-4e7f-8a21-365cad85c763
-        state: under_review
-        substate: arbitration
-        created_at: '2024-06-13T12:06:18.732706Z'
-        updated_at: '2024-09-12T22:27:10.005680Z'
-        response_due_date: '2024-10-12T22:27:10.005625Z'
-        reason_code: '50'
-        reason_description: Fraud
-        amount: 50
-        currency: EUR
-        payment:
-          id: 6666f6c7-3898-a094-9c83-dc0152e0185c
-          order_id: 6666f685-46a7-a7b9-9860-a28a4f3495a4
-          created_at: '2024-06-10T12:51:19.960490Z'
-          amount: 50
-          currency: EUR
-          payment_method:
-            type: revolut_pay_account
-      - id: 340b85dc-da99-4c5f-9d47-37a45d52a455
-        state: lost
-        substate: lost_expired
-        created_at: '2024-09-11T21:20:05.659978Z'
-        updated_at: '2024-09-12T22:35:31.721921Z'
-        response_due_date: '2024-09-22T22:35:31.721860Z'
-        reason_code: '12.4'
-        reason_description: Incorrect Account Number
-        amount: 40
-        currency: EUR
-        payment:
-          id: 66e1fc66-7606-a7fb-b2e8-b48fb637783a
-          order_id: 66e1fc4d-5cbe-a692-80aa-1cb912291d55
-          created_at: '2024-09-11T20:24:06.271746Z'
-          amount: 40
-          currency: EUR
-          payment_method:
-            type: card
-            card_brand: visa
-            card_last_four: '1234'
-      - id: e9b5472b-7308-4aea-86a0-d4427bc04c24
-        state: lost
-        substate: lost_pre_arbitration
-        created_at: '2026-05-22T09:00:00Z'
-        updated_at: '2026-05-22T10:15:00Z'
-        response_due_date: '2030-12-15T00:00:00Z'
-        reason_code: OTHER
-        reason_description: merchant_dispute
-        amount: 91700
-        currency: GBP
-        payment:
-          id: 6a0f2bc4-2137-a1ad-9eb6-b34cf4ca6597
-          order_id: 2bcaf93a-aa87-4d3d-b5c6-62e06051cff2
-          created_at: '2026-05-21T15:59:00.451602Z'
-          amount: 1000
-          currency: GBP
-          payment_method:
-            type: sepa_direct_debit
-            debtor_iban_last_four: '3273'
-            debtor_name: John Doe
-            mandate_reference: 69F1CB61BD99A32C8E20D7FB9E21E146
-    Req-Dispute-Challenge-With-Evidence:
-      summary: Dispute challenge with reason, multiple evidences, and comment
-      value:
-        reason: product_already_delivered
-        comment: The customer received the product on 2026-05-10 as confirmed by our delivery records.
-        evidences:
-        - 121ac27c-b00a-44d0-9120-efeeec7c912d
-        - 0010e98d-0653-4dbe-8a4f-70cd5e9491f2
-    Req-Dispute-Challenge-Min:
-      summary: Minimal dispute challenge with reason and evidence
-      value:
-        reason: refund_already_issued
-        evidences:
-        - 121ac27c-b00a-44d0-9120-efeeec7c912d
-  parameters:
-    Revolut-Api-Version:
-      name: Revolut-Api-Version
+  securitySchemes:
+    Api-Key:
+      type: apiKey
       in: header
-      schema:
-        type: string
-        format: date
-        example: '2026-04-20'
-        enum:
-        - '2023-09-01'
-        - '2024-05-01'
-        - '2024-09-01'
-        - '2025-10-16'
-        - '2025-12-04'
-        - '2026-03-12'
-        - '2026-04-20'
-      required: true
-      description: 'The version of the Merchant API, specified in `YYYY-MM-DD` format.
-
-
-        If not specified, you will receive an error.
-
-
-
-        :::info
-
-        For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).
-
-        :::'
-      x-config-always-visible-in-example: true
-    Dispute-State-Query:
-      name: state
-      in: query
-      required: false
-      schema:
-        type: array
-        items:
-          type: string
-          enum:
-          - needs_response
-          - under_review
-          - won
-          - lost
-      style: form
-      explode: true
-      description: 'Filter disputes by state. Repeat the parameter to filter by multiple states.
-
-
-        | Value | Description |
-
-        |-------|-------------|
-
-        | `needs_response` | Dispute requires your response |
-
-        | `under_review` | Dispute is being reviewed |
-
-        | `won` | Dispute resolved in your favour |
-
-        | `lost` | Dispute resolved against you |
-
-
-        The parameter is case sensitive.'
-    To-Created-Date:
-      name: to_created_date
-      in: query
-      required: false
-      schema:
-        type: string
-        format: date-time
-      description: 'Retrieve records with a `created_at` value ≤ `to_created_date`.
-
-
-        Use the [ISO 8601 date-time format](https://en.wikipedia.org/wiki/ISO_8601): `yyyy-MM-ddTHH:mm:ss[.SSSSSS]Z`.'
-    From-Created-Date:
-      name: from_created_date
-      in: query
-      required: false
-      schema:
-        type: string
-        format: date-time
-      description: 'Retrieve records with a `created_at` value ≥ `from_created_date`.
-
-
-        Use the [ISO 8601 date-time format](https://en.wikipedia.org/wiki/ISO_8601): `yyyy-MM-ddTHH:mm:ss[.SSSSSS]Z`.'
-    Dispute-Id:
-      name: dispute_id
-      in: path
-      schema:
-        type: string
-        format: uuid
-        description: A UUID string, typically used to identify resources.
-      required: true
-      description: The ID of the `Dispute` object.
-    Authorization:
       name: Authorization
-      in: header
-      schema:
-        type: string
-        format: Bearer <yourSecretApiKey>
-        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
-      required: true
-      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
-    Payment-Id-Query:
-      name: payment_id
-      in: query
-      required: false
-      schema:
-        type: array
-        items:
-          type: string
-          format: uuid
-      style: form
-      explode: true
-      description: 'Filter disputes by the ID of the associated payment. Repeat the parameter to filter by multiple payment IDs.
+      description: 'Each Merchant API request must contain an authorization header in the following format:
 
 
         ```
 
-        https://merchant.revolut.com/api/disputes?payment_id=123&payment_id=456
+        ''Authorization: Bearer <yourSecretApiKey>''
 
-        ```'
-    Content-Type:
-      name: Content-Type
-      in: header
-      required: true
-      schema:
-        type: string
-      description: The content type sent in the request.
-      example: multipart/form-data
-    Limit:
-      name: limit
-      in: query
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 500
-        default: 100
-      description: Maximum number of records to return. Used for **pagination**.
-      required: false
-  securitySchemes:
-    AccessToken:
-      type: http
-      scheme: bearer
-      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"
+        ```
+
+
+        To use this API, you need to generate API keys from your Revolut Business account. The Secret key is used in the authorization header for all server calls, while the Public key is provided with payment methods at checkout.
+
+
+        :::info
+
+        For detailed instructions on generating your API keys, see: [Generate API keys](https://developer.revolut.com/docs/guides/merchant/get-started#generate-api-keys).
+
+        :::'

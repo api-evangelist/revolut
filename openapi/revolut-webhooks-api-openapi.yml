@@ -1,14 +1,14 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
+  title: Revolut Webhooks API
   version: '1.0'
-  title: Business Accounting Webhooks API
-  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
-  contact: {}
+  description: 'Operations tagged Webhooks across 2 of this provider''s published API definitions: revolut-crypto-ramp-openapi.yaml, revolut-merchant-openapi.yaml. Each path carries the servers of the definition it was published in.'
 servers:
-- url: https://b2b.revolut.com/api/1.0
-  description: Production server (uses live data)
-- url: https://sandbox-b2b.revolut.com/api/1.0
-  description: Sandbox server (uses test data)
+- url: https://ramp-partners.revolut.com/partners/api/2.0
+- description: Production server (uses live data)
+  url: https://merchant.revolut.com
+- description: Sandbox server (uses test data)
+  url: https://sandbox-merchant.revolut.com
 tags:
 - name: Webhooks
   description: 'A webhook (also called a web callback) allows your system to receive an event from Ramp immediately after it happens.
@@ -328,6 +328,11 @@ paths:
       - Api-Key: []
       tags:
       - Webhooks
+    servers:
+    - description: Production server (uses live data)
+      url: https://merchant.revolut.com
+    - description: Sandbox server (uses test data)
+      url: https://sandbox-merchant.revolut.com
   /api/webhooks/{webhook_id}:
     parameters:
     - $ref: '#/components/parameters/Authorization'
@@ -433,6 +438,11 @@ paths:
       - Api-Key: []
       tags:
       - Webhooks
+    servers:
+    - description: Production server (uses live data)
+      url: https://merchant.revolut.com
+    - description: Sandbox server (uses test data)
+      url: https://sandbox-merchant.revolut.com
   /api/webhooks/{webhook_id}/rotate-signing-secret:
     parameters:
     - $ref: '#/components/parameters/Authorization'
@@ -507,67 +517,75 @@ paths:
       - Api-Key: []
       tags:
       - Webhooks
+    servers:
+    - description: Production server (uses live data)
+      url: https://merchant.revolut.com
+    - description: Sandbox server (uses test data)
+      url: https://sandbox-merchant.revolut.com
 components:
-  examples:
-    Req-Webhook-Create:
-      summary: Example webhook request
-      value:
-        url: https://example.com/webhooks
-        events:
-        - ORDER_COMPLETED
-        - ORDER_AUTHORISED
-    Req-Webhook-Update:
-      summary: Update a webhook
-      value:
-        url: https://example.com/webhooks/updated
-        events:
-        - ORDER_COMPLETED
-        - ORDER_AUTHORISED
-        - ORDER_CANCELLED
-    Res-Webhooks-List:
-      summary: List of webhooks
-      value:
-        webhooks:
-        - id: 6fc8db62-6489-4470-a9e0-84b462fe3908
-          url: https://revolut.com/webhooks
-          events:
-          - ORDER_COMPLETED
-        - id: b466ab77-4932-4850-beb0-113bfc1166f8
-          url: https://business.revolut.com/webhooks
-          events:
-          - ORDER_COMPLETED
-          - ORDER_AUTHORISED
-        - id: c6b981f4-53b3-47d5-9b24-4f87af1160eb
-          url: https://example.com/webhooks
-          events:
-          - ORDER_AUTHORISED
-          - ORDER_COMPLETED
-    Req-Webhook-Rotate-Signing-Secret:
-      summary: Webhook signing secret rotation request
-      value:
-        expiration_period: PT5H30M
-    Res-Webhook-v2:
-      summary: Webhook
-      value:
-        id: c6b981f4-53b3-47d5-9b24-4f87af1160eb
-        url: https://example.com/webhooks
-        events:
-        - ORDER_AUTHORISED
-        - ORDER_COMPLETED
-        signing_secret: wsk_4jETWMz1g1b37gCONjNp84t2KSSIT7dK
+  responses:
+    DisabledByKillSwitchErrorResponse:
+      description: The endpoint is disabled by Kill Switch
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DisabledByKillSwitchError'
+          example:
+            message: Service is not available
+    BadRequestErrorResponse:
+      description: 'Bad request
+
+
+        A request parameter is invalid.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+          example:
+            message: Invalid field 'FieldName'
+    NotFoundErrorResponse:
+      description: Resource cannot be found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+          example:
+            message: Not found
+    ServerErrorResponse:
+      description: 'Server error
+
+
+        An unexpected error occurred.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnexpectedError'
+          example:
+            errorId: 201768bc-7fab-12ed-a1bb-0232ac120902
+            timestamp: 1671481582960
   schemas:
-    Webhook-Dispute-Event:
+    NotFoundError:
       type: object
-      properties:
-        event:
-          $ref: '#/components/schemas/Webhook-Callback-Event'
-        dispute_id:
-          type: string
-          format: uuid
-          description: The ID of the dispute the event is related to.
+      description: Thrown when resource can't be found
       required:
-      - event
-      - dispute_id
+      - message
+      properties:
+        message:
+          type: string
+          description: The message displayed to the user when resource cannot be found.
+      example:
+        message: Not found
+    DisabledByKillSwitchError:
+      type: object
+      description: Thrown when endpoint is disabled by Kill Switch.
+      required:
+      - message
+      properties:
+        message:
+          type: string
+          description: The message displayed to the user when endpoint is disabled by Kill Switch.
+      example:
+        message: Service is not available
     WebhookUpdateRequest:
       type: object
       description: Webhook update parameters
@@ -588,252 +606,6 @@ components:
         events:
         - ORDER_PROCESSING
         - ORDER_COMPLETED
-    Webhook-Subscription-Event:
-      type: object
-      properties:
-        event:
-          $ref: '#/components/schemas/Webhook-Callback-Event'
-        subscription_id:
-          type: string
-          format: uuid
-          description: The ID of the subscription the event is related to.
-        external_reference:
-          type: string
-          description: The information sent in the `external_reference` field of the [Create a subscription](https://developer.revolut.com/docs/api/merchant#create-subscription) request.
-      required:
-      - event
-      - subscription_id
-    WebhookCreateRequest:
-      type: object
-      description: Webhook create parameters
-      required:
-      - url
-      - events
-      properties:
-        url:
-          type: string
-          format: uri
-          description: 'The webhook''s URL to which event notifications will be sent.
-
-            Must be a valid HTTP or HTTPS URL, capable of receiving POST requests.'
-        events:
-          type: array
-          description: The list of event types that the webhook is configured to listen to.
-          items:
-            $ref: '#/components/schemas/EventType'
-      example:
-        url: https://crypto.partner.com/revolut
-        events:
-        - ORDER_PROCESSING
-        - ORDER_COMPLETED
-    Webhook-Events:
-      type: array
-      description: "List of event types that the webhook is configured to listen to.\n\nEach event is related to status changes of a specific object in the Merchant API:\n\n  | Object | Event types |\n  | --------- | ----------- |\n  | `Order`   | <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> |\n  | `Payment` | <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> |\n  | `Subscription`  | <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> |\n  | `Payout`  | <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> |\n  | `Dispute`  | <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> |"
-      items:
-        type: string
-        description: The available event types your can listen to.
-        enum:
-        - ORDER_COMPLETED
-        - ORDER_AUTHORISED
-        - ORDER_CANCELLED
-        - ORDER_FAILED
-        - ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED
-        - ORDER_INCREMENTAL_AUTHORISATION_DECLINED
-        - ORDER_INCREMENTAL_AUTHORISATION_FAILED
-        - ORDER_PAYMENT_AUTHENTICATION_CHALLENGED
-        - ORDER_PAYMENT_AUTHENTICATED
-        - ORDER_PAYMENT_DECLINED
-        - ORDER_PAYMENT_FAILED
-        - SUBSCRIPTION_INITIATED
-        - SUBSCRIPTION_FINISHED
-        - SUBSCRIPTION_CANCELLED
-        - SUBSCRIPTION_OVERDUE
-        - PAYOUT_INITIATED
-        - PAYOUT_COMPLETED
-        - PAYOUT_FAILED
-        - DISPUTE_ACTION_REQUIRED
-        - DISPUTE_UNDER_REVIEW
-        - DISPUTE_WON
-        - DISPUTE_LOST
-      minItems: 1
-    Webhook-Creation:
-      title: Webhook schema for creation and update operations
-      type: object
-      properties:
-        url:
-          $ref: '#/components/schemas/Webhook-Url'
-        events:
-          $ref: '#/components/schemas/Webhook-Events'
-      required:
-      - url
-      - events
-    Error:
-      title: Error
-      type: object
-      properties:
-        errorId:
-          type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        timestamp:
-          type: integer
-          description: The date and time the error happened.
-      required:
-      - errorId
-      - timestamp
-    Error-v2:
-      title: Error
-      type: object
-      properties:
-        code:
-          type: string
-          description: 'An identifier that can be used to determine what went wrong.
-
-
-            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
-        message:
-          type: string
-          description: Some human readable text describing what went wrong.
-        timestamp:
-          type: integer
-          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
-    BadRequestError:
-      type: object
-      description: Thrown when request parameter field is invalid
-      required:
-      - message
-      properties:
-        message:
-          type: string
-          description: Specifies the invalid parameter that was provided by the user.
-      example:
-        message: Invalid field 'FieldName'
-    Webhook-Url:
-      type: string
-      format: uri
-      pattern: ^https?:\/{2}.+/gi
-      maxLength: 2000
-      description: "Your webhook's URL to which event notifications will be sent. \n\nMust be a valid HTTP or HTTPS URL, capable of receiving `POST` requests.\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::"
-    DisabledByKillSwitchError:
-      type: object
-      description: Thrown when endpoint is disabled by Kill Switch.
-      required:
-      - message
-      properties:
-        message:
-          type: string
-          description: The message displayed to the user when endpoint is disabled by Kill Switch.
-      example:
-        message: Service is not available
-    Webhook-Payout-Event:
-      type: object
-      properties:
-        event:
-          $ref: '#/components/schemas/Webhook-Callback-Event'
-        payout_id:
-          type: string
-          format: uuid
-          description: The ID of the payout the event is related to.
-      required:
-      - event
-      - payout_id
-    Webhooks_2:
-      type: object
-      required:
-      - webhooks
-      properties:
-        webhooks:
-          type: array
-          description: List of webhooks.
-          maxItems: 10
-          items:
-            $ref: '#/components/schemas/Webhook-v2'
-    NotFoundError:
-      type: object
-      description: Thrown when resource can't be found
-      required:
-      - message
-      properties:
-        message:
-          type: string
-          description: The message displayed to the user when resource cannot be found.
-      example:
-        message: Not found
-    Webhook-Id:
-      type: string
-      format: uuid
-      description: The ID of the webhook.
-    Webhook-Callback-Event:
-      type: string
-      enum:
-      - ORDER_COMPLETED
-      - ORDER_AUTHORISED
-      - ORDER_CANCELLED
-      - ORDER_FAILED
-      - ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED
-      - ORDER_INCREMENTAL_AUTHORISATION_DECLINED
-      - ORDER_INCREMENTAL_AUTHORISATION_FAILED
-      - ORDER_PAYMENT_AUTHENTICATION_CHALLENGED
-      - ORDER_PAYMENT_AUTHENTICATED
-      - ORDER_PAYMENT_DECLINED
-      - ORDER_PAYMENT_FAILED
-      - SUBSCRIPTION_INITIATED
-      - SUBSCRIPTION_FINISHED
-      - SUBSCRIPTION_CANCELLED
-      - SUBSCRIPTION_OVERDUE
-      - PAYOUT_INITIATED
-      - PAYOUT_COMPLETED
-      - PAYOUT_FAILED
-      - DISPUTE_ACTION_REQUIRED
-      - DISPUTE_UNDER_REVIEW
-      - DISPUTE_WON
-      - DISPUTE_LOST
-      description: "The event type of the webhook notification that's sent by Revolut to your webhook URL.\n\nEach event is related to status changes of a specific object in the Merchant API:\n\n  | Object | Event types |\n  | --------- | ----------- |\n  | `Order`   | <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> |\n  | `Payment` | <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> |\n  | `Subscription`  | <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> |\n  | `Payout`  | <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> |\n  | `Dispute`  | <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> |"
-    Webhook-Order-Event:
-      type: object
-      properties:
-        event:
-          $ref: '#/components/schemas/Webhook-Callback-Event'
-        order_id:
-          type: string
-          format: uuid
-          description: The ID of the order the event is related to.
-        merchant_order_ext_ref:
-          type: string
-          description: 'The information sent during order creation in the
-
-            `merchant_order_data.reference` field.'
-        incremental_authorisation_ext_reference:
-          type: string
-          description: The reference sent in the `reference` field of the [Increment authorisation](https://developer.revolut.com/docs/api/merchant#increment-authorisation) request. Only present for incremental authorisation events.
-      required:
-      - event
-      - order_id
-    EventType:
-      type: string
-      description: Webhook event type
-      enum:
-      - ORDER_CREATED
-      - ORDER_PROCESSING
-      - ORDER_COMPLETED
-      - ORDER_FAILED
-    UnexpectedError:
-      type: object
-      description: Thrown when an unexpected error happens.
-      required:
-      - errorId
-      - timestamp
-      properties:
-        errorId:
-          type: string
-          format: uuid
-          description: The UUID of the unexpected error that has occurred.
-        timestamp:
-          type: integer
-          format: int64
-          description: The timestamp of when the error happened.
-      example:
-        errorId: 201768bc-7fab-12ed-a1bb-0232ac120902
-        timestamp: 1671481582960
     Webhook:
       type: object
       description: Webhook
@@ -870,6 +642,170 @@ components:
         - ORDER_PROCESSING
         - ORDER_COMPLETED
         signing_secret: wsk_h1ETWMz2g1bB7gCONjNp84t2KSSIt7rs
+    UnexpectedError:
+      type: object
+      description: Thrown when an unexpected error happens.
+      required:
+      - errorId
+      - timestamp
+      properties:
+        errorId:
+          type: string
+          format: uuid
+          description: The UUID of the unexpected error that has occurred.
+        timestamp:
+          type: integer
+          format: int64
+          description: The timestamp of when the error happened.
+      example:
+        errorId: 201768bc-7fab-12ed-a1bb-0232ac120902
+        timestamp: 1671481582960
+    WebhookCreateRequest:
+      type: object
+      description: Webhook create parameters
+      required:
+      - url
+      - events
+      properties:
+        url:
+          type: string
+          format: uri
+          description: 'The webhook''s URL to which event notifications will be sent.
+
+            Must be a valid HTTP or HTTPS URL, capable of receiving POST requests.'
+        events:
+          type: array
+          description: The list of event types that the webhook is configured to listen to.
+          items:
+            $ref: '#/components/schemas/EventType'
+      example:
+        url: https://crypto.partner.com/revolut
+        events:
+        - ORDER_PROCESSING
+        - ORDER_COMPLETED
+    BadRequestError:
+      type: object
+      description: Thrown when request parameter field is invalid
+      required:
+      - message
+      properties:
+        message:
+          type: string
+          description: Specifies the invalid parameter that was provided by the user.
+      example:
+        message: Invalid field 'FieldName'
+    EventType:
+      type: string
+      description: Webhook event type
+      enum:
+      - ORDER_CREATED
+      - ORDER_PROCESSING
+      - ORDER_COMPLETED
+      - ORDER_FAILED
+    Webhooks:
+      type: array
+      items:
+        $ref: '#/components/schemas/Webhook'
+      example:
+      - $ref: '#/components/schemas/Webhook/example'
+      - id: fb39d967-4a73-4483-8e52-5842e1cad7ef
+        url: https://crypto.partner.com/revolut
+        events:
+        - ORDER_PROCESSING
+        - ORDER_COMPLETED
+        signing_secret: wsk_8fT55z3C5hCr41l6B0b057D85s2043x4
+      - id: 894b00c1-da1f-44bb-b887-62af2e0d3bad
+        url: https://example.com
+        events:
+        - ORDER_PROCESSING
+        - ORDER_COMPLETED
+        - ORDER_CREATED
+        - ORDER_FAILED
+        signing_secret: wsk_7gH67v2D8jEt52n9M1c068F96t3152y7
+    Webhooks_2:
+      type: object
+      required:
+      - webhooks
+      properties:
+        webhooks:
+          type: array
+          description: List of webhooks.
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/Webhook-v2'
+    Webhook-Order-Event:
+      type: object
+      properties:
+        event:
+          $ref: '#/components/schemas/Webhook-Callback-Event'
+        order_id:
+          type: string
+          format: uuid
+          description: The ID of the order the event is related to.
+        merchant_order_ext_ref:
+          type: string
+          description: 'The information sent during order creation in the
+
+            `merchant_order_data.reference` field.'
+        incremental_authorisation_ext_reference:
+          type: string
+          description: The reference sent in the `reference` field of the [Increment authorisation](https://developer.revolut.com/docs/api/merchant#increment-authorisation) request. Only present for incremental authorisation events.
+      required:
+      - event
+      - order_id
+    Webhook-Creation:
+      title: Webhook schema for creation and update operations
+      type: object
+      properties:
+        url:
+          $ref: '#/components/schemas/Webhook-Url'
+        events:
+          $ref: '#/components/schemas/Webhook-Events'
+      required:
+      - url
+      - events
+    Webhook-Dispute-Event:
+      type: object
+      properties:
+        event:
+          $ref: '#/components/schemas/Webhook-Callback-Event'
+        dispute_id:
+          type: string
+          format: uuid
+          description: The ID of the dispute the event is related to.
+      required:
+      - event
+      - dispute_id
+    Webhook-Update:
+      title: Webhook update
+      type: object
+      description: 'The request body for updating a webhook.
+
+
+        All fields are optional. Only the fields provided in the request will be updated.'
+      properties:
+        url:
+          $ref: '#/components/schemas/Webhook-Url'
+        events:
+          $ref: '#/components/schemas/Webhook-Events'
+    Webhook-Payout-Event:
+      type: object
+      properties:
+        event:
+          $ref: '#/components/schemas/Webhook-Callback-Event'
+        payout_id:
+          type: string
+          format: uuid
+          description: The ID of the payout the event is related to.
+      required:
+      - event
+      - payout_id
+    Webhook-Url:
+      type: string
+      format: uri
+      pattern: ^https?:\/{2}.+/gi
+      maxLength: 2000
+      description: "Your webhook's URL to which event notifications will be sent. \n\nMust be a valid HTTP or HTTPS URL, capable of receiving `POST` requests.\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::"
     Webhook-v2:
       title: Webhook
       type: object
@@ -891,42 +827,120 @@ components:
       - url
       - events
       - signing_secret
+    Error:
+      title: Error
+      type: object
+      properties:
+        errorId:
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        timestamp:
+          type: integer
+          description: The date and time the error happened.
+      required:
+      - errorId
+      - timestamp
+    Webhook-Callback-Event:
+      type: string
+      enum:
+      - ORDER_COMPLETED
+      - ORDER_AUTHORISED
+      - ORDER_CANCELLED
+      - ORDER_FAILED
+      - ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED
+      - ORDER_INCREMENTAL_AUTHORISATION_DECLINED
+      - ORDER_INCREMENTAL_AUTHORISATION_FAILED
+      - ORDER_PAYMENT_AUTHENTICATION_CHALLENGED
+      - ORDER_PAYMENT_AUTHENTICATED
+      - ORDER_PAYMENT_DECLINED
+      - ORDER_PAYMENT_FAILED
+      - SUBSCRIPTION_INITIATED
+      - SUBSCRIPTION_FINISHED
+      - SUBSCRIPTION_CANCELLED
+      - SUBSCRIPTION_OVERDUE
+      - PAYOUT_INITIATED
+      - PAYOUT_COMPLETED
+      - PAYOUT_FAILED
+      - DISPUTE_ACTION_REQUIRED
+      - DISPUTE_UNDER_REVIEW
+      - DISPUTE_WON
+      - DISPUTE_LOST
+      description: "The event type of the webhook notification that's sent by Revolut to your webhook URL.\n\nEach event is related to status changes of a specific object in the Merchant API:\n\n  | Object | Event types |\n  | --------- | ----------- |\n  | `Order`   | <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> |\n  | `Payment` | <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> |\n  | `Subscription`  | <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> |\n  | `Payout`  | <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> |\n  | `Dispute`  | <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> |"
+    Webhook-Id:
+      type: string
+      format: uuid
+      description: The ID of the webhook.
+    Webhook-Events:
+      type: array
+      description: "List of event types that the webhook is configured to listen to.\n\nEach event is related to status changes of a specific object in the Merchant API:\n\n  | Object | Event types |\n  | --------- | ----------- |\n  | `Order`   | <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> |\n  | `Payment` | <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> |\n  | `Subscription`  | <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> |\n  | `Payout`  | <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> |\n  | `Dispute`  | <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> |"
+      items:
+        type: string
+        description: The available event types your can listen to.
+        enum:
+        - ORDER_COMPLETED
+        - ORDER_AUTHORISED
+        - ORDER_CANCELLED
+        - ORDER_FAILED
+        - ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED
+        - ORDER_INCREMENTAL_AUTHORISATION_DECLINED
+        - ORDER_INCREMENTAL_AUTHORISATION_FAILED
+        - ORDER_PAYMENT_AUTHENTICATION_CHALLENGED
+        - ORDER_PAYMENT_AUTHENTICATED
+        - ORDER_PAYMENT_DECLINED
+        - ORDER_PAYMENT_FAILED
+        - SUBSCRIPTION_INITIATED
+        - SUBSCRIPTION_FINISHED
+        - SUBSCRIPTION_CANCELLED
+        - SUBSCRIPTION_OVERDUE
+        - PAYOUT_INITIATED
+        - PAYOUT_COMPLETED
+        - PAYOUT_FAILED
+        - DISPUTE_ACTION_REQUIRED
+        - DISPUTE_UNDER_REVIEW
+        - DISPUTE_WON
+        - DISPUTE_LOST
+      minItems: 1
     Webhook-Signing-Secret:
       type: string
       description: The signing secret for the webhook. Use it to verify the signature for the webhook request's payload.
-    Webhooks:
-      type: array
-      items:
-        $ref: '#/components/schemas/Webhook'
-      example:
-      - $ref: '#/components/schemas/Webhook/example'
-      - id: fb39d967-4a73-4483-8e52-5842e1cad7ef
-        url: https://crypto.partner.com/revolut
-        events:
-        - ORDER_PROCESSING
-        - ORDER_COMPLETED
-        signing_secret: wsk_8fT55z3C5hCr41l6B0b057D85s2043x4
-      - id: 894b00c1-da1f-44bb-b887-62af2e0d3bad
-        url: https://example.com
-        events:
-        - ORDER_PROCESSING
-        - ORDER_COMPLETED
-        - ORDER_CREATED
-        - ORDER_FAILED
-        signing_secret: wsk_7gH67v2D8jEt52n9M1c068F96t3152y7
-    Webhook-Update:
-      title: Webhook update
+    Webhook-Subscription-Event:
       type: object
-      description: 'The request body for updating a webhook.
-
-
-        All fields are optional. Only the fields provided in the request will be updated.'
       properties:
-        url:
-          $ref: '#/components/schemas/Webhook-Url'
-        events:
-          $ref: '#/components/schemas/Webhook-Events'
+        event:
+          $ref: '#/components/schemas/Webhook-Callback-Event'
+        subscription_id:
+          type: string
+          format: uuid
+          description: The ID of the subscription the event is related to.
+        external_reference:
+          type: string
+          description: The information sent in the `external_reference` field of the [Create a subscription](https://developer.revolut.com/docs/api/merchant#create-subscription) request.
+      required:
+      - event
+      - subscription_id
+    Error-v2:
+      title: Error
+      type: object
+      properties:
+        code:
+          type: string
+          description: 'An identifier that can be used to determine what went wrong.
+
+
+            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
+        message:
+          type: string
+          description: Some human readable text describing what went wrong.
+        timestamp:
+          type: integer
+          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
   parameters:
+    XApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: "Your API key that you received during integration setup. \nFor more information, see the **Authorization** section."
+      required: true
     Revolut-Api-Version-2024-09-01-Min:
       name: Revolut-Api-Version
       in: header
@@ -957,12 +971,6 @@ components:
 
         :::'
       x-config-always-visible-in-example: true
-    XApiKey:
-      type: apiKey
-      in: header
-      name: X-API-KEY
-      description: "Your API key that you received during integration setup. \nFor more information, see the **Authorization** section."
-      required: true
     Authorization:
       name: Authorization
       in: header
@@ -981,46 +989,53 @@ components:
         description: A UUID string, typically used to identify resources.
       required: true
       description: The ID of the webhook.
-  responses:
-    BadRequestErrorResponse:
-      description: 'Bad request
-
-
-        A request parameter is invalid.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-          example:
-            message: Invalid field 'FieldName'
-    ServerErrorResponse:
-      description: 'Server error
-
-
-        An unexpected error occurred.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UnexpectedError'
-          example:
-            errorId: 201768bc-7fab-12ed-a1bb-0232ac120902
-            timestamp: 1671481582960
-    NotFoundErrorResponse:
-      description: Resource cannot be found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-          example:
-            message: Not found
-    DisabledByKillSwitchErrorResponse:
-      description: The endpoint is disabled by Kill Switch
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/DisabledByKillSwitchError'
-          example:
-            message: Service is not available
+  examples:
+    Res-Webhooks-List:
+      summary: List of webhooks
+      value:
+        webhooks:
+        - id: 6fc8db62-6489-4470-a9e0-84b462fe3908
+          url: https://revolut.com/webhooks
+          events:
+          - ORDER_COMPLETED
+        - id: b466ab77-4932-4850-beb0-113bfc1166f8
+          url: https://business.revolut.com/webhooks
+          events:
+          - ORDER_COMPLETED
+          - ORDER_AUTHORISED
+        - id: c6b981f4-53b3-47d5-9b24-4f87af1160eb
+          url: https://example.com/webhooks
+          events:
+          - ORDER_AUTHORISED
+          - ORDER_COMPLETED
+    Req-Webhook-Rotate-Signing-Secret:
+      summary: Webhook signing secret rotation request
+      value:
+        expiration_period: PT5H30M
+    Req-Webhook-Create:
+      summary: Example webhook request
+      value:
+        url: https://example.com/webhooks
+        events:
+        - ORDER_COMPLETED
+        - ORDER_AUTHORISED
+    Req-Webhook-Update:
+      summary: Update a webhook
+      value:
+        url: https://example.com/webhooks/updated
+        events:
+        - ORDER_COMPLETED
+        - ORDER_AUTHORISED
+        - ORDER_CANCELLED
+    Res-Webhook-v2:
+      summary: Webhook
+      value:
+        id: c6b981f4-53b3-47d5-9b24-4f87af1160eb
+        url: https://example.com/webhooks
+        events:
+        - ORDER_AUTHORISED
+        - ORDER_COMPLETED
+        signing_secret: wsk_4jETWMz1g1b37gCONjNp84t2KSSIT7dK
   callbacks:
     Webhook-Event:
       '{$request.body#/url}':
@@ -1156,6 +1171,32 @@ components:
               description: If the webhook event delivery times out or the delivery of the events fails, you can respond with any HTTP `4XX` code. In this case, Revolut will retry sending the webhook event 3 more times, each with a 10-minute delay.
   securitySchemes:
     AccessToken:
-      type: http
-      scheme: bearer
-      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: "Each Crypto Ramp API request must contain an authorization header in the following format to make a call: `X-API-KEY: {your_API_key}`. \n\nBefore you start, make sure that you have the correct API key. For more information, see the **Get started** guides: [Integrate with Revolut Ramp -> 2. Get Partner keys](https://developer.revolut.com/docs/guides/crypto-ramp/get-started/integrate-with-revolut-ramp#2-get-partner-keys)."
+    Api-Key:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Each Merchant API request must contain an authorization header in the following format:
+
+
+        ```
+
+        ''Authorization: Bearer <yourSecretApiKey>''
+
+        ```
+
+
+        To use this API, you need to generate API keys from your Revolut Business account. The Secret key is used in the authorization header for all server calls, while the Public key is provided with payment methods at checkout.
+
+
+        :::info
+
+        For detailed instructions on generating your API keys, see: [Generate API keys](https://developer.revolut.com/docs/guides/merchant/get-started#generate-api-keys).
+
+        :::'
+x-refined-from:
+- revolut-crypto-ramp-openapi.yaml
+- revolut-merchant-openapi.yaml

@@ -1,7 +1,7 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
   version: '1.0'
-  title: Business Accounting Foreign exchange API
+  title: Business Foreign exchange API
   description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
   contact: {}
 servers:
@@ -227,55 +227,16 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    ExchangePartFrom:
+    AmountWithCurrency:
       type: object
-      description: The details of the currency to exchange from.
+      description: ''
       properties:
-        account_id:
-          type: string
-          format: uuid
-          description: The ID of the account to sell currency from.
-        currency:
-          $ref: '#/components/schemas/Currency'
         amount:
           type: number
           format: double
-          description: 'The amount of currency.
-
-            Specify **only** if you want to sell currency.'
-      required:
-      - account_id
-      - currency
-    ExchangeResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the created transaction.
-        type:
-          type: string
-          description: The type of the transaction. For money exchange, it is `exchange`.
-        reason_code:
-          type: string
-          description: 'The reason why the transaction was failed or declined.
-
-
-            Present only when the `state` parameter of the transaction is `declined` or `failed`.'
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time the transaction was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-        completed_at:
-          type: string
-          format: date-time
-          description: The date and time the transaction was completed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-        state:
-          $ref: '#/components/schemas/TransactionState'
-    ExchangeReasonCode:
-      type: string
-      description: "The reason code for the exchange.\nDepending on the country and the amount of funds to be exchanged, you might be required to provide an exchange reason. \nYou can check available reason codes with the [`GET /exchange-reasons` operation](https://developer.revolut.com/docs/api/business#get-exchange-reasons).\n\nIf an exchange reason is not required, this field is ignored."
-      example: fund_transfer_and_intracompany_payment
+          description: The amount of the transaction.
+        currency:
+          $ref: '#/components/schemas/Currency'
     ExchangeRequest:
       type: object
       description: The exchange information.
@@ -310,72 +271,6 @@ components:
       - from
       - to
       - request_id
-    ExchangeRateResponse:
-      type: object
-      properties:
-        from:
-          description: The money to sell.
-          $ref: '#/components/schemas/AmountWithCurrency'
-        to:
-          description: The money to receive.
-          $ref: '#/components/schemas/AmountWithCurrency'
-        rate:
-          type: number
-          format: double
-          description: The proposed exchange rate.
-        fee:
-          description: The expected fee for the transaction.
-          $ref: '#/components/schemas/Fee'
-        rate_date:
-          type: string
-          format: date-time
-          description: The date of the proposed exchange rate in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-      required:
-      - from
-      - to
-      - rate
-      - fee
-      - rate_date
-    Fee:
-      type: object
-      properties:
-        amount:
-          type: number
-          format: double
-          description: The fee amount.
-        currency:
-          $ref: '#/components/schemas/Currency'
-    ExchangeReason:
-      type: object
-      required:
-      - code
-      - name
-      properties:
-        code:
-          type: string
-          enum:
-          - business_expense_and_claims
-          - fees_and_charges
-          - fund_transfer_and_intracompany_payment
-          - gifts_and_donations
-          - government_services_and_tax
-          - insurance
-          - inventory
-          - investment_dividend_and_interest
-          - loan_and_loan_repayment
-          - marketing
-          - payment_for_goods_and_services
-          - payroll
-          - refund
-          - rental_and_property
-          - sales
-          - service_provider_and_software
-          - travel_and_transportation
-          - utilities
-          description: Category code of the reason for the exchange.
-        name:
-          type: string
-          description: Category name of the reason for the exchange.
     ExchangePartTo:
       type: object
       description: The details of the currency to exchange to.
@@ -395,6 +290,52 @@ components:
       required:
       - account_id
       - currency
+    Currency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    ExchangePartFrom:
+      type: object
+      description: The details of the currency to exchange from.
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          description: The ID of the account to sell currency from.
+        currency:
+          $ref: '#/components/schemas/Currency'
+        amount:
+          type: number
+          format: double
+          description: 'The amount of currency.
+
+            Specify **only** if you want to sell currency.'
+      required:
+      - account_id
+      - currency
+    Fee:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: double
+          description: The fee amount.
+        currency:
+          $ref: '#/components/schemas/Currency'
+    ExchangeReasonCode:
+      type: string
+      description: "The reason code for the exchange.\nDepending on the country and the amount of funds to be exchanged, you might be required to provide an exchange reason. \nYou can check available reason codes with the [`GET /exchange-reasons` operation](https://developer.revolut.com/docs/api/business#get-exchange-reasons).\n\nIf an exchange reason is not required, this field is ignored."
+      example: fund_transfer_and_intracompany_payment
+    TransactionState:
+      enum:
+      - created
+      - pending
+      - completed
+      - declined
+      - failed
+      - reverted
+      description: "Indicates the transaction state. Possible values:\n  - `created`: The transaction has been created and is either processed asynchronously or scheduled for a later time.\n  - `pending`: The transaction is pending until it's being processed. If the transfer is made between Revolut accounts, this state is skipped and the transaction is executed instantly.\n  - `completed`: The transaction was successful.\n  - `declined`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, insufficient account balance, wrong receiver information, etc.\n  - `failed`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, invalid API calls, blocked payments, etc.\n  - `reverted`: The transaction was reverted. This can happen for a variety of reasons, for example, the receiver being inaccessible."
+      type: string
     ExchangeReasons:
       type: array
       items:
@@ -437,30 +378,37 @@ components:
         name: Travel and transportation
       - code: utilities
         name: Utilities
-    TransactionState:
-      enum:
-      - created
-      - pending
-      - completed
-      - declined
-      - failed
-      - reverted
-      description: "Indicates the transaction state. Possible values:\n  - `created`: The transaction has been created and is either processed asynchronously or scheduled for a later time.\n  - `pending`: The transaction is pending until it's being processed. If the transfer is made between Revolut accounts, this state is skipped and the transaction is executed instantly.\n  - `completed`: The transaction was successful.\n  - `declined`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, insufficient account balance, wrong receiver information, etc.\n  - `failed`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, invalid API calls, blocked payments, etc.\n  - `reverted`: The transaction was reverted. This can happen for a variety of reasons, for example, the receiver being inaccessible."
-      type: string
-    AmountWithCurrency:
+    ExchangeReason:
       type: object
-      description: ''
+      required:
+      - code
+      - name
       properties:
-        amount:
-          type: number
-          format: double
-          description: The amount of the transaction.
-        currency:
-          $ref: '#/components/schemas/Currency'
-    Currency:
-      type: string
-      pattern: ^[A-Z]{3}$
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+        code:
+          type: string
+          enum:
+          - business_expense_and_claims
+          - fees_and_charges
+          - fund_transfer_and_intracompany_payment
+          - gifts_and_donations
+          - government_services_and_tax
+          - insurance
+          - inventory
+          - investment_dividend_and_interest
+          - loan_and_loan_repayment
+          - marketing
+          - payment_for_goods_and_services
+          - payroll
+          - refund
+          - rental_and_property
+          - sales
+          - service_provider_and_software
+          - travel_and_transportation
+          - utilities
+          description: Category code of the reason for the exchange.
+        name:
+          type: string
+          description: Category name of the reason for the exchange.
     Error:
       type: object
       properties:
@@ -473,6 +421,58 @@ components:
       required:
       - code
       - message
+    ExchangeResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the created transaction.
+        type:
+          type: string
+          description: The type of the transaction. For money exchange, it is `exchange`.
+        reason_code:
+          type: string
+          description: 'The reason why the transaction was failed or declined.
+
+
+            Present only when the `state` parameter of the transaction is `declined` or `failed`.'
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the transaction was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        completed_at:
+          type: string
+          format: date-time
+          description: The date and time the transaction was completed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        state:
+          $ref: '#/components/schemas/TransactionState'
+    ExchangeRateResponse:
+      type: object
+      properties:
+        from:
+          description: The money to sell.
+          $ref: '#/components/schemas/AmountWithCurrency'
+        to:
+          description: The money to receive.
+          $ref: '#/components/schemas/AmountWithCurrency'
+        rate:
+          type: number
+          format: double
+          description: The proposed exchange rate.
+        fee:
+          description: The expected fee for the transaction.
+          $ref: '#/components/schemas/Fee'
+        rate_date:
+          type: string
+          format: date-time
+          description: The date of the proposed exchange rate in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+      required:
+      - from
+      - to
+      - rate
+      - fee
+      - rate_date
   securitySchemes:
     AccessToken:
       type: http
