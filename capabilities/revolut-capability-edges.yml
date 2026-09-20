@@ -1,0 +1,228 @@
+slug: revolut
+provider: Revolut
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Banking & Capital Markets
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 21
+edges:
+- tag: Domestic payment
+  spec_file: revolut-domestic-payment-api-openapi.yml
+  capability_id: BC-1340.10
+  capability_id_l1: BC-1340
+  capability_name: Payment Initiation Management
+  confidence: 0.88
+  evidence: POST /domestic-payments CreateDomesticPayments Create a domestic payment; GET /domestic-payment-consents/{ConsentId}/funds-confirmation
+  reason: 'Open Banking payment initiation: consent capture, funds confirmation and payment instruction
+    creation — Payment Initiation Management.'
+- tag: Cards
+  spec_file: revolut-cards-api-openapi.yml
+  capability_id: BC-1340.60
+  capability_id_l1: BC-1340
+  capability_name: Card Issuance Management
+  confidence: 0.85
+  evidence: POST /cards createCard Create a card; POST /cards/{card_id}/freeze freezeCard Freeze a card;
+    DELETE /cards/{card_id} deleteCard Terminate a card
+  reason: Full card lifecycle — create, freeze/unfreeze, lock, terminate, retrieve sensitive details —
+    squarely card issuance management.
+- tag: Disputes
+  spec_file: revolut-disputes-api-openapi.yml
+  capability_id: BC-1340.70
+  capability_id_l1: BC-1340
+  capability_name: Card Transaction Processing Management
+  confidence: 0.85
+  evidence: POST /api/disputes/{dispute_id}/challenge challengeDispute; schemas Dispute-Payment-Method-Card,
+    Dispute-Challenge-Evidences, Card-Brand-v2
+  reason: Card acquiring dispute/chargeback handling with evidence upload and challenge — squarely card
+    transaction processing (chargebacks).
+- tag: Domestic scheduled payment
+  spec_file: revolut-domestic-scheduled-payment-api-openapi.yml
+  capability_id: BC-1340.10
+  capability_id_l1: BC-1340
+  capability_name: Payment Initiation Management
+  confidence: 0.85
+  evidence: POST /domestic-scheduled-payments CreateDomesticScheduledPayments Create a domestic scheduled
+    payment
+  reason: Consent-based initiation of future-dated domestic payments via Open Banking — payment instruction
+    capture and authorisation.
+- tag: International payment
+  spec_file: revolut-international-payment-api-openapi.yml
+  capability_id: BC-1340.40
+  capability_id_l1: BC-1340
+  capability_name: Cross-Border Payment Management
+  confidence: 0.85
+  evidence: POST /international-payments CreateInternationalPayments Create an international payment;
+    schema OBExchangeRate2, OBBranchAndFinancialInstitutionIdentification6
+  reason: Cross-border payment initiation with FX rate and correspondent institution identification —
+    Cross-Border Payment Management.
+- tag: Transfers
+  spec_file: revolut-transfers-api-openapi.yml
+  capability_id: BC-1340.10
+  capability_id_l1: BC-1340
+  capability_name: Payment Initiation Management
+  confidence: 0.85
+  evidence: POST /pay createPayment Create a transfer to another account or card; POST /pay/fields getPaymentRequirements
+    Check transfer field requirements; POST /transfer createTransfer Move money between your accounts
+  reason: Captures and validates payment instructions (required fields, transfer reasons, indicative quote)
+    and initiates transfers to external accounts/cards or between own accounts — payment initiation.
+- tag: International scheduled payment
+  spec_file: revolut-international-scheduled-payment-api-openapi.yml
+  capability_id: BC-1340.40
+  capability_id_l1: BC-1340
+  capability_name: Cross-Border Payment Management
+  confidence: 0.83
+  evidence: POST /international-scheduled-payments CreateInternationalScheduledPayments Create an international
+    scheduled payment
+  reason: Future-dated cross-border payment consent and initiation, including FX charge bearer and financial
+    institution identification.
+- tag: Domestic standing order
+  spec_file: revolut-domestic-standing-order-api-openapi.yml
+  capability_id: BC-1340.10
+  capability_id_l1: BC-1340
+  capability_name: Payment Initiation Management
+  confidence: 0.82
+  evidence: POST /domestic-standing-orders CreateDomesticStandingOrders Create a domestic standing order
+  reason: Standing order setup and consent under Open Banking is recurring payment instruction capture/authorisation.
+- tag: International standing order
+  spec_file: revolut-international-standing-order-api-openapi.yml
+  capability_id: BC-1340.40
+  capability_id_l1: BC-1340
+  capability_name: Cross-Border Payment Management
+  confidence: 0.82
+  evidence: POST /international-standing-orders CreateInternationalStandingOrders Create an international
+    standing order
+  reason: Recurring cross-border payment instructions with consent — international/correspondent payment
+    management.
+- tag: Accounts
+  spec_file: revolut-accounts-api-openapi.yml
+  capability_id: BC-1330.10
+  capability_id_l1: BC-1330
+  capability_name: Deposit Account Management
+  confidence: 0.8
+  evidence: GET /accounts/{account_id}/bank-details getAccountDetails Retrieve account's full bank details;
+    GET /accounts/{AccountId}/balances GetAccountsAccountIdBalances Retrieve an account balance
+  reason: Exposes bank current/business account data, balances, bank details and beneficiaries — deposit
+    account information management. Some ambiguity as the open-banking consent endpoints also touch channel
+    access.
+- tag: Draft payment
+  spec_file: revolut-draft-payment-api-openapi.yml
+  capability_id: BC-1340.10
+  capability_id_l1: BC-1340
+  capability_name: Payment Initiation Management
+  confidence: 0.8
+  evidence: POST /draft-payments createDraftPayment Create a draft payment; schemas DraftPaymentTransfer,
+    InstructedAmount, DraftPaymentStatus
+  reason: Creation and management of draft payment instructions and their transfers prior to execution
+    — payment instruction capture and authorisation.
+- tag: File Payment
+  spec_file: revolut-file-payment-api-openapi.yml
+  capability_id: BC-1340.10
+  capability_id_l1: BC-1340
+  capability_name: Payment Initiation Management
+  confidence: 0.8
+  evidence: POST /file-payment-consents/{ConsentId}/file Upload a payment file; POST /file-payments CreateFilePayments
+    Create a file payment
+  reason: Bulk/batch payment file upload, consent and initiation under Open Banking — payment instruction
+    capture and authorisation (bulk).
+- tag: Payment drafts
+  spec_file: revolut-payment-drafts-api-openapi.yml
+  capability_id: BC-1340.10
+  capability_id_l1: BC-1340
+  capability_name: Payment Initiation Management
+  confidence: 0.8
+  evidence: POST /payment-drafts createPaymentDraft Create a payment draft; POST /payment-drafts/{payment_draft_id}/payments
+    addPaymentDraftPayment Add a payment to a payment draft
+  reason: Capture and staging of outbound payment instructions (drafts awaiting approval), with PaymentRequest,
+    PaymentReceiver, TransferReasonCode, PaymentState schemas — payment instruction capture and authorisation.
+- tag: Subscriptions
+  spec_file: revolut-subscriptions-api-openapi.yml
+  capability_id: BC-4240
+  capability_id_l1: BC-4240
+  capability_name: Subscription Lifecycle Management
+  confidence: 0.8
+  evidence: POST /api/subscription-plans Create a subscription plan; POST /api/subscriptions/{subscription_id}/change-plan
+    Change a subscription plan; POST /api/subscriptions/{subscription_id}/cancel Cancel a subscription
+  reason: 'Operations cover the full recurring-subscription commercial lifecycle: plan definition, subscription
+    creation, plan change, renewal-date update, cancellation and billing cycles. That is Subscription
+    Lifecycle Management; evidence spans several L2s (plan design, modification, cancellation) so no single
+    L2 is named.'
+- tag: Card invitations
+  spec_file: revolut-card-invitations-api-openapi.yml
+  capability_id: BC-1340.60
+  capability_id_l1: BC-1340
+  capability_name: Card Issuance Management
+  confidence: 0.75
+  evidence: 'POST /card-invitations createCardInvitation Create a card invitation; schemas: CardInvitationVirtual,
+    SpendingLimitsSchema, MerchantControlsSchema'
+  reason: Invites cardholders and configures virtual card issuance with spending limits and merchant controls
+    — card issuance/activation lifecycle. Some ambiguity vs product parameter configuration.
+- tag: Foreign exchange
+  spec_file: revolut-foreign-exchange-api-openapi.yml
+  capability_id: BC-210.40
+  capability_id_l1: BC-210
+  capability_name: Foreign Exchange Management
+  confidence: 0.75
+  evidence: GET /rate getRate Get an exchange rate; POST /exchange exchangeMoney Exchange money
+  reason: Currency exchange between business account balances with rate quotation — FX execution for corporate
+    treasury. Could also read as a bank FX product, but for the business account holder it is foreign
+    exchange management.
+- tag: Payout links
+  spec_file: revolut-payout-links-api-openapi.yml
+  capability_id: BC-1340.10
+  capability_id_l1: BC-1340
+  capability_name: Payment Initiation Management
+  confidence: 0.75
+  evidence: POST /payout-links createPayoutLink Create a payout link; GET /transfer-reasons getTransferReasons;
+    schemas PayoutLinkAmount, TransferReasonCode, PayoutLinkCounterpartyName
+  reason: Creation, retrieval and cancellation of outbound payout instructions to a named counterparty
+    with amount, currency and transfer reason — payment instruction capture and authorisation.
+- tag: Customers
+  spec_file: revolut-customers-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.72
+  evidence: POST /api/customers createCustomer Create a customer; GET /api/customers/{customer_id}/payment-methods
+    retrievePaymentMethodList Retrieve payment method list of a customer
+  reason: Merchant API customer records with stored payment methods — customer master data management
+    for e-commerce, not banking KYC onboarding. Payment-method storage also touches BC-4250.40, but the
+    core object is the customer record, so Customer Data Management is the best fit.
+- tag: Applications
+  spec_file: revolut-applications-api-openapi.yml
+  capability_id: BC-4270.40
+  capability_id_l1: BC-4270
+  capability_name: Developer Identity & Credential Management
+  confidence: 0.7
+  evidence: POST /register registerApplication Register an application; GET /distinguished-name getDistinguishedName
+    Get a distinguished name (DN)
+  reason: Dynamic client registration for third-party provider applications — developer/OAuth client credential
+    and identity management, not a banking business function.
+- tag: Counterparties
+  spec_file: revolut-counterparties-api-openapi.yml
+  capability_id: BC-1340.10
+  capability_id_l1: BC-1340
+  capability_name: Payment Initiation Management
+  confidence: 0.7
+  evidence: POST /counterparty addCounterparty Create a counterparty; POST /account-name-validation validateAccountName
+    Validate an account name (CoP/VoP)
+  reason: Manages payee/counterparty records and payment methods with Confirmation of Payee validation
+    — payee setup and validation supporting payment initiation. Could alternatively be read as customer
+    information management, hence 0.7.
+- tag: Payments
+  spec_file: revolut-payments-api-openapi.yml
+  capability_id: BC-1340.70
+  capability_id_l1: BC-1340
+  capability_name: Card Transaction Processing Management
+  confidence: 0.7
+  evidence: GET /api/payments/{payment_id} retrievePaymentDetails Retrieve payment details; schemas Card,
+    Three-Ds-Fingerprint, Decline-Reason-v2, Sepa-Direct-Debit-Mandate-Reference
+  reason: Merchant acquiring payment execution and detail retrieval including card data, 3DS fingerprints
+    and decline reasons — card authorisation/transaction processing. Some overlap with generic payment
+    processing (BC-1340.20) lowers L2 certainty.
