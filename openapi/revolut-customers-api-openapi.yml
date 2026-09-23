@@ -2,70 +2,7 @@ openapi: 3.2.0
 info:
   title: Merchant Customers API
   version: '2026-04-20'
-  description: 'Welcome to the Revolut Merchant API - your solution to managing the core aspects of e-commerce and accepting online payments. Whether you''re a startup, a growing business, or an established enterprise in the e-commerce industry, our API helps you streamline your operations.
-
-
-    As a Revolut Business customer with a Merchant Account, you can use the
-
-    Merchant API to leverage the following features:
-
-
-    - [Order management](https://developer.revolut.com/docs/api/merchant#tag-orders)
-
-    - [Customer management](https://developer.revolut.com/docs/api/merchant#tag-customers)
-
-    - [Payment management](https://developer.revolut.com/docs/api/merchant#tag-payments)
-
-    - [Subscription management](https://developer.revolut.com/docs/api/merchant#tag-subscriptions)
-
-    - [Payout management](https://developer.revolut.com/docs/api/merchant#tag-payouts)
-
-    - [Dispute management](https://developer.revolut.com/docs/api/merchant#tag-disputes)
-
-    - [Reporting analytics](https://developer.revolut.com/docs/api/merchant#tag-report-runs)
-
-    - [Webhook management](https://developer.revolut.com/docs/api/merchant#tag-webhooks)
-
-    - [Location management](https://developer.revolut.com/docs/api/merchant#tag-locations)
-
-
-    ... and more.
-
-
-    ### API versions
-
-
-    :::warning
-
-    We highly recommend using versioning in your API calls. If you don''t provide a version header on the operations where it''s required, you will receive an error response.
-
-    :::
-
-
-    The Merchant API uses request header versioning. Where it is required you need to use the `Revolut-Api-Version` header parameter to specify an API version. Each request, where it is indicated in the API specification, must contain a version header in the following format:
-
-
-    ```
-
-    ''Revolut-Api-Version: 2026-04-20''
-
-    ```
-
-
-    :::info
-
-    For more information, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions)
-
-    :::
-
-
-    ### Test the Merchant API
-
-
-    You can test the Merchant API in Postman by forking this collection:
-
-
-    [![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)'
+  description: Welcome to the Revolut Merchant API - your solution to managing the core aspects of e-commerce and accepting online payments.
   contact: {}
 servers:
 - description: Production server (uses live data)
@@ -76,26 +13,7 @@ security:
 - Api-Key: []
 tags:
 - name: Customers
-  description: 'The Customers resource in the Merchant API is a pivotal tool for tracking and managing customer-related transactions within your e-commerce or retail platform. This resource provides a structured approach to customer management, enabling you to maintain a consistent record of customer transactions.
-
-
-    A `Customer` object can be created using the [Create a customer](https://developer.revolut.com/docs/api/merchant#create-customer) endpoint and you can then retrieve, update and delete a customer using its `id`. `Customer` objects enable you to track multiple transactions in your system associated with the same customer in the Merchant API.
-
-
-    You can save and store payment methods of a customer in the `payment_method` object, for more information, see: [Charge a customer''s saved payment method](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/charge-saved-payment-method). A merchant can store the details of the payment securely and group transactions from the same payment method in their system.
-
-
-    A payment method is unique for each customer. For example, if the same card is used for a transaction by two different customers, two payment method objects are created linked to each customer.
-
-
-    Similar principle applies when saving payment methods via Revolut Pay for merchant initiated transaction (MIT - useful for recurring payments). If a customer saves their details through Revolut Pay for MIT in separate sessions, each session will create a new payment method object linked to the customer.
-
-
-    :::note
-
-    You cannot create a payment method explicitly because they are generated as part of a payment. You can only retrieve, update or delete a payment method, or you can retrieve all payment methods of a customer.
-
-    :::'
+  description: The Customers resource in the Merchant API is a pivotal tool for tracking and managing customer-related transactions within your e-commerce or retail platform.
 paths:
   /api/customers:
     parameters:
@@ -104,7 +22,51 @@ paths:
     post:
       summary: Create a customer
       operationId: createCustomer
-      description: "Create a `customer` object.\n\n:::note [No automatic deduplication]\nThe API does not prevent creating multiple customers with the same email address or phone number.\n\nThis can be intentional, for example, to maintain separate customer records per storefront or brand under the same account.\n\nTo avoid unintentional duplicates, search for existing customers by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant/2024-09-01#retrieve-customer-list) endpoint before creating a new one.\n:::\n\n### Save payment methods\n\nIf you wish to save a customer's payment details using any of the available payment methods on the Revolut Checkout Widget ([Revolut Pay](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/revolut-pay/introduction), [Card payments](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/card-payments/introduction)), you need to meet one of the following requirements:\n\n  - [ ] Have a customer object with `email` and assign it to the order by providing `customer.id`\n  - [ ] Create a new customer with, at least, `customer.email` during [order creation](https://developer.revolut.com/docs/api/merchant/2024-09-01#create-order)\n\nFor more information, see: [Charge a customer's saved payment method](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/charge-saved-payment-method).\n\n<details>\n<summary>AFT processing requirements</summary>\n\nFor merchants in the following industries, `full_name` and `date_of_birth` are required for Account Funding Transaction (AFT) processing:\n\n| Industry | Required fields |\n| -------- | --------------- |\n| Crypto | `full_name`, `date_of_birth` |\n| Financial Institutions | `full_name`, `date_of_birth` |\n| Stored Value / Wallets | `full_name`, `date_of_birth` |\n\n</details>"
+      description: 'Create a `customer` object.
+
+
+        :::note [No automatic deduplication]
+
+        The API does not prevent creating multiple customers with the same email address or phone number.
+
+
+        This can be intentional, for example, to maintain separate customer records per storefront or brand under the same account.
+
+
+        To avoid unintentional duplicates, search for existing customers by email or phone using the List customers endpoint before creating a new one.
+
+        :::
+
+
+        ### Save payment methods
+
+
+        If you wish to save a customer''s payment details using any of the available payment methods on the Revolut Checkout Widget (Revolut Pay, Card payments), you need to meet one of the following requirements:
+
+
+        - [ ] Have a customer object with `email` and assign it to the order by providing `customer.id`
+
+        - [ ] Create a new customer with, at least, `customer.email` during order creation
+
+
+        For more information, see: Charge a customer''s saved payment method.
+
+
+        AFT processing requirements
+
+
+        For merchants in the following industries, `full_name` and `date_of_birth` are required for Account Funding Transaction (AFT) processing:
+
+
+        | Industry | Required fields |
+
+        | -------- | --------------- |
+
+        | Crypto | `full_name`, `date_of_birth` |
+
+        | Financial Institutions | `full_name`, `date_of_birth` |
+
+        | Stored Value / Wallets | `full_name`, `date_of_birth` |'
       requestBody:
         content:
           application/json:
@@ -149,7 +111,31 @@ paths:
 
         | --------- | ---------- |
 
-        | Filter the customers that you want to retrieve, for example, only retrieve customers created within a specific date range. <br/><br/>Parameters used for filtering:<br/><ul><li>`from`</li><li>`to`</li></ul> | View customers without loading all of them at once, for example, return a specified number of customers per page. <br/><br/>Parameters used for pagination:<br/><ul><li>`limit`</li><li>`page_token`</li></ul> |
+        | Filter the customers that you want to retrieve, for example, only retrieve customers created within a specific date range.
+
+
+        Parameters used for filtering:
+
+
+        `from`
+
+
+        `to`
+
+
+        | View customers without loading all of them at once, for example, return a specified number of customers per page.
+
+
+        Parameters used for pagination:
+
+
+        `limit`
+
+
+        `page_token`
+
+
+        |
 
 
         To paginate through all results:
@@ -231,9 +217,7 @@ paths:
         All request body fields are optional. Only the fields provided will be updated.
 
 
-        <details>
-
-        <summary>AFT processing requirements</summary>
+        AFT processing requirements
 
 
         For merchants in the following industries, `full_name` and `date_of_birth` are required for Account Funding Transaction (AFT) processing:
@@ -247,10 +231,7 @@ paths:
 
         | Financial Institutions | `full_name`, `date_of_birth` |
 
-        | Stored Value / Wallets | `full_name`, `date_of_birth` |
-
-
-        </details>'
+        | Stored Value / Wallets | `full_name`, `date_of_birth` |'
       requestBody:
         content:
           application/json:
@@ -367,7 +348,7 @@ paths:
     get:
       summary: Retrieve a customer's payment method
       operationId: retrievePaymentMethod
-      description: 'Retrieve the information of a specific saved payment method for a customer.  '
+      description: Retrieve the information of a specific saved payment method for a customer.
       responses:
         '200':
           description: OK
@@ -410,9 +391,9 @@ paths:
 
         For more information, see:
 
-        - [Pay for an order](https://developer.revolut.com/docs/api/merchant/2024-09-01#pay-order)
+        - Pay for an order
 
-        - [Charge a customer''s saved payment method](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/charge-saved-payment-method)
+        - Charge a customer''s saved payment method
 
         :::'
       requestBody:
@@ -476,585 +457,6 @@ paths:
       tags:
       - Customers
 components:
-  schemas:
-    Customer-Update-v2:
-      title: Customer update
-      type: object
-      description: 'The request body for updating a customer.
-
-
-        All fields are optional. Only the fields provided in the request will be updated.
-
-
-        :::note
-
-        `business_name` is not supported in this version of the API.
-
-        :::'
-      properties:
-        full_name:
-          $ref: '#/components/schemas/Full-Name'
-        email:
-          $ref: '#/components/schemas/Email'
-        phone:
-          $ref: '#/components/schemas/Phone'
-        date_of_birth:
-          $ref: '#/components/schemas/Date-Of-Birth'
-    Phone:
-      type: string
-      description: The phone number of the customer in [E.164 format](https://en.wikipedia.org/wiki/E.164).
-    Customer-Id:
-      type: string
-      format: uuid
-      description: Unique identifier for the customer.
-    Card-v2:
-      title: Card payment method
-      type: object
-      description: 'A saved card payment method.
-
-
-        :::info
-
-        The `checks` object (3DS, CVV, address verification) is not included as it is specific to the transactional payment context.
-
-        :::'
-      properties:
-        id:
-          $ref: '#/components/schemas/Payment-Method-Id'
-        type:
-          $ref: '#/components/schemas/Payment-Method-Type-v2'
-        saved_for:
-          $ref: '#/components/schemas/Saved-For'
-        created_at:
-          $ref: '#/components/schemas/Payment-Method-Created-At'
-        bin:
-          $ref: '#/components/schemas/Card-Bin'
-        last_four:
-          $ref: '#/components/schemas/Card-Last-Four'
-        expiry_month:
-          $ref: '#/components/schemas/Card-Expiry-Month'
-        expiry_year:
-          $ref: '#/components/schemas/Card-Expiry-Year'
-        cardholder_name:
-          $ref: '#/components/schemas/Cardholder-Name'
-        brand:
-          $ref: '#/components/schemas/Card-Brand-v2'
-        funding:
-          $ref: '#/components/schemas/Card-Funding-v2'
-        issuer:
-          $ref: '#/components/schemas/Card-Issuer'
-        issuer_country:
-          $ref: '#/components/schemas/Card-Issuer-Country'
-        billing_address:
-          $ref: '#/components/schemas/Billing-Address'
-        terminal_hardware_id:
-          $ref: '#/components/schemas/Terminal-Hardware-Id'
-      required:
-      - id
-      - type
-      - created_at
-    Email:
-      type: string
-      format: email
-      description: The email address of the customer.
-    Card-Expiry-Year:
-      type: integer
-      description: The expiry year of the payment card.
-    Payment-Method-Update:
-      title: Payment method update
-      type: object
-      description: Fields to update on a saved payment method.
-      properties:
-        saved_for:
-          type: string
-          enum:
-          - customer
-          description: 'Update the value of `saved_for` from `merchant` to `customer`.
-
-
-            Once updated, this payment method can no longer be used for merchant-initiated transactions (MIT). It can only be used when the customer is present on the checkout page.
-
-
-            | Value | Description |
-
-            | ----- | ----------- |
-
-            | `customer` | Restrict this payment method to customer-initiated transactions only. |'
-    Sepa-Direct-Debit-Mandate-Reference:
-      type: string
-      description: The unique mandate reference generated by Revolut. Include this in pre-debit notifications sent to your customers.
-    Terminal-Hardware-Id:
-      type: string
-      description: 'The hardware identifier of the Revolut Terminal device used to process the payment.
-
-
-        :::note
-
-        Only present for card-present transactions processed via Revolut Terminal.
-
-        :::'
-    Date-Of-Birth:
-      type: string
-      format: date
-      description: The birth date of the customer.
-    Billing-Address:
-      title: Billing address
-      type: object
-      description: The billing address associated with the payment method.
-      properties:
-        street_line_1:
-          type: string
-          description: Primary address line.
-          maxLength: 100
-        street_line_2:
-          type: string
-          description: Secondary address line, such as floor and apartment number.
-          maxLength: 100
-        region:
-          type: string
-          description: State or province of the address.
-          maxLength: 100
-        city:
-          type: string
-          description: City of the address.
-          maxLength: 100
-        country_code:
-          type: string
-          pattern: ^[A-Z]{2}$
-          description: ISO 2-letter country code.
-          minLength: 2
-          maxLength: 2
-        postcode:
-          type: string
-          description: Postal code of the address.
-          maxLength: 100
-      required:
-      - country_code
-      - postcode
-    Card-Brand-v2:
-      type: string
-      description: The brand of the payment card.
-      enum:
-      - visa
-      - mastercard
-      - american_express
-    Customer-Payment-Methods-v2:
-      type: object
-      required:
-      - payment_methods
-      properties:
-        payment_methods:
-          type: array
-          description: 'Saved payment methods associated with this customer. Each entry represents a
-
-            payment method authorised for future charges. Two types are supported: `card`
-
-            (with full card details) and `revolut_pay` (covers both card-backed and
-
-            account-to-account Revolut Pay variants). Use the `type` field on each item
-
-            to identify the variant.'
-          items:
-            $ref: '#/components/schemas/Payment-Method-v4'
-    Sepa-Direct-Debit-v2:
-      title: SEPA Direct Debit payment method
-      type: object
-      description: 'A saved SEPA Direct Debit payment method on a customer profile.
-
-
-        :::info
-
-        For more information, see: [SEPA Direct Debit server-to-server integration](https://developer.revolut.com/docs/guides/merchant/accept-payments/payment-methods/sepa-direct-debit/server-to-server)
-
-        :::'
-      properties:
-        id:
-          $ref: '#/components/schemas/Payment-Method-Id'
-        type:
-          $ref: '#/components/schemas/Payment-Method-Type-v2'
-        saved_for:
-          $ref: '#/components/schemas/Saved-For'
-        debtor_iban_last_four:
-          $ref: '#/components/schemas/Sepa-Direct-Debit-Debtor-Iban-Last-Four'
-        debtor_name:
-          $ref: '#/components/schemas/Sepa-Direct-Debit-Debtor-Name'
-        mandate_reference:
-          $ref: '#/components/schemas/Sepa-Direct-Debit-Mandate-Reference'
-        billing_address:
-          $ref: '#/components/schemas/Billing-Address'
-        created_at:
-          $ref: '#/components/schemas/Payment-Method-Created-At'
-      required:
-      - id
-      - type
-      - created_at
-    Sepa-Direct-Debit-Debtor-Iban-Last-Four:
-      type: string
-      description: The last four digits of the debtor's IBAN.
-      minLength: 4
-      maxLength: 4
-    Payment-Method-Type-v2:
-      type: string
-      description: The type of the payment method.
-      enum:
-      - card
-      - revolut_pay
-      - sepa_direct_debit
-    Payment-Method-Id:
-      type: string
-      format: uuid
-      description: Unique identifier for the payment method.
-    Customer-v3:
-      title: Customer
-      type: object
-      description: A customer object.
-      properties:
-        id:
-          $ref: '#/components/schemas/Customer-Id'
-        full_name:
-          $ref: '#/components/schemas/Full-Name'
-        email:
-          $ref: '#/components/schemas/Email'
-        phone:
-          $ref: '#/components/schemas/Phone'
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time the customer was created.
-        updated_at:
-          type: string
-          format: date-time
-          description: The date and time the customer was last updated.
-        payment_methods:
-          type: array
-          description: 'Saved payment methods associated with this customer. Each entry represents a
-
-            payment method authorised for future charges. Two types are supported: `card`
-
-            (with full card details) and `revolut_pay` (covers both card-backed and
-
-            account-to-account Revolut Pay variants). Use the `type` field on each item
-
-            to identify the variant.'
-          items:
-            $ref: '#/components/schemas/Payment-Method-v4'
-      required:
-      - id
-      - created_at
-      - updated_at
-      - email
-      - payment_methods
-    Next-Page-Token:
-      type:
-      - string
-      - 'null'
-      description: 'Token for retrieving the next page of results. Use this token as the value of the `page_token` query parameter in your next request to retrieve the next page.
-
-
-        If not present, there are no more results to retrieve.'
-    Payment-Method-v4:
-      title: Payment method
-      description: 'A saved payment method on a customer profile.
-
-
-        Use the `type` field to determine the specific payment method variant.
-
-
-        :::note
-
-        This schema represents a stored credential available for future charges and supports three types: `card`, `revolut_pay`, and `sepa_direct_debit`.
-
-
-        It differs from the `payment_method` object on a Payment, which is a transactional snapshot of how a specific charge was executed and includes additional detail such as wallet wrappers (`apple_pay`, `google_pay`) and Revolut Pay funding source (`revolut_pay_card` vs `revolut_pay_account`).
-
-        :::'
-      discriminator:
-        propertyName: type
-        mapping:
-          card: '#/components/schemas/Card-v2'
-          revolut_pay: '#/components/schemas/Revolut-Pay-v2'
-          sepa_direct_debit: '#/components/schemas/Sepa-Direct-Debit-v2'
-      oneOf:
-      - $ref: '#/components/schemas/Card-v2'
-      - $ref: '#/components/schemas/Revolut-Pay-v2'
-      - $ref: '#/components/schemas/Sepa-Direct-Debit-v2'
-    Card-Funding-v2:
-      type: string
-      description: The funding type of the payment card.
-      enum:
-      - debit
-      - credit
-      - prepaid
-    Customers:
-      type: object
-      required:
-      - customers
-      properties:
-        next_page_token:
-          $ref: '#/components/schemas/Next-Page-Token'
-        customers:
-          type: array
-          description: List of customers.
-          items:
-            $ref: '#/components/schemas/Customer-Simplified'
-    Card-Issuer-Country:
-      type: string
-      minLength: 2
-      maxLength: 2
-      description: The ISO 3166-1 alpha-2 country code of the country where the payment card was issued.
-    Saved-For:
-      type: string
-      enum:
-      - customer
-      - merchant
-      description: 'Indicates in which case this saved payment method can be used for payments.
-
-
-        | Value | Description |
-
-        | ----- | ----------- |
-
-        | `customer` | This payment method can be used only when the customer is on the checkout page. |
-
-        | `merchant` | This payment method can be used without the customer being on the checkout page, and the merchant can initiate transactions, for example, to take payments for recurring transactions. |'
-    Customer-Created:
-      title: Customer
-      type: object
-      description: A customer object.
-      properties:
-        id:
-          $ref: '#/components/schemas/Customer-Id'
-        full_name:
-          $ref: '#/components/schemas/Full-Name'
-        email:
-          $ref: '#/components/schemas/Email'
-        phone:
-          $ref: '#/components/schemas/Phone'
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time the customer was created.
-        updated_at:
-          type: string
-          format: date-time
-          description: The date and time the customer was last updated.
-      required:
-      - id
-      - created_at
-      - updated_at
-      - email
-    Card-Bin:
-      type: string
-      description: The BIN (Bank Identification Number) of the payment card, typically the first 6-8 digits.
-    Sepa-Direct-Debit-Debtor-Name:
-      type: string
-      description: The full name of the debtor as provided in the mandate.
-    Card-Expiry-Month:
-      type: integer
-      description: The expiry month of the payment card.
-    Cardholder-Name:
-      type: string
-      description: The name of the cardholder as it appears on the card.
-    Card-Issuer:
-      type: string
-      description: The name of the card-issuing bank or institution.
-    Card-Last-Four:
-      type: string
-      minLength: 4
-      maxLength: 4
-      description: The last four digits of the payment card number.
-    Payment-Method-Created-At:
-      type: string
-      format: date-time
-      description: The date and time the payment method was added.
-    Revolut-Pay-v2:
-      title: Revolut Pay payment method
-      type: object
-      description: 'A saved Revolut Pay payment method on a customer profile.
-
-
-        Both Revolut Pay card-backed and account-to-account (A2A) variants are
-
-        represented by this single type at the saved payment method level.
-
-        No underlying card details are exposed here; use the order-level
-
-        `payments[].payment_method` object (types `revolut_pay_card` /
-
-        `revolut_pay_account`) for per-transaction details.'
-      properties:
-        id:
-          $ref: '#/components/schemas/Payment-Method-Id'
-        type:
-          $ref: '#/components/schemas/Payment-Method-Type-v2'
-        saved_for:
-          $ref: '#/components/schemas/Saved-For'
-        created_at:
-          $ref: '#/components/schemas/Payment-Method-Created-At'
-      required:
-      - id
-      - type
-      - created_at
-    Error-v2:
-      title: Error
-      type: object
-      properties:
-        code:
-          type: string
-          description: 'An identifier that can be used to determine what went wrong.
-
-
-            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
-        message:
-          type: string
-          description: Some human readable text describing what went wrong.
-        timestamp:
-          type: integer
-          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
-    Full-Name:
-      type: string
-      description: The full name of the customer.
-    Customer-Simplified:
-      title: Customer
-      type: object
-      description: A customer object.
-      properties:
-        id:
-          $ref: '#/components/schemas/Customer-Id'
-        full_name:
-          $ref: '#/components/schemas/Full-Name'
-        email:
-          $ref: '#/components/schemas/Email'
-        phone:
-          $ref: '#/components/schemas/Phone'
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time the customer was created.
-        updated_at:
-          type: string
-          format: date-time
-          description: The date and time the customer was last updated.
-      required:
-      - id
-      - created_at
-      - updated_at
-      - email
-    Customer-Creation-v2:
-      title: Customer creation
-      type: object
-      description: The request body for creating a customer.
-      properties:
-        full_name:
-          $ref: '#/components/schemas/Full-Name'
-        email:
-          $ref: '#/components/schemas/Email'
-        phone:
-          $ref: '#/components/schemas/Phone'
-        date_of_birth:
-          $ref: '#/components/schemas/Date-Of-Birth'
-      required:
-      - email
-  parameters:
-    Limit:
-      name: limit
-      in: query
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 500
-        default: 100
-      description: Maximum number of records to return. Used for **pagination**.
-      required: false
-    Revolut-Api-Version-2024-09-01-Min:
-      name: Revolut-Api-Version
-      in: header
-      schema:
-        type: string
-        format: date
-        example: '2026-04-20'
-        enum:
-        - '2024-09-01'
-        - '2025-10-16'
-        - '2025-12-04'
-        - '2026-03-12'
-        - '2026-04-20'
-      required: true
-      description: 'The version of the Merchant API, specified in `YYYY-MM-DD` format.
-
-
-        This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.
-
-
-        If not specified, you will receive an error.
-
-
-
-        :::info
-
-        For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).
-
-        :::'
-      x-config-always-visible-in-example: true
-    Authorization:
-      name: Authorization
-      in: header
-      schema:
-        type: string
-        format: Bearer <yourSecretApiKey>
-        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
-      required: true
-      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
-    Payment-Method-Id:
-      name: payment_method_id
-      in: path
-      schema:
-        type: string
-        format: uuid
-        description: A UUID string, typically used to identify resources.
-      required: true
-      description: The ID of the payment method.
-    Customer-Id:
-      name: customer_id
-      in: path
-      schema:
-        type: string
-        format: uuid
-        description: A UUID string, typically used to identify resources.
-      required: true
-      description: The ID of the `Customer` object.
-    From:
-      name: from
-      in: query
-      schema:
-        type: string
-        format: date-time
-      description: Filter records created from this date/time. Used for **filtering**.
-      required: false
-    Only-Merchant:
-      name: only_merchant
-      in: query
-      schema:
-        type: boolean
-      description: 'If `true`, returns only the saved payment methods that can be used for
-
-        merchant-initiated transactions (MIT).'
-      required: false
-    To:
-      name: to
-      in: query
-      schema:
-        type: string
-        format: date-time
-      description: Filter records created until this date/time. Used for **filtering**.
-      required: false
-    Page-Token:
-      name: page_token
-      in: query
-      schema:
-        type: string
-      description: "Token for retrieving the next page of results. Used for **pagination**.\n\nTo paginate through results:\n\n  1. Make an initial request with the desired `limit`.\n  1. The response will include a `next_page_token` if more results are available.\n  1. Use that token in the `page_token` parameter of your next request.\n  1. Repeat until `next_page_token` is not present.\n\n:::note\nWhen using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.\n:::"
-      required: false
   examples:
     Res-Customer-Payment-Methods-List:
       summary: List of payment methods
@@ -1118,58 +520,17 @@ components:
             city: London
             region: Greater London
             country_code: GB
-    Req-Customer-Update-v2:
-      summary: Update a customer
+    Req-Customer-Creation-v2:
+      summary: Create a customer
       value:
-        email: updated.customer@example.com
-    Res-Customer-Payment-Method:
-      retrieved_card:
-        summary: Retrieved card payment method
-        value:
-          id: edef3ba4-60a0-4df3-8f12-e5fc858c2420
-          type: card
-          saved_for: customer
-          created_at: '2023-03-24T14:15:22Z'
-          bin: '459678'
-          last_four: '6896'
-          expiry_month: 3
-          expiry_year: 2025
-          cardholder_name: Example Customer
-          brand: visa
-          funding: debit
-          issuer: EXAMPLE ISSUER
-          issuer_country: GB
-          billing_address:
-            street_line_1: '7'
-            street_line_2: Westferry Circus
-            postcode: E144HD
-            city: London
-            region: Greater London
-            country_code: GB
-      retrieved_revolut_pay:
-        summary: Retrieved Revolut Pay payment method
-        value:
-          id: 648334a8-9546-a983-a81a-efc6d5bdd0be
-          type: revolut_pay
-          saved_for: merchant
-          created_at: '2023-06-09T14:18:16.577888Z'
-      retrieved_sepa_direct_debit:
-        summary: Retrieved SEPA Direct Debit payment method
-        value:
-          id: 6a0fe961-a961-a8b6-ad17-ab2779165a82
-          type: sepa_direct_debit
-          saved_for: merchant
-          created_at: '2026-05-22T05:28:01.887482Z'
-          debtor_iban_last_four: '3273'
-          debtor_name: John Doe
-          mandate_reference: 69F1CB61BD99A32C8E20D7FB9E21E146
-          billing_address:
-            street_line_1: Bank of England
-            street_line_2: Threadneedle St
-            postcode: EC2R 8AH
-            city: London
-            region: Greater London
-            country_code: GB
+        full_name: Example Customer
+        email: example.customer@example.com
+        phone: '+441234567890'
+        date_of_birth: '1990-01-01'
+    Req-Payment-Method-Update:
+      summary: Update a payment method
+      value:
+        saved_for: customer
     Res-Customers-List:
       summary: List of customers
       value:
@@ -1186,26 +547,6 @@ components:
           phone: '+441234567890'
           created_at: '2020-06-24T12:03:39.979397Z'
           updated_at: '2020-06-25T10:03:39.134417Z'
-    Res-Customer-Created:
-      summary: Customer
-      value:
-        id: 6c7c97a8-cfc1-4cf3-8b38-26a74fdf1fae
-        full_name: Example Customer
-        email: example.customer@example.com
-        phone: '+441234567890'
-        created_at: '2020-06-24T12:03:39.979397Z'
-        updated_at: '2020-06-24T12:03:39.979397Z'
-    Req-Payment-Method-Update:
-      summary: Update a payment method
-      value:
-        saved_for: customer
-    Req-Customer-Creation-v2:
-      summary: Create a customer
-      value:
-        full_name: Example Customer
-        email: example.customer@example.com
-        phone: '+441234567890'
-        date_of_birth: '1990-01-01'
     Res-Customer-v3:
       summary: Customer
       value:
@@ -1254,6 +595,646 @@ components:
             city: London
             region: Greater London
             country_code: GB
+    Res-Customer-Payment-Method:
+      retrieved_card:
+        summary: Retrieved card payment method
+        value:
+          id: edef3ba4-60a0-4df3-8f12-e5fc858c2420
+          type: card
+          saved_for: customer
+          created_at: '2023-03-24T14:15:22Z'
+          bin: '459678'
+          last_four: '6896'
+          expiry_month: 3
+          expiry_year: 2025
+          cardholder_name: Example Customer
+          brand: visa
+          funding: debit
+          issuer: EXAMPLE ISSUER
+          issuer_country: GB
+          billing_address:
+            street_line_1: '7'
+            street_line_2: Westferry Circus
+            postcode: E144HD
+            city: London
+            region: Greater London
+            country_code: GB
+      retrieved_revolut_pay:
+        summary: Retrieved Revolut Pay payment method
+        value:
+          id: 648334a8-9546-a983-a81a-efc6d5bdd0be
+          type: revolut_pay
+          saved_for: merchant
+          created_at: '2023-06-09T14:18:16.577888Z'
+      retrieved_sepa_direct_debit:
+        summary: Retrieved SEPA Direct Debit payment method
+        value:
+          id: 6a0fe961-a961-a8b6-ad17-ab2779165a82
+          type: sepa_direct_debit
+          saved_for: merchant
+          created_at: '2026-05-22T05:28:01.887482Z'
+          debtor_iban_last_four: '3273'
+          debtor_name: John Doe
+          mandate_reference: 69F1CB61BD99A32C8E20D7FB9E21E146
+          billing_address:
+            street_line_1: Bank of England
+            street_line_2: Threadneedle St
+            postcode: EC2R 8AH
+            city: London
+            region: Greater London
+            country_code: GB
+    Req-Customer-Update-v2:
+      summary: Update a customer
+      value:
+        email: updated.customer@example.com
+    Res-Customer-Created:
+      summary: Customer
+      value:
+        id: 6c7c97a8-cfc1-4cf3-8b38-26a74fdf1fae
+        full_name: Example Customer
+        email: example.customer@example.com
+        phone: '+441234567890'
+        created_at: '2020-06-24T12:03:39.979397Z'
+        updated_at: '2020-06-24T12:03:39.979397Z'
+  schemas:
+    Payment-Method-Update:
+      title: Payment method update
+      type: object
+      description: Fields to update on a saved payment method.
+      properties:
+        saved_for:
+          type: string
+          enum:
+          - customer
+          description: 'Update the value of `saved_for` from `merchant` to `customer`.
+
+
+            Once updated, this payment method can no longer be used for merchant-initiated transactions (MIT). It can only be used when the customer is present on the checkout page.
+
+
+            | Value | Description |
+
+            | ----- | ----------- |
+
+            | `customer` | Restrict this payment method to customer-initiated transactions only. |'
+    Sepa-Direct-Debit-Mandate-Reference:
+      type: string
+      description: The unique mandate reference generated by Revolut. Include this in pre-debit notifications sent to your customers.
+    Customer-Id:
+      type: string
+      format: uuid
+      description: Unique identifier for the customer.
+    Payment-Method-v4:
+      title: Payment method
+      description: 'A saved payment method on a customer profile.
+
+
+        Use the `type` field to determine the specific payment method variant.
+
+
+        :::note
+
+        This schema represents a stored credential available for future charges and supports three types: `card`, `revolut_pay`, and `sepa_direct_debit`.
+
+
+        It differs from the `payment_method` object on a Payment, which is a transactional snapshot of how a specific charge was executed and includes additional detail such as wallet wrappers (`apple_pay`, `google_pay`) and Revolut Pay funding source (`revolut_pay_card` vs `revolut_pay_account`).
+
+        :::'
+      discriminator:
+        propertyName: type
+        mapping:
+          card: '#/components/schemas/Card-v2'
+          revolut_pay: '#/components/schemas/Revolut-Pay-v2'
+          sepa_direct_debit: '#/components/schemas/Sepa-Direct-Debit-v2'
+      oneOf:
+      - $ref: '#/components/schemas/Card-v2'
+      - $ref: '#/components/schemas/Revolut-Pay-v2'
+      - $ref: '#/components/schemas/Sepa-Direct-Debit-v2'
+    Terminal-Hardware-Id:
+      type: string
+      description: 'The hardware identifier of the Revolut Terminal device used to process the payment.
+
+
+        :::note
+
+        Only present for card-present transactions processed via Revolut Terminal.
+
+        :::'
+    Card-Funding-v2:
+      type: string
+      description: The funding type of the payment card.
+      enum:
+      - debit
+      - credit
+      - prepaid
+    Payment-Method-Type-v2:
+      type: string
+      description: The type of the payment method.
+      enum:
+      - card
+      - revolut_pay
+      - sepa_direct_debit
+    Saved-For:
+      type: string
+      enum:
+      - customer
+      - merchant
+      description: 'Indicates in which case this saved payment method can be used for payments.
+
+
+        | Value | Description |
+
+        | ----- | ----------- |
+
+        | `customer` | This payment method can be used only when the customer is on the checkout page. |
+
+        | `merchant` | This payment method can be used without the customer being on the checkout page, and the merchant can initiate transactions, for example, to take payments for recurring transactions. |'
+    Customer-Payment-Methods-v2:
+      type: object
+      required:
+      - payment_methods
+      properties:
+        payment_methods:
+          type: array
+          description: 'Saved payment methods associated with this customer. Each entry represents a
+
+            payment method authorised for future charges. Two types are supported: `card`
+
+            (with full card details) and `revolut_pay` (covers both card-backed and
+
+            account-to-account Revolut Pay variants). Use the `type` field on each item
+
+            to identify the variant.'
+          items:
+            $ref: '#/components/schemas/Payment-Method-v4'
+    Card-Last-Four:
+      type: string
+      minLength: 4
+      maxLength: 4
+      description: The last four digits of the payment card number.
+    Error-v2:
+      title: Error
+      type: object
+      properties:
+        code:
+          type: string
+          description: 'An identifier that can be used to determine what went wrong.
+
+
+            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
+        message:
+          type: string
+          description: Some human readable text describing what went wrong.
+        timestamp:
+          type: integer
+          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
+    Card-Expiry-Year:
+      type: integer
+      description: The expiry year of the payment card.
+    Cardholder-Name:
+      type: string
+      description: The name of the cardholder as it appears on the card.
+    Payment-Method-Id:
+      type: string
+      format: uuid
+      description: Unique identifier for the payment method.
+    Full-Name:
+      type: string
+      description: The full name of the customer.
+    Card-Issuer:
+      type: string
+      description: The name of the card-issuing bank or institution.
+    Sepa-Direct-Debit-v2:
+      title: SEPA Direct Debit payment method
+      type: object
+      description: 'A saved SEPA Direct Debit payment method on a customer profile.
+
+
+        :::info
+
+        For more information, see: [SEPA Direct Debit server-to-server integration](https://developer.revolut.com/docs/guides/merchant/accept-payments/payment-methods/sepa-direct-debit/server-to-server)
+
+        :::'
+      properties:
+        id:
+          $ref: '#/components/schemas/Payment-Method-Id'
+        type:
+          $ref: '#/components/schemas/Payment-Method-Type-v2'
+        saved_for:
+          $ref: '#/components/schemas/Saved-For'
+        debtor_iban_last_four:
+          $ref: '#/components/schemas/Sepa-Direct-Debit-Debtor-Iban-Last-Four'
+        debtor_name:
+          $ref: '#/components/schemas/Sepa-Direct-Debit-Debtor-Name'
+        mandate_reference:
+          $ref: '#/components/schemas/Sepa-Direct-Debit-Mandate-Reference'
+        billing_address:
+          $ref: '#/components/schemas/Billing-Address'
+        created_at:
+          $ref: '#/components/schemas/Payment-Method-Created-At'
+      required:
+      - id
+      - type
+      - created_at
+    Customer-v3:
+      title: Customer
+      type: object
+      description: A customer object.
+      properties:
+        id:
+          $ref: '#/components/schemas/Customer-Id'
+        full_name:
+          $ref: '#/components/schemas/Full-Name'
+        email:
+          $ref: '#/components/schemas/Email'
+        phone:
+          $ref: '#/components/schemas/Phone'
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the customer was created.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the customer was last updated.
+        payment_methods:
+          type: array
+          description: 'Saved payment methods associated with this customer. Each entry represents a
+
+            payment method authorised for future charges. Two types are supported: `card`
+
+            (with full card details) and `revolut_pay` (covers both card-backed and
+
+            account-to-account Revolut Pay variants). Use the `type` field on each item
+
+            to identify the variant.'
+          items:
+            $ref: '#/components/schemas/Payment-Method-v4'
+      required:
+      - id
+      - created_at
+      - updated_at
+      - email
+      - payment_methods
+    Next-Page-Token:
+      type:
+      - string
+      - 'null'
+      description: 'Token for retrieving the next page of results. Use this token as the value of the `page_token` query parameter in your next request to retrieve the next page.
+
+
+        If not present, there are no more results to retrieve.'
+    Email:
+      type: string
+      format: email
+      description: The email address of the customer.
+    Customer-Created:
+      title: Customer
+      type: object
+      description: A customer object.
+      properties:
+        id:
+          $ref: '#/components/schemas/Customer-Id'
+        full_name:
+          $ref: '#/components/schemas/Full-Name'
+        email:
+          $ref: '#/components/schemas/Email'
+        phone:
+          $ref: '#/components/schemas/Phone'
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the customer was created.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the customer was last updated.
+      required:
+      - id
+      - created_at
+      - updated_at
+      - email
+    Phone:
+      type: string
+      description: The phone number of the customer in [E.164 format](https://en.wikipedia.org/wiki/E.164).
+    Sepa-Direct-Debit-Debtor-Name:
+      type: string
+      description: The full name of the debtor as provided in the mandate.
+    Customer-Creation-v2:
+      title: Customer creation
+      type: object
+      description: The request body for creating a customer.
+      properties:
+        full_name:
+          $ref: '#/components/schemas/Full-Name'
+        email:
+          $ref: '#/components/schemas/Email'
+        phone:
+          $ref: '#/components/schemas/Phone'
+        date_of_birth:
+          $ref: '#/components/schemas/Date-Of-Birth'
+      required:
+      - email
+    Card-Expiry-Month:
+      type: integer
+      description: The expiry month of the payment card.
+    Card-v2:
+      title: Card payment method
+      type: object
+      description: 'A saved card payment method.
+
+
+        :::info
+
+        The `checks` object (3DS, CVV, address verification) is not included as it is specific to the transactional payment context.
+
+        :::'
+      properties:
+        id:
+          $ref: '#/components/schemas/Payment-Method-Id'
+        type:
+          $ref: '#/components/schemas/Payment-Method-Type-v2'
+        saved_for:
+          $ref: '#/components/schemas/Saved-For'
+        created_at:
+          $ref: '#/components/schemas/Payment-Method-Created-At'
+        bin:
+          $ref: '#/components/schemas/Card-Bin'
+        last_four:
+          $ref: '#/components/schemas/Card-Last-Four'
+        expiry_month:
+          $ref: '#/components/schemas/Card-Expiry-Month'
+        expiry_year:
+          $ref: '#/components/schemas/Card-Expiry-Year'
+        cardholder_name:
+          $ref: '#/components/schemas/Cardholder-Name'
+        brand:
+          $ref: '#/components/schemas/Card-Brand-v2'
+        funding:
+          $ref: '#/components/schemas/Card-Funding-v2'
+        issuer:
+          $ref: '#/components/schemas/Card-Issuer'
+        issuer_country:
+          $ref: '#/components/schemas/Card-Issuer-Country'
+        billing_address:
+          $ref: '#/components/schemas/Billing-Address'
+        terminal_hardware_id:
+          $ref: '#/components/schemas/Terminal-Hardware-Id'
+      required:
+      - id
+      - type
+      - created_at
+    Customer-Simplified:
+      title: Customer
+      type: object
+      description: A customer object.
+      properties:
+        id:
+          $ref: '#/components/schemas/Customer-Id'
+        full_name:
+          $ref: '#/components/schemas/Full-Name'
+        email:
+          $ref: '#/components/schemas/Email'
+        phone:
+          $ref: '#/components/schemas/Phone'
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the customer was created.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the customer was last updated.
+      required:
+      - id
+      - created_at
+      - updated_at
+      - email
+    Customer-Update-v2:
+      title: Customer update
+      type: object
+      description: 'The request body for updating a customer.
+
+
+        All fields are optional. Only the fields provided in the request will be updated.
+
+
+        :::note
+
+        `business_name` is not supported in this version of the API.
+
+        :::'
+      properties:
+        full_name:
+          $ref: '#/components/schemas/Full-Name'
+        email:
+          $ref: '#/components/schemas/Email'
+        phone:
+          $ref: '#/components/schemas/Phone'
+        date_of_birth:
+          $ref: '#/components/schemas/Date-Of-Birth'
+    Payment-Method-Created-At:
+      type: string
+      format: date-time
+      description: The date and time the payment method was added.
+    Card-Issuer-Country:
+      type: string
+      minLength: 2
+      maxLength: 2
+      description: The ISO 3166-1 alpha-2 country code of the country where the payment card was issued.
+    Customers:
+      type: object
+      required:
+      - customers
+      properties:
+        next_page_token:
+          $ref: '#/components/schemas/Next-Page-Token'
+        customers:
+          type: array
+          description: List of customers.
+          items:
+            $ref: '#/components/schemas/Customer-Simplified'
+    Billing-Address:
+      title: Billing address
+      type: object
+      description: The billing address associated with the payment method.
+      properties:
+        street_line_1:
+          type: string
+          description: Primary address line.
+          maxLength: 100
+        street_line_2:
+          type: string
+          description: Secondary address line, such as floor and apartment number.
+          maxLength: 100
+        region:
+          type: string
+          description: State or province of the address.
+          maxLength: 100
+        city:
+          type: string
+          description: City of the address.
+          maxLength: 100
+        country_code:
+          type: string
+          pattern: ^[A-Z]{2}$
+          description: ISO 2-letter country code.
+          minLength: 2
+          maxLength: 2
+        postcode:
+          type: string
+          description: Postal code of the address.
+          maxLength: 100
+      required:
+      - country_code
+      - postcode
+    Card-Brand-v2:
+      type: string
+      description: The brand of the payment card.
+      enum:
+      - visa
+      - mastercard
+      - american_express
+    Card-Bin:
+      type: string
+      description: The BIN (Bank Identification Number) of the payment card, typically the first 6-8 digits.
+    Date-Of-Birth:
+      type: string
+      format: date
+      description: The birth date of the customer.
+    Sepa-Direct-Debit-Debtor-Iban-Last-Four:
+      type: string
+      description: The last four digits of the debtor's IBAN.
+      minLength: 4
+      maxLength: 4
+    Revolut-Pay-v2:
+      title: Revolut Pay payment method
+      type: object
+      description: 'A saved Revolut Pay payment method on a customer profile.
+
+
+        Both Revolut Pay card-backed and account-to-account (A2A) variants are
+
+        represented by this single type at the saved payment method level.
+
+        No underlying card details are exposed here; use the order-level
+
+        `payments[].payment_method` object (types `revolut_pay_card` /
+
+        `revolut_pay_account`) for per-transaction details.'
+      properties:
+        id:
+          $ref: '#/components/schemas/Payment-Method-Id'
+        type:
+          $ref: '#/components/schemas/Payment-Method-Type-v2'
+        saved_for:
+          $ref: '#/components/schemas/Saved-For'
+        created_at:
+          $ref: '#/components/schemas/Payment-Method-Created-At'
+      required:
+      - id
+      - type
+      - created_at
+  parameters:
+    Only-Merchant:
+      name: only_merchant
+      in: query
+      schema:
+        type: boolean
+      description: 'If `true`, returns only the saved payment methods that can be used for
+
+        merchant-initiated transactions (MIT).'
+      required: false
+    Customer-Id:
+      name: customer_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the `Customer` object.
+    Revolut-Api-Version-2024-09-01-Min:
+      name: Revolut-Api-Version
+      in: header
+      schema:
+        type: string
+        format: date
+        example: '2026-04-20'
+        enum:
+        - '2024-09-01'
+        - '2025-10-16'
+        - '2025-12-04'
+        - '2026-03-12'
+        - '2026-04-20'
+      required: true
+      description: 'The version of the Merchant API, specified in `YYYY-MM-DD` format.
+
+
+        This endpoint is available from version `2024-09-01`. If a version earlier than `2024-09-01` is provided, the endpoint returns a `404` response.
+
+
+        If not specified, you will receive an error.
+
+
+
+        :::info
+
+        For more information about API versioning, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions).
+
+        :::'
+      x-config-always-visible-in-example: true
+    Payment-Method-Id:
+      name: payment_method_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the payment method.
+    From:
+      name: from
+      in: query
+      schema:
+        type: string
+        format: date-time
+      description: Filter records created from this date/time. Used for **filtering**.
+      required: false
+    Page-Token:
+      name: page_token
+      in: query
+      schema:
+        type: string
+      description: "Token for retrieving the next page of results. Used for **pagination**.\n\nTo paginate through results:\n\n  1. Make an initial request with the desired `limit`.\n  1. The response will include a `next_page_token` if more results are available.\n  1. Use that token in the `page_token` parameter of your next request.\n  1. Repeat until `next_page_token` is not present.\n\n:::note\nWhen using `page_token`, you must include all query parameters from the initial request (such as `from`, `to`, or other filter parameters) to maintain consistent filtering across pages.\n:::"
+      required: false
+    Authorization:
+      name: Authorization
+      in: header
+      schema:
+        type: string
+        format: Bearer <yourSecretApiKey>
+        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
+      required: true
+      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 500
+        default: 100
+      description: Maximum number of records to return. Used for **pagination**.
+      required: false
+    To:
+      name: to
+      in: query
+      schema:
+        type: string
+        format: date-time
+      description: Filter records created until this date/time. Used for **filtering**.
+      required: false
   securitySchemes:
     Api-Key:
       type: apiKey

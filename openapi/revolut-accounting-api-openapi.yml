@@ -2,7 +2,7 @@ openapi: 3.2.0
 info:
   version: '1.0'
   title: Business Accounting API
-  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  description: As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.
   contact: {}
 servers:
 - url: https://b2b.revolut.com/api/1.0
@@ -11,25 +11,7 @@ servers:
   description: Sandbox server (uses test data)
 tags:
 - name: Accounting
-  description: 'Manage [accounting settings](https://business.revolut.com/settings/accounting) for your business that can be assigned to your financial records such as [expenses](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses) or bills*.
-
-
-    Create, retrieve, update, and delete settings such as accounting categories, tax rates, and labels.
-
-
-    For more information, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings), [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories), [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups), .
-
-
-    See also the Revolut Help Centre: [Expenses](https://help.revolut.com/business/help/managing-my-business/expenses/) and [BillPay](https://help.revolut.com/business/help/integrating-with-external-apps/introduction-to-billpay/).
-
-
-    _*<small>Some settings are not supported for certain types of financial records.
-
-    For example, labels cannot be applied to bills.
-
-    Check the guides for details.
-
-    </small>_'
+  description: Manage accounting settings for your business that can be assigned to your financial records such as expenses or bills*.
 paths:
   /accounting-categories:
     post:
@@ -40,12 +22,12 @@ paths:
 
         :::note
 
-        This operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).
+        This operation is not supported for externally managed accounting categories.
 
         :::
 
 
-        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).'
+        For more details, see the guides: Manage accounting settings and Manage accounting categories.'
       security:
       - AccessToken:
         - WRITE
@@ -180,7 +162,30 @@ paths:
     get:
       summary: Retrieve a list of accounting categories
       operationId: getAccountingCategories
-      description: "Get available accounting categories based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 accounting categories per request. \nThe default page size is 100.\n:::\n\nThe accounting categories are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of accounting categories returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.        \n  To get the next page of results, make a new request using that `next_page_token` value in `page_token`.\n- If the number of results is smaller than the page size, `next_page_token` is not returned.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories)."
+      description: 'Get available accounting categories based on the provided query criteria.
+
+
+        :::note
+
+        The API returns a maximum of 500 accounting categories per request.
+
+        The default page size is 100.
+
+        :::
+
+
+        The accounting categories are sorted by the `created_at` date in reverse chronological order, and they''re **paginated**.
+
+        The page size, that is, the maximum number of accounting categories returned per page is specified by the `limit` parameter.
+
+        - If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.
+
+        To get the next page of results, make a new request using that `next_page_token` value in `page_token`.
+
+        - If the number of results is smaller than the page size, `next_page_token` is not returned.
+
+
+        For more details, see the guides: Manage accounting settings and Manage accounting categories.'
       security:
       - AccessToken:
         - READ
@@ -371,7 +376,7 @@ paths:
         The details include the accounting category name, code, and default tax rate, as well as when the accounting category was added to your settings, and when it was last updated.
 
 
-        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).'
+        For more details, see the guides: Manage accounting settings and Manage accounting categories.'
       security:
       - AccessToken:
         - READ
@@ -463,12 +468,12 @@ paths:
 
         :::note
 
-        This operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).
+        This operation is not supported for externally managed accounting categories.
 
         :::
 
 
-        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).'
+        For more details, see the guides: Manage accounting settings and Manage accounting categories.'
       security:
       - AccessToken:
         - WRITE
@@ -658,7 +663,29 @@ paths:
     delete:
       summary: Delete an accounting category
       operationId: deleteAccountingCategory
-      description: "Delete a specific accounting category, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).\n:::\n\nOnce the accounting category is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to assign it to new financial records (e.g. expenses). \n- Existing records assigned to this category that have not been completed will be marked as invalid, and you'll need to reassign them to another category.\n- Completed records will not be affected by the change. \n\nA successful response does not get any content in return.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories)."
+      description: 'Delete a specific accounting category, based on its ID.
+
+
+        :::note
+
+        This operation is not supported for externally managed accounting categories.
+
+        :::
+
+
+        Once the accounting category is deleted, it will not be returned by the API or in the Revolut Business app, and:
+
+        - You will not be able to assign it to new financial records (e.g. expenses).
+
+        - Existing records assigned to this category that have not been completed will be marked as invalid, and you''ll need to reassign them to another category.
+
+        - Completed records will not be affected by the change.
+
+
+        A successful response does not get any content in return.
+
+
+        For more details, see the guides: Manage accounting settings and Manage accounting categories.'
       security:
       - AccessToken:
         - WRITE
@@ -745,14 +772,14 @@ paths:
 
         :::note
 
-        - This operation is not supported for [externally managed label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).
+        - This operation is not supported for externally managed label groups.
 
         - You can have up to 5 label groups at a time per business.
 
         :::
 
 
-        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).'
+        For more details, see the guides: Manage accounting settings and Manage labels and label groups.'
       security:
       - AccessToken:
         - WRITE
@@ -904,7 +931,7 @@ paths:
         The label groups are sorted by the `created_at` date in reverse chronological order, and they''re **paginated**.
 
 
-        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).'
+        For more details, see the guides: Manage accounting settings and Manage labels and label groups.'
       security:
       - AccessToken:
         - READ
@@ -1058,7 +1085,7 @@ paths:
         The details include the label group name, as well as when the label group was added to your settings, and when it was last updated.
 
 
-        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).'
+        For more details, see the guides: Manage accounting settings and Manage labels and label groups.'
       security:
       - AccessToken:
         - READ
@@ -1140,12 +1167,12 @@ paths:
 
         :::note
 
-        This operation is not supported for [externally managed label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).
+        This operation is not supported for externally managed label groups.
 
         :::
 
 
-        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).'
+        For more details, see the guides: Manage accounting settings and Manage labels and label groups.'
       security:
       - AccessToken:
         - WRITE
@@ -1279,7 +1306,29 @@ paths:
     delete:
       summary: Delete a label group
       operationId: deleteLabelGroup
-      description: "Delete a specific label group, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n:::\n\nOnce the label group is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to apply labels from the group to new financial records (e.g. expenses). \n- Existing records that have not been completed and that contain labels from this group will be marked as invalid, and you'll need to update them to use different labels.\n- Completed records will not be affected by the change. \n\nA successful response does not get any content in return.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups)."
+      description: 'Delete a specific label group, based on its ID.
+
+
+        :::note
+
+        This operation is not supported for externally managed label groups.
+
+        :::
+
+
+        Once the label group is deleted, it will not be returned by the API or in the Revolut Business app, and:
+
+        - You will not be able to apply labels from the group to new financial records (e.g. expenses).
+
+        - Existing records that have not been completed and that contain labels from this group will be marked as invalid, and you''ll need to update them to use different labels.
+
+        - Completed records will not be affected by the change.
+
+
+        A successful response does not get any content in return.
+
+
+        For more details, see the guides: Manage accounting settings and Manage labels and label groups.'
       security:
       - AccessToken:
         - WRITE
@@ -1361,7 +1410,20 @@ paths:
     post:
       summary: Create a new label
       operationId: createLabel
-      description: "Add a new label to a label group. \n\n:::note\nThis operation is not supported for [externally managed labels](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n:::\n\nThe labels are used for accounting and can be applied to your financial records, such as expenses.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups)."
+      description: 'Add a new label to a label group.
+
+
+        :::note
+
+        This operation is not supported for externally managed labels.
+
+        :::
+
+
+        The labels are used for accounting and can be applied to your financial records, such as expenses.
+
+
+        For more details, see the guides: Manage accounting settings and Manage labels and label groups.'
       security:
       - AccessToken:
         - WRITE
@@ -1480,7 +1542,30 @@ paths:
     get:
       summary: Retrieve a list of labels from a label group
       operationId: getLabels
-      description: "Get labels from a specific label group based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 labels per request. \nThe default page size is 100.\n:::\n\nThe labels are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of labels returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.        \n  To get the next page of results, make a new request using that `next_page_token` value in `page_token`.\n- If the number of results is smaller than the page size, `next_page_token` is not returned.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups)."
+      description: 'Get labels from a specific label group based on the provided query criteria.
+
+
+        :::note
+
+        The API returns a maximum of 500 labels per request.
+
+        The default page size is 100.
+
+        :::
+
+
+        The labels are sorted by the `created_at` date in reverse chronological order, and they''re **paginated**.
+
+        The page size, that is, the maximum number of labels returned per page is specified by the `limit` parameter.
+
+        - If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.
+
+        To get the next page of results, make a new request using that `next_page_token` value in `page_token`.
+
+        - If the number of results is smaller than the page size, `next_page_token` is not returned.
+
+
+        For more details, see the guides: Manage accounting settings and Manage labels and label groups.'
       security:
       - AccessToken:
         - READ
@@ -1638,7 +1723,7 @@ paths:
         :::
 
 
-        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).'
+        For more details, see the guides: Manage accounting settings and Manage labels and label groups.'
       security:
       - AccessToken:
         - WRITE
@@ -1780,7 +1865,29 @@ paths:
     delete:
       summary: Delete a label
       operationId: deleteLabel
-      description: "Delete a specific label, based on the IDs of the label and its label group.\n\n:::note\nThis operation is not supported for [externally managed labels](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups#externally-managed-settings).\n:::\n\nOnce the label is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to apply it to new financial records (e.g. expenses). \n- Existing records with this label that have not been completed will be marked as invalid, and you'll need to update them to use a different label.\n- Completed records will not be affected by the change. \n\nA successful response does not get any content in return.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups)."
+      description: 'Delete a specific label, based on the IDs of the label and its label group.
+
+
+        :::note
+
+        This operation is not supported for externally managed labels.
+
+        :::
+
+
+        Once the label is deleted, it will not be returned by the API or in the Revolut Business app, and:
+
+        - You will not be able to apply it to new financial records (e.g. expenses).
+
+        - Existing records with this label that have not been completed will be marked as invalid, and you''ll need to update them to use a different label.
+
+        - Completed records will not be affected by the change.
+
+
+        A successful response does not get any content in return.
+
+
+        For more details, see the guides: Manage accounting settings and Manage labels and label groups.'
       security:
       - AccessToken:
         - WRITE
@@ -1875,12 +1982,12 @@ paths:
 
         :::note
 
-        This operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).
+        This operation is not supported for externally managed tax rates.
 
         :::
 
 
-        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).'
+        For more details, see the guides: Manage accounting settings and Manage tax rates.'
       security:
       - AccessToken:
         - WRITE
@@ -2003,7 +2110,30 @@ paths:
     get:
       summary: Retrieve a list of tax rates
       operationId: getTaxRates
-      description: "Get available tax rates based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 tax rates per request. \nThe default page size is 100.\n:::\n\nThe tax rates are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of tax rates returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.        \n  To get the next page of results, make a new request using that `next_page_token` value in `page_token`.\n- If the number of results is smaller than the page size, `next_page_token` is not returned.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates)."
+      description: 'Get available tax rates based on the provided query criteria.
+
+
+        :::note
+
+        The API returns a maximum of 500 tax rates per request.
+
+        The default page size is 100.
+
+        :::
+
+
+        The tax rates are sorted by the `created_at` date in reverse chronological order, and they''re **paginated**.
+
+        The page size, that is, the maximum number of tax rates returned per page is specified by the `limit` parameter.
+
+        - If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.
+
+        To get the next page of results, make a new request using that `next_page_token` value in `page_token`.
+
+        - If the number of results is smaller than the page size, `next_page_token` is not returned.
+
+
+        For more details, see the guides: Manage accounting settings and Manage tax rates.'
       security:
       - AccessToken:
         - READ
@@ -2156,7 +2286,7 @@ paths:
         The details include the tax rate name and percentage, as well as when the tax rate was added to your settings, and when it was last updated.
 
 
-        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).'
+        For more details, see the guides: Manage accounting settings and Manage tax rates.'
       security:
       - AccessToken:
         - READ
@@ -2239,12 +2369,12 @@ paths:
 
         :::note
 
-        This operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).
+        This operation is not supported for externally managed tax rates.
 
         :::
 
 
-        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).'
+        For more details, see the guides: Manage accounting settings and Manage tax rates.'
       security:
       - AccessToken:
         - WRITE
@@ -2378,7 +2508,29 @@ paths:
     delete:
       summary: Delete a tax rate
       operationId: deleteTaxRate
-      description: "Delete a specific tax rate, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates#externally-managed-settings).\n:::\n\nOnce the tax rate is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to apply it to new financial records (e.g. expenses). \n- Existing records with this tax rate that have not been completed will be marked as invalid, and you'll need to update them to use a different tax rate.\n- Completed records will not be affected by the change. \n\nA successful response does not get any content in return.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates)."
+      description: 'Delete a specific tax rate, based on its ID.
+
+
+        :::note
+
+        This operation is not supported for externally managed tax rates.
+
+        :::
+
+
+        Once the tax rate is deleted, it will not be returned by the API or in the Revolut Business app, and:
+
+        - You will not be able to apply it to new financial records (e.g. expenses).
+
+        - Existing records with this tax rate that have not been completed will be marked as invalid, and you''ll need to update them to use a different tax rate.
+
+        - Completed records will not be affected by the change.
+
+
+        A successful response does not get any content in return.
+
+
+        For more details, see the guides: Manage accounting settings and Manage tax rates.'
       security:
       - AccessToken:
         - WRITE
@@ -2458,40 +2610,6 @@ paths:
       - Accounting
 components:
   schemas:
-    TaxRateResponse:
-      type: object
-      required:
-      - id
-      - name
-      - created_at
-      - updated_at
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The unique ID of the tax rate.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the tax.
-          minLength: 1
-          maxLength: 20
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time the tax rate was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          description: The date and time the tax rate was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-          readOnly: true
-        percentage:
-          type: number
-          format: double
-          description: "The tax rate percentage applied to the taxable amount. For example, `23` for 23%.\n\n:::note\nYou cannot create negative tax rates manually. \nHowever, negative tax rates might be synced from your accounting software, if integrated. \n:::"
-          minimum: -100
-          maximum: 100
     CreateTaxRateRequest:
       allOf:
       - $ref: '#/components/schemas/AccountingTaxRate'
@@ -2499,16 +2617,6 @@ components:
         required:
         - name
         - percentage
-    CreateLabelRequest:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          description: The name for the new label.
-          type: string
-          minLength: 1
-          maxLength: 100
     CreateLabelGroupRequest:
       type: object
       required:
@@ -2532,6 +2640,78 @@ components:
           maxItems: 200
           items:
             $ref: '#/components/schemas/CreateLabelRequest'
+    PageToken:
+      type: string
+      format: byte
+      description: "Cursor for the next page. \nUsed for pagination when the total number of results exceeds the maximum number per page.\n\nTo get the next page of results, make a new request and set `page_token` to the `next_page_token` value returned in the previous response.\n:::note\nIf there are no more results to fetch, `next_page_token` is not returned in the response.\n:::"
+      example: MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA
+    LabelGroupResponse:
+      type: object
+      required:
+      - id
+      - name
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique ID of the label group.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the label group.
+          minLength: 1
+          maxLength: 100
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the label group was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the label group was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          readOnly: true
+    UpdateTaxRateRequest:
+      type: object
+      description: The new setting for the tax rate.
+      minProperties: 1
+      properties:
+        name:
+          description: The new name for the tax rate.
+          type: string
+          minLength: 1
+          maxLength: 20
+    ResourceCreatedResponse:
+      description: Successfully created resource.
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the created resource.
+    UpdateLabelRequest:
+      type: object
+      description: The new name for the label.
+      required:
+      - name
+      properties:
+        name:
+          description: The new name for the label.
+          type: string
+          minLength: 1
+          maxLength: 100
+    CreateLabelRequest:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          description: The name for the new label.
+          type: string
+          minLength: 1
+          maxLength: 100
     AccountingCategoryResponse:
       type: object
       required:
@@ -2568,15 +2748,24 @@ components:
           format: uuid
           description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) applied to items in this accounting category unless overridden for a specific item.
           example: 2a3520af-e6f7-416c-821e-0e83ffac1dfa
-    ResourceCreatedResponse:
-      description: Successfully created resource.
+    AccountingTaxRate:
       type: object
+      description: The tax rate that can be applied to financial records, such as expenses.
+      required:
+      - name
       properties:
-        id:
+        name:
           type: string
-          format: uuid
-          description: The ID of the created resource.
-    LabelGroupResponse:
+          description: The name of the tax.
+          minLength: 1
+          maxLength: 20
+        percentage:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 100
+          description: The tax rate percentage applied to the taxable amount. For example, `23` for 23%.
+    TaxRateResponse:
       type: object
       required:
       - id
@@ -2587,23 +2776,86 @@ components:
         id:
           type: string
           format: uuid
-          description: The unique ID of the label group.
+          description: The unique ID of the tax rate.
           readOnly: true
         name:
           type: string
-          description: The name of the label group.
+          description: The name of the tax.
           minLength: 1
-          maxLength: 100
+          maxLength: 20
         created_at:
           type: string
           format: date-time
-          description: The date and time the label group was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          description: The date and time the tax rate was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
           readOnly: true
         updated_at:
           type: string
           format: date-time
-          description: The date and time the label group was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          description: The date and time the tax rate was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
           readOnly: true
+        percentage:
+          type: number
+          format: double
+          description: "The tax rate percentage applied to the taxable amount. For example, `23` for 23%.\n\n:::note\nYou cannot create negative tax rates manually. \nHowever, negative tax rates might be synced from your accounting software, if integrated. \n:::"
+          minimum: -100
+          maximum: 100
+    UpdateAccountingCategoryRequest:
+      type: object
+      description: The new settings for the accounting category.
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          description: The new full name for the accounting category.
+          minLength: 1
+          maxLength: 60
+          example: Work From Home equipment
+        code:
+          type: string
+          description: The new code name for the accounting category.
+          minLength: 1
+          maxLength: 50
+          example: WFH
+        default_tax_rate_id:
+          type: string
+          format: uuid
+          description: The ID of the new default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
+          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
+    CreateAccountingCategoryRequest:
+      type: object
+      description: The accounting category to create.
+      required:
+      - name
+      - code
+      properties:
+        name:
+          type: string
+          description: The full name for the accounting category.
+          minLength: 1
+          maxLength: 60
+          example: Work From Home equipment
+        code:
+          type: string
+          description: The code name for the accounting category.
+          minLength: 1
+          maxLength: 50
+          example: WFH
+        default_tax_rate_id:
+          type: string
+          format: uuid
+          description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
+          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
+    UpdateLabelGroupRequest:
+      type: object
+      description: The new name for the label group.
+      required:
+      - name
+      properties:
+        name:
+          description: The new name for the label group.
+          type: string
+          minLength: 1
+          maxLength: 100
     LabelResponse:
       type: object
       required:
@@ -2632,106 +2884,6 @@ components:
           format: date-time
           description: The date and time the label was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
           readOnly: true
-    UpdateTaxRateRequest:
-      type: object
-      description: The new setting for the tax rate.
-      minProperties: 1
-      properties:
-        name:
-          description: The new name for the tax rate.
-          type: string
-          minLength: 1
-          maxLength: 20
-    CreateAccountingCategoryRequest:
-      type: object
-      description: The accounting category to create.
-      required:
-      - name
-      - code
-      properties:
-        name:
-          type: string
-          description: The full name for the accounting category.
-          minLength: 1
-          maxLength: 60
-          example: Work From Home equipment
-        code:
-          type: string
-          description: The code name for the accounting category.
-          minLength: 1
-          maxLength: 50
-          example: WFH
-        default_tax_rate_id:
-          type: string
-          format: uuid
-          description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
-          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
-    UpdateAccountingCategoryRequest:
-      type: object
-      description: The new settings for the accounting category.
-      minProperties: 1
-      properties:
-        name:
-          type: string
-          description: The new full name for the accounting category.
-          minLength: 1
-          maxLength: 60
-          example: Work From Home equipment
-        code:
-          type: string
-          description: The new code name for the accounting category.
-          minLength: 1
-          maxLength: 50
-          example: WFH
-        default_tax_rate_id:
-          type: string
-          format: uuid
-          description: The ID of the new default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
-          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
-    PageToken:
-      type: string
-      format: byte
-      description: "Cursor for the next page. \nUsed for pagination when the total number of results exceeds the maximum number per page.\n\nTo get the next page of results, make a new request and set `page_token` to the `next_page_token` value returned in the previous response.\n:::note\nIf there are no more results to fetch, `next_page_token` is not returned in the response.\n:::"
-      example: MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA
-    UpdateLabelRequest:
-      type: object
-      description: The new name for the label.
-      required:
-      - name
-      properties:
-        name:
-          description: The new name for the label.
-          type: string
-          minLength: 1
-          maxLength: 100
-    UpdateLabelGroupRequest:
-      type: object
-      description: The new name for the label group.
-      required:
-      - name
-      properties:
-        name:
-          description: The new name for the label group.
-          type: string
-          minLength: 1
-          maxLength: 100
-    AccountingTaxRate:
-      type: object
-      description: The tax rate that can be applied to financial records, such as expenses.
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of the tax.
-          minLength: 1
-          maxLength: 20
-        percentage:
-          type: number
-          format: double
-          minimum: 0
-          maximum: 100
-          description: The tax rate percentage applied to the taxable amount. For example, `23` for 23%.
     ErrorWithId:
       required:
       - code
@@ -2748,36 +2900,14 @@ components:
         message:
           type: string
           description: The description of the error.
+  parameters:
+    PageToken:
+      in: query
+      name: page_token
+      required: false
+      schema:
+        $ref: '#/components/schemas/PageToken'
   responses:
-    Forbidden:
-      description: 'Action forbidden - insufficient permissions to perform this action
-
-
-        Returned, for example, when you don''t have permissions necessary to perform this action.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorWithId'
-          example:
-            error_id: c5deadcc-1934-4438-818a-3c7ca1e6c01c
-            code: 9002
-            message: This action is forbidden
-    ResourceCreatedResponse:
-      description: 'Resource created
-
-
-        On successful creation, the response returns only the ID of the new resource, even if the resource has more properties.
-
-        To get all details, use the returned resource ID with a GET request.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ResourceCreatedResponse'
-          examples:
-            resource_created:
-              summary: Resource created
-              value:
-                id: 6a37383e-cfd3-4a2f-aa81-e3a6e6939efa
     ServiceUnavailable:
       description: 'Service Unavailable
 
@@ -2818,19 +2948,6 @@ components:
                 error_id: 7835beae-98ed-42dc-b993-95f4ded951a1
                 code: 1000
                 message: Invalid token. The authorization header must follow the 'Bearer <token>' format.
-    InternalServerError:
-      description: 'Internal server error
-
-
-        An unexpected application error occurred.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorWithId'
-          example:
-            error_id: 7f96652e-7518-4229-872b-4e4c867fb4da
-            code: 5000
-            message: An unexpected error occurred while processing your request. If the issue persists, please contact support
     TooManyRequests:
       description: 'Too many requests
 
@@ -2855,13 +2972,48 @@ components:
                 error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
                 code: 3162
                 message: Request rate limit has been reached. Try again after 30 seconds.
-  parameters:
-    PageToken:
-      in: query
-      name: page_token
-      required: false
-      schema:
-        $ref: '#/components/schemas/PageToken'
+    Forbidden:
+      description: 'Action forbidden - insufficient permissions to perform this action
+
+
+        Returned, for example, when you don''t have permissions necessary to perform this action.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          example:
+            error_id: c5deadcc-1934-4438-818a-3c7ca1e6c01c
+            code: 9002
+            message: This action is forbidden
+    InternalServerError:
+      description: 'Internal server error
+
+
+        An unexpected application error occurred.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          example:
+            error_id: 7f96652e-7518-4229-872b-4e4c867fb4da
+            code: 5000
+            message: An unexpected error occurred while processing your request. If the issue persists, please contact support
+    ResourceCreatedResponse:
+      description: 'Resource created
+
+
+        On successful creation, the response returns only the ID of the new resource, even if the resource has more properties.
+
+        To get all details, use the returned resource ID with a GET request.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResourceCreatedResponse'
+          examples:
+            resource_created:
+              summary: Resource created
+              value:
+                id: 6a37383e-cfd3-4a2f-aa81-e3a6e6939efa
   securitySchemes:
     AccessToken:
       type: http

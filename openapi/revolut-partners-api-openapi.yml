@@ -2,16 +2,7 @@ openapi: 3.2.0
 info:
   version: 2.0.0
   title: Crypto Ramp Partners API
-  description: 'Revolut’s Crypto Ramp API allows you to integrate with Revolut and redirect users directly to our checkout page, providing a smooth onramping experience for your users.
-
-    The API endpoints are organised into thematic groups and let you leverage the following features:
-
-    - [Partners](https://developer.revolut.com/docs/api/crypto-ramp#tag-partners) - poll different exchange rates, display them on your website and compare with other providers
-
-    - [Webhooks](https://developer.revolut.com/docs/api/crypto-ramp#tag-webhooks) - track order and payment lifecycle with webhooks
-
-
-    For more information, see the guides: [Leverage the Crypto Ramp API](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/use-the-api) and [Work with Webhooks -> Track order and payment lifecycle](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/work-with-webhooks/use-webhooks)'
+  description: Revolut’s Crypto Ramp API allows you to integrate with Revolut and redirect users directly to our checkout page, providing a smooth onramping experience for your users.
 servers:
 - url: https://ramp-partners.revolut.com/partners/api/2.0
 tags:
@@ -19,7 +10,7 @@ tags:
   description: 'The **Partners** endpoints let you poll different exchange rates, display them on your website and compare them with other providers.
 
 
-    For more details, see the guides: [Leverage the Crypto Ramp API](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/use-the-api).'
+    For more details, see the guides: Leverage the Crypto Ramp API.'
 paths:
   /config:
     get:
@@ -30,7 +21,7 @@ paths:
       description: 'Retrieve Revolut Ramp configuration, such as available fiat currencies and crypto tokens with corresponding limits and supported countries.
 
 
-        For more information, see the guides: [Leverage the Crypto Ramp API -> Get your configuration details](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/use-the-api#get-your-configuration-details).'
+        For more information, see the guides: Leverage the Crypto Ramp API -> Get your configuration details.'
       parameters:
       - $ref: '#/components/parameters/XApiKey'
       security:
@@ -101,7 +92,7 @@ paths:
         Use it to display potential exchange rate to your customer.
 
 
-        For more information, see the guides: [Leverage the Crypto Ramp API -> Get an order quote](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/use-the-api#get-an-order-quote).'
+        For more information, see the guides: Leverage the Crypto Ramp API -> Get an order quote.'
       security:
       - AccessToken: []
       parameters:
@@ -202,7 +193,7 @@ paths:
         :::
 
 
-        For more information, see the guides: [Leverage the Crypto Ramp API -> Get a Revolut Ramp Redirect URL](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/use-the-api#get-a-revolut-ramp-redirect-url).'
+        For more information, see the guides: Leverage the Crypto Ramp API -> Get a Revolut Ramp Redirect URL.'
       security:
       - AccessToken: []
       parameters:
@@ -312,7 +303,7 @@ paths:
       description: 'Retrieve an order by `order_id` provided in the path and the `wallet` address provided as a query parameter.
 
 
-        For more information, see the guides: [Leverage the Crypto Ramp API -> Get an order](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/use-the-api#get-an-order).'
+        For more information, see the guides: Leverage the Crypto Ramp API -> Get an order.'
       security:
       - AccessToken: []
       parameters:
@@ -398,7 +389,7 @@ paths:
         The results are sorted chronologically by the `created_at` date (i.e. oldest first).
 
 
-        For more information, see the guides: [Leverage the Crypto Ramp API -> Get all orders](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/use-the-api#get-all-orders).'
+        For more information, see the guides: Leverage the Crypto Ramp API -> Get all orders.'
       security:
       - AccessToken: []
       parameters:
@@ -499,14 +490,6 @@ paths:
           $ref: '#/components/responses/DisabledByKillSwitchErrorResponse'
 components:
   responses:
-    DisabledByKillSwitchErrorResponse:
-      description: The endpoint is disabled by Kill Switch
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/DisabledByKillSwitchError'
-          example:
-            message: Service is not available
     BadRequestErrorResponse:
       description: 'Bad request
 
@@ -518,14 +501,6 @@ components:
             $ref: '#/components/schemas/BadRequestError'
           example:
             message: Invalid field 'FieldName'
-    NotFoundErrorResponse:
-      description: Resource cannot be found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-          example:
-            message: Not found
     ServerErrorResponse:
       description: 'Server error
 
@@ -538,97 +513,67 @@ components:
           example:
             errorId: 201768bc-7fab-12ed-a1bb-0232ac120902
             timestamp: 1671481582960
+    DisabledByKillSwitchErrorResponse:
+      description: The endpoint is disabled by Kill Switch
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DisabledByKillSwitchError'
+          example:
+            message: Service is not available
+    NotFoundErrorResponse:
+      description: Resource cannot be found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+          example:
+            message: Not found
   schemas:
-    Orders:
-      type: array
-      items:
-        $ref: '#/components/schemas/Order'
+    DisabledByKillSwitchError:
+      type: object
+      description: Thrown when endpoint is disabled by Kill Switch.
+      required:
+      - message
+      properties:
+        message:
+          type: string
+          description: The message displayed to the user when endpoint is disabled by Kill Switch.
       example:
-      - $ref: '#/components/schemas/Order/example'
-      - id: 3afb8396-1cee-4562-bd0f-5aea5e674da9
-        fiat:
-          amount: 11.55
-          currency: GBP
-        crypto:
-          amount: 0.00889211
-          currency: ETH
-        fees:
-          ramp_fee:
-            amount: 2.4
-            currency: GBP
-          partner_fee:
-            amount: 0.8
-            currency: GBP
-          network_fee:
-            amount: 0.75
-            currency: GBP
-        exchange_rate: 0.00076988
-        payment: card
-        created_at: '2022-01-03T08:44:38Z'
-        updated_at: '2022-01-14T11:37:02Z'
-        status: COMPLETED
-        wallet: 1PUyin99nPbdm3NTa2BViJ1JsEe8e8iAcs
-        transaction_hash: d276938168a948e8eb5c99515baf9fb209c00b24c9521f0d4970c5e9f4dcc886
-        fees_partner_currency:
-          ramp_fee:
-            amount: 2.89
-            currency: EUR
-          partner_fee:
-            amount: 0.97
-            currency: EUR
-          network_fee:
-            amount: 0.91
-            currency: EUR
+        message: Service is not available
     CurrencyCryptoCode:
       type: string
       description: The [cryptocurrency code](https://en.wikipedia.org/wiki/List_of_cryptocurrencies).
       example: ETH
-    Currency:
-      type: string
-      description: The fiat currency [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code or [cryptocurrency code](https://en.wikipedia.org/wiki/List_of_cryptocurrencies).
-      examples:
-        fiatCurrency:
-          summary: Fiat currency
-          value: GBP
-        cryptoCurrency:
-          summary: Cryptocurrency
-          value: ETH
-    Blockchain:
-      type: string
-      description: The cryptocurrency blockchain/network.
-      enum:
-      - BITCOIN
-      - RIPPLE
-      - BITCOINCASH
-      - LITECOIN
-      - ETHEREUM
-      - DOGECOIN
-      - CARDANO
-      - STELLAR
-      - POLKADOT
-      - SOLANA
-      - AVALANCHE
-      - EOS
-      - TEZOS
-      - DASH
-      - ALGORAND
-      - CELO
-      - SMARTCHAIN
-      - POLYGON
-      - FANTOM
-      - OPTIMISM
-      - COSMOS
-      - KUSAMA
-      - ETHEREUMCLASSIC
-      - ETHEREUMPOW
-      - HEDERAHASHGRAPH
-      - TRON
-      - KAVA
-      - NEAR
-      - SONGBIRD
-      - FLARE
-      - CELESTIA
-      - BASE
+    UnexpectedError:
+      type: object
+      description: Thrown when an unexpected error happens.
+      required:
+      - errorId
+      - timestamp
+      properties:
+        errorId:
+          type: string
+          format: uuid
+          description: The UUID of the unexpected error that has occurred.
+        timestamp:
+          type: integer
+          format: int64
+          description: The timestamp of when the error happened.
+      example:
+        errorId: 201768bc-7fab-12ed-a1bb-0232ac120902
+        timestamp: 1671481582960
+    NotFoundError:
+      type: object
+      description: Thrown when resource can't be found
+      required:
+      - message
+      properties:
+        message:
+          type: string
+          description: The message displayed to the user when resource cannot be found.
+      example:
+        message: Not found
     Order:
       type: object
       description: Fiat to crypto exchange order
@@ -775,145 +720,6 @@ components:
           network_fee:
             amount: 0.78
             currency: EUR
-    MoneyCryptoId:
-      type: object
-      required:
-      - amount
-      - currencyId
-      properties:
-        amount:
-          type: number
-          format: float
-          description: The amount.
-        currencyId:
-          $ref: '#/components/schemas/CurrencyCryptoId'
-      example:
-        amount: 100
-        currencyId: USDT-ETH
-    DisabledByKillSwitchError:
-      type: object
-      description: Thrown when endpoint is disabled by Kill Switch.
-      required:
-      - message
-      properties:
-        message:
-          type: string
-          description: The message displayed to the user when endpoint is disabled by Kill Switch.
-      example:
-        message: Service is not available
-    CountryCode:
-      type: string
-      description: The [ISO 3166 Alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code of the country.
-      example: GB
-    BadRequestError:
-      type: object
-      description: Thrown when request parameter field is invalid
-      required:
-      - message
-      properties:
-        message:
-          type: string
-          description: Specifies the invalid parameter that was provided by the user.
-      example:
-        message: Invalid field 'FieldName'
-    Quote:
-      type: object
-      description: The exchange price between fiat and crypto currencies (including fees).
-      required:
-      - service_fee
-      - network_fee
-      - crypto
-      - partner_fee
-      properties:
-        service_fee:
-          $ref: '#/components/schemas/MoneyFiat'
-          description: 'The sum of Revolut Ramp fee and Partner fee.
-
-
-            :::note
-
-            The Partner fee is also provided separately in the `partner_fee` parameter.
-
-            :::'
-        network_fee:
-          $ref: '#/components/schemas/MoneyFiat'
-          description: Crypto network fee.
-        crypto:
-          $ref: '#/components/schemas/MoneyCryptoId'
-          description: Crypto amount that the customer receives in the case of a successful exchange.
-        partner_fee:
-          $ref: '#/components/schemas/MoneyFiat'
-          description: 'Partner fee.
-
-
-            :::note
-
-            This Partner fee is also included in the `service_fee` value, which represents the total sum of Partner fee and Revolut Ramp fee.
-
-            :::'
-      example:
-        service_fee:
-          amount: 3.76
-          currency: USD
-        network_fee:
-          amount: 0.91
-          currency: USD
-        crypto:
-          amount: 0.10604352
-          currencyId: ETH
-        partner_fee:
-          amount: 0.77
-          currency: USD
-    CurrencyCryptoId:
-      type: string
-      description: The ID of the currency, obtained from the [`/config`](https://developer.revolut.com/docs/api/crypto-ramp#retrieve-configuration) endpoint.
-      example: USDT-ETH
-    CurrencyFiat:
-      type: string
-      format: ISO 4217
-      description: The fiat currency [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code.
-      example: GBP
-    NotFoundError:
-      type: object
-      description: Thrown when resource can't be found
-      required:
-      - message
-      properties:
-        message:
-          type: string
-          description: The message displayed to the user when resource cannot be found.
-      example:
-        message: Not found
-    UnexpectedError:
-      type: object
-      description: Thrown when an unexpected error happens.
-      required:
-      - errorId
-      - timestamp
-      properties:
-        errorId:
-          type: string
-          format: uuid
-          description: The UUID of the unexpected error that has occurred.
-        timestamp:
-          type: integer
-          format: int64
-          description: The timestamp of when the error happened.
-      example:
-        errorId: 201768bc-7fab-12ed-a1bb-0232ac120902
-        timestamp: 1671481582960
-    RampRedirectUrl:
-      type: object
-      description: Redirect URL to Ramp app widget
-      required:
-      - ramp_redirect_url
-      properties:
-        ramp_redirect_url:
-          type: string
-          format: uri
-          description: The URL to Revolut Ramp to which to redirect the customer for the purchase.
-      example:
-        ramp_redirect_url: https://ramp.revolut.com?fiatCurrency=GBP&amount=12345&cryptoCurrency=ETH&walletAddress=0x96e2B7Bf479f84e7A0a94f0620290B7D3E08f5EF&countryCode=GB&partnerId=a01798bc-7f0b-14ed-a12b-0e3fac1209ad&externalOrderId=2d1769bc-7aab-92ed-a10b-0232ac12090d&disableFiatAmount=true&disableCryptoCurrency=true&disableWalletAddress=true&disableCountryCode=true&partnerRedirectUrl=https%3A%2F%2Fcrypto.partner.com%2Forder%3ForderId%3D2d1769bc-7aab-92ed-a10b-0232ac12090d
     Config:
       type: object
       required:
@@ -1048,6 +854,191 @@ components:
       example:
         amount: 100
         currency: USD
+    Orders:
+      type: array
+      items:
+        $ref: '#/components/schemas/Order'
+      example:
+      - $ref: '#/components/schemas/Order/example'
+      - id: 3afb8396-1cee-4562-bd0f-5aea5e674da9
+        fiat:
+          amount: 11.55
+          currency: GBP
+        crypto:
+          amount: 0.00889211
+          currency: ETH
+        fees:
+          ramp_fee:
+            amount: 2.4
+            currency: GBP
+          partner_fee:
+            amount: 0.8
+            currency: GBP
+          network_fee:
+            amount: 0.75
+            currency: GBP
+        exchange_rate: 0.00076988
+        payment: card
+        created_at: '2022-01-03T08:44:38Z'
+        updated_at: '2022-01-14T11:37:02Z'
+        status: COMPLETED
+        wallet: 1PUyin99nPbdm3NTa2BViJ1JsEe8e8iAcs
+        transaction_hash: d276938168a948e8eb5c99515baf9fb209c00b24c9521f0d4970c5e9f4dcc886
+        fees_partner_currency:
+          ramp_fee:
+            amount: 2.89
+            currency: EUR
+          partner_fee:
+            amount: 0.97
+            currency: EUR
+          network_fee:
+            amount: 0.91
+            currency: EUR
+    CurrencyFiat:
+      type: string
+      format: ISO 4217
+      description: The fiat currency [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code.
+      example: GBP
+    Quote:
+      type: object
+      description: The exchange price between fiat and crypto currencies (including fees).
+      required:
+      - service_fee
+      - network_fee
+      - crypto
+      - partner_fee
+      properties:
+        service_fee:
+          $ref: '#/components/schemas/MoneyFiat'
+          description: 'The sum of Revolut Ramp fee and Partner fee.
+
+
+            :::note
+
+            The Partner fee is also provided separately in the `partner_fee` parameter.
+
+            :::'
+        network_fee:
+          $ref: '#/components/schemas/MoneyFiat'
+          description: Crypto network fee.
+        crypto:
+          $ref: '#/components/schemas/MoneyCryptoId'
+          description: Crypto amount that the customer receives in the case of a successful exchange.
+        partner_fee:
+          $ref: '#/components/schemas/MoneyFiat'
+          description: 'Partner fee.
+
+
+            :::note
+
+            This Partner fee is also included in the `service_fee` value, which represents the total sum of Partner fee and Revolut Ramp fee.
+
+            :::'
+      example:
+        service_fee:
+          amount: 3.76
+          currency: USD
+        network_fee:
+          amount: 0.91
+          currency: USD
+        crypto:
+          amount: 0.10604352
+          currencyId: ETH
+        partner_fee:
+          amount: 0.77
+          currency: USD
+    Currency:
+      type: string
+      description: The fiat currency [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code or [cryptocurrency code](https://en.wikipedia.org/wiki/List_of_cryptocurrencies).
+      examples:
+        fiatCurrency:
+          summary: Fiat currency
+          value: GBP
+        cryptoCurrency:
+          summary: Cryptocurrency
+          value: ETH
+    MoneyCryptoId:
+      type: object
+      required:
+      - amount
+      - currencyId
+      properties:
+        amount:
+          type: number
+          format: float
+          description: The amount.
+        currencyId:
+          $ref: '#/components/schemas/CurrencyCryptoId'
+      example:
+        amount: 100
+        currencyId: USDT-ETH
+    BadRequestError:
+      type: object
+      description: Thrown when request parameter field is invalid
+      required:
+      - message
+      properties:
+        message:
+          type: string
+          description: Specifies the invalid parameter that was provided by the user.
+      example:
+        message: Invalid field 'FieldName'
+    CountryCode:
+      type: string
+      description: The [ISO 3166 Alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code of the country.
+      example: GB
+    CurrencyCryptoId:
+      type: string
+      description: The ID of the currency, obtained from the [`/config`](https://developer.revolut.com/docs/api/crypto-ramp#retrieve-configuration) endpoint.
+      example: USDT-ETH
+    Blockchain:
+      type: string
+      description: The cryptocurrency blockchain/network.
+      enum:
+      - BITCOIN
+      - RIPPLE
+      - BITCOINCASH
+      - LITECOIN
+      - ETHEREUM
+      - DOGECOIN
+      - CARDANO
+      - STELLAR
+      - POLKADOT
+      - SOLANA
+      - AVALANCHE
+      - EOS
+      - TEZOS
+      - DASH
+      - ALGORAND
+      - CELO
+      - SMARTCHAIN
+      - POLYGON
+      - FANTOM
+      - OPTIMISM
+      - COSMOS
+      - KUSAMA
+      - ETHEREUMCLASSIC
+      - ETHEREUMPOW
+      - HEDERAHASHGRAPH
+      - TRON
+      - KAVA
+      - NEAR
+      - SONGBIRD
+      - FLARE
+      - CELESTIA
+      - BASE
+    RampRedirectUrl:
+      type: object
+      description: Redirect URL to Ramp app widget
+      required:
+      - ramp_redirect_url
+      properties:
+        ramp_redirect_url:
+          type: string
+          format: uri
+          description: The URL to Revolut Ramp to which to redirect the customer for the purchase.
+      example:
+        ramp_redirect_url: https://ramp.revolut.com?fiatCurrency=GBP&amount=12345&cryptoCurrency=ETH&walletAddress=0x96e2B7Bf479f84e7A0a94f0620290B7D3E08f5EF&countryCode=GB&partnerId=a01798bc-7f0b-14ed-a12b-0e3fac1209ad&externalOrderId=2d1769bc-7aab-92ed-a10b-0232ac12090d&disableFiatAmount=true&disableCryptoCurrency=true&disableWalletAddress=true&disableCountryCode=true&partnerRedirectUrl=https%3A%2F%2Fcrypto.partner.com%2Forder%3ForderId%3D2d1769bc-7aab-92ed-a10b-0232ac12090d
   parameters:
     XApiKey:
       type: apiKey

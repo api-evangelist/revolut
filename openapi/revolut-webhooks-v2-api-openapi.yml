@@ -2,7 +2,7 @@ openapi: 3.2.0
 info:
   version: '1.0'
   title: Business Webhooks (v2) API
-  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  description: As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.
   contact: {}
 servers:
 - url: https://b2b.revolut.com/api/1.0
@@ -10,8 +10,10 @@ servers:
 - url: https://sandbox-b2b.revolut.com/api/1.0
   description: Sandbox server (uses test data)
 tags:
-- name: Webhooks (v2)
-  description: ":::note\nThis is the latest version of the Webhooks API, v2. For the previous version of the API, see [Webhooks (v1) (deprecated)](https://developer.revolut.com/docs/api/business#tag-webhooks-v1-deprecated).\n:::\n\nA webhook (also called a web callback) allows your system to receive updates about your account to an HTTPS endpoint that you provide.\nWhen a supported event occurs, a notification is posted via HTTP `POST` method to the specified endpoint. \n\nIf the receiver returns an HTTP error response, Revolut will retry the webhook event three more times, each with a 10-minute interval.\n\nThe following events are supported:\n\n- `TransactionCreated`\n- `TransactionStateChanged`\n- `PayoutLinkCreated`\n- `PayoutLinkStateChanged`\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks)."
+- name: Webhooks V2
+  description: ':::note
+
+    This is the latest version of the Webhooks API, v2.'
 paths:
   /webhooks:
     servers:
@@ -27,7 +29,7 @@ paths:
         Only HTTPS URLs are supported.
 
 
-        For more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#create-a-webhook).'
+        For more information, see the guides: About webhooks and Manage webhooks.'
       security:
       - AccessToken:
         - WRITE
@@ -82,14 +84,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-      - Webhooks (v2)
+      - Webhooks V2
     get:
       summary: Retrieve a list of webhooks
       operationId: getWebhooks
       description: 'Get the list of all your existing webhooks and their details.
 
 
-        For more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#retrieve-a-list-of-webhooks).'
+        For more information, see the guides: About webhooks and Manage webhooks.'
       security:
       - AccessToken:
         - READ
@@ -110,7 +112,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-      - Webhooks (v2)
+      - Webhooks V2
   /webhooks/{webhook_id}:
     servers:
     - url: https://b2b.revolut.com/api/2.0
@@ -123,7 +125,7 @@ paths:
       description: 'Get the information about a specific webhook by ID.
 
 
-        For more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#retrieve-a-specific-webhook).'
+        For more information, see the guides: About webhooks and Manage webhooks.'
       security:
       - AccessToken:
         - READ
@@ -174,7 +176,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-      - Webhooks (v2)
+      - Webhooks V2
     patch:
       summary: Update a webhook
       operationId: updateWebhook
@@ -184,7 +186,7 @@ paths:
         You must specify at least one of these two. The fields that you don''t specify are not updated.
 
 
-        For more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#update-a-webhook).'
+        For more information, see the guides: About webhooks and Manage webhooks.'
       security:
       - AccessToken:
         - WRITE
@@ -250,7 +252,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-      - Webhooks (v2)
+      - Webhooks V2
     delete:
       summary: Delete a webhook
       operationId: deleteWebhook
@@ -260,7 +262,7 @@ paths:
         A successful response does not get any content in return.
 
 
-        For more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#delete-a-webhook).'
+        For more information, see the guides: About webhooks and Manage webhooks.'
       security:
       - AccessToken:
         - WRITE
@@ -291,7 +293,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-      - Webhooks (v2)
+      - Webhooks V2
   /webhooks/{webhook_id}/rotate-signing-secret:
     servers:
     - url: https://b2b.revolut.com/api/2.0
@@ -304,7 +306,7 @@ paths:
       description: 'Rotate a signing secret for a specific webhook.
 
 
-        For more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#rotate-a-webhook-signing-secret).'
+        For more information, see the guides: About webhooks and Manage webhooks.'
       security:
       - AccessToken:
         - WRITE
@@ -374,7 +376,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-      - Webhooks (v2)
+      - Webhooks V2
   /webhooks/{webhook_id}/failed-events:
     servers:
     - url: https://b2b.revolut.com/api/2.0
@@ -384,7 +386,20 @@ paths:
     get:
       summary: Retrieve a list of failed webhook events
       operationId: getFailedWebhookEvents
-      description: "Get the list of all your failed webhook events, or use the query parameters to filter the results.\n\nThe events are sorted by the `created_at` date in reverse chronological order.\n\nThe returned failed events are **paginated**. \nThe maximum number of events returned per page is specified by the `limit` parameter.\nTo get to the next page, make a new request and use the `created_at` date of the last event returned in the previous response.\n\nFor more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#retrieve-a-list-of-failed-webhook-events)."
+      description: 'Get the list of all your failed webhook events, or use the query parameters to filter the results.
+
+
+        The events are sorted by the `created_at` date in reverse chronological order.
+
+
+        The returned failed events are **paginated**.
+
+        The maximum number of events returned per page is specified by the `limit` parameter.
+
+        To get to the next page, make a new request and use the `created_at` date of the last event returned in the previous response.
+
+
+        For more information, see the guides: About webhooks and Manage webhooks.'
       security:
       - AccessToken:
         - READ
@@ -498,72 +513,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       tags:
-      - Webhooks (v2)
+      - Webhooks V2
 components:
   schemas:
-    WebhookSigningSecretRotateRequest:
-      type: object
-      properties:
-        expiration_period:
-          type: string
-          format: duration
-          description: The expiration period for the signing secret in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601#Durations). If set, when you rotate the secret, it continues to be valid until the expiration period has passed. Otherwise, on rotation, the secret is invalidated immediately. The maximum value is 7 days.
-          maximum: P7D
-          example: PT5H30M
-          default: P0D
-    UpdateWebhookRequest:
-      type: object
-      properties:
-        url:
-          $ref: '#/components/schemas/Url'
-          description: A valid webhook URL to which to send event notifications. The supported protocol is `https`.
-        events:
-          description: A list of event types to subscribe to.
-          type: array
-          items:
-            $ref: '#/components/schemas/WebhookEventType'
-    Webhooks:
-      type: array
-      items:
-        $ref: '#/components/schemas/Webhook-v2-basic'
-    Webhook-v2:
-      type: object
-      required:
-      - id
-      - url
-      - events
-      - signing_secret
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the webhook.
-        url:
-          type: string
-          format: uri
-          description: The valid webhook URL that event notifications are sent to. The supported protocol is `https`.
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebhookEventType'
-          description: The list of event types that you are subscribed to.
-        signing_secret:
-          type: string
-          description: The signing secret for the webhook.
-      example:
-        id: 6fc346be-5cb5-4c14-aadc-e8aba6a655d7
-        url: https://www.example.com/
-        events:
-        - TransactionCreated
-        signing_secret: wsk_4jETWMz1g1b37gCONjNp84t2KSSIT7dK
-    WebhookEvents:
-      type: array
-      items:
-        $ref: '#/components/schemas/WebhookEvent'
-    Url:
-      description: A valid webhook URL to which to send event notifications. The supported protocol is `https`.
-      type: string
-      format: uri
     WebhookEvent:
       type: object
       required:
@@ -602,6 +554,54 @@ components:
           type: string
           format: date-time
           description: The date and time the last attempt at the event delivery occurred in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+    WebhookEvents:
+      type: array
+      items:
+        $ref: '#/components/schemas/WebhookEvent'
+    Url:
+      description: A valid webhook URL to which to send event notifications. The supported protocol is `https`.
+      type: string
+      format: uri
+    Webhook-v2:
+      type: object
+      required:
+      - id
+      - url
+      - events
+      - signing_secret
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the webhook.
+        url:
+          type: string
+          format: uri
+          description: The valid webhook URL that event notifications are sent to. The supported protocol is `https`.
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookEventType'
+          description: The list of event types that you are subscribed to.
+        signing_secret:
+          type: string
+          description: The signing secret for the webhook.
+      example:
+        id: 6fc346be-5cb5-4c14-aadc-e8aba6a655d7
+        url: https://www.example.com/
+        events:
+        - TransactionCreated
+        signing_secret: wsk_4jETWMz1g1b37gCONjNp84t2KSSIT7dK
+    WebhookSigningSecretRotateRequest:
+      type: object
+      properties:
+        expiration_period:
+          type: string
+          format: duration
+          description: The expiration period for the signing secret in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601#Durations). If set, when you rotate the secret, it continues to be valid until the expiration period has passed. Otherwise, on rotation, the secret is invalidated immediately. The maximum value is 7 days.
+          maximum: P7D
+          example: PT5H30M
+          default: P0D
     WebhookEventType:
       enum:
       - TransactionCreated
@@ -609,6 +609,10 @@ components:
       - PayoutLinkCreated
       - PayoutLinkStateChanged
       description: The type of the webhook event to subscribe to.
+    Webhooks:
+      type: array
+      items:
+        $ref: '#/components/schemas/Webhook-v2-basic'
     Webhook-v2-basic:
       type: object
       required:
@@ -634,18 +638,6 @@ components:
         url: https://www.example.com/
         events:
         - TransactionCreated
-    Error:
-      type: object
-      properties:
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
-      required:
-      - code
-      - message
     CreateWebhookRequest:
       type: object
       required:
@@ -664,7 +656,36 @@ components:
           default:
           - TransactionCreated
           - TransactionStateChanged
+    UpdateWebhookRequest:
+      type: object
+      properties:
+        url:
+          $ref: '#/components/schemas/Url'
+          description: A valid webhook URL to which to send event notifications. The supported protocol is `https`.
+        events:
+          description: A list of event types to subscribe to.
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookEventType'
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
   examples:
+    webhookV2BasicSelectedEvents:
+      id: c6db947e-e9ce-41c2-b445-02e6eb741d21
+      url: https://www.example.com
+      events:
+      - TransactionCreated
+      - PayoutLinkCreated
     webhookV2BasicAllEvents:
       id: 9f9919a2-932d-498f-a088-3a01b9080c4a
       url: https://www.revolut.com
@@ -673,12 +694,6 @@ components:
       - TransactionStateChanged
       - PayoutLinkCreated
       - PayoutLinkStateChanged
-    webhookV2BasicSelectedEvents:
-      id: c6db947e-e9ce-41c2-b445-02e6eb741d21
-      url: https://www.example.com
-      events:
-      - TransactionCreated
-      - PayoutLinkCreated
   securitySchemes:
     AccessToken:
       type: http

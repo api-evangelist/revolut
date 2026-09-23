@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Open Banking Draft payment API
-  description: "The Revolut Open Banking API is the gateway for third-party providers to interact with Revolut customers and products.\n\n:::tip[Before you get started]\nTo learn more about the Open Banking API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/build-banking-apps/introduction-to-the-open-banking-api/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Open Banking**.\n:::\n\nYou can take advantage of the Open Banking API to build your banking applications whether you are:\n- A regulated third party provider that wants to get account and transaction information of Revolut customers and initiate different types of payments, or\n- An innovative service provider that is looking to seamlessly integrate Revolut functions into your own applications.\n\nAs such, you can use the Open Banking API to leverage the following features:\n- [Account management](https://developer.revolut.com/docs/api/open-banking#tag-accounts)\n- [Transaction management](https://developer.revolut.com/docs/api/open-banking#tag-transactions)\n- Payment management:\n  - Domestic: [Domestic payments](https://developer.revolut.com/docs/api/open-banking#tag-domestic-payment), [Domestic scheduled payments](https://developer.revolut.com/docs/api/open-banking#tag-domestic-scheduled-payment), [Domestic standing orders](https://developer.revolut.com/docs/api/open-banking#tag-domestic-standing-order)\n  - International: [International payments](https://developer.revolut.com/docs/api/open-banking#tag-international-payment), [International scheduled payments](https://developer.revolut.com/docs/api/open-banking#tag-international-scheduled-payment), [International standing orders](https://developer.revolut.com/docs/api/open-banking#tag-international-standing-order)\n  - Other: [Draft payments](https://developer.revolut.com/docs/api/open-banking#tag-draft-payment), [File payments](https://developer.revolut.com/docs/api/open-banking#tag-file-payment)\n- [Application management](https://developer.revolut.com/docs/api/open-banking#tag-applications)\n\nBrowse the menu on the left to see the reference for the specific endpoints and operations of this API.\nYou can also go to [Updates](https://developer.revolut.com/blog) to learn about upcoming changes and other news related to the Open Banking API.\n\n### Test the Open Banking API\n\nYou can test the Open Banking API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)\n\n## Get Access token\n\n### Certificates\n\nYou must use a transport certificate and its private key in order to request an access token.\n\n- For Sandbox testing, you can use the `transport.pem` certificate file which you obtained in [Convert certificates](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/prepare-sandbox-environment#convert-certificates) together with the private key generated in step [Generate a CSR](https://developer.revolut.com/docs/guides/build-banking-apps/get-started/prepare-sandbox-environment#generate-a-csr).\n\n- For Production, you will need to use a valid OBIE or eIDAS transport certificate from a regulated Certificate Authority, and its corresponding private key.\n\n:::note\nRevolut Open Banking API servers use certificates issued by Open Banking Limited.\n\nYou can find the root and issuing certificates [here](https://openbanking.atlassian.net/wiki/spaces/DZ/pages/23494678/Certificates+and+Software+Statements) if you need to add them to your truststore.\n:::\n\n### Headers\n\n- `Content-Type: application/x-www-form-urlencoded`\n\n### Parameters\n\n- `grant_type`: Must be set to `client_credentials` to get the access token.\n- `scope`: Must be set to `accounts`.\n\n### Example\n\n:::note\nThe parameters `-k` or `--insecure` are not necessary if you added Open Banking Root and Issuing certificates to your truststore.\n:::\n\n**For production:**\n\n```shell\ncurl -k --cert transport.pem --key private.key \\\n--location -X POST 'https://oba-auth.revolut.com/token' \\\n--header 'Content-Type: application/x-www-form-urlencoded' \\\n-d 'grant_type=client_credentials' \\\n-d 'scope=accounts' \\\n```\n\n**For sandbox:**\n\n```shell\ncurl -k --cert transport.pem --key private.key \\\n--location -X POST 'https://sandbox-oba-auth.revolut.com/token' \\\n--header 'Content-Type: application/x-www-form-urlencoded' \\\n-d 'grant_type=client_credentials' \\\n-d 'scope=accounts' \\\n```\n\n## Response\n\nThe response contains the following JSON object:\n\n```json\n{\n    \"access_token\":\"<access token>\",\n    \"token_type\":\"Bearer\",\n    \"expires_in\":2399\n}\n```\n\n**What's next**\n\nUse this access token as the authentication bearer for all subsequent requests to the API, as described in the [Tutorials](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/get-account-and-transaction-information) section.\nWhen your certificate expires, repeat the steps above to create a new one."
+  description: The Revolut Open Banking API is the gateway for third-party providers to interact with Revolut customers and products.
   version: v3.1.0
 servers:
 - url: https://oba-auth.revolut.com
@@ -25,7 +25,7 @@ tags:
     :::
 
 
-    For more information, see [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments).'
+    For more information, see Tutorials: Work with draft payments.'
 paths:
   /draft-payments:
     get:
@@ -38,7 +38,7 @@ paths:
       description: 'Get draft payments list sorted by creation time in descending order.
 
 
-        See also [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments) and [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment#6-get-list-of-draft-payments).'
+        See also Tutorials: Work with draft payments and Tutorials: Create your first draft payment.'
       servers:
       - url: https://apis.revolut.com
         description: Production server (uses live data)
@@ -104,7 +104,7 @@ paths:
         - draftpayments
       description: 'Before you begin, ensure that you''ve got an access token.
 
-        For information about getting the access token, see [Tutorial: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment).
+        For information about getting the access token, see Tutorial: Create your first draft payment.
 
         Then, you can use the `/draft_payments` endpoint to create a draft payment on behalf of a user, and the draft payment appears in the user account where they can approve or reject.
 
@@ -122,7 +122,7 @@ paths:
 
         :::note
 
-        Download an [example CSV file](https://assets.revolut.com/api-docs/oba-api/draft_payments.csv).
+        Download an example CSV file.
 
         :::
 
@@ -130,7 +130,7 @@ paths:
         For the format of the CSV file, check the request body details.
 
 
-        See also [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments).'
+        See also Tutorials: Work with draft payments.'
       servers:
       - url: https://apis.revolut.com
         description: Production server (uses live data)
@@ -307,7 +307,7 @@ paths:
         A draft payment transfer can be deleted only if the user hasn''t taken any action upon it, for example, approved or executed the draft payment.
 
 
-        See also [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments) and [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment).'
+        See also Tutorials: Work with draft payments and Tutorials: Create your first draft payment.'
       servers:
       - url: https://apis.revolut.com
         description: Production server (uses live data)
@@ -376,7 +376,7 @@ paths:
       description: 'Get the details about a specific draft payment with the given draft payment ID.
 
 
-        See also [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment#5-get-a-draft-payment) and [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments).'
+        See also Tutorials: Create your first draft payment and Tutorials: Work with draft payments.'
       servers:
       - url: https://apis.revolut.com
         description: Production server (uses live data)
@@ -445,7 +445,7 @@ paths:
         A draft payment can be deleted only if the user hasn''t taken any action upon it, for example, approved or executed the draft payment.
 
 
-        See also [Tutorials: Work with draft payments](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/work-with-draft-payments) and [Tutorials: Create your first draft payment](https://developer.revolut.com/docs/guides/build-banking-apps/tutorials/create-your-first-draft-payment).'
+        See also Tutorials: Work with draft payments and Tutorials: Create your first draft payment.'
       servers:
       - url: https://apis.revolut.com
         description: Production server (uses live data)
@@ -498,24 +498,26 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    CsvError:
+    ErrorDetails:
+      type: array
+      description: The  details of the error.
+      items:
+        $ref: '#/components/schemas/ErrorDetail'
+    FieldError:
       required:
       - Code
-      - Id
       - Message
       type: object
       properties:
+        Message:
+          type: string
+          description: The error message for the field.
         Code:
           type: integer
           description: The error code in high level that helps categorize the error.
-        Id:
+        Field:
           type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        Message:
-          type: string
-          description: The error message.
-        Errors:
-          $ref: '#/components/schemas/ErrorDetails'
+          description: The name of the field.
     ErrorDetail:
       required:
       - Errors
@@ -529,6 +531,74 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FieldError'
+    Amount:
+      pattern: ^\d{1,13}\.\d{1,5}$
+      type: string
+      description: The amount of money.
+    DraftPaymentTransfer:
+      required:
+      - Id
+      - InstructedAmount
+      - Reference
+      - Status
+      type: object
+      properties:
+        Id:
+          type: string
+          description: The ID of the transfer.
+          format: uuid
+        InstructedAmount:
+          $ref: '#/components/schemas/InstructedAmount'
+        Reference:
+          type: string
+          description: The reference of the draft payment.
+        Status:
+          $ref: '#/components/schemas/DraftPaymentTransferStatus'
+        Index:
+          type: integer
+          description: The row number the draft payment represents in the CSV file.
+        FailedReason:
+          type: string
+          description: The reason of the `failed` draft payment.
+        FailedReasonCode:
+          type: integer
+          description: The reason code for the `failed` draft payment.
+    DraftPaymentResponse:
+      required:
+      - DraftPaymentId
+      - Status
+      - Transfers
+      type: object
+      properties:
+        DraftPaymentId:
+          type: string
+          description: The ID of the draft payment.
+          format: uuid
+        RequestedExecutionDate:
+          type: string
+          description: The execution date the draft payment is requested.
+          format: YYYY-MM-DD
+        Status:
+          $ref: '#/components/schemas/DraftPaymentStatus'
+        Transfers:
+          $ref: '#/components/schemas/DraftPaymentTransfers'
+    DraftPaymentStatus:
+      type: string
+      description: The status of the draft payment.
+      enum:
+      - Awaiting
+      - Processed
+      - Approved
+      - Deleted
+    DraftPaymentTransferStatus:
+      type: string
+      description: The status of the draft payment.
+      enum:
+      - Created
+      - Pending
+      - Completed
+      - Failed
+      - Deleted
     DraftPaymentListResponse:
       required:
       - Items
@@ -569,29 +639,6 @@ components:
               description: Relative URI to the next page.
               format: uri
           description: Links relevant to the payload.
-    DraftPaymentResponse:
-      required:
-      - DraftPaymentId
-      - Status
-      - Transfers
-      type: object
-      properties:
-        DraftPaymentId:
-          type: string
-          description: The ID of the draft payment.
-          format: uuid
-        RequestedExecutionDate:
-          type: string
-          description: The execution date the draft payment is requested.
-          format: YYYY-MM-DD
-        Status:
-          $ref: '#/components/schemas/DraftPaymentStatus'
-        Transfers:
-          $ref: '#/components/schemas/DraftPaymentTransfers'
-    Currency:
-      pattern: ^[A-Z]{3}$
-      type: string
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
     InstructedAmount:
       required:
       - Amount
@@ -602,11 +649,14 @@ components:
           $ref: '#/components/schemas/Amount'
         Currency:
           $ref: '#/components/schemas/Currency'
-    ErrorDetails:
+    Currency:
+      pattern: ^[A-Z]{3}$
+      type: string
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    DraftPaymentTransfers:
       type: array
-      description: The  details of the error.
       items:
-        $ref: '#/components/schemas/ErrorDetail'
+        $ref: '#/components/schemas/DraftPaymentTransfer'
     Error:
       required:
       - Code
@@ -623,74 +673,24 @@ components:
         Message:
           type: string
           description: The error message.
-    DraftPaymentTransferStatus:
-      type: string
-      description: The status of the draft payment.
-      enum:
-      - Created
-      - Pending
-      - Completed
-      - Failed
-      - Deleted
-    FieldError:
+    CsvError:
       required:
       - Code
+      - Id
       - Message
       type: object
       properties:
-        Message:
-          type: string
-          description: The error message for the field.
         Code:
           type: integer
           description: The error code in high level that helps categorize the error.
-        Field:
-          type: string
-          description: The name of the field.
-    DraftPaymentTransfers:
-      type: array
-      items:
-        $ref: '#/components/schemas/DraftPaymentTransfer'
-    Amount:
-      pattern: ^\d{1,13}\.\d{1,5}$
-      type: string
-      description: The amount of money.
-    DraftPaymentTransfer:
-      required:
-      - Id
-      - InstructedAmount
-      - Reference
-      - Status
-      type: object
-      properties:
         Id:
           type: string
-          description: The ID of the transfer.
-          format: uuid
-        InstructedAmount:
-          $ref: '#/components/schemas/InstructedAmount'
-        Reference:
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        Message:
           type: string
-          description: The reference of the draft payment.
-        Status:
-          $ref: '#/components/schemas/DraftPaymentTransferStatus'
-        Index:
-          type: integer
-          description: The row number the draft payment represents in the CSV file.
-        FailedReason:
-          type: string
-          description: The reason of the `failed` draft payment.
-        FailedReasonCode:
-          type: integer
-          description: The reason code for the `failed` draft payment.
-    DraftPaymentStatus:
-      type: string
-      description: The status of the draft payment.
-      enum:
-      - Awaiting
-      - Processed
-      - Approved
-      - Deleted
+          description: The error message.
+        Errors:
+          $ref: '#/components/schemas/ErrorDetails'
   securitySchemes:
     AccessToken:
       type: apiKey

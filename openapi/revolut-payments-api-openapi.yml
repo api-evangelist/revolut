@@ -2,70 +2,7 @@ openapi: 3.2.0
 info:
   title: Merchant Payments API
   version: '2026-04-20'
-  description: 'Welcome to the Revolut Merchant API - your solution to managing the core aspects of e-commerce and accepting online payments. Whether you''re a startup, a growing business, or an established enterprise in the e-commerce industry, our API helps you streamline your operations.
-
-
-    As a Revolut Business customer with a Merchant Account, you can use the
-
-    Merchant API to leverage the following features:
-
-
-    - [Order management](https://developer.revolut.com/docs/api/merchant#tag-orders)
-
-    - [Customer management](https://developer.revolut.com/docs/api/merchant#tag-customers)
-
-    - [Payment management](https://developer.revolut.com/docs/api/merchant#tag-payments)
-
-    - [Subscription management](https://developer.revolut.com/docs/api/merchant#tag-subscriptions)
-
-    - [Payout management](https://developer.revolut.com/docs/api/merchant#tag-payouts)
-
-    - [Dispute management](https://developer.revolut.com/docs/api/merchant#tag-disputes)
-
-    - [Reporting analytics](https://developer.revolut.com/docs/api/merchant#tag-report-runs)
-
-    - [Webhook management](https://developer.revolut.com/docs/api/merchant#tag-webhooks)
-
-    - [Location management](https://developer.revolut.com/docs/api/merchant#tag-locations)
-
-
-    ... and more.
-
-
-    ### API versions
-
-
-    :::warning
-
-    We highly recommend using versioning in your API calls. If you don''t provide a version header on the operations where it''s required, you will receive an error response.
-
-    :::
-
-
-    The Merchant API uses request header versioning. Where it is required you need to use the `Revolut-Api-Version` header parameter to specify an API version. Each request, where it is indicated in the API specification, must contain a version header in the following format:
-
-
-    ```
-
-    ''Revolut-Api-Version: 2026-04-20''
-
-    ```
-
-
-    :::info
-
-    For more information, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions)
-
-    :::
-
-
-    ### Test the Merchant API
-
-
-    You can test the Merchant API in Postman by forking this collection:
-
-
-    [![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)'
+  description: Welcome to the Revolut Merchant API - your solution to managing the core aspects of e-commerce and accepting online payments.
   contact: {}
 servers:
 - description: Production server (uses live data)
@@ -81,7 +18,7 @@ tags:
 
     :::info
 
-    For more information about the payment lifecycle, see: [Order and payment lifecycle](https://developer.revolut.com/docs/guides/merchant/reference/order-lifecycle).
+    For more information about the payment lifecycle, see: Order and payment lifecycle.
 
     :::'
 paths:
@@ -92,7 +29,46 @@ paths:
     post:
       summary: Pay for an order
       operationId: payOrder
-      description: "Initiate a payment to pay full amount for an order using a customer's saved payment method.\n\n:::note\nThe `/orders/{order_id}/confirm` endpoint has been deprecated. It will be only supported for already existing implementations.\n:::\n\n:::warning\nThis endpoint is part of a new API, pay attention to the different endpoint URL. \n:::\n\nFor more information about how to save and charge payment methods, see: [Charge a customer's saved payment method](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/charge-saved-payment-method).\n\nThe following table shows who can initiate payments on saved payment methods (`initiator` parameter), depending on if the payment method was saved for the customer or the merchant (`savedPaymentMethodFor` parameter):\n\n  |                           | `savePaymentMethodFor: customer` | `savePaymentMethodFor: merchant` |\n  | ------------------------- | -------------------------------- | -------------------------------- |\n  | **`initiator: customer`** | Allowed                          | Allowed                          |\n  | **`initiator: merchant`** | Not allowed                      | Allowed                          |\n\n\n:::note\nUsing this endpoint, only merchant initiated payments are supported with Revolut Pay.\n:::\n          \nFor more information about customers' payment methods, see the [Retrieve payment method list of a customer](https://developer.revolut.com/docs/api/merchant#retrieve-payment-method-list) operation."
+      description: 'Initiate a payment to pay full amount for an order using a customer''s saved payment method.
+
+
+        :::note
+
+        The `/orders/{order_id}/confirm` endpoint has been deprecated. It will be only supported for already existing implementations.
+
+        :::
+
+
+        :::warning
+
+        This endpoint is part of a new API, pay attention to the different endpoint URL.
+
+        :::
+
+
+        For more information about how to save and charge payment methods, see: Charge a customer''s saved payment method.
+
+
+        The following table shows who can initiate payments on saved payment methods (`initiator` parameter), depending on if the payment method was saved for the customer or the merchant (`savedPaymentMethodFor` parameter):
+
+
+        | | `savePaymentMethodFor: customer` | `savePaymentMethodFor: merchant` |
+
+        | ------------------------- | -------------------------------- | -------------------------------- |
+
+        | **`initiator: customer`** | Allowed | Allowed |
+
+        | **`initiator: merchant`** | Not allowed | Allowed |
+
+
+        :::note
+
+        Using this endpoint, only merchant initiated payments are supported with Revolut Pay.
+
+        :::
+
+
+        For more information about customers'' payment methods, see the Retrieve payment method list of a customer operation.'
       requestBody:
         content:
           application/json:
@@ -251,7 +227,21 @@ paths:
     get:
       summary: Retrieve payment list of an order
       operationId: retrievePaymentList
-      description: "Retrieve a list of payments for a specific order, based on the order's ID.\n\n:::note\nThis endpoint is part of a new API, pay attention to the different endpoint URL.\n:::\n\nUse this endpoint to retrieve payment details for saved payment methods to make merchant and customer initiated transactions. For more information, see: \n  - [Speed up customer checkout by using saved card details](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/checkout-with-saved-card)\n  - [Manage subscriptions](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/subscription-management)"
+      description: 'Retrieve a list of payments for a specific order, based on the order''s ID.
+
+
+        :::note
+
+        This endpoint is part of a new API, pay attention to the different endpoint URL.
+
+        :::
+
+
+        Use this endpoint to retrieve payment details for saved payment methods to make merchant and customer initiated transactions. For more information, see:
+
+        - Speed up customer checkout by using saved card details
+
+        - Manage subscriptions'
       responses:
         '200':
           description: List of payments
@@ -339,7 +329,14 @@ paths:
     get:
       summary: Retrieve payment details
       operationId: retrievePaymentDetails
-      description: "Retrieve information about a specific payment, based on the payment's ID.\n\nUse this endpoint to track a payment's lifecycle, for example:\n  - When you develop a [1-click checkout process](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/checkout-with-saved-card)\n  - When you build a [subscription management system](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/save-payment-methods/subscription-management)"
+      description: 'Retrieve information about a specific payment, based on the payment''s ID.
+
+
+        Use this endpoint to track a payment''s lifecycle, for example:
+
+        - When you develop a 1-click checkout process
+
+        - When you build a subscription management system'
       responses:
         '200':
           description: Payment details
@@ -636,29 +633,204 @@ paths:
       - Payments
 components:
   schemas:
-    Revolut-Pay:
-      discriminator:
-        propertyName: subtype
-        mapping:
-          revolut_pay_account: '#/components/schemas/RPay-Account'
-          revolut_pay_card: '#/components/schemas/RPay-Card'
-      oneOf:
-      - $ref: '#/components/schemas/RPay-Account'
-      - $ref: '#/components/schemas/RPay-Card'
-    Card-For-Payment-Details:
+    Payment-Risk-Level:
+      type: string
+      description: 'The risk level of the card.
+
+
+        If the risk level is `high`, the payment might be declined.'
+      enum:
+      - low
+      - high
+    Browser-Environment:
+      type: object
+      description: Browser environment
       properties:
         type:
           type: string
           enum:
-          - card
-          - revolut_pay
-          description: The type of payment method used to pay for the order.
-        brand:
+          - browser
+          example: browser
+          description: Type of environment where the payment was made.
+        time_zone_utc_offset:
+          type: integer
+          example: 180
+          description: Defines the offset to UTC in minutes.
+        color_depth:
+          type: integer
+          example: 32
+          description: The browser's available colour depth.
+        screen_width:
+          type: integer
+          example: 1920
+          description: The browser's screen width in pixels.
+        screen_height:
+          type: integer
+          example: 1080
+          description: The browser's screen height in pixels.
+        java_enabled:
+          type: boolean
+          example: false
+          description: Indicates if the browser has Java enabled.
+        challenge_window_width:
+          type: integer
+          example: 640
+          description: Defines the width of the pop-up window where the authentication challenge appears.
+        browser_url:
           type: string
-          description: The type of the card.
-        last_four:
+          format: url
+          example: https://business.revolut.com
+          description: The URL of the page where the payment was initiated.
+      required:
+      - type
+      - time_zone_utc_offset
+      - color_depth
+      - screen_width
+      - screen_height
+      - java_enabled
+    Payer:
+      title: Payer
+      type: object
+      description: 'The person who made the payment. This object is present when an email or phone number is provided during the payment flow.
+
+
+        Capturing payer details lets you identify exactly who authorised the charge, reach the right person for receipts or refund queries, and support compliance or fraud-review workflows where the paying identity matters.'
+      properties:
+        email:
+          $ref: '#/components/schemas/Email'
+          description: The email of the person who made the payment.
+        phone:
+          $ref: '#/components/schemas/Phone'
+          description: The phone number of the payer in [E.164 format](https://en.wikipedia.org/wiki/E.164).
+    Payment-Created:
+      type: string
+      format: date-time
+      description: The date and time the payment was created.
+    Sepa-Direct-Debit-Mandate-Reference:
+      type: string
+      description: The unique mandate reference generated by Revolut. Include this in pre-debit notifications sent to your customers.
+    Address-v2:
+      type: object
+      description: Object containing address details.
+      properties:
+        street_line_1:
           type: string
-          description: The last four digits of the card number.
+          description: Street line 1 information.
+          maxLength: 100
+        street_line_2:
+          type: string
+          description: Street line 2 information.
+          maxLength: 100
+        region:
+          type: string
+          description: The region associated with the address.
+          maxLength: 100
+        city:
+          type: string
+          description: The city associated with the address.
+          maxLength: 100
+        country_code:
+          type: string
+          description: The 2-letter country code of the country associated with the address.
+          maxLength: 2
+        postcode:
+          type: string
+          description: The postcode associated with the address.
+          maxLength: 100
+      required:
+      - country_code
+      - postcode
+    Fee:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of the order fee.
+          enum:
+          - fx
+          - acquiring
+        amount:
+          type: integer
+          description: The amount of the payment fee (minor currency unit). For example, enter `7034` for €70.34 in the field.
+        currency:
+          type: string
+          description: 'The currency of the payment fee. [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
+
+
+            :::info
+
+            For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
+
+            :::'
+    Fees:
+      type: array
+      description: The details of the order fee.
+      items:
+        $ref: '#/components/schemas/Fee'
+    Payment-Method-Type:
+      type: string
+      enum:
+      - apple_pay
+      - card
+      - google_pay
+      - revolut_pay_card
+      - revolut_pay_account
+      - sepa_direct_debit
+      description: 'The type of payment method used to pay for the order.
+
+
+        Available values:
+
+
+        | Payment method `type` | Description |
+
+        | --------------------- | ----------- |
+
+        | `apple_pay` | The customer paid the order using Apple Pay. |
+
+        | `card` | The customer paid the order using their credit or debit card. |
+
+        | `google_pay` | The customer paid the order using Google Pay. |
+
+        | `revolut_pay_card` | The customer paid the order via Revolut Pay using their credit or debit card. |
+
+        | `revolut_pay_account` | The customer paid the order via Revolut Pay using their Revolut account. |
+
+        | `sepa_direct_debit` | The customer paid the order using SEPA Direct Debit. |'
+    Terminal-Hardware-Id:
+      type: string
+      description: 'The hardware identifier of the Revolut Terminal device used to process the payment.
+
+
+        :::note
+
+        Only present for card-present transactions processed via Revolut Terminal.
+
+        :::'
+    Three-Ds-Fingerprint:
+      title: three_ds_fingerprint
+      type: object
+      description: Information about the 3DS fingerprint challenge.
+      properties:
+        type:
+          $ref: '#/components/schemas/Authentication-Challenge-Type'
+        fingerprint_url:
+          type: string
+          format: url
+          description: The URL of the fingerprint. (Used only internally by Revolut.)
+        fingerprint_data:
+          type: string
+          format: JSON
+          description: 'Data about the fingerprint used for authentication. (Used only internally
+
+            by Revolut.)'
+      required:
+      - type
+      - fingerprint_url
+      - fingerprint_data
+    Revolut-Pay-Account:
+      type: object
+      properties:
         id:
           type: string
           format: uuid
@@ -667,68 +839,15 @@ components:
 
             :::note
 
-            The `id` parameter is only returned if the payment method is saved.
+            The `id` parameter is only returned when the payment method is saved.
 
             :::'
+        type:
+          $ref: '#/components/schemas/Payment-Method-Type'
+        fingerprint:
+          $ref: '#/components/schemas/Fingerprint'
       required:
       - type
-    Phone:
-      type: string
-      description: The phone number of the customer in [E.164 format](https://en.wikipedia.org/wiki/E.164).
-    Saved-Payment-Method:
-      type: object
-      properties:
-        saved_payment_method:
-          type: object
-          description: Object containing information about the saved payment method used to pay for the order.
-          properties:
-            type:
-              type: string
-              enum:
-              - card
-              - revolut_pay
-              description: Type of saved payment method.
-              example: card
-            id:
-              type: string
-              description: Saved payment method ID.
-            initiator:
-              type: string
-              description: "Indicates who is allowed to initiate the payment. \n\n:::note\nUsing this endpoint, only merchant initiated payments are supported with Revolut Pay.\n:::"
-              enum:
-              - customer
-              - merchant
-              example: customer
-            environment:
-              $ref: '#/components/schemas/Environment'
-          required:
-          - type
-          - id
-          - initiator
-          - environment
-      required:
-      - saved_payment_method
-    Email:
-      type: string
-      format: email
-      description: The email address of the customer.
-    Payment-Updated:
-      type: string
-      format: date-time
-      description: The date and time the payment was last updated.
-    Payment-Settled-Currency:
-      type: string
-      description: 'The currency of the settled payment. [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
-
-
-        :::info
-
-        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
-
-        :::'
-    Sepa-Direct-Debit-Mandate-Reference:
-      type: string
-      description: The unique mandate reference generated by Revolut. Include this in pre-debit notifications sent to your customers.
     Card:
       type: object
       description: Object containing details of the card used for the payment.
@@ -796,291 +915,77 @@ components:
           $ref: '#/components/schemas/Network-Transaction-Id'
       required:
       - type
-    Three-Ds-Fingerprint:
-      title: three_ds_fingerprint
-      type: object
-      description: Information about the 3DS fingerprint challenge.
-      properties:
-        type:
-          $ref: '#/components/schemas/Authentication-Challenge-Type'
-        fingerprint_url:
-          type: string
-          format: url
-          description: The URL of the fingerprint. (Used only internally by Revolut.)
-        fingerprint_data:
-          type: string
-          format: JSON
-          description: 'Data about the fingerprint used for authentication. (Used only internally
-
-            by Revolut.)'
-      required:
-      - type
-      - fingerprint_url
-      - fingerprint_data
-    Payer:
-      title: Payer
-      type: object
-      description: 'The person who made the payment. This object is present when an email or phone number is provided during the payment flow.
-
-
-        Capturing payer details lets you identify exactly who authorised the charge, reach the right person for receipts or refund queries, and support compliance or fraud-review workflows where the paying identity matters.'
-      properties:
-        email:
-          $ref: '#/components/schemas/Email'
-          description: The email of the person who made the payment.
-        phone:
-          $ref: '#/components/schemas/Phone'
-          description: The phone number of the payer in [E.164 format](https://en.wikipedia.org/wiki/E.164).
-    Payment-Settled-Amount:
-      type: integer
-      description: The amount of the settled payment (minor currency unit). For example, `7034` stands for €70.34.
-    Terminal-Hardware-Id:
+    Payment-Token:
       type: string
-      description: 'The hardware identifier of the Revolut Terminal device used to process the payment.
-
-
-        :::note
-
-        Only present for card-present transactions processed via Revolut Terminal.
-
-        :::'
-    Sepa-Direct-Debit:
+      format: uuid
+      description: "Temporary token of the payment used to fetch the reward offer during checkout and link user registrations to the given offers. \n\nThe token is only valid for a limited time."
+    Saved-Payment-Method:
       type: object
-      description: 'Object containing details of a SEPA Direct Debit payment.
-
-
-        :::info
-
-        For more information, see: [SEPA Direct Debit server-to-server integration](https://developer.revolut.com/docs/guides/merchant/accept-payments/payment-methods/sepa-direct-debit/server-to-server)
-
-        :::'
       properties:
-        id:
-          type: string
-          format: uuid
-          description: 'ID of the saved payment method.
-
-
-            :::note
-
-            The `id` parameter is only returned when the payment method is saved for the merchant.
-
-            :::'
-        type:
-          $ref: '#/components/schemas/Payment-Method-Type'
-        debtor_iban_last_four:
-          $ref: '#/components/schemas/Sepa-Direct-Debit-Debtor-Iban-Last-Four'
-        debtor_name:
-          $ref: '#/components/schemas/Sepa-Direct-Debit-Debtor-Name'
-        mandate_reference:
-          $ref: '#/components/schemas/Sepa-Direct-Debit-Mandate-Reference'
+        saved_payment_method:
+          type: object
+          description: Object containing information about the saved payment method used to pay for the order.
+          properties:
+            type:
+              type: string
+              enum:
+              - card
+              - revolut_pay
+              description: Type of saved payment method.
+              example: card
+            id:
+              type: string
+              description: Saved payment method ID.
+            initiator:
+              type: string
+              description: "Indicates who is allowed to initiate the payment. \n\n:::note\nUsing this endpoint, only merchant initiated payments are supported with Revolut Pay.\n:::"
+              enum:
+              - customer
+              - merchant
+              example: customer
+            environment:
+              $ref: '#/components/schemas/Environment'
+          required:
+          - type
+          - id
+          - initiator
+          - environment
       required:
-      - type
-    Payment-Method-v2:
-      type: object
-      description: The details of the payment method used to make the payment.
-      discriminator:
-        propertyName: type
-        mapping:
-          apple_pay: '#/components/schemas/Apple-Pay'
-          card: '#/components/schemas/Card'
-          google_pay: '#/components/schemas/Google-Pay'
-          revolut_pay_card: '#/components/schemas/Revolut-Pay-Card'
-          revolut_pay_account: '#/components/schemas/Revolut-Pay-Account'
-          sepa_direct_debit: '#/components/schemas/Sepa-Direct-Debit'
-      oneOf:
-      - $ref: '#/components/schemas/Apple-Pay'
-      - $ref: '#/components/schemas/Card'
-      - $ref: '#/components/schemas/Google-Pay'
-      - $ref: '#/components/schemas/Revolut-Pay-Card'
-      - $ref: '#/components/schemas/Revolut-Pay-Account'
-      - $ref: '#/components/schemas/Sepa-Direct-Debit'
-    Decline-Reason-v2:
+      - saved_payment_method
+    Order-Id:
       type: string
-      description: 'The reason for a `failed` or `declined` payment.
-
-
-        A failed or declined payment can result from multiple reasons. To learn more, check our [failure reasons](https://developer.revolut.com/docs/guides/merchant/reference/error-codes/decline-reasons).'
-      enum:
-      - 3ds_challenge_abandoned
-      - 3ds_challenge_failed_manually
-      - cardholder_name_missing
-      - customer_challenge_abandoned
-      - customer_challenge_failed
-      - customer_name_mismatch
-      - do_not_honour
-      - expired_card
-      - high_risk
-      - insufficient_funds
-      - invalid_address
-      - invalid_amount
-      - invalid_card
-      - invalid_country
-      - invalid_cvv
-      - invalid_email
-      - invalid_expiry
-      - invalid_merchant
-      - invalid_phone
-      - invalid_pin
-      - issuer_not_available
-      - pick_up_card
-      - rejected_by_customer
-      - restricted_card
-      - suspected_fraud
-      - technical_error
-      - transaction_not_allowed_for_cardholder
-      - unknown_card
-      - withdrawal_limit_exceeded
-    Fees:
-      type: array
-      description: The details of the order fee.
-      items:
-        $ref: '#/components/schemas/Fee'
-    Three-Ds-Fingerprint-v2:
-      title: three_ds_fingerprint
-      type: object
-      description: Information about the 3DS fingerprint challenge.
-      properties:
-        type:
-          $ref: '#/components/schemas/Authentication-Challenge-Type'
-        fingerprint_html:
-          type: string
-          format: byte
-          description: 'Base64-encoded HTML string for the 3DS fingerprint challenge. This HTML is fully
-
-            constructed by Revolut — no modifications are needed.
-
-
-            Decode this value using a `base64` decoder and render the resulting HTML in your
-
-            front-end application. Revolut automatically moves the payment to the full 3DS
-
-            challenge if the fingerprint is not handled within 15 seconds.'
-      required:
-      - type
-      - fingerprint_html
-    Fee:
+      format: uuid
+      description: Permanent order ID used to retrieve, capture, cancel, or refund an order after authorization.
+    Error-v2:
+      title: Error
       type: object
       properties:
-        type:
+        code:
           type: string
-          description: The type of the order fee.
-          enum:
-          - fx
-          - acquiring
-        amount:
+          description: 'An identifier that can be used to determine what went wrong.
+
+
+            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
+        message:
+          type: string
+          description: Some human readable text describing what went wrong.
+        timestamp:
           type: integer
-          description: The amount of the payment fee (minor currency unit). For example, enter `7034` for €70.34 in the field.
-        currency:
-          type: string
-          description: 'The currency of the payment fee. [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
-
-
-            :::info
-
-            For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
-
-            :::'
-    Payment-Amount:
-      type: integer
-      format: int64
-      minimum: 0
-      description: 'The payment amount in minor units (e.g., cents). The value of this field depends on the payment type and state.
-
-
-        | Payment type | State | Amount value |
-
-        |--------------|-------|--------------|
-
-        | Standard payment | Any | Total payment amount |
-
-        | Pre-authorised payment | `authorisation_started` | New amount being authorised (during increment processing) |
-
-        | Pre-authorised payment | `authorised` | Currently authorised amount (equals `authorised_amount`) |
-
-
-        :::info
-
-        For pre-authorised payments, see the `authorised_amount` field for tracking the currently authorised amount separately.
-
-        :::'
-      example: 600
-    Authentication-Challenge:
-      type: object
-      description: 'Details about the authentication challenge that should be performed to complete the authentication process. For more information about Revolut''s 3DS solution, see: [3D Secure overview](https://developer.revolut.com/docs/guides/merchant/reference/3d-secure).
-
-
-        Only returned if the payment''s state is `authentication_challenge`.'
-      discriminator:
-        propertyName: type
-        mapping:
-          three_ds: '#/components/schemas/Three-Ds'
-          three_ds_fingerprint: '#/components/schemas/Three-Ds-Fingerprint'
-      oneOf:
-      - $ref: '#/components/schemas/Three-Ds'
-      - $ref: '#/components/schemas/Three-Ds-Fingerprint'
+          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
     Payment-Id:
       type: string
       format: uuid
       description: The ID of the payment.
-    Bank-Message:
+    Authorisation-Code:
       type: string
-      description: The reason for a `failed` or `declined` payment, sent by the financial institution processing the payment.
-    Payment-Retrieval:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/Payment-Id'
-        order_id:
-          $ref: '#/components/schemas/Order-Id'
-        payment_method:
-          type: object
-          description: The payment method used to pay for the order.
-          discriminator:
-            propertyName: type
-            mapping:
-              revolut_pay: '#/components/schemas/Revolut-Pay'
-              card: '#/components/schemas/Card-For-Payment-Details'
-              sepa_direct_debit: '#/components/schemas/Sepa-Direct-Debit'
-          oneOf:
-          - $ref: '#/components/schemas/Revolut-Pay'
-          - $ref: '#/components/schemas/Card-For-Payment-Details'
-          - $ref: '#/components/schemas/Sepa-Direct-Debit'
-        token:
-          $ref: '#/components/schemas/Payment-Token'
-        amount:
-          $ref: '#/components/schemas/Payment-Amount'
-        currency:
-          $ref: '#/components/schemas/Currency'
-        state:
-          $ref: '#/components/schemas/Payment-State-v2'
-        decline_reason:
-          $ref: '#/components/schemas/Decline-Reason-v2'
-        authentication_challenge:
-          $ref: '#/components/schemas/Authentication-Challenge'
-      required:
-      - id
-      - order_id
-      - payment_method
-    Currency:
-      type: string
-      format: ISO 4217
-      minLength: 3
-      maxLength: 3
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
+      description: 'The authorisation code (or auth code) is a short, alphanumeric code returned by the cardholder''s issuing bank to the merchant''s terminal or payment gateway.
 
 
-        :::info
-
-        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
-
-        :::'
-    Authentication-Challenge-Type:
-      type: string
-      enum:
-      - three_ds
-      - three_ds_fingerprint
-      description: Type of the authentication challenge the payment triggers.
+        It serves as confirmation that the transaction has been approved and funds are available.'
+      example: T483XF
+      pattern: ^[a-zA-Z0-9]{2,6}$
+      minLength: 2
+      maxLength: 6
     Card-Checks-v2:
       type: object
       description: The details of the check for card payment. Only for orders with successful payments.
@@ -1154,6 +1059,162 @@ components:
           - not_match
           - n_a
           - invalid
+    Payment-Authorised-Amount:
+      type: integer
+      description: 'The currently authorised amount for this payment (in minor units).
+
+
+        For pre-authorised payments with incremental authorization:
+
+        - Initially equals the `amount` field
+
+        - Remains unchanged during increment processing
+
+        - Updates to new amount upon successful increment
+
+        - Remains at original amount if increment is declined
+
+
+        For standard payments, this field may not be present or will equal the `amount` field.'
+      example: 600
+    RPay-Account:
+      properties:
+        type:
+          type: string
+          enum:
+          - card
+          - revolut_pay
+          description: The type of payment method used to pay for the order.
+        subtype:
+          type: string
+          enum:
+          - revolut_account
+          - card
+          description: Indicates whether the customer used their card or Revolut account via Revolut Pay.
+        id:
+          type: string
+          format: uuid
+          description: 'ID of the saved payment method.
+
+
+            :::note
+
+            The `id` parameter is only returned if the payment method is saved.
+
+            :::'
+      required:
+      - type
+      - subtype
+    Three-Ds:
+      title: three_ds
+      type: object
+      description: Information about the 3DS challenge.
+      properties:
+        type:
+          $ref: '#/components/schemas/Authentication-Challenge-Type'
+        acs_url:
+          type: string
+          format: url
+          description: The URL of the authentication challenge.
+      required:
+      - type
+      - acs_url
+    RPay-Card:
+      properties:
+        type:
+          type: string
+          enum:
+          - card
+          - revolut_pay
+          description: The type of payment method used to pay for the order.
+        subtype:
+          type: string
+          enum:
+          - revolut_account
+          - card
+          description: Indicates whether the customer used their card or Revolut account via Revolut Pay.
+        id:
+          type: string
+          format: uuid
+          description: 'ID of the saved payment method.
+
+
+            :::note
+
+            The `id` parameter is only returned if the payment method is saved.
+
+            :::'
+        brand:
+          type: string
+          description: The type of the card.
+        last_four:
+          type: string
+          description: The last four digits of the card number.
+      required:
+      - type
+      - subtype
+    Payment-Method-v2:
+      type: object
+      description: The details of the payment method used to make the payment.
+      discriminator:
+        propertyName: type
+        mapping:
+          apple_pay: '#/components/schemas/Apple-Pay'
+          card: '#/components/schemas/Card'
+          google_pay: '#/components/schemas/Google-Pay'
+          revolut_pay_card: '#/components/schemas/Revolut-Pay-Card'
+          revolut_pay_account: '#/components/schemas/Revolut-Pay-Account'
+          sepa_direct_debit: '#/components/schemas/Sepa-Direct-Debit'
+      oneOf:
+      - $ref: '#/components/schemas/Apple-Pay'
+      - $ref: '#/components/schemas/Card'
+      - $ref: '#/components/schemas/Google-Pay'
+      - $ref: '#/components/schemas/Revolut-Pay-Card'
+      - $ref: '#/components/schemas/Revolut-Pay-Account'
+      - $ref: '#/components/schemas/Sepa-Direct-Debit'
+    Email:
+      type: string
+      format: email
+      description: The email address of the customer.
+    Decline-Reason-v2:
+      type: string
+      description: 'The reason for a `failed` or `declined` payment.
+
+
+        A failed or declined payment can result from multiple reasons. To learn more, check our [failure reasons](https://developer.revolut.com/docs/guides/merchant/reference/error-codes/decline-reasons).'
+      enum:
+      - 3ds_challenge_abandoned
+      - 3ds_challenge_failed_manually
+      - cardholder_name_missing
+      - customer_challenge_abandoned
+      - customer_challenge_failed
+      - customer_name_mismatch
+      - do_not_honour
+      - expired_card
+      - high_risk
+      - insufficient_funds
+      - invalid_address
+      - invalid_amount
+      - invalid_card
+      - invalid_country
+      - invalid_cvv
+      - invalid_email
+      - invalid_expiry
+      - invalid_merchant
+      - invalid_phone
+      - invalid_pin
+      - issuer_not_available
+      - pick_up_card
+      - rejected_by_customer
+      - restricted_card
+      - suspected_fraud
+      - technical_error
+      - transaction_not_allowed_for_cardholder
+      - unknown_card
+      - withdrawal_limit_exceeded
+    Bank-Message:
+      type: string
+      description: The reason for a `failed` or `declined` payment, sent by the financial institution processing the payment.
     Arn:
       type: string
       description: 'Acquirer Reference Number (ARN) of the payment.
@@ -1190,9 +1251,56 @@ components:
           browser: '#/components/schemas/Browser-Environment'
       oneOf:
       - $ref: '#/components/schemas/Browser-Environment'
-    Google-Pay:
+    Payment-State-v2:
+      type: string
+      description: The status of the payment.
+      enum:
+      - pending
+      - authentication_challenge
+      - authentication_verified
+      - authorisation_started
+      - authorisation_passed
+      - authorised
+      - capture_started
+      - captured
+      - refund_validated
+      - refund_started
+      - cancellation_started
+      - declining
+      - completing
+      - cancelling
+      - failing
+      - completed
+      - declined
+      - soft_declined
+      - cancelled
+      - failed
+    Three-Ds-Fingerprint-v2:
+      title: three_ds_fingerprint
       type: object
-      description: Object containing details of a card used via Google Pay.
+      description: Information about the 3DS fingerprint challenge.
+      properties:
+        type:
+          $ref: '#/components/schemas/Authentication-Challenge-Type'
+        fingerprint_html:
+          type: string
+          format: byte
+          description: 'Base64-encoded HTML string for the 3DS fingerprint challenge. This HTML is fully
+
+            constructed by Revolut — no modifications are needed.
+
+
+            Decode this value using a `base64` decoder and render the resulting HTML in your
+
+            front-end application. Revolut automatically moves the payment to the full 3DS
+
+            challenge if the fingerprint is not handled within 15 seconds.'
+      required:
+      - type
+      - fingerprint_html
+    Revolut-Pay-Card:
+      type: object
+      description: Object containing details of a card used via Revolut Pay.
       properties:
         id:
           type: string
@@ -1257,96 +1365,25 @@ components:
           $ref: '#/components/schemas/Network-Transaction-Id'
       required:
       - type
-    Revolut-Pay-Account:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: 'ID of the saved payment method.
+    Payment-Settled-Currency:
+      type: string
+      description: 'The currency of the settled payment. [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
 
 
-            :::note
+        :::info
 
-            The `id` parameter is only returned when the payment method is saved.
+        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
 
-            :::'
-        type:
-          $ref: '#/components/schemas/Payment-Method-Type'
-        fingerprint:
-          $ref: '#/components/schemas/Fingerprint'
-      required:
-      - type
-    Payment-Method-Type:
+        :::'
+    Authentication-Challenge-Type:
       type: string
       enum:
-      - apple_pay
-      - card
-      - google_pay
-      - revolut_pay_card
-      - revolut_pay_account
-      - sepa_direct_debit
-      description: 'The type of payment method used to pay for the order.
-
-
-        Available values:
-
-
-        | Payment method `type` | Description |
-
-        | --------------------- | ----------- |
-
-        | `apple_pay` | The customer paid the order using Apple Pay. |
-
-        | `card` | The customer paid the order using their credit or debit card. |
-
-        | `google_pay` | The customer paid the order using Google Pay. |
-
-        | `revolut_pay_card` | The customer paid the order via Revolut Pay using their credit or debit card. |
-
-        | `revolut_pay_account` | The customer paid the order via Revolut Pay using their Revolut account. |
-
-        | `sepa_direct_debit` | The customer paid the order using SEPA Direct Debit. |'
-    Sepa-Direct-Debit-Debtor-Name:
-      type: string
-      description: The full name of the debtor as provided in the mandate.
-    RPay-Card:
-      properties:
-        type:
-          type: string
-          enum:
-          - card
-          - revolut_pay
-          description: The type of payment method used to pay for the order.
-        subtype:
-          type: string
-          enum:
-          - revolut_account
-          - card
-          description: Indicates whether the customer used their card or Revolut account via Revolut Pay.
-        id:
-          type: string
-          format: uuid
-          description: 'ID of the saved payment method.
-
-
-            :::note
-
-            The `id` parameter is only returned if the payment method is saved.
-
-            :::'
-        brand:
-          type: string
-          description: The type of the card.
-        last_four:
-          type: string
-          description: The last four digits of the card number.
-      required:
-      - type
-      - subtype
-    Revolut-Pay-Card:
+      - three_ds
+      - three_ds_fingerprint
+      description: Type of the authentication challenge the payment triggers.
+    Google-Pay:
       type: object
-      description: Object containing details of a card used via Revolut Pay.
+      description: Object containing details of a card used via Google Pay.
       properties:
         id:
           type: string
@@ -1417,92 +1454,6 @@ components:
 
 
         It can be used to trace the transaction across the payment network, link recurring or instalment payments to the original authorisation, and support dispute resolution.'
-    Browser-Environment:
-      type: object
-      description: Browser environment
-      properties:
-        type:
-          type: string
-          enum:
-          - browser
-          example: browser
-          description: Type of environment where the payment was made.
-        time_zone_utc_offset:
-          type: integer
-          example: 180
-          description: Defines the offset to UTC in minutes.
-        color_depth:
-          type: integer
-          example: 32
-          description: The browser's available colour depth.
-        screen_width:
-          type: integer
-          example: 1920
-          description: The browser's screen width in pixels.
-        screen_height:
-          type: integer
-          example: 1080
-          description: The browser's screen height in pixels.
-        java_enabled:
-          type: boolean
-          example: false
-          description: Indicates if the browser has Java enabled.
-        challenge_window_width:
-          type: integer
-          example: 640
-          description: Defines the width of the pop-up window where the authentication challenge appears.
-        browser_url:
-          type: string
-          format: url
-          example: https://business.revolut.com
-          description: The URL of the page where the payment was initiated.
-      required:
-      - type
-      - time_zone_utc_offset
-      - color_depth
-      - screen_width
-      - screen_height
-      - java_enabled
-    Capture-Deadline:
-      type: string
-      format: date-time
-      description: 'The date and time by which the payment must be captured.
-
-
-        After this deadline, the authorised funds may be automatically released by the card issuer.'
-    Payment-Risk-Level:
-      type: string
-      description: 'The risk level of the card.
-
-
-        If the risk level is `high`, the payment might be declined.'
-      enum:
-      - low
-      - high
-    Order-Id:
-      type: string
-      format: uuid
-      description: Permanent order ID used to retrieve, capture, cancel, or refund an order after authorization.
-    Payment-Token:
-      type: string
-      format: uuid
-      description: "Temporary token of the payment used to fetch the reward offer during checkout and link user registrations to the given offers. \n\nThe token is only valid for a limited time."
-    Fingerprint:
-      type: string
-      minLength: 44
-      maxLength: 44
-      description: "A unique identifier for a payment method, always 44 characters long. This fingerprint can be used to uniquely identify various payment methods.\n\n#### Fingerprint generation\n\n| Payment method | Description |\n| -------- | ----------- |\n| **All payment methods** | A fingerprint is generated for all payment methods, including cards, Revolut Pay (card, account-to-account payments), Apple Pay, and Google Pay. |\n| **Cards (Revolut Pay & Card Gateway)** | For cards, the fingerprint is based on the PAN. Cards processed via Revolut Pay and our card gateway will share the same fingerprint. Renewed cards (new expiry/CVV) retain the same fingerprint for efficient blocking. |\n| **Apple Pay & Google Pay** | Since Apple Pay and Google Pay provide us Device PANs (DPAN), the fingerprint is based on the DPAN provided by Apple/Google, not the connected card's PAN. This means that a new DPAN (and fingerprint) is generated for cards in case they are re-added to the customer's digital wallet, or added to different devices. |\n\n#### Detecting duplicate payment methods\n\nFingerprints are a valuable tool for detecting duplicate payment methods by identifying if a payment method has been seen before. This capability, in turn, helps in preventing various types of misuse (e.g., exploitation of free trials, or association with known problematic accounts, which can be a form of fraud). To effectively use fingerprints for this purpose, you will need to create and maintain your own lists (e.g., blocklists of known problematic fingerprints, allowlists for trusted customers, or tracking frequently used fingerprints). \n\nThe ideal way to utilise fingerprints is by combining them with a manual capture process. While automatic capture with subsequent refunds for problematic payments is possible, manual capture based on fingerprint validation is recommended.\n\nDuring your manual capture workflow, after a payment was authorised:\n  \n  - Check the fingerprint status by comparing it against your maintained lists and internal business rules.\n  - If you decide to proceed with the payment (e.g., the fingerprint is not on a blocklist, or matches a trusted customer's previous payment method): [Capture the order](https://developer.revolut.com/docs/api/merchant#capture-order).\n  - If you decide not to proceed with the payment (e.g., the fingerprint matches a known fraudulent fingerprint, or exhibits suspicious patterns): [Cancel the order](https://developer.revolut.com/docs/api/merchant#cancel-order)."
-      example: 1JAllfQY4POhBV8DaddAQ4LC5RbMP8LMLvUdJW4s5JY=
-    Authorisation-Code:
-      type: string
-      description: 'The authorisation code (or auth code) is a short, alphanumeric code returned by the cardholder''s issuing bank to the merchant''s terminal or payment gateway.
-
-
-        It serves as confirmation that the transaction has been approved and funds are available.'
-      example: T483XF
-      pattern: ^[a-zA-Z0-9]{2,6}$
-      minLength: 2
-      maxLength: 6
     Authentication-Challenge-v2:
       type: object
       description: 'Details about the authentication challenge that should be performed to complete the authentication process. For more information about Revolut''s 3DS solution, see: [3D Secure overview](https://developer.revolut.com/docs/guides/merchant/reference/3d-secure).
@@ -1517,6 +1468,153 @@ components:
       oneOf:
       - $ref: '#/components/schemas/Three-Ds'
       - $ref: '#/components/schemas/Three-Ds-Fingerprint-v2'
+    Phone:
+      type: string
+      description: The phone number of the customer in [E.164 format](https://en.wikipedia.org/wiki/E.164).
+    Revolut-Pay:
+      discriminator:
+        propertyName: subtype
+        mapping:
+          revolut_pay_account: '#/components/schemas/RPay-Account'
+          revolut_pay_card: '#/components/schemas/RPay-Card'
+      oneOf:
+      - $ref: '#/components/schemas/RPay-Account'
+      - $ref: '#/components/schemas/RPay-Card'
+    Fingerprint:
+      type: string
+      minLength: 44
+      maxLength: 44
+      description: "A unique identifier for a payment method, always 44 characters long. This fingerprint can be used to uniquely identify various payment methods.\n\n#### Fingerprint generation\n\n| Payment method | Description |\n| -------- | ----------- |\n| **All payment methods** | A fingerprint is generated for all payment methods, including cards, Revolut Pay (card, account-to-account payments), Apple Pay, and Google Pay. |\n| **Cards (Revolut Pay & Card Gateway)** | For cards, the fingerprint is based on the PAN. Cards processed via Revolut Pay and our card gateway will share the same fingerprint. Renewed cards (new expiry/CVV) retain the same fingerprint for efficient blocking. |\n| **Apple Pay & Google Pay** | Since Apple Pay and Google Pay provide us Device PANs (DPAN), the fingerprint is based on the DPAN provided by Apple/Google, not the connected card's PAN. This means that a new DPAN (and fingerprint) is generated for cards in case they are re-added to the customer's digital wallet, or added to different devices. |\n\n#### Detecting duplicate payment methods\n\nFingerprints are a valuable tool for detecting duplicate payment methods by identifying if a payment method has been seen before. This capability, in turn, helps in preventing various types of misuse (e.g., exploitation of free trials, or association with known problematic accounts, which can be a form of fraud). To effectively use fingerprints for this purpose, you will need to create and maintain your own lists (e.g., blocklists of known problematic fingerprints, allowlists for trusted customers, or tracking frequently used fingerprints). \n\nThe ideal way to utilise fingerprints is by combining them with a manual capture process. While automatic capture with subsequent refunds for problematic payments is possible, manual capture based on fingerprint validation is recommended.\n\nDuring your manual capture workflow, after a payment was authorised:\n  \n  - Check the fingerprint status by comparing it against your maintained lists and internal business rules.\n  - If you decide to proceed with the payment (e.g., the fingerprint is not on a blocklist, or matches a trusted customer's previous payment method): [Capture the order](https://developer.revolut.com/docs/api/merchant#capture-order).\n  - If you decide not to proceed with the payment (e.g., the fingerprint matches a known fraudulent fingerprint, or exhibits suspicious patterns): [Cancel the order](https://developer.revolut.com/docs/api/merchant#cancel-order)."
+      example: 1JAllfQY4POhBV8DaddAQ4LC5RbMP8LMLvUdJW4s5JY=
+    Currency:
+      type: string
+      format: ISO 4217
+      minLength: 3
+      maxLength: 3
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
+
+
+        :::info
+
+        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
+
+        :::'
+    Sepa-Direct-Debit:
+      type: object
+      description: 'Object containing details of a SEPA Direct Debit payment.
+
+
+        :::info
+
+        For more information, see: [SEPA Direct Debit server-to-server integration](https://developer.revolut.com/docs/guides/merchant/accept-payments/payment-methods/sepa-direct-debit/server-to-server)
+
+        :::'
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 'ID of the saved payment method.
+
+
+            :::note
+
+            The `id` parameter is only returned when the payment method is saved for the merchant.
+
+            :::'
+        type:
+          $ref: '#/components/schemas/Payment-Method-Type'
+        debtor_iban_last_four:
+          $ref: '#/components/schemas/Sepa-Direct-Debit-Debtor-Iban-Last-Four'
+        debtor_name:
+          $ref: '#/components/schemas/Sepa-Direct-Debit-Debtor-Name'
+        mandate_reference:
+          $ref: '#/components/schemas/Sepa-Direct-Debit-Mandate-Reference'
+      required:
+      - type
+    Sepa-Direct-Debit-Debtor-Name:
+      type: string
+      description: The full name of the debtor as provided in the mandate.
+    Capture-Deadline:
+      type: string
+      format: date-time
+      description: 'The date and time by which the payment must be captured.
+
+
+        After this deadline, the authorised funds may be automatically released by the card issuer.'
+    Payment-Settled-Amount:
+      type: integer
+      description: The amount of the settled payment (minor currency unit). For example, `7034` stands for €70.34.
+    Payment-Updated:
+      type: string
+      format: date-time
+      description: The date and time the payment was last updated.
+    Payment-Retrieval-v3:
+      type: object
+      description: 'Represents a payment for an order.
+
+
+        For pre-authorised payments, the `authorised_amount` field tracks the currently authorised amount, which may differ from `amount` during incremental authorisation processing.'
+      properties:
+        order_id:
+          type: string
+          format: uuid
+          description: The ID of the associated order.
+        id:
+          $ref: '#/components/schemas/Payment-Id'
+        state:
+          $ref: '#/components/schemas/Payment-State-v2'
+        decline_reason:
+          $ref: '#/components/schemas/Decline-Reason-v2'
+        bank_message:
+          $ref: '#/components/schemas/Bank-Message'
+        created_at:
+          $ref: '#/components/schemas/Payment-Created'
+        updated_at:
+          $ref: '#/components/schemas/Payment-Updated'
+        token:
+          $ref: '#/components/schemas/Payment-Token'
+        amount:
+          $ref: '#/components/schemas/Payment-Amount'
+        authorised_amount:
+          $ref: '#/components/schemas/Payment-Authorised-Amount'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        settled_amount:
+          $ref: '#/components/schemas/Payment-Settled-Amount'
+        settled_currency:
+          $ref: '#/components/schemas/Payment-Settled-Currency'
+        payment_method:
+          $ref: '#/components/schemas/Payment-Method-v2'
+        authentication_challenge:
+          $ref: '#/components/schemas/Authentication-Challenge-v2'
+        billing_address:
+          $ref: '#/components/schemas/Address-v2'
+        risk_level:
+          $ref: '#/components/schemas/Payment-Risk-Level'
+        fees:
+          $ref: '#/components/schemas/Fees'
+        payer:
+          $ref: '#/components/schemas/Payer'
+      required:
+      - id
+      - state
+      - created_at
+      - updated_at
+      - amount
+    Authentication-Challenge:
+      type: object
+      description: 'Details about the authentication challenge that should be performed to complete the authentication process. For more information about Revolut''s 3DS solution, see: [3D Secure overview](https://developer.revolut.com/docs/guides/merchant/reference/3d-secure).
+
+
+        Only returned if the payment''s state is `authentication_challenge`.'
+      discriminator:
+        propertyName: type
+        mapping:
+          three_ds: '#/components/schemas/Three-Ds'
+          three_ds_fingerprint: '#/components/schemas/Three-Ds-Fingerprint'
+      oneOf:
+      - $ref: '#/components/schemas/Three-Ds'
+      - $ref: '#/components/schemas/Three-Ds-Fingerprint'
     Apple-Pay:
       type: object
       description: Object containing details of a card used via Apple Pay.
@@ -1584,172 +1682,72 @@ components:
           $ref: '#/components/schemas/Network-Transaction-Id'
       required:
       - type
-    Payment-Authorised-Amount:
+    Payment-Amount:
       type: integer
-      description: 'The currently authorised amount for this payment (in minor units).
+      format: int64
+      minimum: 0
+      description: 'The payment amount in minor units (e.g., cents). The value of this field depends on the payment type and state.
 
 
-        For pre-authorised payments with incremental authorization:
+        | Payment type | State | Amount value |
 
-        - Initially equals the `amount` field
+        |--------------|-------|--------------|
 
-        - Remains unchanged during increment processing
+        | Standard payment | Any | Total payment amount |
 
-        - Updates to new amount upon successful increment
+        | Pre-authorised payment | `authorisation_started` | New amount being authorised (during increment processing) |
 
-        - Remains at original amount if increment is declined
+        | Pre-authorised payment | `authorised` | Currently authorised amount (equals `authorised_amount`) |
 
 
-        For standard payments, this field may not be present or will equal the `amount` field.'
+        :::info
+
+        For pre-authorised payments, see the `authorised_amount` field for tracking the currently authorised amount separately.
+
+        :::'
       example: 600
-    Payment-Created:
-      type: string
-      format: date-time
-      description: The date and time the payment was created.
-    Payment-Retrieval-v3:
+    Payment-Retrieval:
       type: object
-      description: 'Represents a payment for an order.
-
-
-        For pre-authorised payments, the `authorised_amount` field tracks the currently authorised amount, which may differ from `amount` during incremental authorisation processing.'
       properties:
-        order_id:
-          type: string
-          format: uuid
-          description: The ID of the associated order.
         id:
           $ref: '#/components/schemas/Payment-Id'
-        state:
-          $ref: '#/components/schemas/Payment-State-v2'
-        decline_reason:
-          $ref: '#/components/schemas/Decline-Reason-v2'
-        bank_message:
-          $ref: '#/components/schemas/Bank-Message'
-        created_at:
-          $ref: '#/components/schemas/Payment-Created'
-        updated_at:
-          $ref: '#/components/schemas/Payment-Updated'
+        order_id:
+          $ref: '#/components/schemas/Order-Id'
+        payment_method:
+          type: object
+          description: The payment method used to pay for the order.
+          discriminator:
+            propertyName: type
+            mapping:
+              revolut_pay: '#/components/schemas/Revolut-Pay'
+              card: '#/components/schemas/Card-For-Payment-Details'
+              sepa_direct_debit: '#/components/schemas/Sepa-Direct-Debit'
+          oneOf:
+          - $ref: '#/components/schemas/Revolut-Pay'
+          - $ref: '#/components/schemas/Card-For-Payment-Details'
+          - $ref: '#/components/schemas/Sepa-Direct-Debit'
         token:
           $ref: '#/components/schemas/Payment-Token'
         amount:
           $ref: '#/components/schemas/Payment-Amount'
-        authorised_amount:
-          $ref: '#/components/schemas/Payment-Authorised-Amount'
         currency:
           $ref: '#/components/schemas/Currency'
-        settled_amount:
-          $ref: '#/components/schemas/Payment-Settled-Amount'
-        settled_currency:
-          $ref: '#/components/schemas/Payment-Settled-Currency'
-        payment_method:
-          $ref: '#/components/schemas/Payment-Method-v2'
+        state:
+          $ref: '#/components/schemas/Payment-State-v2'
+        decline_reason:
+          $ref: '#/components/schemas/Decline-Reason-v2'
         authentication_challenge:
-          $ref: '#/components/schemas/Authentication-Challenge-v2'
-        billing_address:
-          $ref: '#/components/schemas/Address-v2'
-        risk_level:
-          $ref: '#/components/schemas/Payment-Risk-Level'
-        fees:
-          $ref: '#/components/schemas/Fees'
-        payer:
-          $ref: '#/components/schemas/Payer'
+          $ref: '#/components/schemas/Authentication-Challenge'
       required:
       - id
-      - state
-      - created_at
-      - updated_at
-      - amount
-    Error-v2:
-      title: Error
-      type: object
-      properties:
-        code:
-          type: string
-          description: 'An identifier that can be used to determine what went wrong.
-
-
-            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
-        message:
-          type: string
-          description: Some human readable text describing what went wrong.
-        timestamp:
-          type: integer
-          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
-    Payment-State-v2:
-      type: string
-      description: The status of the payment.
-      enum:
-      - pending
-      - authentication_challenge
-      - authentication_verified
-      - authorisation_started
-      - authorisation_passed
-      - authorised
-      - capture_started
-      - captured
-      - refund_validated
-      - refund_started
-      - cancellation_started
-      - declining
-      - completing
-      - cancelling
-      - failing
-      - completed
-      - declined
-      - soft_declined
-      - cancelled
-      - failed
-    Address-v2:
-      type: object
-      description: Object containing address details.
-      properties:
-        street_line_1:
-          type: string
-          description: Street line 1 information.
-          maxLength: 100
-        street_line_2:
-          type: string
-          description: Street line 2 information.
-          maxLength: 100
-        region:
-          type: string
-          description: The region associated with the address.
-          maxLength: 100
-        city:
-          type: string
-          description: The city associated with the address.
-          maxLength: 100
-        country_code:
-          type: string
-          description: The 2-letter country code of the country associated with the address.
-          maxLength: 2
-        postcode:
-          type: string
-          description: The postcode associated with the address.
-          maxLength: 100
-      required:
-      - country_code
-      - postcode
-    Three-Ds:
-      title: three_ds
-      type: object
-      description: Information about the 3DS challenge.
-      properties:
-        type:
-          $ref: '#/components/schemas/Authentication-Challenge-Type'
-        acs_url:
-          type: string
-          format: url
-          description: The URL of the authentication challenge.
-      required:
-      - type
-      - acs_url
+      - order_id
+      - payment_method
     Sepa-Direct-Debit-Debtor-Iban-Last-Four:
       type: string
       description: The last four digits of the debtor's IBAN.
       minLength: 4
       maxLength: 4
-    RPay-Account:
+    Card-For-Payment-Details:
       properties:
         type:
           type: string
@@ -1757,12 +1755,12 @@ components:
           - card
           - revolut_pay
           description: The type of payment method used to pay for the order.
-        subtype:
+        brand:
           type: string
-          enum:
-          - revolut_account
-          - card
-          description: Indicates whether the customer used their card or Revolut account via Revolut Pay.
+          description: The type of the card.
+        last_four:
+          type: string
+          description: The last four digits of the card number.
         id:
           type: string
           format: uuid
@@ -1776,7 +1774,6 @@ components:
             :::'
       required:
       - type
-      - subtype
   examples:
     Res-Payment-Authentication-Challenge-Fingerprint:
       summary: Payment with 3DS fingerprint challenge
@@ -1806,33 +1803,6 @@ components:
           type: three_ds_fingerprint
           fingerprint_html: PCFET0NUWVBFIGh0bWw+CjxodG1sPgo8Ym9keT4KCjwvYm9keT4KPC9odG1sPg==
   parameters:
-    Authorization:
-      name: Authorization
-      in: header
-      schema:
-        type: string
-        format: Bearer <yourSecretApiKey>
-        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
-      required: true
-      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
-    Order-Id:
-      name: order_id
-      in: path
-      schema:
-        type: string
-        format: uuid
-        description: A UUID string, typically used to identify resources.
-      required: true
-      description: The ID of the `Order` object.
-    Payment-Id:
-      name: payment_id
-      in: path
-      schema:
-        type: string
-        format: uuid
-        description: A UUID string, typically used to identify resources.
-      required: true
-      description: The ID of the `Payment` object.
     Revolut-Api-Version-Optional:
       name: Revolut-Api-Version
       in: header
@@ -1857,6 +1827,33 @@ components:
 
         :::'
       x-config-always-visible-in-example: true
+    Payment-Id:
+      name: payment_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the `Payment` object.
+    Authorization:
+      name: Authorization
+      in: header
+      schema:
+        type: string
+        format: Bearer <yourSecretApiKey>
+        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
+      required: true
+      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
+    Order-Id:
+      name: order_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the `Order` object.
   securitySchemes:
     Api-Key:
       type: apiKey

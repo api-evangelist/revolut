@@ -2,7 +2,7 @@ openapi: 3.2.0
 info:
   version: '1.0'
   title: Business Accounting categories API
-  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  description: As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.
   contact: {}
 servers:
 - url: https://b2b.revolut.com/api/1.0
@@ -13,13 +13,13 @@ tags:
 - name: Accounting categories
   description: 'Manage accounting categories for your business.
 
-    You can create, retrieve, and delete accounting categories that can be assigned to your financial records such as [expenses](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses) or bills.
+    You can create, retrieve, and delete accounting categories that can be assigned to your financial records such as expenses or bills.
 
 
-    For more information, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).
+    For more information, see the guides: Manage accounting settings and Manage accounting categories.
 
 
-    See also the Revolut Help Centre: [Expenses](https://help.revolut.com/business/help/managing-my-business/expenses/) and [BillPay](https://help.revolut.com/business/help/integrating-with-external-apps/introduction-to-billpay/).'
+    See also the Revolut Help Centre: Expenses and BillPay.'
 paths:
   /accounting-categories:
     post:
@@ -30,12 +30,12 @@ paths:
 
         :::note
 
-        This operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).
+        This operation is not supported for externally managed accounting categories.
 
         :::
 
 
-        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).'
+        For more details, see the guides: Manage accounting settings and Manage accounting categories.'
       security:
       - AccessToken:
         - WRITE
@@ -170,7 +170,30 @@ paths:
     get:
       summary: Retrieve a list of accounting categories
       operationId: getAccountingCategories
-      description: "Get available accounting categories based on the provided query criteria.\n\n:::note\nThe API returns a maximum of 500 accounting categories per request. \nThe default page size is 100.\n:::\n\nThe accounting categories are sorted by the `created_at` date in reverse chronological order, and they're **paginated**.\nThe page size, that is, the maximum number of accounting categories returned per page is specified by the `limit` parameter. \n- If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.        \n  To get the next page of results, make a new request using that `next_page_token` value in `page_token`.\n- If the number of results is smaller than the page size, `next_page_token` is not returned.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories)."
+      description: 'Get available accounting categories based on the provided query criteria.
+
+
+        :::note
+
+        The API returns a maximum of 500 accounting categories per request.
+
+        The default page size is 100.
+
+        :::
+
+
+        The accounting categories are sorted by the `created_at` date in reverse chronological order, and they''re **paginated**.
+
+        The page size, that is, the maximum number of accounting categories returned per page is specified by the `limit` parameter.
+
+        - If the number of results exceeds the page size, the response also returns a cursor for the next page under `next_page_token`.
+
+        To get the next page of results, make a new request using that `next_page_token` value in `page_token`.
+
+        - If the number of results is smaller than the page size, `next_page_token` is not returned.
+
+
+        For more details, see the guides: Manage accounting settings and Manage accounting categories.'
       security:
       - AccessToken:
         - READ
@@ -361,7 +384,7 @@ paths:
         The details include the accounting category name, code, and default tax rate, as well as when the accounting category was added to your settings, and when it was last updated.
 
 
-        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).'
+        For more details, see the guides: Manage accounting settings and Manage accounting categories.'
       security:
       - AccessToken:
         - READ
@@ -453,12 +476,12 @@ paths:
 
         :::note
 
-        This operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).
+        This operation is not supported for externally managed accounting categories.
 
         :::
 
 
-        For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).'
+        For more details, see the guides: Manage accounting settings and Manage accounting categories.'
       security:
       - AccessToken:
         - WRITE
@@ -648,7 +671,29 @@ paths:
     delete:
       summary: Delete an accounting category
       operationId: deleteAccountingCategory
-      description: "Delete a specific accounting category, based on its ID.\n\n:::note\nThis operation is not supported for [externally managed accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories#externally-managed-settings).\n:::\n\nOnce the accounting category is deleted, it will not be returned by the API or in the Revolut Business app, and:\n- You will not be able to assign it to new financial records (e.g. expenses). \n- Existing records assigned to this category that have not been completed will be marked as invalid, and you'll need to reassign them to another category.\n- Completed records will not be affected by the change. \n\nA successful response does not get any content in return.\n\nFor more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories)."
+      description: 'Delete a specific accounting category, based on its ID.
+
+
+        :::note
+
+        This operation is not supported for externally managed accounting categories.
+
+        :::
+
+
+        Once the accounting category is deleted, it will not be returned by the API or in the Revolut Business app, and:
+
+        - You will not be able to assign it to new financial records (e.g. expenses).
+
+        - Existing records assigned to this category that have not been completed will be marked as invalid, and you''ll need to reassign them to another category.
+
+        - Completed records will not be affected by the change.
+
+
+        A successful response does not get any content in return.
+
+
+        For more details, see the guides: Manage accounting settings and Manage accounting categories.'
       security:
       - AccessToken:
         - WRITE
@@ -728,6 +773,14 @@ paths:
       - Accounting categories
 components:
   schemas:
+    ResourceCreatedResponse:
+      description: Successfully created resource.
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the created resource.
     UpdateAccountingCategoryRequest:
       type: object
       description: The new settings for the accounting category.
@@ -749,6 +802,30 @@ components:
           type: string
           format: uuid
           description: The ID of the new default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
+          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
+    CreateAccountingCategoryRequest:
+      type: object
+      description: The accounting category to create.
+      required:
+      - name
+      - code
+      properties:
+        name:
+          type: string
+          description: The full name for the accounting category.
+          minLength: 1
+          maxLength: 60
+          example: Work From Home equipment
+        code:
+          type: string
+          description: The code name for the accounting category.
+          minLength: 1
+          maxLength: 50
+          example: WFH
+        default_tax_rate_id:
+          type: string
+          format: uuid
+          description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
           example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
     ErrorWithId:
       required:
@@ -807,73 +884,7 @@ components:
           format: uuid
           description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) applied to items in this accounting category unless overridden for a specific item.
           example: 2a3520af-e6f7-416c-821e-0e83ffac1dfa
-    ResourceCreatedResponse:
-      description: Successfully created resource.
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the created resource.
-    CreateAccountingCategoryRequest:
-      type: object
-      description: The accounting category to create.
-      required:
-      - name
-      - code
-      properties:
-        name:
-          type: string
-          description: The full name for the accounting category.
-          minLength: 1
-          maxLength: 60
-          example: Work From Home equipment
-        code:
-          type: string
-          description: The code name for the accounting category.
-          minLength: 1
-          maxLength: 50
-          example: WFH
-        default_tax_rate_id:
-          type: string
-          format: uuid
-          description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
-          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
   responses:
-    ServiceUnavailable:
-      description: 'Service Unavailable
-
-
-        The system is temporarily unavailable.
-
-        If the response includes the `Retry-After` header instruction, please respect it and refrain from earlier retry attempts.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorWithId'
-          examples:
-            service_unavailable:
-              summary: System temporarily unavailable
-              value:
-                error_id: 201768bc-c5cd-4db8-8898-7ae96b9d89ab
-                code: 5003
-                message: The service is temporarily unavailable. Try again in a few moments. If the issue persists, please contact support
-    ResourceCreatedResponse:
-      description: 'Resource created
-
-
-        On successful creation, the response returns only the ID of the new resource, even if the resource has more properties.
-
-        To get all details, use the returned resource ID with a GET request.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ResourceCreatedResponse'
-          examples:
-            resource_created:
-              summary: Resource created
-              value:
-                id: 6a37383e-cfd3-4a2f-aa81-e3a6e6939efa
     Unauthorized:
       description: 'Unauthorized – authentication credentials are missing or invalid
 
@@ -896,6 +907,30 @@ components:
                 error_id: 7835beae-98ed-42dc-b993-95f4ded951a1
                 code: 1000
                 message: Invalid token. The authorization header must follow the 'Bearer <token>' format.
+    TooManyRequests:
+      description: 'Too many requests
+
+
+        Returned, for example, when the rate limit has been exceeded.
+
+        If the response includes the `Retry-After` instruction, please respect it and refrain from earlier retry attempts.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          examples:
+            rateLimitExceededNoRetryAfter:
+              summary: Rate limit exceeded (no Retry-After)
+              value:
+                error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
+                code: 3162
+                message: Request rate limit has been reached. Try again later.
+            rateLimitExceededWithRetryAfter:
+              summary: Rate limit exceeded (with Retry-After)
+              value:
+                error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
+                code: 3162
+                message: Request rate limit has been reached. Try again after 30 seconds.
     Forbidden:
       description: 'Action forbidden - insufficient permissions to perform this action
 
@@ -922,30 +957,40 @@ components:
             error_id: 7f96652e-7518-4229-872b-4e4c867fb4da
             code: 5000
             message: An unexpected error occurred while processing your request. If the issue persists, please contact support
-    TooManyRequests:
-      description: 'Too many requests
+    ResourceCreatedResponse:
+      description: 'Resource created
 
 
-        Returned, for example, when the rate limit has been exceeded.
+        On successful creation, the response returns only the ID of the new resource, even if the resource has more properties.
 
-        If the response includes the `Retry-After` instruction, please respect it and refrain from earlier retry attempts.'
+        To get all details, use the returned resource ID with a GET request.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResourceCreatedResponse'
+          examples:
+            resource_created:
+              summary: Resource created
+              value:
+                id: 6a37383e-cfd3-4a2f-aa81-e3a6e6939efa
+    ServiceUnavailable:
+      description: 'Service Unavailable
+
+
+        The system is temporarily unavailable.
+
+        If the response includes the `Retry-After` header instruction, please respect it and refrain from earlier retry attempts.'
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorWithId'
           examples:
-            rateLimitExceededNoRetryAfter:
-              summary: Rate limit exceeded (no Retry-After)
+            service_unavailable:
+              summary: System temporarily unavailable
               value:
-                error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
-                code: 3162
-                message: Request rate limit has been reached. Try again later.
-            rateLimitExceededWithRetryAfter:
-              summary: Rate limit exceeded (with Retry-After)
-              value:
-                error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
-                code: 3162
-                message: Request rate limit has been reached. Try again after 30 seconds.
+                error_id: 201768bc-c5cd-4db8-8898-7ae96b9d89ab
+                code: 5003
+                message: The service is temporarily unavailable. Try again in a few moments. If the issue persists, please contact support
   parameters:
     PageToken:
       in: query

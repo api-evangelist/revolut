@@ -2,70 +2,7 @@ openapi: 3.2.0
 info:
   title: Merchant Other API
   version: '2026-04-20'
-  description: 'Welcome to the Revolut Merchant API - your solution to managing the core aspects of e-commerce and accepting online payments. Whether you''re a startup, a growing business, or an established enterprise in the e-commerce industry, our API helps you streamline your operations.
-
-
-    As a Revolut Business customer with a Merchant Account, you can use the
-
-    Merchant API to leverage the following features:
-
-
-    - [Order management](https://developer.revolut.com/docs/api/merchant#tag-orders)
-
-    - [Customer management](https://developer.revolut.com/docs/api/merchant#tag-customers)
-
-    - [Payment management](https://developer.revolut.com/docs/api/merchant#tag-payments)
-
-    - [Subscription management](https://developer.revolut.com/docs/api/merchant#tag-subscriptions)
-
-    - [Payout management](https://developer.revolut.com/docs/api/merchant#tag-payouts)
-
-    - [Dispute management](https://developer.revolut.com/docs/api/merchant#tag-disputes)
-
-    - [Reporting analytics](https://developer.revolut.com/docs/api/merchant#tag-report-runs)
-
-    - [Webhook management](https://developer.revolut.com/docs/api/merchant#tag-webhooks)
-
-    - [Location management](https://developer.revolut.com/docs/api/merchant#tag-locations)
-
-
-    ... and more.
-
-
-    ### API versions
-
-
-    :::warning
-
-    We highly recommend using versioning in your API calls. If you don''t provide a version header on the operations where it''s required, you will receive an error response.
-
-    :::
-
-
-    The Merchant API uses request header versioning. Where it is required you need to use the `Revolut-Api-Version` header parameter to specify an API version. Each request, where it is indicated in the API specification, must contain a version header in the following format:
-
-
-    ```
-
-    ''Revolut-Api-Version: 2026-04-20''
-
-    ```
-
-
-    :::info
-
-    For more information, see: [API versions](https://developer.revolut.com/docs/guides/merchant/reference/versioning/api-versions)
-
-    :::
-
-
-    ### Test the Merchant API
-
-
-    You can test the Merchant API in Postman by forking this collection:
-
-
-    [![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)'
+  description: Welcome to the Revolut Merchant API - your solution to managing the core aspects of e-commerce and accepting online payments.
   contact: {}
 servers:
 - description: Production server (uses live data)
@@ -84,7 +21,36 @@ paths:
     post:
       summary: Register address validation endpoint for Fast checkout
       operationId: registerAddressValidationEndpoint
-      description: "Use this endpoint to register a URL where Revolut can send shipping address(es) from a Revolut Pay customer for validation during the [Fast checkout\nprocess](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/fast-checkout).\n\nRevolut Pay can support Fast checkout for delivering goods. Once your customer selects a shipping address, Revolut needs to validate if the merchant (or their shipping partner) delivers to the address provided. This is done by contacting the merchant's backend and asking for such validation and information.\n\nIn order for your backend to support Fast checkout, you need to:\n\n1. Register an URL to handle address validation\n1. Validate the shipping address sent to your backend\n1. Respond with a JSON object containing the result of the validation\n\nAdditionally, Revolut Pay can support multiple webhooks if you have multiple stores. For more information, see:\n  - [Manage multiple stores with Fast checkout](https://developer.revolut.com/docs/guides/merchant/optimise-checkout/fast-checkout#manage-multiple-stores-with-fast-checkout)\n  - [Merchant API: Locations](https://developer.revolut.com/docs/api/merchant#tag-locations)\n\n:::note\nTo set up a webhook for tracking order completion, failure, error, etc. events, use the [Webhooks endpoints](https://developer.revolut.com/docs/api/merchant#tag-webhooks).\n:::"
+      description: 'Use this endpoint to register a URL where Revolut can send shipping address(es) from a Revolut Pay customer for validation during the Fast checkout
+
+        process.
+
+
+        Revolut Pay can support Fast checkout for delivering goods. Once your customer selects a shipping address, Revolut needs to validate if the merchant (or their shipping partner) delivers to the address provided. This is done by contacting the merchant''s backend and asking for such validation and information.
+
+
+        In order for your backend to support Fast checkout, you need to:
+
+
+        1. Register an URL to handle address validation
+
+        1. Validate the shipping address sent to your backend
+
+        1. Respond with a JSON object containing the result of the validation
+
+
+        Additionally, Revolut Pay can support multiple webhooks if you have multiple stores. For more information, see:
+
+        - Manage multiple stores with Fast checkout
+
+        - Merchant API: Locations
+
+
+        :::note
+
+        To set up a webhook for tracking order completion, failure, error, etc. events, use the Webhooks endpoints.
+
+        :::'
       requestBody:
         content:
           application/json:
@@ -148,7 +114,7 @@ paths:
 
         :::info
 
-        For more information about locations, see: [Merchant API: Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).
+        For more information about locations, see: Merchant API: Locations.
 
         :::'
       responses:
@@ -214,25 +180,6 @@ paths:
       tags:
       - Other
 components:
-  parameters:
-    Authorization:
-      name: Authorization
-      in: header
-      schema:
-        type: string
-        format: Bearer <yourSecretApiKey>
-        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
-      required: true
-      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
-    Synchronous-Webhook-Id:
-      name: synchronous_webhook_id
-      in: path
-      schema:
-        type: string
-        format: uuid
-        description: A UUID string, typically used to identify resources.
-      required: true
-      description: The ID of the synchronous webhook.
   schemas:
     Synchronous-Webhook-Creation:
       title: SynchronousWebhookCreation
@@ -275,17 +222,6 @@ components:
       required:
       - event_type
       - url
-    Location-Id:
-      type: string
-      format: uuid
-      description: 'Unique ID representing the location where merchants sells products.
-
-
-        :::info
-
-        For more information, see: [Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).
-
-        :::        '
     Error:
       title: Error
       type: object
@@ -346,6 +282,36 @@ components:
       - signing_key
       - url
       - event_type
+    Location-Id:
+      type: string
+      format: uuid
+      description: 'Unique ID representing the location where merchants sells products.
+
+
+        :::info
+
+        For more information, see: [Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).
+
+        :::        '
+  parameters:
+    Synchronous-Webhook-Id:
+      name: synchronous_webhook_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the synchronous webhook.
+    Authorization:
+      name: Authorization
+      in: header
+      schema:
+        type: string
+        format: Bearer <yourSecretApiKey>
+        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
+      required: true
+      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
   securitySchemes:
     Api-Key:
       type: apiKey

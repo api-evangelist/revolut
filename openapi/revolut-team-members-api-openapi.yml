@@ -2,7 +2,7 @@ openapi: 3.2.0
 info:
   version: '1.0'
   title: Business Team members API
-  description: "As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.\nSave time, reduce your costs, and avoid errors by using the Business API. \n\n:::tip[Before you get started]\nTo learn more about the Business API and its features, check the [**user guides**](https://developer.revolut.com/docs/guides/manage-accounts/introduction).\n\nYou can reach them at any time from the main navigation bar **→ Guides → Business**.\n:::\n\nYou can view accounts, manage counterparties, make payments or currency exchanges without manual effort in the Web UI:\n\n- Accounting: [Account management](https://developer.revolut.com/docs/api/business#get-account), [Accounting settings](https://developer.revolut.com/docs/api/business#tag-accounting), [Expense management](https://developer.revolut.com/docs/api/business#get-expense), [Transactions](https://developer.revolut.com/docs/api/business#get-transactions) \n- Payments: \n  - [Counterparty management](https://developer.revolut.com/docs/api/business#get-counterparties)\n  - Payment management: [Payment drafts](https://developer.revolut.com/docs/api/business#delete-payment-draft), [Payout links](https://developer.revolut.com/docs/api/business#get-payout-link), [Transfers](https://developer.revolut.com/docs/api/business#tag-transfers)\n  - [Foreign exchange](https://developer.revolut.com/docs/api/business#tag-foreign-exchange)\n- Business team: [Card management](https://developer.revolut.com/docs/api/business#delete-card), [Card invitation management](https://developer.revolut.com/docs/api/business#update-card-invitation), [Team member management](https://developer.revolut.com/docs/api/business#delete-team-member)\n- Developer tools: [Sandbox simulations](https://developer.revolut.com/docs/api/business#tag-simulations), [Webhook management](https://developer.revolut.com/docs/api/business#tag-webhooks-v2)\n\nTo see the reference for the specific endpoints and operations of this API, browse the menu on the left.\n\n### Test the Business API\n\nYou can test the Business API in Postman by forking this collection:\n\n[![View in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/revolut-api/workspace/revolut-developers/overview)"
+  description: As a Revolut Business customer with a Business Account, you can use the Business API to automate your own business processes.
   contact: {}
 servers:
 - url: https://b2b.revolut.com/api/1.0
@@ -10,11 +10,11 @@ servers:
 - url: https://sandbox-b2b.revolut.com/api/1.0
   description: Sandbox server (uses test data)
 tags:
-- name: Team members
+- name: Team Members
   description: 'Retrieve information on existing team members of your organisation, delete team members, and invite new members.
 
 
-    For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).'
+    For more information, see the guides: Manage team members.'
 paths:
   /team-members:
     get:
@@ -26,12 +26,12 @@ paths:
         The results are paginated and sorted by the `created_at` date in reverse chronological order.
 
 
-        For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).'
+        For more information, see the guides: Manage team members.'
       security:
       - AccessToken:
         - READ
       tags:
-      - Team members
+      - Team Members
       parameters:
       - in: query
         name: created_before
@@ -132,12 +132,12 @@ paths:
         To join your business account, the new team member has to accept this invitation.
 
 
-        For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).'
+        For more information, see the guides: Manage team members.'
       security:
       - AccessToken:
         - WRITE
       tags:
-      - Team members
+      - Team Members
       requestBody:
         required: true
         content:
@@ -283,12 +283,12 @@ paths:
         :::
 
 
-        For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).'
+        For more information, see the guides: Manage team members.'
       security:
       - AccessToken:
         - WRITE
       tags:
-      - Team members
+      - Team Members
       parameters:
       - name: team_member_id
         description: The ID of the team member to delete.
@@ -364,12 +364,12 @@ paths:
         The results are paginated and sorted by the `created_at` date in reverse chronological order.
 
 
-        For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).'
+        For more information, see the guides: Manage team members.'
       security:
       - AccessToken:
         - READ
       tags:
-      - Team members
+      - Team Members
       parameters:
       - in: query
         name: created_before
@@ -463,38 +463,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Role:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the role. This can be a UUID or other default role such as `OWNER`.
-        name:
-          type: string
-          description: The name of the role.
-        created_at:
-          type: string
-          description: The date and time the role was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-          format: date-time
-        updated_at:
-          type: string
-          description: The date and time the role was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-          format: date-time
-      required:
-      - id
-      - name
-      - created_at
-      - updated_at
-    TeamMemberState:
-      description: The state that the team member is in.
-      enum:
-      - created
-      - confirmed
-      - waiting
-      - active
-      - locked
-      - disabled
-      type: string
     TeamMember:
       type: object
       properties:
@@ -544,6 +512,38 @@ components:
       required:
       - code
       - message
+    TeamMemberState:
+      description: The state that the team member is in.
+      enum:
+      - created
+      - confirmed
+      - waiting
+      - active
+      - locked
+      - disabled
+      type: string
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the role. This can be a UUID or other default role such as `OWNER`.
+        name:
+          type: string
+          description: The name of the role.
+        created_at:
+          type: string
+          description: The date and time the role was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          format: date-time
+        updated_at:
+          type: string
+          description: The date and time the role was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          format: date-time
+      required:
+      - id
+      - name
+      - created_at
+      - updated_at
   securitySchemes:
     AccessToken:
       type: http
