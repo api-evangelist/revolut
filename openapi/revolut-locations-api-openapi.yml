@@ -294,129 +294,6 @@ paths:
       - Locations
 components:
   schemas:
-    Location-Update:
-      type: object
-      description: Request body for updating a location. The structure of the `details` object depends on the `type` of the location.
-      oneOf:
-      - $ref: '#/components/schemas/Location-Update-Online'
-      - $ref: '#/components/schemas/Location-Update-Physical'
-      discriminator:
-        propertyName: type
-        mapping:
-          online: '#/components/schemas/Location-Update-Online'
-          physical: '#/components/schemas/Location-Update-Physical'
-    Location-Type:
-      type: string
-      description: 'Type of the location.
-
-
-        | Value | Description |
-
-        | ----- | ----------- |
-
-        | `online` | Represents an online store. |
-
-        | `physical` | Represents a physical point of sale. |'
-      enum:
-      - online
-      - physical
-    Location-Update-Physical:
-      title: Location
-      type: object
-      description: Location object represents merchant locations depending on type.
-      oneOf:
-      - $ref: '#/components/schemas/Location-Online'
-      - $ref: '#/components/schemas/Location-Physical'
-      discriminator:
-        propertyName: type
-        mapping:
-          online: '#/components/schemas/Location-Online'
-          physical: '#/components/schemas/Location-Physical'
-    Location-Online:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/Location-Id'
-        name:
-          $ref: '#/components/schemas/Location-Name'
-        type:
-          $ref: '#/components/schemas/Location-Type'
-        details:
-          $ref: '#/components/schemas/Location-Online-Details'
-      required:
-      - id
-      - name
-      - type
-      - details
-    Opening-Hours:
-      type: object
-      description: 'An object containing the opening hours for each day of the week.
-
-
-        A day can have multiple intervals (e.g., closing for a lunch break).'
-      properties:
-        monday:
-          description: Opening hours for Monday.
-          $ref: '#/components/schemas/Day-Opening-Hours'
-        tuesday:
-          description: Opening hours for Tuesday.
-          $ref: '#/components/schemas/Day-Opening-Hours'
-        wednesday:
-          description: Opening hours for Wednesday.
-          $ref: '#/components/schemas/Day-Opening-Hours'
-        thursday:
-          description: Opening hours for Thursday.
-          $ref: '#/components/schemas/Day-Opening-Hours'
-        friday:
-          description: Opening hours for Friday.
-          $ref: '#/components/schemas/Day-Opening-Hours'
-        saturday:
-          description: Opening hours for Saturday.
-          $ref: '#/components/schemas/Day-Opening-Hours'
-        sunday:
-          description: Opening hours for Sunday.
-          $ref: '#/components/schemas/Day-Opening-Hours'
-    Error:
-      title: Error
-      type: object
-      properties:
-        errorId:
-          type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        timestamp:
-          type: integer
-          description: The date and time the error happened.
-      required:
-      - errorId
-      - timestamp
-    Location-Creation:
-      type: object
-      description: Request body for creating a location. The structure of the `details` object depends on the `type` of the location.
-      oneOf:
-      - $ref: '#/components/schemas/Location-Creation-Online'
-      - $ref: '#/components/schemas/Location-Creation-Physical'
-      discriminator:
-        propertyName: type
-        mapping:
-          online: '#/components/schemas/Location-Creation-Online'
-          physical: '#/components/schemas/Location-Creation-Physical'
-    Location-Physical:
-      title: Location
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/Location-Id'
-        name:
-          $ref: '#/components/schemas/Location-Name'
-        type:
-          $ref: '#/components/schemas/Location-Type'
-        details:
-          $ref: '#/components/schemas/Location-Physical-Details'
-      required:
-      - id
-      - name
-      - type
-      - details
     Day-Opening-Hours:
       type: array
       description: "A list of one or more time intervals for a single day. \n\nA day can have multiple intervals (e.g., closing for a lunch break)."
@@ -463,22 +340,122 @@ components:
       - name
       - type
       - details
-    Location-Online-Details:
+    Location-Type:
+      type: string
+      description: 'Type of the location.
+
+
+        | Value | Description |
+
+        | ----- | ----------- |
+
+        | `online` | Represents an online store. |
+
+        | `physical` | Represents a physical point of sale. |'
+      enum:
+      - online
+      - physical
+    Opening-Hours:
+      type: object
+      description: 'An object containing the opening hours for each day of the week.
+
+
+        A day can have multiple intervals (e.g., closing for a lunch break).'
+      properties:
+        monday:
+          description: Opening hours for Monday.
+          $ref: '#/components/schemas/Day-Opening-Hours'
+        tuesday:
+          description: Opening hours for Tuesday.
+          $ref: '#/components/schemas/Day-Opening-Hours'
+        wednesday:
+          description: Opening hours for Wednesday.
+          $ref: '#/components/schemas/Day-Opening-Hours'
+        thursday:
+          description: Opening hours for Thursday.
+          $ref: '#/components/schemas/Day-Opening-Hours'
+        friday:
+          description: Opening hours for Friday.
+          $ref: '#/components/schemas/Day-Opening-Hours'
+        saturday:
+          description: Opening hours for Saturday.
+          $ref: '#/components/schemas/Day-Opening-Hours'
+        sunday:
+          description: Opening hours for Sunday.
+          $ref: '#/components/schemas/Day-Opening-Hours'
+    Location-Creation:
+      type: object
+      description: Request body for creating a location. The structure of the `details` object depends on the `type` of the location.
+      oneOf:
+      - $ref: '#/components/schemas/Location-Creation-Online'
+      - $ref: '#/components/schemas/Location-Creation-Physical'
+      discriminator:
+        propertyName: type
+        mapping:
+          online: '#/components/schemas/Location-Creation-Online'
+          physical: '#/components/schemas/Location-Creation-Physical'
+    Location-Name:
+      type: string
+      description: "Name of the location. \n\n:::warning\nThe `name` parameter's value must be unique across all locations.\n:::"
+    Location-Online:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Location-Id'
+        name:
+          $ref: '#/components/schemas/Location-Name'
+        type:
+          $ref: '#/components/schemas/Location-Type'
+        details:
+          $ref: '#/components/schemas/Location-Online-Details'
+      required:
+      - id
+      - name
+      - type
+      - details
+    Location:
+      title: Location
+      type: object
+      description: Location object represents merchant locations depending on type.
+      oneOf:
+      - $ref: '#/components/schemas/Location-Online'
+      - $ref: '#/components/schemas/Location-Physical'
+      discriminator:
+        propertyName: type
+        mapping:
+          online: '#/components/schemas/Location-Online'
+          physical: '#/components/schemas/Location-Physical'
+    Location-Physical-Details:
       type: object
       description: Additional details of the location.
       properties:
-        domain:
-          type: string
-          description: 'Domain address of the location. Required for online locations.
-
-
-            :::warning
-
-            The `domain` parameter''s value must be unique across all locations.
-
-            :::'
+        address:
+          $ref: '#/components/schemas/Address-v3'
+        geo_location:
+          $ref: '#/components/schemas/Geo-Location'
+        opening_hours:
+          $ref: '#/components/schemas/Opening-Hours'
       required:
-      - domain
+      - address
+      - geo_location
+      - opening_hours
+    Location-Physical:
+      title: Location
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Location-Id'
+        name:
+          $ref: '#/components/schemas/Location-Name'
+        type:
+          $ref: '#/components/schemas/Location-Type'
+        details:
+          $ref: '#/components/schemas/Location-Physical-Details'
+      required:
+      - id
+      - name
+      - type
+      - details
     Address-v3:
       type: object
       description: Details of a physical address.
@@ -514,28 +491,6 @@ components:
       - city
       - country_code
       - postcode
-    Location:
-      title: Location
-      type: object
-      description: Location object represents merchant locations depending on type.
-      oneOf:
-      - $ref: '#/components/schemas/Location-Online'
-      - $ref: '#/components/schemas/Location-Physical'
-      discriminator:
-        propertyName: type
-        mapping:
-          online: '#/components/schemas/Location-Online'
-          physical: '#/components/schemas/Location-Physical'
-    Location-Update-Online:
-      type: object
-      properties:
-        name:
-          $ref: '#/components/schemas/Location-Name'
-        details:
-          $ref: '#/components/schemas/Location-Online-Details'
-    Location-Name:
-      type: string
-      description: "Name of the location. \n\n:::warning\nThe `name` parameter's value must be unique across all locations.\n:::"
     Location-Id:
       type: string
       format: uuid
@@ -547,20 +502,78 @@ components:
         For more information, see: [Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).
 
         :::        '
-    Location-Physical-Details:
+    Error:
+      title: Error
+      type: object
+      properties:
+        errorId:
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        timestamp:
+          type: integer
+          description: The date and time the error happened.
+      required:
+      - errorId
+      - timestamp
+    Location-Update-Online:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Location-Name'
+        details:
+          $ref: '#/components/schemas/Location-Online-Details'
+    Location-Creation-Physical:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Location-Name'
+        type:
+          $ref: '#/components/schemas/Location-Type'
+        details:
+          $ref: '#/components/schemas/Location-Physical-Details'
+      required:
+      - name
+      - type
+      - details
+    Location-Update-Physical:
+      title: Location
+      type: object
+      description: Location object represents merchant locations depending on type.
+      oneOf:
+      - $ref: '#/components/schemas/Location-Online'
+      - $ref: '#/components/schemas/Location-Physical'
+      discriminator:
+        propertyName: type
+        mapping:
+          online: '#/components/schemas/Location-Online'
+          physical: '#/components/schemas/Location-Physical'
+    Location-Update:
+      type: object
+      description: Request body for updating a location. The structure of the `details` object depends on the `type` of the location.
+      oneOf:
+      - $ref: '#/components/schemas/Location-Update-Online'
+      - $ref: '#/components/schemas/Location-Update-Physical'
+      discriminator:
+        propertyName: type
+        mapping:
+          online: '#/components/schemas/Location-Update-Online'
+          physical: '#/components/schemas/Location-Update-Physical'
+    Location-Online-Details:
       type: object
       description: Additional details of the location.
       properties:
-        address:
-          $ref: '#/components/schemas/Address-v3'
-        geo_location:
-          $ref: '#/components/schemas/Geo-Location'
-        opening_hours:
-          $ref: '#/components/schemas/Opening-Hours'
+        domain:
+          type: string
+          description: 'Domain address of the location. Required for online locations.
+
+
+            :::warning
+
+            The `domain` parameter''s value must be unique across all locations.
+
+            :::'
       required:
-      - address
-      - geo_location
-      - opening_hours
+      - domain
     Geo-Location:
       type: object
       description: Coordinates of the location.
@@ -580,19 +593,6 @@ components:
       required:
       - lat
       - lon
-    Location-Creation-Physical:
-      type: object
-      properties:
-        name:
-          $ref: '#/components/schemas/Location-Name'
-        type:
-          $ref: '#/components/schemas/Location-Type'
-        details:
-          $ref: '#/components/schemas/Location-Physical-Details'
-      required:
-      - name
-      - type
-      - details
   examples:
     Req-Location-Physical:
       summary: Physical location request example
@@ -619,17 +619,17 @@ components:
               to: '13:00'
             - from: '16:00'
               to: '18:00'
-    Req-Location-Online:
-      summary: Online location request example
-      value:
-        name: Grocery website
-        type: online
-        details:
-          domain: groceries.example.com
     Res-Location-Online:
       summary: Online location request example
       value:
         id: 8d9a7125-805f-40f3-a405-bc89765db996
+        name: Grocery website
+        type: online
+        details:
+          domain: groceries.example.com
+    Req-Location-Online:
+      summary: Online location request example
+      value:
         name: Grocery website
         type: online
         details:

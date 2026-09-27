@@ -463,6 +463,50 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the role. This can be a UUID or other default role such as `OWNER`.
+        name:
+          type: string
+          description: The name of the role.
+        created_at:
+          type: string
+          description: The date and time the role was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          format: date-time
+        updated_at:
+          type: string
+          description: The date and time the role was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          format: date-time
+      required:
+      - id
+      - name
+      - created_at
+      - updated_at
+    TeamMemberState:
+      description: The state that the team member is in.
+      enum:
+      - created
+      - confirmed
+      - waiting
+      - active
+      - locked
+      - disabled
+      type: string
     TeamMember:
       type: object
       properties:
@@ -498,50 +542,6 @@ components:
       - email
       - state
       - role_id
-      - created_at
-      - updated_at
-    Error:
-      type: object
-      properties:
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
-      required:
-      - code
-      - message
-    TeamMemberState:
-      description: The state that the team member is in.
-      enum:
-      - created
-      - confirmed
-      - waiting
-      - active
-      - locked
-      - disabled
-      type: string
-    Role:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the role. This can be a UUID or other default role such as `OWNER`.
-        name:
-          type: string
-          description: The name of the role.
-        created_at:
-          type: string
-          description: The date and time the role was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-          format: date-time
-        updated_at:
-          type: string
-          description: The date and time the role was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-          format: date-time
-      required:
-      - id
-      - name
       - created_at
       - updated_at
   securitySchemes:

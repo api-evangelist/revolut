@@ -1214,17 +1214,27 @@ components:
       required:
       - code
       - message
-    TransactionCounterpartyAccountType:
+    TransactionType:
       enum:
-      - self
-      - revolut
-      - external
-      description: Indicates the type of the account.
+      - atm
+      - card_payment
+      - card_refund
+      - card_chargeback
+      - card_credit
+      - charge
+      - charge_refund
+      - exchange
+      - transfer
+      - loan
+      - fee
+      - refund
+      - topup
+      - topup_return
+      - tax
+      - tax_refund
+      - rev_payment
+      description: Indicates the transaction type.
       type: string
-    Transactions:
-      type: array
-      items:
-        $ref: '#/components/schemas/Transaction'
     TransactionState:
       enum:
       - created
@@ -1235,28 +1245,63 @@ components:
       - reverted
       description: "Indicates the transaction state. Possible values:\n  - `created`: The transaction has been created and is either processed asynchronously or scheduled for a later time.\n  - `pending`: The transaction is pending until it's being processed. If the transfer is made between Revolut accounts, this state is skipped and the transaction is executed instantly.\n  - `completed`: The transaction was successful.\n  - `declined`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, insufficient account balance, wrong receiver information, etc.\n  - `failed`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, invalid API calls, blocked payments, etc.\n  - `reverted`: The transaction was reverted. This can happen for a variety of reasons, for example, the receiver being inaccessible."
       type: string
-    CardReference:
-      description: "Reference for the card.\nOne of the name-value pairs assigned to the card for tracking.\n\n:::info\nEach time the card is used, the references are recorded in the [transaction details](https://developer.revolut.com/docs/api/business#get-transaction#response) (`card.references`), helping track transactions made with this card.\n:::\n\nThe names must be unique.\nThe references can be [amended](https://developer.revolut.com/docs/api/business#update-card-references) up to 10 times.\nReferences are only supported for cards owned by the business (i.e. [company](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) or [auto-issued cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards)).\nThey are **not** supported for [team member cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) (i.e. with `holder_id` present). \n\n:::note\nThe references recorded on a transaction are those assigned to the card at the time the transaction took place.\nIf the references are amended, the new references are only applied to future transactions.\nExisting transaction are not affected.\n:::"
+    Transactions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Transaction'
+    TransactionLeg:
       type: object
-      required:
-      - name
-      - value
-      properties:
-        name:
-          description: 'The name of the card reference.
+      description: 'The legs of the transaction:
 
-            Must be unique.'
+        - For transactions between your Revolut accounts, there can be 2 legs, for example, an internal transfer made out of the BGP account and into the EUR account.
+
+        - For transactions in other cases, there is only 1 leg.'
+      properties:
+        leg_id:
           type: string
-          minLength: 1
-          maxLength: 30
-        value:
-          description: The value for this reference.
+          format: uuid
+          description: The ID of the leg.
+        amount:
+          type: number
+          format: double
+          description: The amount of the transaction.
+        fee:
+          type: number
+          format: double
+          description: The amount of the transaction fee.
+        currency:
+          $ref: '#/components/schemas/Currency'
+        bill_amount:
+          type: number
+          format: double
+          description: The billing amount for cross-currency payments.
+        bill_currency:
+          $ref: '#/components/schemas/Currency'
+        account_id:
           type: string
-          minLength: 1
-          maxLength: 30
-      example:
-        name: PNR
-        value: RT12345
+          format: uuid
+          description: The ID of the account that the transaction is associated with.
+        counterparty:
+          $ref: '#/components/schemas/TransactionCounterparty'
+        description:
+          type: string
+          description: The transaction leg purpose.
+        balance:
+          type: number
+          format: double
+          description: The total balance of the account that the transaction is associated with.
+      required:
+      - leg_id
+      - amount
+      - currency
+      - account_id
+    TransactionCounterpartyAccountType:
+      enum:
+      - self
+      - revolut
+      - external
+      description: Indicates the type of the account.
+      type: string
     TransactionMerchant:
       type: object
       description: The information about the merchant (only for card transactions).
@@ -1337,56 +1382,28 @@ components:
       - created_at
       - updated_at
       - legs
-    Currency:
-      type: string
-      pattern: ^[A-Z]{3}$
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
-    TransactionLeg:
+    CardReference:
+      description: "Reference for the card.\nOne of the name-value pairs assigned to the card for tracking.\n\n:::info\nEach time the card is used, the references are recorded in the [transaction details](https://developer.revolut.com/docs/api/business#get-transaction#response) (`card.references`), helping track transactions made with this card.\n:::\n\nThe names must be unique.\nThe references can be [amended](https://developer.revolut.com/docs/api/business#update-card-references) up to 10 times.\nReferences are only supported for cards owned by the business (i.e. [company](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) or [auto-issued cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards)).\nThey are **not** supported for [team member cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) (i.e. with `holder_id` present). \n\n:::note\nThe references recorded on a transaction are those assigned to the card at the time the transaction took place.\nIf the references are amended, the new references are only applied to future transactions.\nExisting transaction are not affected.\n:::"
       type: object
-      description: 'The legs of the transaction:
-
-        - For transactions between your Revolut accounts, there can be 2 legs, for example, an internal transfer made out of the BGP account and into the EUR account.
-
-        - For transactions in other cases, there is only 1 leg.'
-      properties:
-        leg_id:
-          type: string
-          format: uuid
-          description: The ID of the leg.
-        amount:
-          type: number
-          format: double
-          description: The amount of the transaction.
-        fee:
-          type: number
-          format: double
-          description: The amount of the transaction fee.
-        currency:
-          $ref: '#/components/schemas/Currency'
-        bill_amount:
-          type: number
-          format: double
-          description: The billing amount for cross-currency payments.
-        bill_currency:
-          $ref: '#/components/schemas/Currency'
-        account_id:
-          type: string
-          format: uuid
-          description: The ID of the account that the transaction is associated with.
-        counterparty:
-          $ref: '#/components/schemas/TransactionCounterparty'
-        description:
-          type: string
-          description: The transaction leg purpose.
-        balance:
-          type: number
-          format: double
-          description: The total balance of the account that the transaction is associated with.
       required:
-      - leg_id
-      - amount
-      - currency
-      - account_id
+      - name
+      - value
+      properties:
+        name:
+          description: 'The name of the card reference.
+
+            Must be unique.'
+          type: string
+          minLength: 1
+          maxLength: 30
+        value:
+          description: The value for this reference.
+          type: string
+          minLength: 1
+          maxLength: 30
+      example:
+        name: PNR
+        value: RT12345
     TransactionCounterparty:
       type: object
       properties:
@@ -1402,27 +1419,16 @@ components:
           description: The ID of the counterparty.
       required:
       - account_type
-    TransactionType:
-      enum:
-      - atm
-      - card_payment
-      - card_refund
-      - card_chargeback
-      - card_credit
-      - charge
-      - charge_refund
-      - exchange
-      - transfer
-      - loan
-      - fee
-      - refund
-      - topup
-      - topup_return
-      - tax
-      - tax_refund
-      - rev_payment
-      description: Indicates the transaction type.
+    CountryCodeMerchant:
       type: string
+      pattern: ^[A-Z]{2,3}$
+      description: 'The bank country of the merchant, provided as an [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+
+        Typically 3 letters, though in some cases, card networks might provide it as a 2-letter code.'
+    Currency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
     TransactionCard:
       type: object
       description: The details of the card associated with the transaction.
@@ -1462,104 +1468,6 @@ components:
           required:
           - id
           - card_number
-    CountryCodeMerchant:
-      type: string
-      pattern: ^[A-Z]{2,3}$
-      description: 'The bank country of the merchant, provided as an [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
-
-        Typically 3 letters, though in some cases, card networks might provide it as a 2-letter code.'
-    OBExternalStandingOrderStatus1Code:
-      type: string
-      description: The status of the standing order.
-      enum:
-      - Active
-      - Inactive
-    OBActiveCurrencyAndAmount_SimpleType:
-      pattern: ^\d{1,13}\.\d{1,5}$
-      type: string
-      description: The amount of money where the unit of currency is explicit and compliant with [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217).
-    TransactionInformation:
-      maxLength: 500
-      minLength: 1
-      type: string
-      description: The additional information of the transaction, which is unstructured text.
-    OBTransactionCashBalance:
-      required:
-      - Amount
-      - CreditDebitIndicator
-      - Type
-      type: object
-      properties:
-        CreditDebitIndicator:
-          type: string
-          description: 'Indicates whether the balance is a credit or a debit balance.
-
-
-            :::note
-
-            A zero balance is considered a credit balance.
-
-            :::'
-          enum:
-          - Credit
-          - Debit
-        Type:
-          $ref: '#/components/schemas/OBBalanceType1Code'
-        Amount:
-          $ref: '#/components/schemas/OBActiveOrHistoricCurrencyAndAmount'
-      description: A list of elements used to define the balance as a numerical representation of the net increases and decreases in an account after a transaction entry is applied to the account.
-    OBEntryStatus1Code:
-      type: string
-      description: The status of a transaction entry on the books of the account servicer.
-      enum:
-      - Booked
-      - Pending
-    OBExternalAccountIdentification4Code:
-      type: string
-      description: The name of the identification scheme.
-      enum:
-      - UK.OBIE.IBAN
-      - UK.OBIE.SortCodeAccountNumber
-      - US.RoutingNumberAccountNumber
-      - US.BranchCodeAccountNumber
-      example: UK.OBIE.IBAN
-    OBCashAccount6:
-      type: object
-      properties:
-        SchemeName:
-          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
-        Identification:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: The account ID that the institution assigns to identify an account, which is known by the account owner.
-        Name:
-          maxLength: 70
-          minLength: 1
-          type: string
-          description: 'The account name that the account servicing institution assigns.
-
-
-            The account name is the name or names of the account owner(s) represented at an account level.
-
-
-            The account name is not the product name or the nickname of the account.'
-        SecondaryIdentification:
-          maxLength: 34
-          minLength: 1
-          type: string
-          description: 'The secondary account ID that the account servicing institution assigns.
-
-
-            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
-      description: The unique ID of the account in the case of a transaction.
-    AccountId:
-      maxLength: 40
-      minLength: 1
-      type: string
-      description: 'The unique and immutable ID to identify the account resource.
-
-        This ID has no meaning to the account owner.'
     OBDirectDebit1:
       required:
       - AccountId
@@ -1614,7 +1522,11 @@ components:
           description: 'The description of the error that occurred.
 
             For example, `A mandatory field isn''t supplied`, `RequestedExecutionDateTime must be in future`, and `OBIE doesn''t standardise this field`.'
-    OBReadTransaction4:
+    OBActiveCurrencyAndAmount_SimpleType:
+      pattern: ^\d{1,13}\.\d{1,5}$
+      type: string
+      description: The amount of money where the unit of currency is explicit and compliant with [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217).
+    OBReadStandingOrder4:
       required:
       - Data
       - Links
@@ -1624,62 +1536,64 @@ components:
         Data:
           type: object
           properties:
-            Transaction:
+            StandingOrder:
               type: array
-              description: The details about the transaction.
               items:
-                $ref: '#/components/schemas/OBTransaction4'
+                $ref: '#/components/schemas/OBStandingOrder4'
         Links:
           $ref: '#/components/schemas/Links'
         Meta:
           $ref: '#/components/schemas/Meta'
-    OBCurrencyExchange5:
+    OBEntryStatus1Code:
+      type: string
+      description: The status of a transaction entry on the books of the account servicer.
+      enum:
+      - Booked
+      - Pending
+    OBErrorResponse1:
       required:
-      - ExchangeRate
-      - SourceCurrency
+      - Code
+      - Errors
+      - Message
       type: object
       properties:
-        SourceCurrency:
-          pattern: ^[A-Z]{3,3}$
+        Code:
+          maxLength: 40
+          minLength: 1
           type: string
-          description: The currency that is exchanged from.
-        TargetCurrency:
-          pattern: ^[A-Z]{3,3}$
+          description: The error code in high level that helps categorize the error.
+        Id:
+          maxLength: 40
+          minLength: 1
           type: string
-          description: The currency that is exchanged to.
-        UnitCurrency:
-          pattern: ^[A-Z]{3,3}$
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        Message:
+          maxLength: 500
+          minLength: 1
           type: string
-          description: 'The currency that the exchange rate is expressed in.
+          description: 'The error message.
 
-            For example, for 1 GBP = xxx EUR, the `UnitCurrency` value is GBP.'
-        ExchangeRate:
-          type: string
-          description: 'The exchange rate used to convert an amount of money from one currency into another.
+            For example, `There is something wrong with the request parameters provided`.'
+        Errors:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OBError1'
+      description: The detailed information about the error to help troubleshooting.
+    OBSupplementaryData1:
+      maxLength: 40
+      minLength: 1
+      type: object
+      additionalProperties:
+        type: string
+        description: 'The additional information that cannot be captured in the structured fields and/or any other specific block.
 
 
-            This reflects the price that one currency was bought at with another currency.
+          **`< * >`** acts as a placeholder here, and it represents an optional property (or multiple such properties) with an arbitrary name and data.
 
 
-            :::note
-
-            `ExchangeRate` expresses the ratio between `UnitCurrency` and `QuotedCurrency`:
-
-            **`ExchangeRate` = `UnitCurrency`/`QuotedCurrency`**.
-
-            :::'
-        InstructedAmount:
-          required:
-          - Amount
-          - Currency
-          type: object
-          properties:
-            Amount:
-              $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
-            Currency:
-              $ref: '#/components/schemas/Currency'
-          description: Amount of money to be moved between the debtor and creditor, before deduction of charges, expressed in the currency as ordered by the initiating party.
-      description: A list of elements to provide details on the currency exchange.
+          To see an example, check the response body samples.'
+      description: The additional information that cannot be captured in the structured fields and/or any other specific block.
     OBCashAccount5:
       required:
       - Identification
@@ -1725,69 +1639,24 @@ components:
 
             Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
       description: The details to identify the account.
-    OBErrorResponse1:
+    TransactionInformation:
+      maxLength: 500
+      minLength: 1
+      type: string
+      description: The additional information of the transaction, which is unstructured text.
+    OBActiveOrHistoricCurrencyAndAmount:
       required:
-      - Code
-      - Errors
-      - Message
+      - Amount
+      - Currency
       type: object
       properties:
-        Code:
-          maxLength: 40
-          minLength: 1
+        Amount:
+          $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
+        Currency:
+          pattern: ^[A-Z]{3,3}$
           type: string
-          description: The error code in high level that helps categorize the error.
-        Id:
-          maxLength: 40
-          minLength: 1
-          type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        Message:
-          maxLength: 500
-          minLength: 1
-          type: string
-          description: 'The error message.
-
-            For example, `There is something wrong with the request parameters provided`.'
-        Errors:
-          minItems: 1
-          type: array
-          items:
-            $ref: '#/components/schemas/OBError1'
-      description: The detailed information about the error to help troubleshooting.
-    OBSupplementaryData1:
-      maxLength: 40
-      minLength: 1
-      type: object
-      additionalProperties:
-        type: string
-        description: 'The additional information that cannot be captured in the structured fields and/or any other specific block.
-
-
-          **`< * >`** acts as a placeholder here, and it represents an optional property (or multiple such properties) with an arbitrary name and data.
-
-
-          To see an example, check the response body samples.'
-      description: The additional information that cannot be captured in the structured fields and/or any other specific block.
-    OBBalanceType1Code:
-      type: string
-      description: The balance type.
-      enum:
-      - InterimAvailable
-      - InterimBooked
-      - ClosingAvailable
-      - ClosingBooked
-      - ClosingCleared
-      - Expected
-      - ForwardAvailable
-      - Information
-      - InterimAvailable
-      - InterimBooked
-      - InterimCleared
-      - OpeningAvailable
-      - OpeningBooked
-      - OpeningCleared
-      - PreviouslyClosedBooked
+          description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+      description: The amount of the cash balance after a transaction entry is applied to the account.
     OBStandingOrder4:
       required:
       - AccountId
@@ -1877,74 +1746,62 @@ components:
         CreditorAccount:
           $ref: '#/components/schemas/OBCashAccount5'
       description: A list of standing orders.
-    OBReadStandingOrder4:
-      required:
-      - Data
-      - Links
-      - Meta
-      type: object
-      properties:
-        Data:
-          type: object
-          properties:
-            StandingOrder:
-              type: array
-              items:
-                $ref: '#/components/schemas/OBStandingOrder4'
-        Links:
-          $ref: '#/components/schemas/Links'
-        Meta:
-          $ref: '#/components/schemas/Meta'
-    OBReadDirectDebit1:
-      required:
-      - Data
-      - Links
-      - Meta
-      type: object
-      properties:
-        Data:
-          type: object
-          properties:
-            DirectDebit:
-              type: array
-              description: The account that a cash entry is made to or from.
-              items:
-                $ref: '#/components/schemas/OBDirectDebit1'
-          description: A list of direct debits.
-        Links:
-          $ref: '#/components/schemas/Links'
-        Meta:
-          $ref: '#/components/schemas/Meta'
-    Meta:
-      title: MetaData
-      type: object
-      properties:
-        TotalPages:
-          type: integer
-          description: Used for pagination. Indicates how many pages of results are available.
-          format: int32
-      description: Meta data relevant to the payload.
-    Links:
-      required:
-      - Self
-      type: object
-      properties:
-        Self:
-          type: string
-          description: The absolute URI to the resource.
-          format: uri
-        Next:
-          type: string
-          description: The absolute URI to the next pagination resource.
-          format: uri
-        Prev:
-          type: string
-          description: The absolute URI to the previous pagination resource.
-          format: uri
-      description: Links relevant to the payload.
-    OBExternalDirectDebitStatus1Code:
+    OBBalanceType1Code:
       type: string
-      description: The status of the direct debit.
+      description: The balance type.
+      enum:
+      - InterimAvailable
+      - InterimBooked
+      - ClosingAvailable
+      - ClosingBooked
+      - ClosingCleared
+      - Expected
+      - ForwardAvailable
+      - Information
+      - InterimAvailable
+      - InterimBooked
+      - InterimCleared
+      - OpeningAvailable
+      - OpeningBooked
+      - OpeningCleared
+      - PreviouslyClosedBooked
+    OBTransactionCashBalance:
+      required:
+      - Amount
+      - CreditDebitIndicator
+      - Type
+      type: object
+      properties:
+        CreditDebitIndicator:
+          type: string
+          description: 'Indicates whether the balance is a credit or a debit balance.
+
+
+            :::note
+
+            A zero balance is considered a credit balance.
+
+            :::'
+          enum:
+          - Credit
+          - Debit
+        Type:
+          $ref: '#/components/schemas/OBBalanceType1Code'
+        Amount:
+          $ref: '#/components/schemas/OBActiveOrHistoricCurrencyAndAmount'
+      description: A list of elements used to define the balance as a numerical representation of the net increases and decreases in an account after a transaction entry is applied to the account.
+    OBMerchantDetails1:
+      type: object
+      properties:
+        MerchantName:
+          maxLength: 350
+          minLength: 1
+          type: string
+          description: The name of the merchant.
+      description: The details of the merchant involved in the transaction.
+    OBExternalStandingOrderStatus1Code:
+      type: string
+      description: The status of the standing order.
       enum:
       - Active
       - Inactive
@@ -2072,19 +1929,151 @@ components:
               type: string
               description: The name of the cardholder.
       description: The details of the transaction.
-    OBActiveOrHistoricCurrencyAndAmount:
+    OBCurrencyExchange5:
       required:
-      - Amount
-      - Currency
+      - ExchangeRate
+      - SourceCurrency
       type: object
       properties:
-        Amount:
-          $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
-        Currency:
+        SourceCurrency:
           pattern: ^[A-Z]{3,3}$
           type: string
-          description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
-      description: The amount of the cash balance after a transaction entry is applied to the account.
+          description: The currency that is exchanged from.
+        TargetCurrency:
+          pattern: ^[A-Z]{3,3}$
+          type: string
+          description: The currency that is exchanged to.
+        UnitCurrency:
+          pattern: ^[A-Z]{3,3}$
+          type: string
+          description: 'The currency that the exchange rate is expressed in.
+
+            For example, for 1 GBP = xxx EUR, the `UnitCurrency` value is GBP.'
+        ExchangeRate:
+          type: string
+          description: 'The exchange rate used to convert an amount of money from one currency into another.
+
+
+            This reflects the price that one currency was bought at with another currency.
+
+
+            :::note
+
+            `ExchangeRate` expresses the ratio between `UnitCurrency` and `QuotedCurrency`:
+
+            **`ExchangeRate` = `UnitCurrency`/`QuotedCurrency`**.
+
+            :::'
+        InstructedAmount:
+          required:
+          - Amount
+          - Currency
+          type: object
+          properties:
+            Amount:
+              $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
+            Currency:
+              $ref: '#/components/schemas/Currency'
+          description: Amount of money to be moved between the debtor and creditor, before deduction of charges, expressed in the currency as ordered by the initiating party.
+      description: A list of elements to provide details on the currency exchange.
+    Meta:
+      title: MetaData
+      type: object
+      properties:
+        TotalPages:
+          type: integer
+          description: Used for pagination. Indicates how many pages of results are available.
+          format: int32
+      description: Meta data relevant to the payload.
+    OBCashAccount6:
+      type: object
+      properties:
+        SchemeName:
+          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
+        Identification:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The account ID that the institution assigns to identify an account, which is known by the account owner.
+        Name:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: 'The account name that the account servicing institution assigns.
+
+
+            The account name is the name or names of the account owner(s) represented at an account level.
+
+
+            The account name is not the product name or the nickname of the account.'
+        SecondaryIdentification:
+          maxLength: 34
+          minLength: 1
+          type: string
+          description: 'The secondary account ID that the account servicing institution assigns.
+
+
+            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
+      description: The unique ID of the account in the case of a transaction.
+    Links:
+      required:
+      - Self
+      type: object
+      properties:
+        Self:
+          type: string
+          description: The absolute URI to the resource.
+          format: uri
+        Next:
+          type: string
+          description: The absolute URI to the next pagination resource.
+          format: uri
+        Prev:
+          type: string
+          description: The absolute URI to the previous pagination resource.
+          format: uri
+      description: Links relevant to the payload.
+    OBExternalDirectDebitStatus1Code:
+      type: string
+      description: The status of the direct debit.
+      enum:
+      - Active
+      - Inactive
+    AccountId:
+      maxLength: 40
+      minLength: 1
+      type: string
+      description: 'The unique and immutable ID to identify the account resource.
+
+        This ID has no meaning to the account owner.'
+    OBExternalAccountIdentification4Code:
+      type: string
+      description: The name of the identification scheme.
+      enum:
+      - UK.OBIE.IBAN
+      - UK.OBIE.SortCodeAccountNumber
+      - US.RoutingNumberAccountNumber
+      - US.BranchCodeAccountNumber
+      example: UK.OBIE.IBAN
+    OBReadTransaction4:
+      required:
+      - Data
+      - Links
+      - Meta
+      type: object
+      properties:
+        Data:
+          type: object
+          properties:
+            Transaction:
+              type: array
+              description: The details about the transaction.
+              items:
+                $ref: '#/components/schemas/OBTransaction4'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
     OBRevolutAccountIdentificationCode:
       type: string
       description: 'The name of the identification scheme.
@@ -2102,42 +2091,27 @@ components:
       - US.BranchCodeAccountNumber
       - UK.Revolut.InternalAccountId
       example: UK.OBIE.IBAN
-    OBMerchantDetails1:
+    OBReadDirectDebit1:
+      required:
+      - Data
+      - Links
+      - Meta
       type: object
       properties:
-        MerchantName:
-          maxLength: 350
-          minLength: 1
-          type: string
-          description: The name of the merchant.
-      description: The details of the merchant involved in the transaction.
-  parameters:
-    FromBookingDateTimeParam:
-      name: fromBookingDateTime
-      in: query
-      description: "The UTC [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) Date Time to filter transactions.\nIf the parameter is provided, only transactions with `BookingDateTime >= fromBookingDateTime` will be returned.\nNote that the results are paginated.\n\n:::note\nIf you provide this parameter, both the date and time components are required.\nIf you don't need to filter by time, you can set the time part to `00:00:00`. \nFor example, to fetch transactions with `BookingDateTime` equal to or after 09 Oct 2025, set this value to `2025-10-09T00:00:00Z`.\n:::"
-      schema:
-        type: string
-        format: date-time
-        example: '2025-10-09T00:00:00Z'
-    ToBookingDateTimeParam:
-      name: toBookingDateTime
-      in: query
-      description: "The UTC [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) Date Time to filter transactions.\n\nIf the parameter is provided, only transactions with `BookingDateTime < toBookingDateTime` will be returned.\nUsed for pagination: to fetch the next page of results, use the `BookingDateTime` of the last transaction from the current page as the new `toBookingDateTime` value. \n\nIf not provided, the most recent transactions will be returned.\n\n:::note\nIf you provide this parameter, both the date and time components are required.\nIf you don't need to filter by time, you can set the time part to `00:00:00`. \nFor example, to fetch transactions with `BookingDateTime` older than 13 Feb 2026, set this value to `2026-02-13T00:00:00Z`.\n:::"
-      schema:
-        type: string
-        format: date-time
-        example: '2026-02-13T00:00:00Z'
+        Data:
+          type: object
+          properties:
+            DirectDebit:
+              type: array
+              description: The account that a cash entry is made to or from.
+              items:
+                $ref: '#/components/schemas/OBDirectDebit1'
+          description: A list of direct debits.
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
   examples:
-    Error401InvalidRevokedOrExpiredToken:
-      summary: Token invalid, revoked or expired
-      value:
-        Code: 401 Unauthorized
-        Message: Access token is invalid or expired
-        Id: XXXXXXXXXXXX
-        Errors:
-        - ErrorCode: UK.OBIE.Resource.Unauthorized
-          Message: Access token is invalid or expired
     Error401ConsentLacksPermissions:
       summary: Consent lacks permissions
       value:
@@ -2156,6 +2130,32 @@ components:
         Errors:
         - ErrorCode: UK.OBIE.Resource.Forbidden
           Message: Access forbidden
+    Error401InvalidRevokedOrExpiredToken:
+      summary: Token invalid, revoked or expired
+      value:
+        Code: 401 Unauthorized
+        Message: Access token is invalid or expired
+        Id: XXXXXXXXXXXX
+        Errors:
+        - ErrorCode: UK.OBIE.Resource.Unauthorized
+          Message: Access token is invalid or expired
+  parameters:
+    FromBookingDateTimeParam:
+      name: fromBookingDateTime
+      in: query
+      description: "The UTC [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) Date Time to filter transactions.\nIf the parameter is provided, only transactions with `BookingDateTime >= fromBookingDateTime` will be returned.\nNote that the results are paginated.\n\n:::note\nIf you provide this parameter, both the date and time components are required.\nIf you don't need to filter by time, you can set the time part to `00:00:00`. \nFor example, to fetch transactions with `BookingDateTime` equal to or after 09 Oct 2025, set this value to `2025-10-09T00:00:00Z`.\n:::"
+      schema:
+        type: string
+        format: date-time
+        example: '2025-10-09T00:00:00Z'
+    ToBookingDateTimeParam:
+      name: toBookingDateTime
+      in: query
+      description: "The UTC [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) Date Time to filter transactions.\n\nIf the parameter is provided, only transactions with `BookingDateTime < toBookingDateTime` will be returned.\nUsed for pagination: to fetch the next page of results, use the `BookingDateTime` of the last transaction from the current page as the new `toBookingDateTime` value. \n\nIf not provided, the most recent transactions will be returned.\n\n:::note\nIf you provide this parameter, both the date and time components are required.\nIf you don't need to filter by time, you can set the time part to `00:00:00`. \nFor example, to fetch transactions with `BookingDateTime` older than 13 Feb 2026, set this value to `2026-02-13T00:00:00Z`.\n:::"
+      schema:
+        type: string
+        format: date-time
+        example: '2026-02-13T00:00:00Z'
   securitySchemes:
     AccessToken:
       type: http

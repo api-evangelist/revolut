@@ -140,99 +140,98 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: API key can only be used for authentication from whitelisted IP
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    Conflict:
-      description: Conflict
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Request timestamp is in the future
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: 'No such pair: BTC-BTC'
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Forbidden
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    RateLimitExceeded:
-      description: Rate Limit Exceeded
-      headers:
-        Retry-After:
-          description: The number of milliseconds to wait before making a new request.
-          schema:
-            type: integer
-            example: 5000
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Rate Limit Exceeded
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    ServerError:
-      description: Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Something went wrong!
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
   schemas:
-    AllTradesPaginatedResponse:
+    ErrorResponse:
       type: object
+      description: Standard error response structure
       required:
-      - data
-      - metadata
+      - error_id
+      - message
+      - timestamp
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Trade'
-        metadata:
-          type: object
-          required:
-          - timestamp
-          properties:
-            timestamp:
-              type: integer
-              format: int64
-              description: Timestamp in Unix epoch milliseconds.
-            next_cursor:
-              type: string
-              description: 'Cursor used to retrieve the next page of results.
-
-
-                To continue paginating through the results, make a new request and pass this value in the [`cursor`](https://developer.revolut.com/docs/api/revolut-x-crypto-exchange#get-all-trades#request) query parameter.'
+        error_id:
+          type: string
+          format: uuid
+          description: Unique identifier for this specific error occurrence.
+        message:
+          type: string
+          description: Human-readable description of the error.
+        timestamp:
+          type: integer
+          format: int64
+          description: The time the error occurred in Unix epoch milliseconds.
+    Trade:
+      type: object
+      description: A single trade.
+      properties:
+        tdt:
+          type: integer
+          format: int64
+          description: Trade date and time, expressed in Unix epoch milliseconds.
+          example: 3318215482991
+        aid:
+          type: string
+          description: Crypto-asset ID code.
+          example: BTC
+        anm:
+          type: string
+          description: Crypto-asset full name.
+          example: Bitcoin
+        p:
+          type: string
+          description: Price in major currency units. For example, for USD, `116243.32` represents 116243.32 dollars.
+          example: '116243.32'
+        pc:
+          type: string
+          description: Price currency.
+          example: USD
+        pn:
+          type: string
+          description: Price notation.
+          example: MONE
+        q:
+          type: string
+          description: Quantity.
+          example: '0.24521000'
+        qc:
+          type: string
+          description: Quantity currency.
+          example: BTC
+        qn:
+          type: string
+          description: Quantity notation.
+          example: UNIT
+        ve:
+          type: string
+          description: Venue of execution. Always equals `REVX`.
+          example: REVX
+        pdt:
+          type: integer
+          format: int64
+          description: Publication date and time, expressed in Unix epoch milliseconds.
+          example: 3318215482991
+        vp:
+          type: string
+          description: Venue of publication. Always equals `REVX`.
+          example: REVX
+        tid:
+          type: string
+          description: Transaction identification code.
+          example: 5ef9648f658149f7ababedc97a6401f8
+      required:
+      - tdt
+      - aid
+      - anm
+      - p
+      - pc
+      - pn
+      - q
+      - qc
+      - qn
+      - ve
+      - pdt
+      - vp
+      - tid
     ClientTrade:
       type: object
       description: A single trade.
@@ -323,25 +322,6 @@ components:
       - tid
       - oid
       - im
-    ErrorResponse:
-      type: object
-      description: Standard error response structure
-      required:
-      - error_id
-      - message
-      - timestamp
-      properties:
-        error_id:
-          type: string
-          format: uuid
-          description: Unique identifier for this specific error occurrence.
-        message:
-          type: string
-          description: Human-readable description of the error.
-        timestamp:
-          type: integer
-          format: int64
-          description: The time the error occurred in Unix epoch milliseconds.
     PrivateTradesPaginatedResponse:
       type: object
       required:
@@ -367,87 +347,99 @@ components:
 
 
                 To continue paginating through the results, make a new request and pass this value in the [`cursor`](https://developer.revolut.com/docs/api/revolut-x-crypto-exchange#get-private-trades#request) query parameter.'
-    Trade:
+    AllTradesPaginatedResponse:
       type: object
-      description: A single trade.
-      properties:
-        tdt:
-          type: integer
-          format: int64
-          description: Trade date and time, expressed in Unix epoch milliseconds.
-          example: 3318215482991
-        aid:
-          type: string
-          description: Crypto-asset ID code.
-          example: BTC
-        anm:
-          type: string
-          description: Crypto-asset full name.
-          example: Bitcoin
-        p:
-          type: string
-          description: Price in major currency units. For example, for USD, `116243.32` represents 116243.32 dollars.
-          example: '116243.32'
-        pc:
-          type: string
-          description: Price currency.
-          example: USD
-        pn:
-          type: string
-          description: Price notation.
-          example: MONE
-        q:
-          type: string
-          description: Quantity.
-          example: '0.24521000'
-        qc:
-          type: string
-          description: Quantity currency.
-          example: BTC
-        qn:
-          type: string
-          description: Quantity notation.
-          example: UNIT
-        ve:
-          type: string
-          description: Venue of execution. Always equals `REVX`.
-          example: REVX
-        pdt:
-          type: integer
-          format: int64
-          description: Publication date and time, expressed in Unix epoch milliseconds.
-          example: 3318215482991
-        vp:
-          type: string
-          description: Venue of publication. Always equals `REVX`.
-          example: REVX
-        tid:
-          type: string
-          description: Transaction identification code.
-          example: 5ef9648f658149f7ababedc97a6401f8
       required:
-      - tdt
-      - aid
-      - anm
-      - p
-      - pc
-      - pn
-      - q
-      - qc
-      - qn
-      - ve
-      - pdt
-      - vp
-      - tid
+      - data
+      - metadata
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Trade'
+        metadata:
+          type: object
+          required:
+          - timestamp
+          properties:
+            timestamp:
+              type: integer
+              format: int64
+              description: Timestamp in Unix epoch milliseconds.
+            next_cursor:
+              type: string
+              description: 'Cursor used to retrieve the next page of results.
+
+
+                To continue paginating through the results, make a new request and pass this value in the [`cursor`](https://developer.revolut.com/docs/api/revolut-x-crypto-exchange#get-all-trades#request) query parameter.'
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Forbidden
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Request timestamp is in the future
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Something went wrong!
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: 'No such pair: BTC-BTC'
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: API key can only be used for authentication from whitelisted IP
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    RateLimitExceeded:
+      description: Rate Limit Exceeded
+      headers:
+        Retry-After:
+          description: The number of milliseconds to wait before making a new request.
+          schema:
+            type: integer
+            example: 5000
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Rate Limit Exceeded
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
   parameters:
-    XRevxSignature:
-      in: header
-      name: X-Revx-Signature
-      required: true
-      description: "The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::"
-      schema:
-        type: string
-        example: 2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+
     XRevxTimestamp:
       in: header
       name: X-Revx-Timestamp
@@ -473,6 +465,14 @@ components:
         type: integer
         format: int64
         example: 3318215482991
+    XRevxSignature:
+      in: header
+      name: X-Revx-Signature
+      required: true
+      description: "The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::"
+      schema:
+        type: string
+        example: 2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+
     EndDateQueryParam:
       name: end_date
       in: query
@@ -491,6 +491,25 @@ components:
         format: int64
         example: 3318215482991
   examples:
+    TradesPaginatedResponseExample:
+      value:
+        data:
+        - tdt: 3318215482991
+          aid: BTC
+          anm: Bitcoin
+          p: '125056.76'
+          pc: USD
+          pn: MONE
+          q: '0.00003999'
+          qc: BTC
+          qn: UNIT
+          ve: REVX
+          pdt: 3318215482991
+          vp: REVX
+          tid: 80654a036323311cb0ea28462b42db6d
+        metadata:
+          timestamp: 3318215482991
+          next_cursor: GF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw==
     ClientTradesPaginatedResponseExample:
       value:
         data:
@@ -510,25 +529,6 @@ components:
           oid: 2affb2ac-4cf7-4bbf-b7b2-fc1e885bdc2c
           s: buy
           im: false
-        metadata:
-          timestamp: 3318215482991
-          next_cursor: GF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw==
-    TradesPaginatedResponseExample:
-      value:
-        data:
-        - tdt: 3318215482991
-          aid: BTC
-          anm: Bitcoin
-          p: '125056.76'
-          pc: USD
-          pn: MONE
-          q: '0.00003999'
-          qc: BTC
-          qn: UNIT
-          ve: REVX
-          pdt: 3318215482991
-          vp: REVX
-          tid: 80654a036323311cb0ea28462b42db6d
         metadata:
           timestamp: 3318215482991
           next_cursor: GF0ZT0xNzY0OTMxNTAyODU0O2lkPTM3YjExMWJlLTcwMzYtNGYzNC1hYWYyLTM4ZDVjYTEyN2M1Yw==

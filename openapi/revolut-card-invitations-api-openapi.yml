@@ -943,38 +943,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    CardInvitationSpendingPeriod:
-      description: 'The controls for the card''s spending period.
-
-
-        They specify the dates when the card will become available or unavailable for spending, and define what happens after the end date.'
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/SpendingPeriodSchema'
-    CardInvitationsResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/CardInvitationResponse'
-      description: A list of card invitations
-    SpendingLimitSingleTransaction:
-      type: object
-      description: The limit for a single transaction.
-      properties:
-        amount:
-          type: number
-          format: double
-          description: The value of the spending limit.
-        currency:
-          $ref: '#/components/schemas/TransactionLimitCurrency'
-      required:
-      - amount
-      - currency
-    CardInvitationAccounts:
-      type: array
-      description: The list of accounts that will be linked to the card.
-      items:
-        type: string
-        format: uuid
     CardInvitationResponse:
       type: object
       properties:
@@ -1017,113 +985,23 @@ components:
       - virtual
       - state
       - accounts
-    CardInvitationLabel:
-      type: string
-      description: The label of the card.
-    MerchantControlsSchema:
-      type: object
-      required:
-      - control_type
-      - merchant_ids
-      properties:
-        control_type:
-          type: string
-          enum:
-          - block
-          - allow
-          description: The type of control to apply.
-        merchant_ids:
-          type: array
-          minItems: 1
-          maxItems: 20
-          description: 'The list of IDs of merchants to which the control applies.
-
-
-            :::tip
-
-            To find merchant IDs, check transaction details (→ `merchant.id`).
-
-            You can fetch transaction details for a [specific transaction](https://developer.revolut.com/docs/api/business#get-transaction#response) or for [all transactions](https://developer.revolut.com/docs/api/business#get-transactions#response).
-
-            :::'
-          items:
-            type: string
-            format: uuid
-    ErrorUnauthorized:
-      type: object
-      description: 'Unauthorised
-
-
-        Returned, for example, when the credentials you used to make the request are invalid.
-
-        For more information, see the **Authorization** section.'
-      allOf:
-      - $ref: '#/components/schemas/ErrorWithStatus'
-    Error:
-      type: object
-      properties:
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
-      required:
-      - code
-      - message
-    SpendProgram:
-      description: 'The [spend program](https://help.revolut.com/business/help/making-paymentsbusiness/spend-controls/setting-card-presets-for-my-team-members/) assigned to the card.
-
-        :::note
-
-        To use this property, please contact [Revolut API Support](mailto:api-requests@revolut.com).
-
-        :::'
-      type: object
-      readOnly: true
-      properties:
-        label:
-          description: The name of the spend program.
-          type: string
-          maxLength: 30
-      required:
-      - label
     CardInvitationId:
       type: string
       description: The ID of the card invitation.
       format: uuid
-    ErrorWithStatus:
+    SpendingLimitSingleTransaction:
       type: object
-      description: Error returning a status instead of code.
+      description: The limit for a single transaction.
       properties:
-        status:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
+        amount:
+          type: number
+          format: double
+          description: The value of the spending limit.
+        currency:
+          $ref: '#/components/schemas/TransactionLimitCurrency'
       required:
-      - status
-      - message
-    CardInvitationState:
-      type: string
-      enum:
-      - created
-      - expired
-      - failed
-      - redeemed
-      description: 'The current state of the card invitation:
-
-        - **`created`**: Invitation has been created but not yet claimed.
-
-        - **`expired`**: Invitation has expired due to expiry date being reached or manual cancellation.
-
-        - **`failed`**: Invitation claim attempt failed.
-
-        - **`redeemed`**: Invitation has been successfully claimed.
-
-
-        To learn more about card invitation lifecycle, see the guide: [Manage card invitations → Card invitation state](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations#card-invitation-state).'
+      - amount
+      - currency
     ErrorUnprocessableEntity:
       type: object
       description: 'Unprocessable entity
@@ -1139,96 +1017,23 @@ components:
           description: The description of the error.
       required:
       - message
-    CardInvitationCreatedAt:
-      type: string
-      description: The date and time the card invitation was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-      format: date-time
+    ErrorWithStatus:
+      type: object
+      description: Error returning a status instead of code.
+      properties:
+        status:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - status
+      - message
     CardInvitationCreatedHolderId:
       type: string
       description: The ID of the team member to be assigned as the holder of the card after the invitation is claimed.
       format: uuid
-    SpendingLimitPeriodic:
-      type: object
-      description: The limit for transactions within a given period.
-      properties:
-        amount:
-          type: number
-          format: double
-          description: The value of the spending limit.
-        currency:
-          $ref: '#/components/schemas/TransactionLimitCurrency'
-      required:
-      - amount
-      - currency
-    CardInvitationCardId:
-      type: string
-      format: uuid
-      description: "The ID of the card issued after this invitation was claimed. \n:::note\nOnly returned for invitations in state `redeemed`.\n:::\n"
-    TransactionLimitCurrency:
-      type: string
-      pattern: ^[A-Z]{3}$
-      description: The currency of the spending limit, provided as [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code in upper case.
-    CardInvitationCategories:
-      type: array
-      description: "The list of merchant categories that will be available for card spending.             \nIf this parameter is not specified, categories are not restricted."
-      items:
-        $ref: '#/components/schemas/BusinessMerchantCategory'
-    CardInvitationUpdatedAt:
-      type: string
-      description: The date and time the card invitation was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-      format: date-time
-    CardInvitationHolderId:
-      type: string
-      description: 'The ID of the team member to be assigned as the holder of the card after the invitation is claimed.
-
-
-        :::note
-
-        If the team member has been deleted since the invitation was created, the `holder_id` is not returned.
-
-        :::'
-      format: uuid
-    CardInvitationCountries:
-      description: 'The list of countries where the team member will be able to use the card.
-
-        Specified as 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) codes.'
-      type: array
-      items:
-        type: string
-        pattern: ^[A-Z]{2}$
-        example: GB
-    CardInvitationVirtual:
-      type: boolean
-      description: Specifies whether the issued card will be a virtual (`true`) or physical (`false`) one.
-    SpendingPeriodSchema:
-      type: object
-      properties:
-        start_date:
-          type: string
-          format: date
-          description: 'The start date (inclusive) of the spending period, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format (`YYYY-MM-DD`).
-
-            Uses the [timezone set by the business](https://business.revolut.com/settings/appearance), or defaults to `Europe/London`.'
-          example: '2025-09-26'
-        end_date:
-          type: string
-          format: date
-          description: 'The end date (inclusive) of the spending period, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format (`YYYY-MM-DD`).
-
-            Uses the [timezone set by the business](https://business.revolut.com/settings/appearance), or defaults to `Europe/London`.'
-          example: '2030-12-31'
-        end_date_action:
-          type: string
-          enum:
-          - lock
-          - terminate
-          description: The action to take after the end date of the spending period.
-      anyOf:
-      - required:
-        - start_date
-      - required:
-        - end_date
-        - end_date_action
     CardInvitationCreatedResponse:
       type: object
       properties:
@@ -1290,6 +1095,57 @@ components:
       - education
       - government
       type: string
+    CardInvitationUpdatedAt:
+      type: string
+      description: The date and time the card invitation was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+      format: date-time
+    ErrorUnauthorized:
+      type: object
+      description: 'Unauthorised
+
+
+        Returned, for example, when the credentials you used to make the request are invalid.
+
+        For more information, see the **Authorization** section.'
+      allOf:
+      - $ref: '#/components/schemas/ErrorWithStatus'
+    MerchantControlsSchema:
+      type: object
+      required:
+      - control_type
+      - merchant_ids
+      properties:
+        control_type:
+          type: string
+          enum:
+          - block
+          - allow
+          description: The type of control to apply.
+        merchant_ids:
+          type: array
+          minItems: 1
+          maxItems: 20
+          description: 'The list of IDs of merchants to which the control applies.
+
+
+            :::tip
+
+            To find merchant IDs, check transaction details (→ `merchant.id`).
+
+            You can fetch transaction details for a [specific transaction](https://developer.revolut.com/docs/api/business#get-transaction#response) or for [all transactions](https://developer.revolut.com/docs/api/business#get-transactions#response).
+
+            :::'
+          items:
+            type: string
+            format: uuid
+    CardInvitationExpiryDate:
+      type: string
+      format: date-time
+      description: "The date and time after which this card invitation expires if not claimed or cancelled before then.\nSpecified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n:::note\nOnly returned for invitations in state `created`.\n:::tip\nFor other states, to find out when a card invitation transitioned to its [final state](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations#card-invitation-state), check the `updated_at` value. \n:::"
+      example: '2025-10-20T15:09:24Z'
+    CardInvitationLabel:
+      type: string
+      description: The label of the card.
     SpendingLimitsSchema:
       type: object
       properties:
@@ -1321,6 +1177,102 @@ components:
         week:
           amount: 200.44
           currency: GBP
+    CardInvitationAccounts:
+      type: array
+      description: The list of accounts that will be linked to the card.
+      items:
+        type: string
+        format: uuid
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
+    SpendingPeriodSchema:
+      type: object
+      properties:
+        start_date:
+          type: string
+          format: date
+          description: 'The start date (inclusive) of the spending period, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format (`YYYY-MM-DD`).
+
+            Uses the [timezone set by the business](https://business.revolut.com/settings/appearance), or defaults to `Europe/London`.'
+          example: '2025-09-26'
+        end_date:
+          type: string
+          format: date
+          description: 'The end date (inclusive) of the spending period, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format (`YYYY-MM-DD`).
+
+            Uses the [timezone set by the business](https://business.revolut.com/settings/appearance), or defaults to `Europe/London`.'
+          example: '2030-12-31'
+        end_date_action:
+          type: string
+          enum:
+          - lock
+          - terminate
+          description: The action to take after the end date of the spending period.
+      anyOf:
+      - required:
+        - start_date
+      - required:
+        - end_date
+        - end_date_action
+    CardInvitationCategories:
+      type: array
+      description: "The list of merchant categories that will be available for card spending.             \nIf this parameter is not specified, categories are not restricted."
+      items:
+        $ref: '#/components/schemas/BusinessMerchantCategory'
+    CardInvitationSpendingPeriod:
+      description: 'The controls for the card''s spending period.
+
+
+        They specify the dates when the card will become available or unavailable for spending, and define what happens after the end date.'
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/SpendingPeriodSchema'
+    SpendingLimitPeriodic:
+      type: object
+      description: The limit for transactions within a given period.
+      properties:
+        amount:
+          type: number
+          format: double
+          description: The value of the spending limit.
+        currency:
+          $ref: '#/components/schemas/TransactionLimitCurrency'
+      required:
+      - amount
+      - currency
+    CardInvitationHolderId:
+      type: string
+      description: 'The ID of the team member to be assigned as the holder of the card after the invitation is claimed.
+
+
+        :::note
+
+        If the team member has been deleted since the invitation was created, the `holder_id` is not returned.
+
+        :::'
+      format: uuid
+    CardInvitationsResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/CardInvitationResponse'
+      description: A list of card invitations
+    CardInvitationCreatedAt:
+      type: string
+      description: The date and time the card invitation was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+      format: date-time
+    CardInvitationVirtual:
+      type: boolean
+      description: Specifies whether the issued card will be a virtual (`true`) or physical (`false`) one.
     CardInvitationUpdatedResponse:
       type: object
       properties:
@@ -1361,17 +1313,200 @@ components:
       - virtual
       - state
       - accounts
-    CardInvitationExpiryDate:
+    CardInvitationState:
       type: string
-      format: date-time
-      description: "The date and time after which this card invitation expires if not claimed or cancelled before then.\nSpecified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n:::note\nOnly returned for invitations in state `created`.\n:::tip\nFor other states, to find out when a card invitation transitioned to its [final state](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations#card-invitation-state), check the `updated_at` value. \n:::"
-      example: '2025-10-20T15:09:24Z'
+      enum:
+      - created
+      - expired
+      - failed
+      - redeemed
+      description: 'The current state of the card invitation:
+
+        - **`created`**: Invitation has been created but not yet claimed.
+
+        - **`expired`**: Invitation has expired due to expiry date being reached or manual cancellation.
+
+        - **`failed`**: Invitation claim attempt failed.
+
+        - **`redeemed`**: Invitation has been successfully claimed.
+
+
+        To learn more about card invitation lifecycle, see the guide: [Manage card invitations → Card invitation state](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations#card-invitation-state).'
+    SpendProgram:
+      description: 'The [spend program](https://help.revolut.com/business/help/making-paymentsbusiness/spend-controls/setting-card-presets-for-my-team-members/) assigned to the card.
+
+        :::note
+
+        To use this property, please contact [Revolut API Support](mailto:api-requests@revolut.com).
+
+        :::'
+      type: object
+      readOnly: true
+      properties:
+        label:
+          description: The name of the spend program.
+          type: string
+          maxLength: 30
+      required:
+      - label
+    CardInvitationCardId:
+      type: string
+      format: uuid
+      description: "The ID of the card issued after this invitation was claimed. \n:::note\nOnly returned for invitations in state `redeemed`.\n:::\n"
+    CardInvitationCountries:
+      description: 'The list of countries where the team member will be able to use the card.
+
+        Specified as 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) codes.'
+      type: array
+      items:
+        type: string
+        pattern: ^[A-Z]{2}$
+        example: GB
+    TransactionLimitCurrency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: The currency of the spending limit, provided as [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code in upper case.
   examples:
-    cardErrorBadId:
-      summary: Invalid ID - the path parameter must be UUID
+    cardErrorBadCountryCode:
+      summary: Invalid country code (when countries=["GB", "USA"])
       value:
-        message: 'Invalid path parameter ''id'': expected UUID'
-        code: 2101
+        code: 3000
+        message: 'Invalid value for ''countries[1]'': expected a 2-letter ISO country code (e.g. ''US'').'
+    cardInvitationFailedNoHolderDetails:
+      summary: Invitation that failed because team member was deleted
+      value:
+        id: bfc40b73-1e8b-4cba-ad7d-2f54ee707a21
+        state: failed
+        created_at: '2025-11-28T00:00:00Z'
+        updated_at: '2025-12-02T11:31:15Z'
+        virtual: true
+        label: Natália Popović - offb
+        spending_period:
+          start_date: '2025-11-30'
+          end_date: '2026-11-30'
+          end_date_action: terminate
+        categories:
+        - groceries
+        - restaurants
+        merchant_controls:
+          control_type: block
+          merchant_ids:
+          - 14c8d663-2093-4086-96ed-334a4011333f
+          - 06e0f7fa-38a2-4fcf-a115-df5caf190b55
+        countries:
+        - GB
+        accounts:
+        - 6b472c0e-f595-4681-88b4-76eaa0522824
+    cardInvitationCreatedDetails:
+      summary: Created (active) invitation (example with spending limits)
+      value:
+        id: 4016b891-bb50-4bd2-8a1b-adb74f4aacdd
+        state: created
+        created_at: '2025-11-21T00:00:00Z'
+        updated_at: '2025-11-21T00:00:00Z'
+        expiry_date: '2025-12-06T00:00:00Z'
+        holder_id: 3791712d-e5b5-4d5f-b1f1-79a93d57e08b
+        virtual: true
+        label: Dariel Pattie
+        spending_limits:
+          single:
+            amount: 50
+            currency: GBP
+          week:
+            amount: 250
+            currency: GBP
+        spending_period:
+          end_date: '2026-12-31'
+          end_date_action: lock
+        categories:
+        - groceries
+        - restaurants
+        merchant_controls:
+          control_type: block
+          merchant_ids:
+          - 14c8d663-2093-4086-96ed-334a4011333f
+          - 06e0f7fa-38a2-4fcf-a115-df5caf190b55
+        countries:
+        - GB
+        accounts:
+        - 26a852b8-4046-4e71-949d-22f4cb6be26a
+    cardInvitationExpiredDetails:
+      summary: Expired or cancelled invitation
+      value:
+        id: 0c0d252e-5fff-498e-83f8-f9b635904275
+        state: expired
+        created_at: '2025-11-22T00:00:00Z'
+        updated_at: '2025-11-30T00:00:00Z'
+        holder_id: 5ea0ffa1-5dc5-43c4-ac5e-b9e0deb9ec12
+        virtual: true
+        label: Valeria Keone - meals
+        spending_limits:
+          single:
+            amount: 50
+            currency: GBP
+          week:
+            amount: 250
+            currency: GBP
+        spending_period:
+          start_date: '2025-11-29'
+          end_date: '2025-12-29'
+          end_date_action: terminate
+        categories:
+        - groceries
+        - restaurants
+        merchant_controls:
+          control_type: block
+          merchant_ids:
+          - 14c8d663-2093-4086-96ed-334a4011333f
+          - 06e0f7fa-38a2-4fcf-a115-df5caf190b55
+        countries:
+        - GB
+        accounts:
+        - 6b472c0e-f595-4681-88b4-76eaa0522824
+    errorUnauthorized:
+      summary: Unauthorized
+      value:
+        status: 401
+        message: The request should be authorized.
+    cardInvitationUpdatedAllProperties:
+      summary: Update all properties
+      value:
+        id: 4016b891-bb50-4bd2-8a1b-adb74f4aacdd
+        state: created
+        created_at: '2025-11-21T00:00:00Z'
+        updated_at: '2025-11-21T10:27:15Z'
+        expiry_date: '2025-12-06T00:00:00Z'
+        holder_id: 3791712d-e5b5-4d5f-b1f1-79a93d57e08b
+        virtual: true
+        label: New card label
+        spending_limits:
+          single:
+            amount: 100
+            currency: GBP
+          week:
+            amount: 300
+            currency: GBP
+        spending_period:
+          start_date: '2025-12-20'
+          end_date: '2027-12-20'
+          end_date_action: lock
+        categories:
+        - services
+        - shopping
+        - furniture
+        merchant_controls:
+          control_type: block
+          merchant_ids:
+          - 46df0a1b-3678-4ded-9cf5-9f4da1b5019d
+          - e8a87432-f71e-4deb-be84-969a02792929
+          - 3f09819f-63d1-473a-966c-54d8b9f43a93
+        countries:
+        - GB
+        - SG
+        - ES
+        accounts:
+        - f52c6c84-26b9-4e95-bbcf-99ed6523fb51
+        - 9ae4345a-5ee5-496b-b776-241fcc5a5ba4
     cardInvitationFailedDetails:
       summary: Failed invitation
       value:
@@ -1428,6 +1563,30 @@ components:
         - GB
         accounts:
         - 26a852b8-4046-4e71-949d-22f4cb6be26a
+    cardInvitationRedeemedDetails:
+      summary: Redeemed invitation (example with spend program)
+      value:
+        id: 809d745d-9598-4680-8464-d82113e9024b
+        state: redeemed
+        created_at: '2025-11-21T00:00:00Z'
+        updated_at: '2025-11-23T09:01:13Z'
+        card_id: 744b29d4-19e9-40f8-89e6-bfb264ef5710
+        holder_id: 19c76bef-3583-4848-af09-4b2a96c75a14
+        virtual: true
+        label: Manuel Haleigh - WFH
+        spend_program:
+          label: WFH equipment
+        spending_period:
+          start_date: '2025-11-23'
+          end_date: '2025-12-23'
+          end_date_action: terminate
+        categories:
+        - furniture
+        - hardware
+        countries:
+        - GB
+        accounts:
+        - 6b472c0e-f595-4681-88b4-76eaa0522824
     cardInvitationUpdatedEraseSingleTransactionLimit:
       summary: Erase single-transaction limit
       value:
@@ -1459,204 +1618,6 @@ components:
         - GB
         accounts:
         - 26a852b8-4046-4e71-949d-22f4cb6be26a
-    cardInvitationExpiredDetails:
-      summary: Expired or cancelled invitation
-      value:
-        id: 0c0d252e-5fff-498e-83f8-f9b635904275
-        state: expired
-        created_at: '2025-11-22T00:00:00Z'
-        updated_at: '2025-11-30T00:00:00Z'
-        holder_id: 5ea0ffa1-5dc5-43c4-ac5e-b9e0deb9ec12
-        virtual: true
-        label: Valeria Keone - meals
-        spending_limits:
-          single:
-            amount: 50
-            currency: GBP
-          week:
-            amount: 250
-            currency: GBP
-        spending_period:
-          start_date: '2025-11-29'
-          end_date: '2025-12-29'
-          end_date_action: terminate
-        categories:
-        - groceries
-        - restaurants
-        merchant_controls:
-          control_type: block
-          merchant_ids:
-          - 14c8d663-2093-4086-96ed-334a4011333f
-          - 06e0f7fa-38a2-4fcf-a115-df5caf190b55
-        countries:
-        - GB
-        accounts:
-        - 6b472c0e-f595-4681-88b4-76eaa0522824
-    cardInvitationCreatedDetails:
-      summary: Created (active) invitation (example with spending limits)
-      value:
-        id: 4016b891-bb50-4bd2-8a1b-adb74f4aacdd
-        state: created
-        created_at: '2025-11-21T00:00:00Z'
-        updated_at: '2025-11-21T00:00:00Z'
-        expiry_date: '2025-12-06T00:00:00Z'
-        holder_id: 3791712d-e5b5-4d5f-b1f1-79a93d57e08b
-        virtual: true
-        label: Dariel Pattie
-        spending_limits:
-          single:
-            amount: 50
-            currency: GBP
-          week:
-            amount: 250
-            currency: GBP
-        spending_period:
-          end_date: '2026-12-31'
-          end_date_action: lock
-        categories:
-        - groceries
-        - restaurants
-        merchant_controls:
-          control_type: block
-          merchant_ids:
-          - 14c8d663-2093-4086-96ed-334a4011333f
-          - 06e0f7fa-38a2-4fcf-a115-df5caf190b55
-        countries:
-        - GB
-        accounts:
-        - 26a852b8-4046-4e71-949d-22f4cb6be26a
-    cardErrorBadCountryCode:
-      summary: Invalid country code (when countries=["GB", "USA"])
-      value:
-        code: 3000
-        message: 'Invalid value for ''countries[1]'': expected a 2-letter ISO country code (e.g. ''US'').'
-    cardInvitationsList:
-      summary: List of card invitations
-      value:
-      - $ref: '#/components/examples/cardInvitationCreatedDetails/value'
-      - $ref: '#/components/examples/cardInvitationRedeemedDetails/value'
-      - $ref: '#/components/examples/cardInvitationExpiredDetails/value'
-      - $ref: '#/components/examples/cardInvitationFailedDetails/value'
-      - $ref: '#/components/examples/cardInvitationFailedNoHolderDetails/value'
-    cardInvitationUpdatedAllProperties:
-      summary: Update all properties
-      value:
-        id: 4016b891-bb50-4bd2-8a1b-adb74f4aacdd
-        state: created
-        created_at: '2025-11-21T00:00:00Z'
-        updated_at: '2025-11-21T10:27:15Z'
-        expiry_date: '2025-12-06T00:00:00Z'
-        holder_id: 3791712d-e5b5-4d5f-b1f1-79a93d57e08b
-        virtual: true
-        label: New card label
-        spending_limits:
-          single:
-            amount: 100
-            currency: GBP
-          week:
-            amount: 300
-            currency: GBP
-        spending_period:
-          start_date: '2025-12-20'
-          end_date: '2027-12-20'
-          end_date_action: lock
-        categories:
-        - services
-        - shopping
-        - furniture
-        merchant_controls:
-          control_type: block
-          merchant_ids:
-          - 46df0a1b-3678-4ded-9cf5-9f4da1b5019d
-          - e8a87432-f71e-4deb-be84-969a02792929
-          - 3f09819f-63d1-473a-966c-54d8b9f43a93
-        countries:
-        - GB
-        - SG
-        - ES
-        accounts:
-        - f52c6c84-26b9-4e95-bbcf-99ed6523fb51
-        - 9ae4345a-5ee5-496b-b776-241fcc5a5ba4
-    cardInvitationUpdatedAllowSpecificMerchants:
-      summary: Erase single-transaction limit
-      value:
-        id: 4016b891-bb50-4bd2-8a1b-adb74f4aacdd
-        state: created
-        created_at: '2025-11-21T00:00:00Z'
-        updated_at: '2025-11-21T10:27:15Z'
-        expiry_date: '2025-12-06T00:00:00Z'
-        holder_id: 3791712d-e5b5-4d5f-b1f1-79a93d57e08b
-        virtual: true
-        label: Dariel Pattie
-        spending_limits:
-          single:
-            amount: 50
-            currency: GBP
-          week:
-            amount: 250
-            currency: GBP
-        spending_period:
-          start_date: '2025-12-20'
-          end_date: '2026-12-31'
-          end_date_action: lock
-        merchant_controls:
-          control_type: allow
-          merchant_ids:
-          - 46df0a1b-3678-4ded-9cf5-9f4da1b5019d
-          - e8a87432-f71e-4deb-be84-969a02792929
-        countries:
-        - GB
-        accounts:
-        - 26a852b8-4046-4e71-949d-22f4cb6be26a
-    cardInvitationFailedNoHolderDetails:
-      summary: Invitation that failed because team member was deleted
-      value:
-        id: bfc40b73-1e8b-4cba-ad7d-2f54ee707a21
-        state: failed
-        created_at: '2025-11-28T00:00:00Z'
-        updated_at: '2025-12-02T11:31:15Z'
-        virtual: true
-        label: Natália Popović - offb
-        spending_period:
-          start_date: '2025-11-30'
-          end_date: '2026-11-30'
-          end_date_action: terminate
-        categories:
-        - groceries
-        - restaurants
-        merchant_controls:
-          control_type: block
-          merchant_ids:
-          - 14c8d663-2093-4086-96ed-334a4011333f
-          - 06e0f7fa-38a2-4fcf-a115-df5caf190b55
-        countries:
-        - GB
-        accounts:
-        - 6b472c0e-f595-4681-88b4-76eaa0522824
-    cardInvitationRedeemedDetails:
-      summary: Redeemed invitation (example with spend program)
-      value:
-        id: 809d745d-9598-4680-8464-d82113e9024b
-        state: redeemed
-        created_at: '2025-11-21T00:00:00Z'
-        updated_at: '2025-11-23T09:01:13Z'
-        card_id: 744b29d4-19e9-40f8-89e6-bfb264ef5710
-        holder_id: 19c76bef-3583-4848-af09-4b2a96c75a14
-        virtual: true
-        label: Manuel Haleigh - WFH
-        spend_program:
-          label: WFH equipment
-        spending_period:
-          start_date: '2025-11-23'
-          end_date: '2025-12-23'
-          end_date_action: terminate
-        categories:
-        - furniture
-        - hardware
-        countries:
-        - GB
-        accounts:
-        - 6b472c0e-f595-4681-88b4-76eaa0522824
     cardInvitationUpdatedEraseSpendingPeriodStartDate:
       summary: Erase spending period start date and update end date
       value:
@@ -1717,17 +1678,56 @@ components:
         - GB
         accounts:
         - 26a852b8-4046-4e71-949d-22f4cb6be26a
-    errorUnauthorized:
-      summary: Unauthorized
+    cardInvitationsList:
+      summary: List of card invitations
       value:
-        status: 401
-        message: The request should be authorized.
+      - $ref: '#/components/examples/cardInvitationCreatedDetails/value'
+      - $ref: '#/components/examples/cardInvitationRedeemedDetails/value'
+      - $ref: '#/components/examples/cardInvitationExpiredDetails/value'
+      - $ref: '#/components/examples/cardInvitationFailedDetails/value'
+      - $ref: '#/components/examples/cardInvitationFailedNoHolderDetails/value'
     cardInvitationMinCreate:
       summary: Card invitation for an onboarding team member - minimal example
       value:
         request_id: 4016b891-bb50-4bd2-8a1b-adb74f4aacdd
         holder_id: 3791712d-e5b5-4d5f-b1f1-79a93d57e08b
         virtual: true
+    cardErrorBadId:
+      summary: Invalid ID - the path parameter must be UUID
+      value:
+        message: 'Invalid path parameter ''id'': expected UUID'
+        code: 2101
+    cardInvitationUpdatedAllowSpecificMerchants:
+      summary: Erase single-transaction limit
+      value:
+        id: 4016b891-bb50-4bd2-8a1b-adb74f4aacdd
+        state: created
+        created_at: '2025-11-21T00:00:00Z'
+        updated_at: '2025-11-21T10:27:15Z'
+        expiry_date: '2025-12-06T00:00:00Z'
+        holder_id: 3791712d-e5b5-4d5f-b1f1-79a93d57e08b
+        virtual: true
+        label: Dariel Pattie
+        spending_limits:
+          single:
+            amount: 50
+            currency: GBP
+          week:
+            amount: 250
+            currency: GBP
+        spending_period:
+          start_date: '2025-12-20'
+          end_date: '2026-12-31'
+          end_date_action: lock
+        merchant_controls:
+          control_type: allow
+          merchant_ids:
+          - 46df0a1b-3678-4ded-9cf5-9f4da1b5019d
+          - e8a87432-f71e-4deb-be84-969a02792929
+        countries:
+        - GB
+        accounts:
+        - 26a852b8-4046-4e71-949d-22f4cb6be26a
   securitySchemes:
     AccessToken:
       type: http

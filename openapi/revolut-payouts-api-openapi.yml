@@ -243,19 +243,28 @@ components:
       type: integer
       minimum: 1
       description: The total amount of the payout in minor currency units. For example, `7034` represents €70.34.
-    Currency:
+    Payout-State:
       type: string
-      format: ISO 4217
-      minLength: 3
-      maxLength: 3
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
+      enum:
+      - processing
+      - completed
+      - failed
+      description: The state of the payout.
+    Payout-Destination-Type:
+      type: string
+      enum:
+      - current_pocket
+      - external_beneficiary
+      description: 'The destination of the payout funds when a merchant initiates a withdrawal from their merchant account.
 
 
-        :::info
+        | Destination type | Description |
 
-        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
+        | ---------------- | ----------- |
 
-        :::'
+        | `current_pocket` | The funds were moved from the merchant account to the business account within the platform. This indicates an **internal transfer**, allowing the merchant to access the funds within their own business account. |
+
+        | `external_beneficiary` | The funds were transferred to an external bank account or beneficiary outside the platform. This indicates a **transfer to an external account**, enabling the merchant to withdraw funds to external financial institutions. |'
     Payout-Id:
       type: string
       format: uuid
@@ -282,29 +291,29 @@ components:
       - state
       - created_at
       - destination_type
-    Payout-Destination-Type:
+    Currency:
       type: string
-      enum:
-      - current_pocket
-      - external_beneficiary
-      description: 'The destination of the payout funds when a merchant initiates a withdrawal from their merchant account.
+      format: ISO 4217
+      minLength: 3
+      maxLength: 3
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
 
 
-        | Destination type | Description |
+        :::info
 
-        | ---------------- | ----------- |
+        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
 
-        | `current_pocket` | The funds were moved from the merchant account to the business account within the platform. This indicates an **internal transfer**, allowing the merchant to access the funds within their own business account. |
-
-        | `external_beneficiary` | The funds were transferred to an external bank account or beneficiary outside the platform. This indicates a **transfer to an external account**, enabling the merchant to withdraw funds to external financial institutions. |'
-    Payout-State:
-      type: string
-      enum:
-      - processing
-      - completed
-      - failed
-      description: The state of the payout.
+        :::'
   parameters:
+    Authorization:
+      name: Authorization
+      in: header
+      schema:
+        type: string
+        format: Bearer <yourSecretApiKey>
+        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
+      required: true
+      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
     Revolut-Api-Version:
       name: Revolut-Api-Version
       in: header
@@ -343,15 +352,6 @@ components:
         description: A UUID string, typically used to identify resources.
       required: true
       description: The ID of the `Payout` object.
-    Authorization:
-      name: Authorization
-      in: header
-      schema:
-        type: string
-        format: Bearer <yourSecretApiKey>
-        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
-      required: true
-      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
   securitySchemes:
     Api-Key:
       type: apiKey

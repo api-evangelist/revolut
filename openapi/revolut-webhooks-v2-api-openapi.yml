@@ -516,6 +516,94 @@ paths:
       - Webhooks V2
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
+    WebhookEventType:
+      enum:
+      - TransactionCreated
+      - TransactionStateChanged
+      - PayoutLinkCreated
+      - PayoutLinkStateChanged
+      description: The type of the webhook event to subscribe to.
+    Webhook-v2:
+      type: object
+      required:
+      - id
+      - url
+      - events
+      - signing_secret
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the webhook.
+        url:
+          type: string
+          format: uri
+          description: The valid webhook URL that event notifications are sent to. The supported protocol is `https`.
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookEventType'
+          description: The list of event types that you are subscribed to.
+        signing_secret:
+          type: string
+          description: The signing secret for the webhook.
+      example:
+        id: 6fc346be-5cb5-4c14-aadc-e8aba6a655d7
+        url: https://www.example.com/
+        events:
+        - TransactionCreated
+        signing_secret: wsk_4jETWMz1g1b37gCONjNp84t2KSSIT7dK
+    Webhook-v2-basic:
+      type: object
+      required:
+      - id
+      - url
+      - events
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the webhook.
+        url:
+          type: string
+          format: uri
+          description: The valid webhook URL that event notifications are sent to. The supported protocol is `https`.
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookEventType'
+          description: The list of event types that you are subscribed to.
+      example:
+        id: 6fc346be-5cb5-4c14-aadc-e8aba6a655d7
+        url: https://www.example.com/
+        events:
+        - TransactionCreated
+    WebhookEvents:
+      type: array
+      items:
+        $ref: '#/components/schemas/WebhookEvent'
+    WebhookSigningSecretRotateRequest:
+      type: object
+      properties:
+        expiration_period:
+          type: string
+          format: duration
+          description: The expiration period for the signing secret in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601#Durations). If set, when you rotate the secret, it continues to be valid until the expiration period has passed. Otherwise, on rotation, the secret is invalidated immediately. The maximum value is 7 days.
+          maximum: P7D
+          example: PT5H30M
+          default: P0D
     WebhookEvent:
       type: object
       required:
@@ -554,90 +642,25 @@ components:
           type: string
           format: date-time
           description: The date and time the last attempt at the event delivery occurred in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-    WebhookEvents:
-      type: array
-      items:
-        $ref: '#/components/schemas/WebhookEvent'
+    UpdateWebhookRequest:
+      type: object
+      properties:
+        url:
+          $ref: '#/components/schemas/Url'
+          description: A valid webhook URL to which to send event notifications. The supported protocol is `https`.
+        events:
+          description: A list of event types to subscribe to.
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookEventType'
     Url:
       description: A valid webhook URL to which to send event notifications. The supported protocol is `https`.
       type: string
       format: uri
-    Webhook-v2:
-      type: object
-      required:
-      - id
-      - url
-      - events
-      - signing_secret
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the webhook.
-        url:
-          type: string
-          format: uri
-          description: The valid webhook URL that event notifications are sent to. The supported protocol is `https`.
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebhookEventType'
-          description: The list of event types that you are subscribed to.
-        signing_secret:
-          type: string
-          description: The signing secret for the webhook.
-      example:
-        id: 6fc346be-5cb5-4c14-aadc-e8aba6a655d7
-        url: https://www.example.com/
-        events:
-        - TransactionCreated
-        signing_secret: wsk_4jETWMz1g1b37gCONjNp84t2KSSIT7dK
-    WebhookSigningSecretRotateRequest:
-      type: object
-      properties:
-        expiration_period:
-          type: string
-          format: duration
-          description: The expiration period for the signing secret in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601#Durations). If set, when you rotate the secret, it continues to be valid until the expiration period has passed. Otherwise, on rotation, the secret is invalidated immediately. The maximum value is 7 days.
-          maximum: P7D
-          example: PT5H30M
-          default: P0D
-    WebhookEventType:
-      enum:
-      - TransactionCreated
-      - TransactionStateChanged
-      - PayoutLinkCreated
-      - PayoutLinkStateChanged
-      description: The type of the webhook event to subscribe to.
     Webhooks:
       type: array
       items:
         $ref: '#/components/schemas/Webhook-v2-basic'
-    Webhook-v2-basic:
-      type: object
-      required:
-      - id
-      - url
-      - events
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the webhook.
-        url:
-          type: string
-          format: uri
-          description: The valid webhook URL that event notifications are sent to. The supported protocol is `https`.
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebhookEventType'
-          description: The list of event types that you are subscribed to.
-      example:
-        id: 6fc346be-5cb5-4c14-aadc-e8aba6a655d7
-        url: https://www.example.com/
-        events:
-        - TransactionCreated
     CreateWebhookRequest:
       type: object
       required:
@@ -656,36 +679,7 @@ components:
           default:
           - TransactionCreated
           - TransactionStateChanged
-    UpdateWebhookRequest:
-      type: object
-      properties:
-        url:
-          $ref: '#/components/schemas/Url'
-          description: A valid webhook URL to which to send event notifications. The supported protocol is `https`.
-        events:
-          description: A list of event types to subscribe to.
-          type: array
-          items:
-            $ref: '#/components/schemas/WebhookEventType'
-    Error:
-      type: object
-      properties:
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
-      required:
-      - code
-      - message
   examples:
-    webhookV2BasicSelectedEvents:
-      id: c6db947e-e9ce-41c2-b445-02e6eb741d21
-      url: https://www.example.com
-      events:
-      - TransactionCreated
-      - PayoutLinkCreated
     webhookV2BasicAllEvents:
       id: 9f9919a2-932d-498f-a088-3a01b9080c4a
       url: https://www.revolut.com
@@ -694,6 +688,12 @@ components:
       - TransactionStateChanged
       - PayoutLinkCreated
       - PayoutLinkStateChanged
+    webhookV2BasicSelectedEvents:
+      id: c6db947e-e9ce-41c2-b445-02e6eb741d21
+      url: https://www.example.com
+      events:
+      - TransactionCreated
+      - PayoutLinkCreated
   securitySchemes:
     AccessToken:
       type: http

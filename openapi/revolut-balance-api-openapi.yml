@@ -52,64 +52,26 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: API key can only be used for authentication from whitelisted IP
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    Conflict:
-      description: Conflict
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Request timestamp is in the future
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Forbidden
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    RateLimitExceeded:
-      description: Rate Limit Exceeded
-      headers:
-        Retry-After:
-          description: The number of milliseconds to wait before making a new request.
-          schema:
-            type: integer
-            example: 5000
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Rate Limit Exceeded
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    ServerError:
-      description: Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Something went wrong!
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
   schemas:
+    ErrorResponse:
+      type: object
+      description: Standard error response structure
+      required:
+      - error_id
+      - message
+      - timestamp
+      properties:
+        error_id:
+          type: string
+          format: uuid
+          description: Unique identifier for this specific error occurrence.
+        message:
+          type: string
+          description: Human-readable description of the error.
+        timestamp:
+          type: integer
+          format: int64
+          description: The time the error occurred in Unix epoch milliseconds.
     AccountBalanceEntry:
       type: object
       properties:
@@ -151,42 +113,6 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/AccountBalanceEntry'
-    ErrorResponse:
-      type: object
-      description: Standard error response structure
-      required:
-      - error_id
-      - message
-      - timestamp
-      properties:
-        error_id:
-          type: string
-          format: uuid
-          description: Unique identifier for this specific error occurrence.
-        message:
-          type: string
-          description: Human-readable description of the error.
-        timestamp:
-          type: integer
-          format: int64
-          description: The time the error occurred in Unix epoch milliseconds.
-  parameters:
-    XRevxSignature:
-      in: header
-      name: X-Revx-Signature
-      required: true
-      description: "The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::"
-      schema:
-        type: string
-        example: 2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+
-    XRevxTimestamp:
-      in: header
-      name: X-Revx-Timestamp
-      required: true
-      description: "Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers."
-      schema:
-        type: integer
-        example: 1746007718237
   examples:
     AccountBalanceExample:
       value:
@@ -203,6 +129,80 @@ components:
         available: '5400.50'
         reserved: '100.00'
         total: '5500.50'
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Forbidden
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Request timestamp is in the future
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Something went wrong!
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: API key can only be used for authentication from whitelisted IP
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    RateLimitExceeded:
+      description: Rate Limit Exceeded
+      headers:
+        Retry-After:
+          description: The number of milliseconds to wait before making a new request.
+          schema:
+            type: integer
+            example: 5000
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Rate Limit Exceeded
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+  parameters:
+    XRevxTimestamp:
+      in: header
+      name: X-Revx-Timestamp
+      required: true
+      description: "Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers."
+      schema:
+        type: integer
+        example: 1746007718237
+    XRevxSignature:
+      in: header
+      name: X-Revx-Signature
+      required: true
+      description: "The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::"
+      schema:
+        type: string
+        example: 2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+
   securitySchemes:
     ApiKey:
       type: apiKey

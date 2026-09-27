@@ -180,48 +180,26 @@ paths:
       tags:
       - Other
 components:
+  parameters:
+    Synchronous-Webhook-Id:
+      name: synchronous_webhook_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the synchronous webhook.
+    Authorization:
+      name: Authorization
+      in: header
+      schema:
+        type: string
+        format: Bearer <yourSecretApiKey>
+        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
+      required: true
+      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
   schemas:
-    Synchronous-Webhook-Creation:
-      title: SynchronousWebhookCreation
-      type: object
-      description: 'The `SynchronousWebhook` object allows merchants to register endpoints on their backend for receiving predefined event types. Currently, only address validation events are available.
-
-
-        In addition, merchants can specify locations representing their online stores, enabling them to set up different webhooks for different stores.'
-      properties:
-        event_type:
-          type: string
-          enum:
-          - fast_checkout.validate_address
-          description: "Type of event this synchronous webhook is configured for.\n\n:::note\nAt the moment, synchronous webhooks only support address validation events. \n:::"
-        url:
-          type: string
-          format: uri
-          pattern: ^https:\/{2}.+/gi
-          maxLength: 2000
-          description: 'The valid URL of the endpoint, that uses HTTPS URL schema. Revolut sends the shipping address of the customer to this URL for validation.
-
-
-            :::warning
-
-            Restrictions:
-
-            - Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)
-
-            - URI scheme is required and must be `https`
-
-            - URI host is required and cannot be `localhost` or an IP address
-
-            - Max length: `2000`
-
-            - Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)
-
-            :::'
-        location_id:
-          $ref: '#/components/schemas/Location-Id'
-      required:
-      - event_type
-      - url
     Error:
       title: Error
       type: object
@@ -282,6 +260,47 @@ components:
       - signing_key
       - url
       - event_type
+    Synchronous-Webhook-Creation:
+      title: SynchronousWebhookCreation
+      type: object
+      description: 'The `SynchronousWebhook` object allows merchants to register endpoints on their backend for receiving predefined event types. Currently, only address validation events are available.
+
+
+        In addition, merchants can specify locations representing their online stores, enabling them to set up different webhooks for different stores.'
+      properties:
+        event_type:
+          type: string
+          enum:
+          - fast_checkout.validate_address
+          description: "Type of event this synchronous webhook is configured for.\n\n:::note\nAt the moment, synchronous webhooks only support address validation events. \n:::"
+        url:
+          type: string
+          format: uri
+          pattern: ^https:\/{2}.+/gi
+          maxLength: 2000
+          description: 'The valid URL of the endpoint, that uses HTTPS URL schema. Revolut sends the shipping address of the customer to this URL for validation.
+
+
+            :::warning
+
+            Restrictions:
+
+            - Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)
+
+            - URI scheme is required and must be `https`
+
+            - URI host is required and cannot be `localhost` or an IP address
+
+            - Max length: `2000`
+
+            - Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)
+
+            :::'
+        location_id:
+          $ref: '#/components/schemas/Location-Id'
+      required:
+      - event_type
+      - url
     Location-Id:
       type: string
       format: uuid
@@ -293,25 +312,6 @@ components:
         For more information, see: [Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).
 
         :::        '
-  parameters:
-    Synchronous-Webhook-Id:
-      name: synchronous_webhook_id
-      in: path
-      schema:
-        type: string
-        format: uuid
-        description: A UUID string, typically used to identify resources.
-      required: true
-      description: The ID of the synchronous webhook.
-    Authorization:
-      name: Authorization
-      in: header
-      schema:
-        type: string
-        format: Bearer <yourSecretApiKey>
-        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
-      required: true
-      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
   securitySchemes:
     Api-Key:
       type: apiKey

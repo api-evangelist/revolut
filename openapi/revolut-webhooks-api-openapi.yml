@@ -560,37 +560,6 @@ components:
         - ORDER_PROCESSING
         - ORDER_COMPLETED
         signing_secret: wsk_h1ETWMz2g1bB7gCONjNp84t2KSSIt7rs
-    WebhookUpdateRequest:
-      type: object
-      description: Webhook update parameters
-      properties:
-        url:
-          type: string
-          format: uri
-          description: 'The webhook''s URL to which event notifications will be sent.
-
-            Must be a valid HTTP or HTTPS URL, capable of receiving POST requests.'
-        events:
-          type: array
-          description: The list of event types that the webhook is configured to listen to.
-          items:
-            $ref: '#/components/schemas/EventType'
-      example:
-        url: https://crypto.partner.com/revolut
-        events:
-        - ORDER_PROCESSING
-        - ORDER_COMPLETED
-    DisabledByKillSwitchError:
-      type: object
-      description: Thrown when endpoint is disabled by Kill Switch.
-      required:
-      - message
-      properties:
-        message:
-          type: string
-          description: The message displayed to the user when endpoint is disabled by Kill Switch.
-      example:
-        message: Service is not available
     WebhookCreateRequest:
       type: object
       description: Webhook create parameters
@@ -614,6 +583,17 @@ components:
         events:
         - ORDER_PROCESSING
         - ORDER_COMPLETED
+    NotFoundError:
+      type: object
+      description: Thrown when resource can't be found
+      required:
+      - message
+      properties:
+        message:
+          type: string
+          description: The message displayed to the user when resource cannot be found.
+      example:
+        message: Not found
     Webhooks:
       type: array
       items:
@@ -634,6 +614,37 @@ components:
         - ORDER_CREATED
         - ORDER_FAILED
         signing_secret: wsk_7gH67v2D8jEt52n9M1c068F96t3152y7
+    BadRequestError:
+      type: object
+      description: Thrown when request parameter field is invalid
+      required:
+      - message
+      properties:
+        message:
+          type: string
+          description: Specifies the invalid parameter that was provided by the user.
+      example:
+        message: Invalid field 'FieldName'
+    WebhookUpdateRequest:
+      type: object
+      description: Webhook update parameters
+      properties:
+        url:
+          type: string
+          format: uri
+          description: 'The webhook''s URL to which event notifications will be sent.
+
+            Must be a valid HTTP or HTTPS URL, capable of receiving POST requests.'
+        events:
+          type: array
+          description: The list of event types that the webhook is configured to listen to.
+          items:
+            $ref: '#/components/schemas/EventType'
+      example:
+        url: https://crypto.partner.com/revolut
+        events:
+        - ORDER_PROCESSING
+        - ORDER_COMPLETED
     EventType:
       type: string
       description: Webhook event type
@@ -660,28 +671,33 @@ components:
       example:
         errorId: 201768bc-7fab-12ed-a1bb-0232ac120902
         timestamp: 1671481582960
-    NotFoundError:
+    DisabledByKillSwitchError:
       type: object
-      description: Thrown when resource can't be found
+      description: Thrown when endpoint is disabled by Kill Switch.
       required:
       - message
       properties:
         message:
           type: string
-          description: The message displayed to the user when resource cannot be found.
+          description: The message displayed to the user when endpoint is disabled by Kill Switch.
       example:
-        message: Not found
-    BadRequestError:
+        message: Service is not available
+    Error-v2:
+      title: Error
       type: object
-      description: Thrown when request parameter field is invalid
-      required:
-      - message
       properties:
+        code:
+          type: string
+          description: 'An identifier that can be used to determine what went wrong.
+
+
+            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
         message:
           type: string
-          description: Specifies the invalid parameter that was provided by the user.
-      example:
-        message: Invalid field 'FieldName'
+          description: Some human readable text describing what went wrong.
+        timestamp:
+          type: integer
+          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
     Webhook-v2:
       title: Webhook
       type: object
@@ -703,131 +719,6 @@ components:
       - url
       - events
       - signing_secret
-    Webhook-Payout-Event:
-      type: object
-      properties:
-        event:
-          $ref: '#/components/schemas/Webhook-Callback-Event'
-        payout_id:
-          type: string
-          format: uuid
-          description: The ID of the payout the event is related to.
-      required:
-      - event
-      - payout_id
-    Webhook-Subscription-Event:
-      type: object
-      properties:
-        event:
-          $ref: '#/components/schemas/Webhook-Callback-Event'
-        subscription_id:
-          type: string
-          format: uuid
-          description: The ID of the subscription the event is related to.
-        external_reference:
-          type: string
-          description: The information sent in the `external_reference` field of the [Create a subscription](https://developer.revolut.com/docs/api/merchant#create-subscription) request.
-      required:
-      - event
-      - subscription_id
-    Webhook-Url:
-      type: string
-      format: uri
-      pattern: ^https?:\/{2}.+/gi
-      maxLength: 2000
-      description: "Your webhook's URL to which event notifications will be sent. \n\nMust be a valid HTTP or HTTPS URL, capable of receiving `POST` requests.\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::"
-    Error:
-      title: Error
-      type: object
-      properties:
-        errorId:
-          type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        timestamp:
-          type: integer
-          description: The date and time the error happened.
-      required:
-      - errorId
-      - timestamp
-    Error-v2:
-      title: Error
-      type: object
-      properties:
-        code:
-          type: string
-          description: 'An identifier that can be used to determine what went wrong.
-
-
-            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
-        message:
-          type: string
-          description: Some human readable text describing what went wrong.
-        timestamp:
-          type: integer
-          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
-    Webhook-Callback-Event:
-      type: string
-      enum:
-      - ORDER_COMPLETED
-      - ORDER_AUTHORISED
-      - ORDER_CANCELLED
-      - ORDER_FAILED
-      - ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED
-      - ORDER_INCREMENTAL_AUTHORISATION_DECLINED
-      - ORDER_INCREMENTAL_AUTHORISATION_FAILED
-      - ORDER_PAYMENT_AUTHENTICATION_CHALLENGED
-      - ORDER_PAYMENT_AUTHENTICATED
-      - ORDER_PAYMENT_DECLINED
-      - ORDER_PAYMENT_FAILED
-      - SUBSCRIPTION_INITIATED
-      - SUBSCRIPTION_FINISHED
-      - SUBSCRIPTION_CANCELLED
-      - SUBSCRIPTION_OVERDUE
-      - PAYOUT_INITIATED
-      - PAYOUT_COMPLETED
-      - PAYOUT_FAILED
-      - DISPUTE_ACTION_REQUIRED
-      - DISPUTE_UNDER_REVIEW
-      - DISPUTE_WON
-      - DISPUTE_LOST
-      description: "The event type of the webhook notification that's sent by Revolut to your webhook URL.\n\nEach event is related to status changes of a specific object in the Merchant API:\n\n  | Object | Event types |\n  | --------- | ----------- |\n  | `Order`   | <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> |\n  | `Payment` | <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> |\n  | `Subscription`  | <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> |\n  | `Payout`  | <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> |\n  | `Dispute`  | <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> |"
-    Webhook-Creation:
-      title: Webhook schema for creation and update operations
-      type: object
-      properties:
-        url:
-          $ref: '#/components/schemas/Webhook-Url'
-        events:
-          $ref: '#/components/schemas/Webhook-Events'
-      required:
-      - url
-      - events
-    Webhook-Update:
-      title: Webhook update
-      type: object
-      description: 'The request body for updating a webhook.
-
-
-        All fields are optional. Only the fields provided in the request will be updated.'
-      properties:
-        url:
-          $ref: '#/components/schemas/Webhook-Url'
-        events:
-          $ref: '#/components/schemas/Webhook-Events'
-    Webhooks_2:
-      type: object
-      required:
-      - webhooks
-      properties:
-        webhooks:
-          type: array
-          description: List of webhooks.
-          maxItems: 10
-          items:
-            $ref: '#/components/schemas/Webhook-v2'
-    Webhook-Signing-Secret:
-      type: string
-      description: The signing secret for the webhook. Use it to verify the signature for the webhook request's payload.
     Webhook-Dispute-Event:
       type: object
       properties:
@@ -840,30 +731,32 @@ components:
       required:
       - event
       - dispute_id
-    Webhook-Order-Event:
+    Webhook-Creation:
+      title: Webhook schema for creation and update operations
+      type: object
+      properties:
+        url:
+          $ref: '#/components/schemas/Webhook-Url'
+        events:
+          $ref: '#/components/schemas/Webhook-Events'
+      required:
+      - url
+      - events
+    Webhook-Payout-Event:
       type: object
       properties:
         event:
           $ref: '#/components/schemas/Webhook-Callback-Event'
-        order_id:
+        payout_id:
           type: string
           format: uuid
-          description: The ID of the order the event is related to.
-        merchant_order_ext_ref:
-          type: string
-          description: 'The information sent during order creation in the
-
-            `merchant_order_data.reference` field.'
-        incremental_authorisation_ext_reference:
-          type: string
-          description: The reference sent in the `reference` field of the [Increment authorisation](https://developer.revolut.com/docs/api/merchant#increment-authorisation) request. Only present for incremental authorisation events.
+          description: The ID of the payout the event is related to.
       required:
       - event
-      - order_id
-    Webhook-Id:
+      - payout_id
+    Webhook-Signing-Secret:
       type: string
-      format: uuid
-      description: The ID of the webhook.
+      description: The signing secret for the webhook. Use it to verify the signature for the webhook request's payload.
     Webhook-Events:
       type: array
       description: "List of event types that the webhook is configured to listen to.\n\nEach event is related to status changes of a specific object in the Merchant API:\n\n  | Object | Event types |\n  | --------- | ----------- |\n  | `Order`   | <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> |\n  | `Payment` | <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> |\n  | `Subscription`  | <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> |\n  | `Payout`  | <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> |\n  | `Dispute`  | <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> |"
@@ -894,6 +787,113 @@ components:
         - DISPUTE_WON
         - DISPUTE_LOST
       minItems: 1
+    Webhook-Url:
+      type: string
+      format: uri
+      pattern: ^https?:\/{2}.+/gi
+      maxLength: 2000
+      description: "Your webhook's URL to which event notifications will be sent. \n\nMust be a valid HTTP or HTTPS URL, capable of receiving `POST` requests.\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::"
+    Error:
+      title: Error
+      type: object
+      properties:
+        errorId:
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        timestamp:
+          type: integer
+          description: The date and time the error happened.
+      required:
+      - errorId
+      - timestamp
+    Webhook-Order-Event:
+      type: object
+      properties:
+        event:
+          $ref: '#/components/schemas/Webhook-Callback-Event'
+        order_id:
+          type: string
+          format: uuid
+          description: The ID of the order the event is related to.
+        merchant_order_ext_ref:
+          type: string
+          description: 'The information sent during order creation in the
+
+            `merchant_order_data.reference` field.'
+        incremental_authorisation_ext_reference:
+          type: string
+          description: The reference sent in the `reference` field of the [Increment authorisation](https://developer.revolut.com/docs/api/merchant#increment-authorisation) request. Only present for incremental authorisation events.
+      required:
+      - event
+      - order_id
+    Webhook-Id:
+      type: string
+      format: uuid
+      description: The ID of the webhook.
+    Webhook-Callback-Event:
+      type: string
+      enum:
+      - ORDER_COMPLETED
+      - ORDER_AUTHORISED
+      - ORDER_CANCELLED
+      - ORDER_FAILED
+      - ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED
+      - ORDER_INCREMENTAL_AUTHORISATION_DECLINED
+      - ORDER_INCREMENTAL_AUTHORISATION_FAILED
+      - ORDER_PAYMENT_AUTHENTICATION_CHALLENGED
+      - ORDER_PAYMENT_AUTHENTICATED
+      - ORDER_PAYMENT_DECLINED
+      - ORDER_PAYMENT_FAILED
+      - SUBSCRIPTION_INITIATED
+      - SUBSCRIPTION_FINISHED
+      - SUBSCRIPTION_CANCELLED
+      - SUBSCRIPTION_OVERDUE
+      - PAYOUT_INITIATED
+      - PAYOUT_COMPLETED
+      - PAYOUT_FAILED
+      - DISPUTE_ACTION_REQUIRED
+      - DISPUTE_UNDER_REVIEW
+      - DISPUTE_WON
+      - DISPUTE_LOST
+      description: "The event type of the webhook notification that's sent by Revolut to your webhook URL.\n\nEach event is related to status changes of a specific object in the Merchant API:\n\n  | Object | Event types |\n  | --------- | ----------- |\n  | `Order`   | <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> |\n  | `Payment` | <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> |\n  | `Subscription`  | <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> |\n  | `Payout`  | <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> |\n  | `Dispute`  | <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> |"
+    Webhook-Update:
+      title: Webhook update
+      type: object
+      description: 'The request body for updating a webhook.
+
+
+        All fields are optional. Only the fields provided in the request will be updated.'
+      properties:
+        url:
+          $ref: '#/components/schemas/Webhook-Url'
+        events:
+          $ref: '#/components/schemas/Webhook-Events'
+    Webhook-Subscription-Event:
+      type: object
+      properties:
+        event:
+          $ref: '#/components/schemas/Webhook-Callback-Event'
+        subscription_id:
+          type: string
+          format: uuid
+          description: The ID of the subscription the event is related to.
+        external_reference:
+          type: string
+          description: The information sent in the `external_reference` field of the [Create a subscription](https://developer.revolut.com/docs/api/merchant#create-subscription) request.
+      required:
+      - event
+      - subscription_id
+    Webhooks_2:
+      type: object
+      required:
+      - webhooks
+      properties:
+        webhooks:
+          type: array
+          description: List of webhooks.
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/Webhook-v2'
   parameters:
     XApiKey:
       type: apiKey
@@ -901,6 +901,15 @@ components:
       name: X-API-KEY
       description: "Your API key that you received during integration setup. \nFor more information, see the **Authorization** section."
       required: true
+    Authorization:
+      name: Authorization
+      in: header
+      schema:
+        type: string
+        format: Bearer <yourSecretApiKey>
+        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
+      required: true
+      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
     Revolut-Api-Version-2024-09-01-Min:
       name: Revolut-Api-Version
       in: header
@@ -931,15 +940,6 @@ components:
 
         :::'
       x-config-always-visible-in-example: true
-    Authorization:
-      name: Authorization
-      in: header
-      schema:
-        type: string
-        format: Bearer <yourSecretApiKey>
-        example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
-      required: true
-      description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
     Webhook-Id:
       name: webhook_id
       in: path
@@ -958,17 +958,6 @@ components:
             $ref: '#/components/schemas/DisabledByKillSwitchError'
           example:
             message: Service is not available
-    BadRequestErrorResponse:
-      description: 'Bad request
-
-
-        A request parameter is invalid.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-          example:
-            message: Invalid field 'FieldName'
     ServerErrorResponse:
       description: 'Server error
 
@@ -989,53 +978,17 @@ components:
             $ref: '#/components/schemas/NotFoundError'
           example:
             message: Not found
-  examples:
-    Req-Webhook-Create:
-      summary: Example webhook request
-      value:
-        url: https://example.com/webhooks
-        events:
-        - ORDER_COMPLETED
-        - ORDER_AUTHORISED
-    Req-Webhook-Update:
-      summary: Update a webhook
-      value:
-        url: https://example.com/webhooks/updated
-        events:
-        - ORDER_COMPLETED
-        - ORDER_AUTHORISED
-        - ORDER_CANCELLED
-    Res-Webhook-v2:
-      summary: Webhook
-      value:
-        id: c6b981f4-53b3-47d5-9b24-4f87af1160eb
-        url: https://example.com/webhooks
-        events:
-        - ORDER_AUTHORISED
-        - ORDER_COMPLETED
-        signing_secret: wsk_4jETWMz1g1b37gCONjNp84t2KSSIT7dK
-    Req-Webhook-Rotate-Signing-Secret:
-      summary: Webhook signing secret rotation request
-      value:
-        expiration_period: PT5H30M
-    Res-Webhooks-List:
-      summary: List of webhooks
-      value:
-        webhooks:
-        - id: 6fc8db62-6489-4470-a9e0-84b462fe3908
-          url: https://revolut.com/webhooks
-          events:
-          - ORDER_COMPLETED
-        - id: b466ab77-4932-4850-beb0-113bfc1166f8
-          url: https://business.revolut.com/webhooks
-          events:
-          - ORDER_COMPLETED
-          - ORDER_AUTHORISED
-        - id: c6b981f4-53b3-47d5-9b24-4f87af1160eb
-          url: https://example.com/webhooks
-          events:
-          - ORDER_AUTHORISED
-          - ORDER_COMPLETED
+    BadRequestErrorResponse:
+      description: 'Bad request
+
+
+        A request parameter is invalid.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+          example:
+            message: Invalid field 'FieldName'
   callbacks:
     Webhook-Event:
       '{$request.body#/url}':
@@ -1169,6 +1122,53 @@ components:
                 :::'
             4XX:
               description: If the webhook event delivery times out or the delivery of the events fails, you can respond with any HTTP `4XX` code. In this case, Revolut will retry sending the webhook event 3 more times, each with a 10-minute delay.
+  examples:
+    Res-Webhooks-List:
+      summary: List of webhooks
+      value:
+        webhooks:
+        - id: 6fc8db62-6489-4470-a9e0-84b462fe3908
+          url: https://revolut.com/webhooks
+          events:
+          - ORDER_COMPLETED
+        - id: b466ab77-4932-4850-beb0-113bfc1166f8
+          url: https://business.revolut.com/webhooks
+          events:
+          - ORDER_COMPLETED
+          - ORDER_AUTHORISED
+        - id: c6b981f4-53b3-47d5-9b24-4f87af1160eb
+          url: https://example.com/webhooks
+          events:
+          - ORDER_AUTHORISED
+          - ORDER_COMPLETED
+    Res-Webhook-v2:
+      summary: Webhook
+      value:
+        id: c6b981f4-53b3-47d5-9b24-4f87af1160eb
+        url: https://example.com/webhooks
+        events:
+        - ORDER_AUTHORISED
+        - ORDER_COMPLETED
+        signing_secret: wsk_4jETWMz1g1b37gCONjNp84t2KSSIT7dK
+    Req-Webhook-Update:
+      summary: Update a webhook
+      value:
+        url: https://example.com/webhooks/updated
+        events:
+        - ORDER_COMPLETED
+        - ORDER_AUTHORISED
+        - ORDER_CANCELLED
+    Req-Webhook-Create:
+      summary: Example webhook request
+      value:
+        url: https://example.com/webhooks
+        events:
+        - ORDER_COMPLETED
+        - ORDER_AUTHORISED
+    Req-Webhook-Rotate-Signing-Secret:
+      summary: Webhook signing secret rotation request
+      value:
+        expiration_period: PT5H30M
   securitySchemes:
     AccessToken:
       type: apiKey
