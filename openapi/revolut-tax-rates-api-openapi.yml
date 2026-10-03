@@ -657,7 +657,131 @@ paths:
       tags:
       - Tax Rates
 components:
+  schemas:
+    UpdateTaxRateRequest:
+      type: object
+      description: The new setting for the tax rate.
+      minProperties: 1
+      properties:
+        name:
+          description: The new name for the tax rate.
+          type: string
+          minLength: 1
+          maxLength: 20
+    ResourceCreatedResponse:
+      description: Successfully created resource.
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the created resource.
+    AccountingTaxRate:
+      type: object
+      description: The tax rate that can be applied to financial records, such as expenses.
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the tax.
+          minLength: 1
+          maxLength: 20
+        percentage:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 100
+          description: The tax rate percentage applied to the taxable amount. For example, `23` for 23%.
+    ErrorWithId:
+      required:
+      - code
+      - message
+      - error_id
+      type: object
+      properties:
+        error_id:
+          type: string
+          description: The ID of the specific error instance. Used for traceability.
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+    TaxRateResponse:
+      type: object
+      required:
+      - id
+      - name
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique ID of the tax rate.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the tax.
+          minLength: 1
+          maxLength: 20
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the tax rate was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the tax rate was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          readOnly: true
+        percentage:
+          type: number
+          format: double
+          description: "The tax rate percentage applied to the taxable amount. For example, `23` for 23%.\n\n:::note\nYou cannot create negative tax rates manually. \nHowever, negative tax rates might be synced from your accounting software, if integrated. \n:::"
+          minimum: -100
+          maximum: 100
+    PageToken:
+      type: string
+      format: byte
+      description: "Cursor for the next page. \nUsed for pagination when the total number of results exceeds the maximum number per page.\n\nTo get the next page of results, make a new request and set `page_token` to the `next_page_token` value returned in the previous response.\n:::note\nIf there are no more results to fetch, `next_page_token` is not returned in the response.\n:::"
+      example: MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA
+    CreateTaxRateRequest:
+      allOf:
+      - $ref: '#/components/schemas/AccountingTaxRate'
+      - description: The tax rate to create.
+        required:
+        - name
+        - percentage
   responses:
+    Forbidden:
+      description: 'Action forbidden - insufficient permissions to perform this action
+
+
+        Returned, for example, when you don''t have permissions necessary to perform this action.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          example:
+            error_id: c5deadcc-1934-4438-818a-3c7ca1e6c01c
+            code: 9002
+            message: This action is forbidden
+    InternalServerError:
+      description: 'Internal server error
+
+
+        An unexpected application error occurred.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          example:
+            error_id: 7f96652e-7518-4229-872b-4e4c867fb4da
+            code: 5000
+            message: An unexpected error occurred while processing your request. If the issue persists, please contact support
     ServiceUnavailable:
       description: 'Service Unavailable
 
@@ -700,32 +824,6 @@ components:
                 error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
                 code: 3162
                 message: Request rate limit has been reached. Try again after 30 seconds.
-    Forbidden:
-      description: 'Action forbidden - insufficient permissions to perform this action
-
-
-        Returned, for example, when you don''t have permissions necessary to perform this action.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorWithId'
-          example:
-            error_id: c5deadcc-1934-4438-818a-3c7ca1e6c01c
-            code: 9002
-            message: This action is forbidden
-    InternalServerError:
-      description: 'Internal server error
-
-
-        An unexpected application error occurred.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorWithId'
-          example:
-            error_id: 7f96652e-7518-4229-872b-4e4c867fb4da
-            code: 5000
-            message: An unexpected error occurred while processing your request. If the issue persists, please contact support
     ResourceCreatedResponse:
       description: 'Resource created
 
@@ -764,104 +862,6 @@ components:
                 error_id: 7835beae-98ed-42dc-b993-95f4ded951a1
                 code: 1000
                 message: Invalid token. The authorization header must follow the 'Bearer <token>' format.
-  schemas:
-    UpdateTaxRateRequest:
-      type: object
-      description: The new setting for the tax rate.
-      minProperties: 1
-      properties:
-        name:
-          description: The new name for the tax rate.
-          type: string
-          minLength: 1
-          maxLength: 20
-    ErrorWithId:
-      required:
-      - code
-      - message
-      - error_id
-      type: object
-      properties:
-        error_id:
-          type: string
-          description: The ID of the specific error instance. Used for traceability.
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
-    ResourceCreatedResponse:
-      description: Successfully created resource.
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the created resource.
-    AccountingTaxRate:
-      type: object
-      description: The tax rate that can be applied to financial records, such as expenses.
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of the tax.
-          minLength: 1
-          maxLength: 20
-        percentage:
-          type: number
-          format: double
-          minimum: 0
-          maximum: 100
-          description: The tax rate percentage applied to the taxable amount. For example, `23` for 23%.
-    CreateTaxRateRequest:
-      allOf:
-      - $ref: '#/components/schemas/AccountingTaxRate'
-      - description: The tax rate to create.
-        required:
-        - name
-        - percentage
-    TaxRateResponse:
-      type: object
-      required:
-      - id
-      - name
-      - created_at
-      - updated_at
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The unique ID of the tax rate.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the tax.
-          minLength: 1
-          maxLength: 20
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time the tax rate was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          description: The date and time the tax rate was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-          readOnly: true
-        percentage:
-          type: number
-          format: double
-          description: "The tax rate percentage applied to the taxable amount. For example, `23` for 23%.\n\n:::note\nYou cannot create negative tax rates manually. \nHowever, negative tax rates might be synced from your accounting software, if integrated. \n:::"
-          minimum: -100
-          maximum: 100
-    PageToken:
-      type: string
-      format: byte
-      description: "Cursor for the next page. \nUsed for pagination when the total number of results exceeds the maximum number per page.\n\nTo get the next page of results, make a new request and set `page_token` to the `next_page_token` value returned in the previous response.\n:::note\nIf there are no more results to fetch, `next_page_token` is not returned in the response.\n:::"
-      example: MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA
   parameters:
     PageToken:
       in: query

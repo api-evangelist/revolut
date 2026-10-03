@@ -52,83 +52,6 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  schemas:
-    ErrorResponse:
-      type: object
-      description: Standard error response structure
-      required:
-      - error_id
-      - message
-      - timestamp
-      properties:
-        error_id:
-          type: string
-          format: uuid
-          description: Unique identifier for this specific error occurrence.
-        message:
-          type: string
-          description: Human-readable description of the error.
-        timestamp:
-          type: integer
-          format: int64
-          description: The time the error occurred in Unix epoch milliseconds.
-    AccountBalanceEntry:
-      type: object
-      properties:
-        currency:
-          type: string
-          description: Currency.
-          example: BTC
-        available:
-          type: string
-          format: decimal
-          description: Available (free) funds amount. Returned as a string to prevent rounding errors.
-          example: '1000.0000'
-        staked:
-          type: string
-          format: decimal
-          description: "Staked funds currently earning rewards. \nReturned as a string to prevent floating-point rounding errors."
-          example: '2000.5000'
-        reserved:
-          type: string
-          format: decimal
-          description: Reserved (locked) funds amount. Returned as a string to prevent rounding errors.
-          example: '234.5000'
-        total:
-          type: string
-          format: decimal
-          description: Sum of available, reserved, and staked funds. Returned as a string to avoid floating-point rounding errors.
-          example: '1234.5000'
-      required:
-      - currency
-      - available
-      - reserved
-      - total
-      example:
-        currency: BTC
-        available: '1000.00000000'
-        reserved: '234.50000000'
-        total: '1234.50000000'
-    AccountBalance:
-      type: array
-      items:
-        $ref: '#/components/schemas/AccountBalanceEntry'
-  examples:
-    AccountBalanceExample:
-      value:
-      - currency: BTC
-        available: '1.25000000'
-        reserved: '0.10000000'
-        total: '1.35000000'
-      - currency: ETH
-        available: '10.00000000'
-        reserved: '0.00000000'
-        staked: '32.00000000'
-        total: '42.00000000'
-      - currency: USD
-        available: '5400.50'
-        reserved: '100.00'
-        total: '5500.50'
   responses:
     Forbidden:
       description: Forbidden
@@ -187,14 +110,6 @@ components:
             error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
             timestamp: 3318215482991
   parameters:
-    XRevxTimestamp:
-      in: header
-      name: X-Revx-Timestamp
-      required: true
-      description: "Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers."
-      schema:
-        type: integer
-        example: 1746007718237
     XRevxSignature:
       in: header
       name: X-Revx-Signature
@@ -203,6 +118,91 @@ components:
       schema:
         type: string
         example: 2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+
+    XRevxTimestamp:
+      in: header
+      name: X-Revx-Timestamp
+      required: true
+      description: "Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers."
+      schema:
+        type: integer
+        example: 1746007718237
+  schemas:
+    AccountBalanceEntry:
+      type: object
+      properties:
+        currency:
+          type: string
+          description: Currency.
+          example: BTC
+        available:
+          type: string
+          format: decimal
+          description: Available (free) funds amount. Returned as a string to prevent rounding errors.
+          example: '1000.0000'
+        staked:
+          type: string
+          format: decimal
+          description: "Staked funds currently earning rewards. \nReturned as a string to prevent floating-point rounding errors."
+          example: '2000.5000'
+        reserved:
+          type: string
+          format: decimal
+          description: Reserved (locked) funds amount. Returned as a string to prevent rounding errors.
+          example: '234.5000'
+        total:
+          type: string
+          format: decimal
+          description: Sum of available, reserved, and staked funds. Returned as a string to avoid floating-point rounding errors.
+          example: '1234.5000'
+      required:
+      - currency
+      - available
+      - reserved
+      - total
+      example:
+        currency: BTC
+        available: '1000.00000000'
+        reserved: '234.50000000'
+        total: '1234.50000000'
+    ErrorResponse:
+      type: object
+      description: Standard error response structure
+      required:
+      - error_id
+      - message
+      - timestamp
+      properties:
+        error_id:
+          type: string
+          format: uuid
+          description: Unique identifier for this specific error occurrence.
+        message:
+          type: string
+          description: Human-readable description of the error.
+        timestamp:
+          type: integer
+          format: int64
+          description: The time the error occurred in Unix epoch milliseconds.
+    AccountBalance:
+      type: array
+      items:
+        $ref: '#/components/schemas/AccountBalanceEntry'
+  examples:
+    AccountBalanceExample:
+      value:
+      - currency: BTC
+        available: '1.25000000'
+        reserved: '0.10000000'
+        total: '1.35000000'
+      - currency: ETH
+        available: '10.00000000'
+        reserved: '0.00000000'
+        staked: '32.00000000'
+        total: '42.00000000'
+      - currency: USD
+        available: '5400.50'
+        reserved: '100.00'
+        total: '5500.50'
   securitySchemes:
     ApiKey:
       type: apiKey

@@ -71,26 +71,11 @@ paths:
       - Terminals
 components:
   schemas:
-    Error-v2:
-      title: Error
-      type: object
-      properties:
-        code:
-          type: string
-          description: 'An identifier that can be used to determine what went wrong.
-
-
-            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
-        message:
-          type: string
-          description: Some human readable text describing what went wrong.
-        timestamp:
-          type: integer
-          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
-    Terminal-Name:
-      title: Terminal name
+    Terminal-Id:
+      title: Terminal ID
       type: string
-      description: The name of the terminal device.
+      format: uuid
+      description: The unique identifier of the terminal.
     Terminals-Response:
       title: Terminals response
       type: object
@@ -100,15 +85,30 @@ components:
           $ref: '#/components/schemas/Terminals'
       required:
       - terminals
-    Terminal-Type:
-      title: Terminal type
+    Terminal-Online:
+      title: Terminal online status
+      type: boolean
+      description: 'Indicates whether the terminal is currently online and connected.
+
+
+        | Value | Description |
+
+        |-------|-------------|
+
+        | `true` | Terminal is online and available |
+
+        | `false` | Terminal is offline |'
+    Terminal-Battery-Level:
+      title: Terminal battery level
+      type: integer
+      description: The current battery level of the terminal as a percentage (0-100).
+      minimum: 0
+      maximum: 100
+    Terminal-Serial-Number:
+      title: Terminal serial number
       type: string
-      description: The hardware type/model of the terminal device.
-      enum:
-      - youtransactor_ucube_touch
-      - newland_n950
-      - newland_n750
-      - newland_r25p
+      description: The serial number of the terminal device.
+      example: RT-00123456
     Terminal:
       title: Terminal
       type: object
@@ -141,12 +141,6 @@ components:
       type: string
       format: date-time
       description: The date and time when the terminal was last seen online.
-    Terminal-Battery-Level:
-      title: Terminal battery level
-      type: integer
-      description: The current battery level of the terminal as a percentage (0-100).
-      minimum: 0
-      maximum: 100
     Terminal-Operation-Mode:
       title: Terminal operation mode
       type: string
@@ -154,34 +148,40 @@ components:
       enum:
       - pos
       - payment_acceptance
-    Terminal-Id:
-      title: Terminal ID
-      type: string
-      format: uuid
-      description: The unique identifier of the terminal.
-    Terminal-Serial-Number:
-      title: Terminal serial number
-      type: string
-      description: The serial number of the terminal device.
-      example: RT-00123456
     Terminals:
       type: array
       description: List of terminal devices.
       items:
         $ref: '#/components/schemas/Terminal'
-    Terminal-Online:
-      title: Terminal online status
-      type: boolean
-      description: 'Indicates whether the terminal is currently online and connected.
+    Terminal-Name:
+      title: Terminal name
+      type: string
+      description: The name of the terminal device.
+    Terminal-Type:
+      title: Terminal type
+      type: string
+      description: The hardware type/model of the terminal device.
+      enum:
+      - youtransactor_ucube_touch
+      - newland_n950
+      - newland_n750
+      - newland_r25p
+    Error-v2:
+      title: Error
+      type: object
+      properties:
+        code:
+          type: string
+          description: 'An identifier that can be used to determine what went wrong.
 
 
-        | Value | Description |
-
-        |-------|-------------|
-
-        | `true` | Terminal is online and available |
-
-        | `false` | Terminal is offline |'
+            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
+        message:
+          type: string
+          description: Some human readable text describing what went wrong.
+        timestamp:
+          type: integer
+          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
   parameters:
     Operation-Mode:
       name: operation_mode
@@ -200,6 +200,15 @@ components:
         | `payment_acceptance` | Returns only terminals in standard checkout mode |'
       schema:
         $ref: '#/components/schemas/Terminal-Operation-Mode'
+    Location-Id-Query:
+      name: location_id
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      in: query
+      required: false
+      description: Filter results by location ID.
     Revolut-Api-Version-Optional:
       name: Revolut-Api-Version
       in: header
@@ -233,15 +242,6 @@ components:
         example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
       required: true
       description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
-    Location-Id-Query:
-      name: location_id
-      schema:
-        type: string
-        format: uuid
-        description: A UUID string, typically used to identify resources.
-      in: query
-      required: false
-      description: Filter results by location ID.
   examples:
     Res-Terminals-List:
       summary: List of terminals at a location

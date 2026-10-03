@@ -76,225 +76,6 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  schemas:
-    ErrorResponse:
-      type: object
-      description: Standard error response structure
-      required:
-      - error_id
-      - message
-      - timestamp
-      properties:
-        error_id:
-          type: string
-          format: uuid
-          description: Unique identifier for this specific error occurrence.
-        message:
-          type: string
-          description: Human-readable description of the error.
-        timestamp:
-          type: integer
-          format: int64
-          description: The time the error occurred in Unix epoch milliseconds.
-    LastTrades:
-      type: object
-      properties:
-        data:
-          type: array
-          description: The list of the latest trade records.
-          items:
-            $ref: '#/components/schemas/PublicTrade'
-        metadata:
-          type: object
-          properties:
-            timestamp:
-              type: string
-              format: date-time
-              description: Timestamp when the data was generated, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string.
-              example: '2025-08-08T21:40:36.684333Z'
-          required:
-          - timestamp
-      required:
-      - data
-      - metadata
-    OrderBookPublic:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            asks:
-              type: array
-              description: The list of asks (sell orders), sorted by price in descending order.
-              items:
-                $ref: '#/components/schemas/OrderBookPublicPriceLevel'
-            bids:
-              type: array
-              description: The list of bids (buy orders), sorted by price in descending order.
-              items:
-                $ref: '#/components/schemas/OrderBookPublicPriceLevel'
-          required:
-          - asks
-          - bids
-        metadata:
-          type: object
-          properties:
-            timestamp:
-              type: string
-              format: date-time
-              description: Timestamp when the order book snapshot was generated, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string.
-              example: '2025-08-08T21:40:36.124538Z'
-          required:
-          - timestamp
-      required:
-      - data
-      - metadata
-    PublicTrade:
-      type: object
-      description: A single trade.
-      properties:
-        tdt:
-          type: string
-          format: date-time
-          description: Trading date and time, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string.
-          example: '2025-08-08T21:40:35.133962Z'
-        aid:
-          type: string
-          description: Crypto-asset ID code.
-          example: BTC
-        anm:
-          type: string
-          description: Crypto-asset full name.
-          example: Bitcoin
-        p:
-          type: string
-          description: Price in major currency units. For example, for USD, `116243.32` represents 116243.32 dollars.
-          example: '116243.32'
-        pc:
-          type: string
-          description: Price currency.
-          example: USD
-        pn:
-          type: string
-          description: Price notation.
-          example: MONE
-        q:
-          type: string
-          description: Quantity.
-          example: '0.24521000'
-        qc:
-          type: string
-          description: Quantity currency.
-          example: BTC
-        qn:
-          type: string
-          description: Quantity notation.
-          example: UNIT
-        ve:
-          type: string
-          description: Venue of execution. Always equals `REVX`.
-          example: REVX
-        pdt:
-          type: string
-          format: date-time
-          description: Publication date and time, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string.
-          example: '2025-08-08T21:40:35.133962Z'
-        vp:
-          type: string
-          description: Venue of publication. Always equals `REVX`.
-          example: REVX
-        tid:
-          type: string
-          description: Transaction identification code.
-          example: 5ef9648f658149f7ababedc97a6401f8
-      required:
-      - tdt
-      - aid
-      - anm
-      - p
-      - pc
-      - pn
-      - q
-      - qc
-      - qn
-      - ve
-      - pdt
-      - vp
-      - tid
-    OrderBookPublicPriceLevel:
-      type: object
-      description: A single order book price level.
-      properties:
-        aid:
-          type: string
-          description: Crypto-asset ID code.
-          example: ETH
-        anm:
-          type: string
-          description: Crypto-asset full name.
-          example: Ethereum
-        s:
-          type: string
-          description: The side of the price level.
-          enum:
-          - SELL
-          - BUYI
-          example: SELL
-        p:
-          type: string
-          description: Price in major currency units. For example, for USD, 4600 represents 4600 dollars.
-          example: '4600'
-        pc:
-          type: string
-          description: Price currency.
-          example: USD
-        pn:
-          type: string
-          description: Price notation.
-          example: MONE
-        q:
-          type: string
-          description: Aggregated quantity at this price level.
-          example: '17'
-        qc:
-          type: string
-          description: Quantity currency.
-          example: ETH
-        qn:
-          type: string
-          description: Quantity notation.
-          example: UNIT
-        ve:
-          type: string
-          description: Venue of execution. Always equals `REVX`.
-          example: REVX
-        'no':
-          type: string
-          description: Number of orders at the price level.
-          example: '3'
-        ts:
-          type: string
-          description: Trading system. Always equals `CLOB` (Central Limit Order Book).
-          example: CLOB
-        pdt:
-          type: string
-          format: date-time
-          description: Publication date and time, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string.
-          example: '2025-08-08T21:40:36.124538Z'
-      required:
-      - aid
-      - anm
-      - s
-      - p
-      - pc
-      - pn
-      - q
-      - qc
-      - qn
-      - ve
-      - 'no'
-      - ts
-      - pdt
   examples:
     LastTradesResponseExample:
       value:
@@ -386,17 +167,226 @@ components:
             pdt: '2025-08-08T21:40:36.124538Z'
         metadata:
           timestamp: '2025-08-08T21:40:36.124538Z'
+  schemas:
+    PublicTrade:
+      type: object
+      description: A single trade.
+      properties:
+        tdt:
+          type: string
+          format: date-time
+          description: Trading date and time, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string.
+          example: '2025-08-08T21:40:35.133962Z'
+        aid:
+          type: string
+          description: Crypto-asset ID code.
+          example: BTC
+        anm:
+          type: string
+          description: Crypto-asset full name.
+          example: Bitcoin
+        p:
+          type: string
+          description: Price in major currency units. For example, for USD, `116243.32` represents 116243.32 dollars.
+          example: '116243.32'
+        pc:
+          type: string
+          description: Price currency.
+          example: USD
+        pn:
+          type: string
+          description: Price notation.
+          example: MONE
+        q:
+          type: string
+          description: Quantity.
+          example: '0.24521000'
+        qc:
+          type: string
+          description: Quantity currency.
+          example: BTC
+        qn:
+          type: string
+          description: Quantity notation.
+          example: UNIT
+        ve:
+          type: string
+          description: Venue of execution. Always equals `REVX`.
+          example: REVX
+        pdt:
+          type: string
+          format: date-time
+          description: Publication date and time, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string.
+          example: '2025-08-08T21:40:35.133962Z'
+        vp:
+          type: string
+          description: Venue of publication. Always equals `REVX`.
+          example: REVX
+        tid:
+          type: string
+          description: Transaction identification code.
+          example: 5ef9648f658149f7ababedc97a6401f8
+      required:
+      - tdt
+      - aid
+      - anm
+      - p
+      - pc
+      - pn
+      - q
+      - qc
+      - qn
+      - ve
+      - pdt
+      - vp
+      - tid
+    OrderBookPublic:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            asks:
+              type: array
+              description: The list of asks (sell orders), sorted by price in descending order.
+              items:
+                $ref: '#/components/schemas/OrderBookPublicPriceLevel'
+            bids:
+              type: array
+              description: The list of bids (buy orders), sorted by price in descending order.
+              items:
+                $ref: '#/components/schemas/OrderBookPublicPriceLevel'
+          required:
+          - asks
+          - bids
+        metadata:
+          type: object
+          properties:
+            timestamp:
+              type: string
+              format: date-time
+              description: Timestamp when the order book snapshot was generated, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string.
+              example: '2025-08-08T21:40:36.124538Z'
+          required:
+          - timestamp
+      required:
+      - data
+      - metadata
+    OrderBookPublicPriceLevel:
+      type: object
+      description: A single order book price level.
+      properties:
+        aid:
+          type: string
+          description: Crypto-asset ID code.
+          example: ETH
+        anm:
+          type: string
+          description: Crypto-asset full name.
+          example: Ethereum
+        s:
+          type: string
+          description: The side of the price level.
+          enum:
+          - SELL
+          - BUYI
+          example: SELL
+        p:
+          type: string
+          description: Price in major currency units. For example, for USD, 4600 represents 4600 dollars.
+          example: '4600'
+        pc:
+          type: string
+          description: Price currency.
+          example: USD
+        pn:
+          type: string
+          description: Price notation.
+          example: MONE
+        q:
+          type: string
+          description: Aggregated quantity at this price level.
+          example: '17'
+        qc:
+          type: string
+          description: Quantity currency.
+          example: ETH
+        qn:
+          type: string
+          description: Quantity notation.
+          example: UNIT
+        ve:
+          type: string
+          description: Venue of execution. Always equals `REVX`.
+          example: REVX
+        'no':
+          type: string
+          description: Number of orders at the price level.
+          example: '3'
+        ts:
+          type: string
+          description: Trading system. Always equals `CLOB` (Central Limit Order Book).
+          example: CLOB
+        pdt:
+          type: string
+          format: date-time
+          description: Publication date and time, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string.
+          example: '2025-08-08T21:40:36.124538Z'
+      required:
+      - aid
+      - anm
+      - s
+      - p
+      - pc
+      - pn
+      - q
+      - qc
+      - qn
+      - ve
+      - 'no'
+      - ts
+      - pdt
+    LastTrades:
+      type: object
+      properties:
+        data:
+          type: array
+          description: The list of the latest trade records.
+          items:
+            $ref: '#/components/schemas/PublicTrade'
+        metadata:
+          type: object
+          properties:
+            timestamp:
+              type: string
+              format: date-time
+              description: Timestamp when the data was generated, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string.
+              example: '2025-08-08T21:40:36.684333Z'
+          required:
+          - timestamp
+      required:
+      - data
+      - metadata
+    ErrorResponse:
+      type: object
+      description: Standard error response structure
+      required:
+      - error_id
+      - message
+      - timestamp
+      properties:
+        error_id:
+          type: string
+          format: uuid
+          description: Unique identifier for this specific error occurrence.
+        message:
+          type: string
+          description: Human-readable description of the error.
+        timestamp:
+          type: integer
+          format: int64
+          description: The time the error occurred in Unix epoch milliseconds.
   responses:
-    ServerError:
-      description: Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Something went wrong!
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
     RateLimitExceeded:
       description: Rate Limit Exceeded
       headers:
@@ -411,6 +401,16 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
           example:
             message: Rate Limit Exceeded
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Something went wrong!
             error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
             timestamp: 3318215482991
   securitySchemes:

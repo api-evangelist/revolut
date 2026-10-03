@@ -773,6 +773,32 @@ paths:
       - Accounting categories
 components:
   responses:
+    Forbidden:
+      description: 'Action forbidden - insufficient permissions to perform this action
+
+
+        Returned, for example, when you don''t have permissions necessary to perform this action.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          example:
+            error_id: c5deadcc-1934-4438-818a-3c7ca1e6c01c
+            code: 9002
+            message: This action is forbidden
+    InternalServerError:
+      description: 'Internal server error
+
+
+        An unexpected application error occurred.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          example:
+            error_id: 7f96652e-7518-4229-872b-4e4c867fb4da
+            code: 5000
+            message: An unexpected error occurred while processing your request. If the issue persists, please contact support
     ServiceUnavailable:
       description: 'Service Unavailable
 
@@ -815,32 +841,6 @@ components:
                 error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
                 code: 3162
                 message: Request rate limit has been reached. Try again after 30 seconds.
-    Forbidden:
-      description: 'Action forbidden - insufficient permissions to perform this action
-
-
-        Returned, for example, when you don''t have permissions necessary to perform this action.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorWithId'
-          example:
-            error_id: c5deadcc-1934-4438-818a-3c7ca1e6c01c
-            code: 9002
-            message: This action is forbidden
-    InternalServerError:
-      description: 'Internal server error
-
-
-        An unexpected application error occurred.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorWithId'
-          example:
-            error_id: 7f96652e-7518-4229-872b-4e4c867fb4da
-            code: 5000
-            message: An unexpected error occurred while processing your request. If the issue persists, please contact support
     ResourceCreatedResponse:
       description: 'Resource created
 
@@ -880,22 +880,38 @@ components:
                 code: 1000
                 message: Invalid token. The authorization header must follow the 'Bearer <token>' format.
   schemas:
-    ErrorWithId:
+    CreateAccountingCategoryRequest:
+      type: object
+      description: The accounting category to create.
       required:
+      - name
       - code
-      - message
-      - error_id
+      properties:
+        name:
+          type: string
+          description: The full name for the accounting category.
+          minLength: 1
+          maxLength: 60
+          example: Work From Home equipment
+        code:
+          type: string
+          description: The code name for the accounting category.
+          minLength: 1
+          maxLength: 50
+          example: WFH
+        default_tax_rate_id:
+          type: string
+          format: uuid
+          description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
+          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
+    ResourceCreatedResponse:
+      description: Successfully created resource.
       type: object
       properties:
-        error_id:
+        id:
           type: string
-          description: The ID of the specific error instance. Used for traceability.
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
+          format: uuid
+          description: The ID of the created resource.
     AccountingCategoryResponse:
       type: object
       required:
@@ -932,14 +948,27 @@ components:
           format: uuid
           description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) applied to items in this accounting category unless overridden for a specific item.
           example: 2a3520af-e6f7-416c-821e-0e83ffac1dfa
-    ResourceCreatedResponse:
-      description: Successfully created resource.
+    ErrorWithId:
+      required:
+      - code
+      - message
+      - error_id
       type: object
       properties:
-        id:
+        error_id:
           type: string
-          format: uuid
-          description: The ID of the created resource.
+          description: The ID of the specific error instance. Used for traceability.
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+    PageToken:
+      type: string
+      format: byte
+      description: "Cursor for the next page. \nUsed for pagination when the total number of results exceeds the maximum number per page.\n\nTo get the next page of results, make a new request and set `page_token` to the `next_page_token` value returned in the previous response.\n:::note\nIf there are no more results to fetch, `next_page_token` is not returned in the response.\n:::"
+      example: MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA
     UpdateAccountingCategoryRequest:
       type: object
       description: The new settings for the accounting category.
@@ -961,35 +990,6 @@ components:
           type: string
           format: uuid
           description: The ID of the new default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
-          example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
-    PageToken:
-      type: string
-      format: byte
-      description: "Cursor for the next page. \nUsed for pagination when the total number of results exceeds the maximum number per page.\n\nTo get the next page of results, make a new request and set `page_token` to the `next_page_token` value returned in the previous response.\n:::note\nIf there are no more results to fetch, `next_page_token` is not returned in the response.\n:::"
-      example: MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA
-    CreateAccountingCategoryRequest:
-      type: object
-      description: The accounting category to create.
-      required:
-      - name
-      - code
-      properties:
-        name:
-          type: string
-          description: The full name for the accounting category.
-          minLength: 1
-          maxLength: 60
-          example: Work From Home equipment
-        code:
-          type: string
-          description: The code name for the accounting category.
-          minLength: 1
-          maxLength: 50
-          example: WFH
-        default_tax_rate_id:
-          type: string
-          format: uuid
-          description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
           example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
   parameters:
     PageToken:

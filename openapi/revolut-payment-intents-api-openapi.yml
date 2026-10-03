@@ -239,6 +239,24 @@ paths:
       - Payment Intents
 components:
   schemas:
+    Terminal-Id:
+      title: Terminal ID
+      type: string
+      format: uuid
+      description: The unique identifier of the terminal.
+    Currency:
+      type: string
+      format: ISO 4217
+      minLength: 3
+      maxLength: 3
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
+
+
+        :::info
+
+        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
+
+        :::'
     Payment-Intent:
       title: Payment Intent
       type: object
@@ -278,64 +296,10 @@ components:
       - terminal_id
       - created_at
       - updated_at
-    Payment-Intent-Amount:
-      title: Payment Intent amount
-      type: integer
-      description: 'The payment amount expressed in minor currency units, according to the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217). For example, `7034` in `EUR` corresponds to €70.34.
-
-
-        :::info
-
-        Conversion between major and minor units varies by currency. For instance, `100` minor units equal £1.00 in `GBP`, whereas in `ISK` they represent 100 units. For more details, see the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217).
-
-        :::'
-    Payment-Intent-Creation:
-      title: Payment Intent creation
-      type: object
-      description: Request body for creating a payment intent to push to a terminal.
-      properties:
-        amount:
-          $ref: '#/components/schemas/Payment-Intent-Amount'
-        terminal_id:
-          $ref: '#/components/schemas/Terminal-Id'
-      required:
-      - amount
-      - terminal_id
     Payment-Id:
       type: string
       format: uuid
       description: The ID of the payment.
-    Terminal-Id:
-      title: Terminal ID
-      type: string
-      format: uuid
-      description: The unique identifier of the terminal.
-    Currency:
-      type: string
-      format: ISO 4217
-      minLength: 3
-      maxLength: 3
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
-
-
-        :::info
-
-        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
-
-        :::'
-    Error:
-      title: Error
-      type: object
-      properties:
-        errorId:
-          type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        timestamp:
-          type: integer
-          description: The date and time the error happened.
-      required:
-      - errorId
-      - timestamp
     Payment-Intent-State:
       type: string
       description: 'The current state of the payment intent.
@@ -360,54 +324,52 @@ components:
       - completed
       - cancelled
       - failed
+    Payment-Intent-Creation:
+      title: Payment Intent creation
+      type: object
+      description: Request body for creating a payment intent to push to a terminal.
+      properties:
+        amount:
+          $ref: '#/components/schemas/Payment-Intent-Amount'
+        terminal_id:
+          $ref: '#/components/schemas/Terminal-Id'
+      required:
+      - amount
+      - terminal_id
+    Payment-Intent-Amount:
+      title: Payment Intent amount
+      type: integer
+      description: 'The payment amount expressed in minor currency units, according to the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217). For example, `7034` in `EUR` corresponds to €70.34.
+
+
+        :::info
+
+        Conversion between major and minor units varies by currency. For instance, `100` minor units equal £1.00 in `GBP`, whereas in `ISK` they represent 100 units. For more details, see the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217).
+
+        :::'
+    Order-Id:
+      type: string
+      format: uuid
+      description: Permanent order ID used to retrieve, capture, cancel, or refund an order after authorization.
+    Error:
+      title: Error
+      type: object
+      properties:
+        errorId:
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        timestamp:
+          type: integer
+          description: The date and time the error happened.
+      required:
+      - errorId
+      - timestamp
     Payment-Intent-Id:
       title: Payment Intent ID
       type: string
       format: uuid
       description: The unique identifier of the payment intent.
-    Order-Id:
-      type: string
-      format: uuid
-      description: Permanent order ID used to retrieve, capture, cancel, or refund an order after authorization.
   examples:
-    Res-Payment-Intent-Processing:
-      summary: Payment intent processing
-      value:
-        id: b4d58add-b3fe-40e4-a70a-8c78df977888
-        order_id: 5c9fc54e-11b4-4f7f-8686-4a64d4d20db4
-        state: processing
-        amount: 2500
-        currency: GBP
-        terminal_id: 0e53f673-7705-473a-a263-89a3e7647c3d
-        created_at: '2025-01-15T11:01:00Z'
-        updated_at: '2025-01-15T11:02:15Z'
-    Res-Payment-Intent-Failed:
-      summary: Payment intent failed
-      value:
-        id: b4d58add-b3fe-40e4-a70a-8c78df977888
-        state: failed
-        terminal_id: 0e53f673-7705-473a-a263-89a3e7647c3d
-        order_id: 5c9fc54e-11b4-4f7f-8686-4a64d4d20db4
-        amount: 2500
-        currency: GBP
-        created_at: '2025-01-15T11:01:00Z'
-        updated_at: '2025-01-15T11:03:00Z'
-    Req-Payment-Intent:
-      summary: Create payment intent request example
-      value:
-        amount: 2500
-        terminal_id: 0e53f673-7705-473a-a263-89a3e7647c3d
-    Res-Payment-Intent-Cancelled:
-      summary: Payment intent cancelled
-      value:
-        id: b4d58add-b3fe-40e4-a70a-8c78df977888
-        state: cancelled
-        terminal_id: 0e53f673-7705-473a-a263-89a3e7647c3d
-        order_id: 5c9fc54e-11b4-4f7f-8686-4a64d4d20db4
-        amount: 2500
-        currency: GBP
-        created_at: '2025-01-15T11:01:00Z'
-        updated_at: '2025-01-15T11:01:45Z'
     Res-Payment-Intent-Completed:
       summary: Payment intent completed
       value:
@@ -420,6 +382,44 @@ components:
         currency: GBP
         created_at: '2025-01-15T11:01:00Z'
         updated_at: '2025-01-15T11:02:30Z'
+    Res-Payment-Intent-Failed:
+      summary: Payment intent failed
+      value:
+        id: b4d58add-b3fe-40e4-a70a-8c78df977888
+        state: failed
+        terminal_id: 0e53f673-7705-473a-a263-89a3e7647c3d
+        order_id: 5c9fc54e-11b4-4f7f-8686-4a64d4d20db4
+        amount: 2500
+        currency: GBP
+        created_at: '2025-01-15T11:01:00Z'
+        updated_at: '2025-01-15T11:03:00Z'
+    Res-Payment-Intent-Processing:
+      summary: Payment intent processing
+      value:
+        id: b4d58add-b3fe-40e4-a70a-8c78df977888
+        order_id: 5c9fc54e-11b4-4f7f-8686-4a64d4d20db4
+        state: processing
+        amount: 2500
+        currency: GBP
+        terminal_id: 0e53f673-7705-473a-a263-89a3e7647c3d
+        created_at: '2025-01-15T11:01:00Z'
+        updated_at: '2025-01-15T11:02:15Z'
+    Res-Payment-Intent-Cancelled:
+      summary: Payment intent cancelled
+      value:
+        id: b4d58add-b3fe-40e4-a70a-8c78df977888
+        state: cancelled
+        terminal_id: 0e53f673-7705-473a-a263-89a3e7647c3d
+        order_id: 5c9fc54e-11b4-4f7f-8686-4a64d4d20db4
+        amount: 2500
+        currency: GBP
+        created_at: '2025-01-15T11:01:00Z'
+        updated_at: '2025-01-15T11:01:45Z'
+    Req-Payment-Intent:
+      summary: Create payment intent request example
+      value:
+        amount: 2500
+        terminal_id: 0e53f673-7705-473a-a263-89a3e7647c3d
     Res-Payment-Intent-Pending:
       summary: Payment intent pending
       value:
@@ -429,6 +429,15 @@ components:
         amount: 2500
         currency: GBP
   parameters:
+    Order-Id:
+      name: order_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the `Order` object.
     Authorization:
       name: Authorization
       in: header
@@ -438,13 +447,6 @@ components:
         example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
       required: true
       description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
-    Payment-Intent-Id:
-      name: payment_intent_id
-      in: path
-      required: true
-      description: The unique identifier of the payment intent.
-      schema:
-        $ref: '#/components/schemas/Payment-Intent-Id'
     Revolut-Api-Version-Optional:
       name: Revolut-Api-Version
       in: header
@@ -469,15 +471,13 @@ components:
 
         :::'
       x-config-always-visible-in-example: true
-    Order-Id:
-      name: order_id
+    Payment-Intent-Id:
+      name: payment_intent_id
       in: path
-      schema:
-        type: string
-        format: uuid
-        description: A UUID string, typically used to identify resources.
       required: true
-      description: The ID of the `Order` object.
+      description: The unique identifier of the payment intent.
+      schema:
+        $ref: '#/components/schemas/Payment-Intent-Id'
   securitySchemes:
     Api-Key:
       type: apiKey

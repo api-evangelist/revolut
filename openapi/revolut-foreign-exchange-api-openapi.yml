@@ -262,18 +262,41 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
+    Fee:
       type: object
       properties:
-        code:
-          type: integer
-          description: The error code.
-        message:
+        amount:
+          type: number
+          format: double
+          description: The fee amount.
+        currency:
+          $ref: '#/components/schemas/Currency'
+    ExchangeRateResponse:
+      type: object
+      properties:
+        from:
+          description: The money to sell.
+          $ref: '#/components/schemas/AmountWithCurrency'
+        to:
+          description: The money to receive.
+          $ref: '#/components/schemas/AmountWithCurrency'
+        rate:
+          type: number
+          format: double
+          description: The proposed exchange rate.
+        fee:
+          description: The expected fee for the transaction.
+          $ref: '#/components/schemas/Fee'
+        rate_date:
           type: string
-          description: The description of the error.
+          format: date-time
+          description: The date of the proposed exchange rate in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
       required:
-      - code
-      - message
+      - from
+      - to
+      - rate
+      - fee
+      - rate_date
     ExchangeRequest:
       type: object
       description: The exchange information.
@@ -308,60 +331,6 @@ components:
       - from
       - to
       - request_id
-    Fee:
-      type: object
-      properties:
-        amount:
-          type: number
-          format: double
-          description: The fee amount.
-        currency:
-          $ref: '#/components/schemas/Currency'
-    AmountWithCurrency:
-      type: object
-      description: ''
-      properties:
-        amount:
-          type: number
-          format: double
-          description: The amount of the transaction.
-        currency:
-          $ref: '#/components/schemas/Currency'
-    ExchangeReasonCode:
-      type: string
-      description: "The reason code for the exchange.\nDepending on the country and the amount of funds to be exchanged, you might be required to provide an exchange reason. \nYou can check available reason codes with the [`GET /exchange-reasons` operation](https://developer.revolut.com/docs/api/business#get-exchange-reasons).\n\nIf an exchange reason is not required, this field is ignored."
-      example: fund_transfer_and_intracompany_payment
-    ExchangeReason:
-      type: object
-      required:
-      - code
-      - name
-      properties:
-        code:
-          type: string
-          enum:
-          - business_expense_and_claims
-          - fees_and_charges
-          - fund_transfer_and_intracompany_payment
-          - gifts_and_donations
-          - government_services_and_tax
-          - insurance
-          - inventory
-          - investment_dividend_and_interest
-          - loan_and_loan_repayment
-          - marketing
-          - payment_for_goods_and_services
-          - payroll
-          - refund
-          - rental_and_property
-          - sales
-          - service_provider_and_software
-          - travel_and_transportation
-          - utilities
-          description: Category code of the reason for the exchange.
-        name:
-          type: string
-          description: Category name of the reason for the exchange.
     ExchangeResponse:
       type: object
       properties:
@@ -398,6 +367,60 @@ components:
       - reverted
       description: "Indicates the transaction state. Possible values:\n  - `created`: The transaction has been created and is either processed asynchronously or scheduled for a later time.\n  - `pending`: The transaction is pending until it's being processed. If the transfer is made between Revolut accounts, this state is skipped and the transaction is executed instantly.\n  - `completed`: The transaction was successful.\n  - `declined`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, insufficient account balance, wrong receiver information, etc.\n  - `failed`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, invalid API calls, blocked payments, etc.\n  - `reverted`: The transaction was reverted. This can happen for a variety of reasons, for example, the receiver being inaccessible."
       type: string
+    ExchangeReason:
+      type: object
+      required:
+      - code
+      - name
+      properties:
+        code:
+          type: string
+          enum:
+          - business_expense_and_claims
+          - fees_and_charges
+          - fund_transfer_and_intracompany_payment
+          - gifts_and_donations
+          - government_services_and_tax
+          - insurance
+          - inventory
+          - investment_dividend_and_interest
+          - loan_and_loan_repayment
+          - marketing
+          - payment_for_goods_and_services
+          - payroll
+          - refund
+          - rental_and_property
+          - sales
+          - service_provider_and_software
+          - travel_and_transportation
+          - utilities
+          description: Category code of the reason for the exchange.
+        name:
+          type: string
+          description: Category name of the reason for the exchange.
+    Currency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    ExchangePartTo:
+      type: object
+      description: The details of the currency to exchange to.
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          description: The ID of the account to receive exchanged currency into.
+        currency:
+          $ref: '#/components/schemas/Currency'
+        amount:
+          type: number
+          format: double
+          description: 'The amount of currency.
+
+            Specify **only** if you want to buy currency.'
+      required:
+      - account_id
+      - currency
     ExchangeReasons:
       type: array
       items:
@@ -440,6 +463,28 @@ components:
         name: Travel and transportation
       - code: utilities
         name: Utilities
+    AmountWithCurrency:
+      type: object
+      description: ''
+      properties:
+        amount:
+          type: number
+          format: double
+          description: The amount of the transaction.
+        currency:
+          $ref: '#/components/schemas/Currency'
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
     ExchangePartFrom:
       type: object
       description: The details of the currency to exchange from.
@@ -459,55 +504,10 @@ components:
       required:
       - account_id
       - currency
-    ExchangeRateResponse:
-      type: object
-      properties:
-        from:
-          description: The money to sell.
-          $ref: '#/components/schemas/AmountWithCurrency'
-        to:
-          description: The money to receive.
-          $ref: '#/components/schemas/AmountWithCurrency'
-        rate:
-          type: number
-          format: double
-          description: The proposed exchange rate.
-        fee:
-          description: The expected fee for the transaction.
-          $ref: '#/components/schemas/Fee'
-        rate_date:
-          type: string
-          format: date-time
-          description: The date of the proposed exchange rate in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-      required:
-      - from
-      - to
-      - rate
-      - fee
-      - rate_date
-    ExchangePartTo:
-      type: object
-      description: The details of the currency to exchange to.
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          description: The ID of the account to receive exchanged currency into.
-        currency:
-          $ref: '#/components/schemas/Currency'
-        amount:
-          type: number
-          format: double
-          description: 'The amount of currency.
-
-            Specify **only** if you want to buy currency.'
-      required:
-      - account_id
-      - currency
-    Currency:
+    ExchangeReasonCode:
       type: string
-      pattern: ^[A-Z]{3}$
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+      description: "The reason code for the exchange.\nDepending on the country and the amount of funds to be exchanged, you might be required to provide an exchange reason. \nYou can check available reason codes with the [`GET /exchange-reasons` operation](https://developer.revolut.com/docs/api/business#get-exchange-reasons).\n\nIf an exchange reason is not required, this field is ignored."
+      example: fund_transfer_and_intracompany_payment
   securitySchemes:
     AccessToken:
       type: http

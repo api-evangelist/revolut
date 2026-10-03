@@ -2610,6 +2610,32 @@ paths:
       - Accounting
 components:
   schemas:
+    ResourceCreatedResponse:
+      description: Successfully created resource.
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the created resource.
+    CreateTaxRateRequest:
+      allOf:
+      - $ref: '#/components/schemas/AccountingTaxRate'
+      - description: The tax rate to create.
+        required:
+        - name
+        - percentage
+    UpdateLabelGroupRequest:
+      type: object
+      description: The new name for the label group.
+      required:
+      - name
+      properties:
+        name:
+          description: The new name for the label group.
+          type: string
+          minLength: 1
+          maxLength: 100
     LabelGroupResponse:
       type: object
       required:
@@ -2638,6 +2664,16 @@ components:
           format: date-time
           description: The date and time the label group was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
           readOnly: true
+    UpdateTaxRateRequest:
+      type: object
+      description: The new setting for the tax rate.
+      minProperties: 1
+      properties:
+        name:
+          description: The new name for the tax rate.
+          type: string
+          minLength: 1
+          maxLength: 20
     CreateAccountingCategoryRequest:
       type: object
       description: The accounting category to create.
@@ -2662,34 +2698,6 @@ components:
           format: uuid
           description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
           example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
-    LabelResponse:
-      type: object
-      required:
-      - id
-      - name
-      - created_at
-      - updated_at
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The unique ID of the label.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the label.
-          minLength: 1
-          maxLength: 100
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time the label was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          description: The date and time the label was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-          readOnly: true
     AccountingCategoryResponse:
       type: object
       required:
@@ -2726,14 +2734,123 @@ components:
           format: uuid
           description: The ID of the default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) applied to items in this accounting category unless overridden for a specific item.
           example: 2a3520af-e6f7-416c-821e-0e83ffac1dfa
-    ResourceCreatedResponse:
-      description: Successfully created resource.
+    ErrorWithId:
+      required:
+      - code
+      - message
+      - error_id
       type: object
+      properties:
+        error_id:
+          type: string
+          description: The ID of the specific error instance. Used for traceability.
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+    PageToken:
+      type: string
+      format: byte
+      description: "Cursor for the next page. \nUsed for pagination when the total number of results exceeds the maximum number per page.\n\nTo get the next page of results, make a new request and set `page_token` to the `next_page_token` value returned in the previous response.\n:::note\nIf there are no more results to fetch, `next_page_token` is not returned in the response.\n:::"
+      example: MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA
+    CreateLabelGroupRequest:
+      type: object
+      required:
+      - name
+      - labels
+      properties:
+        name:
+          description: The name for the new label group.
+          type: string
+          minLength: 1
+          maxLength: 100
+        labels:
+          description: 'The labels to create in the new group.
+
+
+            The maximum number of labels you can create for a new group is 200.
+
+            If you need to add more, you can add them later by [creating new labels individually](https://developer.revolut.com/docs/api/business#create-label).'
+          type: array
+          minItems: 1
+          maxItems: 200
+          items:
+            $ref: '#/components/schemas/CreateLabelRequest'
+    TaxRateResponse:
+      type: object
+      required:
+      - id
+      - name
+      - created_at
+      - updated_at
       properties:
         id:
           type: string
           format: uuid
-          description: The ID of the created resource.
+          description: The unique ID of the tax rate.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the tax.
+          minLength: 1
+          maxLength: 20
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the tax rate was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the tax rate was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          readOnly: true
+        percentage:
+          type: number
+          format: double
+          description: "The tax rate percentage applied to the taxable amount. For example, `23` for 23%.\n\n:::note\nYou cannot create negative tax rates manually. \nHowever, negative tax rates might be synced from your accounting software, if integrated. \n:::"
+          minimum: -100
+          maximum: 100
+    LabelResponse:
+      type: object
+      required:
+      - id
+      - name
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique ID of the label.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the label.
+          minLength: 1
+          maxLength: 100
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the label was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the label was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+          readOnly: true
+    UpdateLabelRequest:
+      type: object
+      description: The new name for the label.
+      required:
+      - name
+      properties:
+        name:
+          description: The new name for the label.
+          type: string
+          minLength: 1
+          maxLength: 100
     AccountingTaxRate:
       type: object
       description: The tax rate that can be applied to financial records, such as expenses.
@@ -2773,123 +2890,6 @@ components:
           format: uuid
           description: The ID of the new default [tax rate](https://developer.revolut.com/docs/api/business#get-tax-rate) that should be applied to items in this accounting category unless overridden for a specific item.
           example: f93f6c3e-bf95-4b58-bfcd-e642c4fc098e
-    TaxRateResponse:
-      type: object
-      required:
-      - id
-      - name
-      - created_at
-      - updated_at
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The unique ID of the tax rate.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the tax.
-          minLength: 1
-          maxLength: 20
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time the tax rate was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          description: The date and time the tax rate was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-          readOnly: true
-        percentage:
-          type: number
-          format: double
-          description: "The tax rate percentage applied to the taxable amount. For example, `23` for 23%.\n\n:::note\nYou cannot create negative tax rates manually. \nHowever, negative tax rates might be synced from your accounting software, if integrated. \n:::"
-          minimum: -100
-          maximum: 100
-    CreateLabelGroupRequest:
-      type: object
-      required:
-      - name
-      - labels
-      properties:
-        name:
-          description: The name for the new label group.
-          type: string
-          minLength: 1
-          maxLength: 100
-        labels:
-          description: 'The labels to create in the new group.
-
-
-            The maximum number of labels you can create for a new group is 200.
-
-            If you need to add more, you can add them later by [creating new labels individually](https://developer.revolut.com/docs/api/business#create-label).'
-          type: array
-          minItems: 1
-          maxItems: 200
-          items:
-            $ref: '#/components/schemas/CreateLabelRequest'
-    UpdateTaxRateRequest:
-      type: object
-      description: The new setting for the tax rate.
-      minProperties: 1
-      properties:
-        name:
-          description: The new name for the tax rate.
-          type: string
-          minLength: 1
-          maxLength: 20
-    CreateTaxRateRequest:
-      allOf:
-      - $ref: '#/components/schemas/AccountingTaxRate'
-      - description: The tax rate to create.
-        required:
-        - name
-        - percentage
-    UpdateLabelRequest:
-      type: object
-      description: The new name for the label.
-      required:
-      - name
-      properties:
-        name:
-          description: The new name for the label.
-          type: string
-          minLength: 1
-          maxLength: 100
-    PageToken:
-      type: string
-      format: byte
-      description: "Cursor for the next page. \nUsed for pagination when the total number of results exceeds the maximum number per page.\n\nTo get the next page of results, make a new request and set `page_token` to the `next_page_token` value returned in the previous response.\n:::note\nIf there are no more results to fetch, `next_page_token` is not returned in the response.\n:::"
-      example: MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA
-    UpdateLabelGroupRequest:
-      type: object
-      description: The new name for the label group.
-      required:
-      - name
-      properties:
-        name:
-          description: The new name for the label group.
-          type: string
-          minLength: 1
-          maxLength: 100
-    ErrorWithId:
-      required:
-      - code
-      - message
-      - error_id
-      type: object
-      properties:
-        error_id:
-          type: string
-          description: The ID of the specific error instance. Used for traceability.
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
     CreateLabelRequest:
       type: object
       required:
@@ -2901,30 +2901,6 @@ components:
           minLength: 1
           maxLength: 100
   responses:
-    TooManyRequests:
-      description: 'Too many requests
-
-
-        Returned, for example, when the rate limit has been exceeded.
-
-        If the response includes the `Retry-After` instruction, please respect it and refrain from earlier retry attempts.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorWithId'
-          examples:
-            rateLimitExceededNoRetryAfter:
-              summary: Rate limit exceeded (no Retry-After)
-              value:
-                error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
-                code: 3162
-                message: Request rate limit has been reached. Try again later.
-            rateLimitExceededWithRetryAfter:
-              summary: Rate limit exceeded (with Retry-After)
-              value:
-                error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
-                code: 3162
-                message: Request rate limit has been reached. Try again after 30 seconds.
     Forbidden:
       description: 'Action forbidden - insufficient permissions to perform this action
 
@@ -2951,6 +2927,22 @@ components:
             error_id: 7f96652e-7518-4229-872b-4e4c867fb4da
             code: 5000
             message: An unexpected error occurred while processing your request. If the issue persists, please contact support
+    ResourceCreatedResponse:
+      description: 'Resource created
+
+
+        On successful creation, the response returns only the ID of the new resource, even if the resource has more properties.
+
+        To get all details, use the returned resource ID with a GET request.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResourceCreatedResponse'
+          examples:
+            resource_created:
+              summary: Resource created
+              value:
+                id: 6a37383e-cfd3-4a2f-aa81-e3a6e6939efa
     Unauthorized:
       description: 'Unauthorized – authentication credentials are missing or invalid
 
@@ -2973,6 +2965,30 @@ components:
                 error_id: 7835beae-98ed-42dc-b993-95f4ded951a1
                 code: 1000
                 message: Invalid token. The authorization header must follow the 'Bearer <token>' format.
+    TooManyRequests:
+      description: 'Too many requests
+
+
+        Returned, for example, when the rate limit has been exceeded.
+
+        If the response includes the `Retry-After` instruction, please respect it and refrain from earlier retry attempts.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          examples:
+            rateLimitExceededNoRetryAfter:
+              summary: Rate limit exceeded (no Retry-After)
+              value:
+                error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
+                code: 3162
+                message: Request rate limit has been reached. Try again later.
+            rateLimitExceededWithRetryAfter:
+              summary: Rate limit exceeded (with Retry-After)
+              value:
+                error_id: 06153eec-c5cd-4db8-8898-7ae96b9d89ab
+                code: 3162
+                message: Request rate limit has been reached. Try again after 30 seconds.
     ServiceUnavailable:
       description: 'Service Unavailable
 
@@ -2991,22 +3007,6 @@ components:
                 error_id: 201768bc-c5cd-4db8-8898-7ae96b9d89ab
                 code: 5003
                 message: The service is temporarily unavailable. Try again in a few moments. If the issue persists, please contact support
-    ResourceCreatedResponse:
-      description: 'Resource created
-
-
-        On successful creation, the response returns only the ID of the new resource, even if the resource has more properties.
-
-        To get all details, use the returned resource ID with a GET request.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ResourceCreatedResponse'
-          examples:
-            resource_created:
-              summary: Resource created
-              value:
-                id: 6a37383e-cfd3-4a2f-aa81-e3a6e6939efa
   parameters:
     PageToken:
       in: query

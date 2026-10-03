@@ -498,37 +498,27 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
+    DraftPaymentStatus:
+      type: string
+      description: The status of the draft payment.
+      enum:
+      - Awaiting
+      - Processed
+      - Approved
+      - Deleted
+    ErrorDetail:
       required:
-      - Code
-      - Id
-      - Message
+      - Errors
+      - Row
       type: object
       properties:
-        Code:
+        Row:
           type: integer
-          description: The error code in high level that helps categorize the error.
-        Id:
-          type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        Message:
-          type: string
-          description: The error message.
-    InstructedAmount:
-      required:
-      - Amount
-      - Currency
-      type: object
-      properties:
-        Amount:
-          $ref: '#/components/schemas/Amount'
-        Currency:
-          $ref: '#/components/schemas/Currency'
-    ErrorDetails:
-      type: array
-      description: The  details of the error.
-      items:
-        $ref: '#/components/schemas/ErrorDetail'
+          description: The number of the row.
+        Errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldError'
     DraftPaymentListResponse:
       required:
       - Items
@@ -569,14 +559,20 @@ components:
               description: Relative URI to the next page.
               format: uri
           description: Links relevant to the payload.
-    DraftPaymentStatus:
+    DraftPaymentTransferStatus:
       type: string
       description: The status of the draft payment.
       enum:
-      - Awaiting
-      - Processed
-      - Approved
+      - Created
+      - Pending
+      - Completed
+      - Failed
       - Deleted
+    ErrorDetails:
+      type: array
+      description: The  details of the error.
+      items:
+        $ref: '#/components/schemas/ErrorDetail'
     DraftPaymentTransfer:
       required:
       - Id
@@ -605,42 +601,20 @@ components:
         FailedReasonCode:
           type: integer
           description: The reason code for the `failed` draft payment.
-    Currency:
-      pattern: ^[A-Z]{3}$
-      type: string
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    InstructedAmount:
+      required:
+      - Amount
+      - Currency
+      type: object
+      properties:
+        Amount:
+          $ref: '#/components/schemas/Amount'
+        Currency:
+          $ref: '#/components/schemas/Currency'
     DraftPaymentTransfers:
       type: array
       items:
         $ref: '#/components/schemas/DraftPaymentTransfer'
-    Amount:
-      pattern: ^\d{1,13}\.\d{1,5}$
-      type: string
-      description: The amount of money.
-    FieldError:
-      required:
-      - Code
-      - Message
-      type: object
-      properties:
-        Message:
-          type: string
-          description: The error message for the field.
-        Code:
-          type: integer
-          description: The error code in high level that helps categorize the error.
-        Field:
-          type: string
-          description: The name of the field.
-    DraftPaymentTransferStatus:
-      type: string
-      description: The status of the draft payment.
-      enum:
-      - Created
-      - Pending
-      - Completed
-      - Failed
-      - Deleted
     DraftPaymentResponse:
       required:
       - DraftPaymentId
@@ -660,6 +634,45 @@ components:
           $ref: '#/components/schemas/DraftPaymentStatus'
         Transfers:
           $ref: '#/components/schemas/DraftPaymentTransfers'
+    Currency:
+      pattern: ^[A-Z]{3}$
+      type: string
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    Amount:
+      pattern: ^\d{1,13}\.\d{1,5}$
+      type: string
+      description: The amount of money.
+    Error:
+      required:
+      - Code
+      - Id
+      - Message
+      type: object
+      properties:
+        Code:
+          type: integer
+          description: The error code in high level that helps categorize the error.
+        Id:
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        Message:
+          type: string
+          description: The error message.
+    FieldError:
+      required:
+      - Code
+      - Message
+      type: object
+      properties:
+        Message:
+          type: string
+          description: The error message for the field.
+        Code:
+          type: integer
+          description: The error code in high level that helps categorize the error.
+        Field:
+          type: string
+          description: The name of the field.
     CsvError:
       required:
       - Code
@@ -678,19 +691,6 @@ components:
           description: The error message.
         Errors:
           $ref: '#/components/schemas/ErrorDetails'
-    ErrorDetail:
-      required:
-      - Errors
-      - Row
-      type: object
-      properties:
-        Row:
-          type: integer
-          description: The number of the row.
-        Errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/FieldError'
   securitySchemes:
     AccessToken:
       type: apiKey

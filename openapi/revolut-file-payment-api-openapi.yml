@@ -1069,78 +1069,80 @@ paths:
                 $ref: '#/components/schemas/OBErrorResponse1'
 components:
   schemas:
-    OBWriteFileConsentResponse2:
+    OBError1:
       required:
-      - Data
-      - Links
-      - Meta
+      - ErrorCode
+      - Message
       type: object
       properties:
-        Data:
-          $ref: '#/components/schemas/OBWriteDataFileConsentResponse2'
-        Links:
-          $ref: '#/components/schemas/Links'
-        Meta:
-          $ref: '#/components/schemas/Meta'
-    Meta:
-      title: MetaData
-      type: object
-      properties:
-        TotalPages:
-          type: integer
-          description: Used for pagination. Indicates how many pages of results are available.
-          format: int32
-      description: Meta data relevant to the payload.
-    OBExternalLocalInstrument1Code:
-      maxLength: 50
-      minLength: 1
-      type: string
-      description: 'User community specific instrument.
-
-
-        Use this element to specify a local instrument, local clearing option and/or further qualify the service or service level.'
-    OBWriteDataFileConsentResponse2:
-      required:
-      - ConsentId
-      - CreationDateTime
-      - Initiation
-      - Status
-      - StatusUpdateDateTime
-      type: object
-      properties:
-        ConsentId:
+        ErrorCode:
           maxLength: 128
           minLength: 1
           type: string
-          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
-        CreationDateTime:
+          description: The error code in low level, for example, `UK.OBIE.Field.Missing`.
+        Message:
+          maxLength: 500
+          minLength: 1
           type: string
-          description: 'The date and time when the resource was created.
+          description: 'The description of the error that occurred.
 
-
-            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
-
-            All date-time fields in responses must include the timezone.
-
-
-            For example: `2017-04-05T10:43:07+00:00`.'
-          format: date-time
-        Status:
-          $ref: '#/components/schemas/OBExternalConsentStatus2Code'
-        StatusUpdateDateTime:
+            For example, `A mandatory field isn''t supplied`, `RequestedExecutionDateTime must be in future`, and `OBIE doesn''t standardise this field`.'
+    OBExternalFileType1Code:
+      type: string
+      description: The payment file type.
+      example: text/csv
+    OBFile2:
+      type: object
+      description: The initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds using a payment file.
+      allOf:
+      - $ref: '#/components/schemas/OBFileBase'
+      - type: object
+        properties:
+          DebtorAccount:
+            $ref: '#/components/schemas/OBCashAccountDebtor4'
+      - type: object
+        required:
+        - FileHash
+        - FileType
+    OBErrorResponse1:
+      required:
+      - Code
+      - Errors
+      - Message
+      type: object
+      properties:
+        Code:
+          maxLength: 40
+          minLength: 1
           type: string
-          description: 'The date and time when the consent resource status was updated.
+          description: The error code in high level that helps categorize the error.
+        Id:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'The error message.
 
-
-            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
-
-            All date-time fields in responses must include the timezone.
-
-
-            For example: `2017-04-05T10:43:07+00:00`.'
-          format: date-time
-        Initiation:
-          $ref: '#/components/schemas/OBFile2'
+            For example, `There is something wrong with the request parameters provided`.'
+        Errors:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OBError1'
+      description: The detailed information about the error to help troubleshooting.
+    OBExternalConsentStatus2Code:
+      type: string
+      description: The status of the consent.
+      enum:
+      - Authorised
+      - AwaitingAuthorisation
+      - AwaitingUpload
+      - Consumed
+      - Rejected
     Links:
       required:
       - Self
@@ -1159,10 +1161,23 @@ components:
           description: The absolute URI to the previous pagination resource.
           format: uri
       description: Links relevant to the payload.
-    OBExternalFileType1Code:
+    OBExternalAccountIdentification4Code:
       type: string
-      description: The payment file type.
-      example: text/csv
+      description: The name of the identification scheme.
+      enum:
+      - UK.OBIE.IBAN
+      - UK.OBIE.SortCodeAccountNumber
+      - US.RoutingNumberAccountNumber
+      - US.BranchCodeAccountNumber
+      example: UK.OBIE.IBAN
+    OBExternalLocalInstrument1Code:
+      maxLength: 50
+      minLength: 1
+      type: string
+      description: 'User community specific instrument.
+
+
+        Use this element to specify a local instrument, local clearing option and/or further qualify the service or service level.'
     OBRemittanceInformation1:
       type: object
       properties:
@@ -1197,6 +1212,19 @@ components:
 
             :::'
       description: The information used for matching an entry with the items that the transfer is intended to settle, such as commercial invoices in an accounts' receivable system.
+    OBWriteFileConsentResponse2:
+      required:
+      - Data
+      - Links
+      - Meta
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataFileConsentResponse2'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
     OBFileBase:
       type: object
       properties:
@@ -1231,85 +1259,6 @@ components:
         RemittanceInformation:
           $ref: '#/components/schemas/OBRemittanceInformation1'
       description: The initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds using a payment file.
-    OBFile2:
-      type: object
-      description: The initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds using a payment file.
-      allOf:
-      - $ref: '#/components/schemas/OBFileBase'
-      - type: object
-        properties:
-          DebtorAccount:
-            $ref: '#/components/schemas/OBCashAccountDebtor4'
-      - type: object
-        required:
-        - FileHash
-        - FileType
-    OBExternalConsentStatus2Code:
-      type: string
-      description: The status of the consent.
-      enum:
-      - Authorised
-      - AwaitingAuthorisation
-      - AwaitingUpload
-      - Consumed
-      - Rejected
-    OBError1:
-      required:
-      - ErrorCode
-      - Message
-      type: object
-      properties:
-        ErrorCode:
-          maxLength: 128
-          minLength: 1
-          type: string
-          description: The error code in low level, for example, `UK.OBIE.Field.Missing`.
-        Message:
-          maxLength: 500
-          minLength: 1
-          type: string
-          description: 'The description of the error that occurred.
-
-            For example, `A mandatory field isn''t supplied`, `RequestedExecutionDateTime must be in future`, and `OBIE doesn''t standardise this field`.'
-    OBErrorResponse1:
-      required:
-      - Code
-      - Errors
-      - Message
-      type: object
-      properties:
-        Code:
-          maxLength: 40
-          minLength: 1
-          type: string
-          description: The error code in high level that helps categorize the error.
-        Id:
-          maxLength: 40
-          minLength: 1
-          type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        Message:
-          maxLength: 500
-          minLength: 1
-          type: string
-          description: 'The error message.
-
-            For example, `There is something wrong with the request parameters provided`.'
-        Errors:
-          minItems: 1
-          type: array
-          items:
-            $ref: '#/components/schemas/OBError1'
-      description: The detailed information about the error to help troubleshooting.
-    OBExternalAccountIdentification4Code:
-      type: string
-      description: The name of the identification scheme.
-      enum:
-      - UK.OBIE.IBAN
-      - UK.OBIE.SortCodeAccountNumber
-      - US.RoutingNumberAccountNumber
-      - US.BranchCodeAccountNumber
-      example: UK.OBIE.IBAN
     OBCashAccountDebtor4:
       required:
       - Identification
@@ -1352,13 +1301,117 @@ components:
 
 
             Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
-    OBExternalStatus1Code:
+    OBWriteDataFileConsentResponse2:
+      required:
+      - ConsentId
+      - CreationDateTime
+      - Initiation
+      - Status
+      - StatusUpdateDateTime
+      type: object
+      properties:
+        ConsentId:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
+        CreationDateTime:
+          type: string
+          description: 'The date and time when the resource was created.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Status:
+          $ref: '#/components/schemas/OBExternalConsentStatus2Code'
+        StatusUpdateDateTime:
+          type: string
+          description: 'The date and time when the consent resource status was updated.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Initiation:
+          $ref: '#/components/schemas/OBFile2'
+    Meta:
+      title: MetaData
+      type: object
+      properties:
+        TotalPages:
+          type: integer
+          description: Used for pagination. Indicates how many pages of results are available.
+          format: int32
+      description: Meta data relevant to the payload.
+    OBWriteFileResponse2:
+      required:
+      - Data
+      - Links
+      - Meta
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataFileResponse2'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+    OBCashAccountDebtorResponse:
+      required:
+      - Identification
+      - SchemeName
+      type: object
+      description: 'The details to identify the account which was used to approve the payment consent.
+
+
+        This information can be used as a refund address.'
+      properties:
+        SchemeName:
+          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
+        Identification:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The identifier assigned to the account, which is known by the account owner.
+        Name:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: 'The name or names of the account owner(s) represented at an account level.
+
+
+            The account name is not the product name or the nickname of the account.
+
+
+            :::warning[Name validation]
+
+            This field will only return the actual owner(s) name if `DebtorAccount` was not defined in the consent.
+
+
+            If it was defined in the consent, the same value from the consent will be returned.
+
+            :::'
+        SecondaryIdentification:
+          maxLength: 34
+          minLength: 1
+          type: string
+          description: 'The secondary account ID that the account servicing institution assigns.
+
+
+            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
+    Currency:
+      pattern: ^[A-Z]{3}$
       type: string
-      description: The status of the payment.
-      enum:
-      - InitiationCompleted
-      - InitiationFailed
-      - InitiationPending
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
     OBWriteDataFileResponse2:
       required:
       - ConsentId
@@ -1407,53 +1460,57 @@ components:
           format: date-time
         Initiation:
           $ref: '#/components/schemas/OBFileInitiationResponse'
-    OBCashAccountDebtorResponse:
-      required:
-      - Identification
-      - SchemeName
+    EmptyBody:
+      description: An empty JSON object (`{}`).
+      type:
+      - object
+      - 'null'
+    OBFileInitiationResponse:
       type: object
-      description: 'The details to identify the account which was used to approve the payment consent.
-
-
-        This information can be used as a refund address.'
-      properties:
-        SchemeName:
-          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
-        Identification:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: The identifier assigned to the account, which is known by the account owner.
-        Name:
-          maxLength: 70
-          minLength: 1
-          type: string
-          description: 'The name or names of the account owner(s) represented at an account level.
-
-
-            The account name is not the product name or the nickname of the account.
-
-
-            :::warning[Name validation]
-
-            This field will only return the actual owner(s) name if `DebtorAccount` was not defined in the consent.
-
-
-            If it was defined in the consent, the same value from the consent will be returned.
-
-            :::'
-        SecondaryIdentification:
-          maxLength: 34
-          minLength: 1
-          type: string
-          description: 'The secondary account ID that the account servicing institution assigns.
-
-
-            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
+      description: The initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds using a payment file.
+      allOf:
+      - $ref: '#/components/schemas/OBFileBase'
+      - type: object
+        properties:
+          DebtorAccount:
+            $ref: '#/components/schemas/OBCashAccountDebtorResponse'
+      - type: object
+        required:
+        - FileHash
+        - FileType
+        - DebtorAccount
     Amount:
       pattern: ^\d{1,13}\.\d{1,5}$
       type: string
       description: The amount of money.
+    OBExternalStatus1Code:
+      type: string
+      description: The status of the payment.
+      enum:
+      - InitiationCompleted
+      - InitiationFailed
+      - InitiationPending
+    OBWriteFile2:
+      required:
+      - Data
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataFile2'
+    OBWriteFileConsent2:
+      required:
+      - Data
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataFileConsent2'
+    OBWriteDataFileConsent2:
+      required:
+      - Initiation
+      type: object
+      properties:
+        Initiation:
+          $ref: '#/components/schemas/OBFile2'
     PaymentStatus:
       type: string
       description: The status of the payment.
@@ -1476,56 +1533,6 @@ components:
           description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
         Initiation:
           $ref: '#/components/schemas/OBFile2'
-    Currency:
-      pattern: ^[A-Z]{3}$
-      type: string
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
-    OBWriteFileConsent2:
-      required:
-      - Data
-      type: object
-      properties:
-        Data:
-          $ref: '#/components/schemas/OBWriteDataFileConsent2'
-    OBWriteDataFileConsent2:
-      required:
-      - Initiation
-      type: object
-      properties:
-        Initiation:
-          $ref: '#/components/schemas/OBFile2'
-    EmptyBody:
-      description: An empty JSON object (`{}`).
-      type:
-      - object
-      - 'null'
-    OBWriteFileResponse2:
-      required:
-      - Data
-      - Links
-      - Meta
-      type: object
-      properties:
-        Data:
-          $ref: '#/components/schemas/OBWriteDataFileResponse2'
-        Links:
-          $ref: '#/components/schemas/Links'
-        Meta:
-          $ref: '#/components/schemas/Meta'
-    OBFileInitiationResponse:
-      type: object
-      description: The initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds using a payment file.
-      allOf:
-      - $ref: '#/components/schemas/OBFileBase'
-      - type: object
-        properties:
-          DebtorAccount:
-            $ref: '#/components/schemas/OBCashAccountDebtorResponse'
-      - type: object
-        required:
-        - FileHash
-        - FileType
-        - DebtorAccount
     OBReportFileResponse:
       required:
       - Payments
@@ -1562,13 +1569,6 @@ components:
                 description: The unique reference assigned to the payment.
               Status:
                 $ref: '#/components/schemas/PaymentStatus'
-    OBWriteFile2:
-      required:
-      - Data
-      type: object
-      properties:
-        Data:
-          $ref: '#/components/schemas/OBWriteDataFile2'
   securitySchemes:
     AccessToken:
       type: apiKey

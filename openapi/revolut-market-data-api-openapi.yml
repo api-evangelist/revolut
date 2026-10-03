@@ -218,231 +218,73 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  schemas:
-    ErrorResponse:
-      type: object
-      description: Standard error response structure
-      required:
-      - error_id
-      - message
-      - timestamp
-      properties:
-        error_id:
-          type: string
-          format: uuid
-          description: Unique identifier for this specific error occurrence.
-        message:
-          type: string
-          description: Human-readable description of the error.
-        timestamp:
-          type: integer
-          format: int64
-          description: The time the error occurred in Unix epoch milliseconds.
-    OrderBook:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            asks:
-              type: array
-              description: The list of asks (sell orders), sorted by price in descending order.
-              items:
-                $ref: '#/components/schemas/OrderBookPriceLevel'
-            bids:
-              type: array
-              description: The list of bids (buy orders), sorted by price in descending order.
-              items:
-                $ref: '#/components/schemas/OrderBookPriceLevel'
-          required:
-          - asks
-          - bids
-        metadata:
-          type: object
-          properties:
-            timestamp:
-              type: integer
-              format: int64
-              description: Timestamp when the order book snapshot was generated, returned in Unix epoch milliseconds.
-              example: 3318215482991
-          required:
-          - timestamp
-      required:
-      - data
-      - metadata
-    Candle:
-      type: object
-      required:
-      - start
-      - open
-      - high
-      - low
-      - close
-      - volume
-      properties:
-        start:
-          type: integer
-          format: int64
-          description: Start timestamp of the candle in Unix epoch milliseconds.
-        open:
-          type: string
-          format: decimal
-          description: Opening price.
-        high:
-          type: string
-          format: decimal
-          description: Highest price during the interval.
-        low:
-          type: string
-          format: decimal
-          description: Lowest price during the interval.
-        close:
-          type: string
-          format: decimal
-          description: Closing price.
-        volume:
-          type: string
-          format: decimal
-          description: Total trading volume during the interval.
-    OrderBookPriceLevel:
-      type: object
-      description: A single order book price level.
-      properties:
-        aid:
-          type: string
-          description: Crypto-asset ID code.
-          example: ETH
-        anm:
-          type: string
-          description: Crypto-asset full name.
-          example: Ethereum
-        s:
-          type: string
-          description: The side of the price level.
-          enum:
-          - SELL
-          - BUYI
-          example: SELL
-        p:
-          type: string
-          description: Price in major currency units. For example, for USD, 4600 represents 4600 dollars.
-          example: '4600'
-        pc:
-          type: string
-          description: Price currency.
-          example: USD
-        pn:
-          type: string
-          description: Price notation.
-          example: MONE
-        q:
-          type: string
-          description: Aggregated quantity at this price level.
-          example: '17'
-        qc:
-          type: string
-          description: Quantity currency.
-          example: ETH
-        qn:
-          type: string
-          description: Quantity notation.
-          example: UNIT
-        ve:
-          type: string
-          description: Venue of execution. Always equals `REVX`.
-          example: REVX
-        'no':
-          type: string
-          description: Number of orders at the price level.
-          example: '3'
-        ts:
-          type: string
-          description: Trading system. Always equals `CLOB` (Central Limit Order Book).
-          example: CLOB
-        pdt:
-          type: integer
-          format: int64
-          description: Publication date and time, returned in Unix epoch milliseconds
-          example: 3318215482991
-      required:
-      - aid
-      - anm
-      - s
-      - p
-      - pc
-      - pn
-      - q
-      - qc
-      - qn
-      - ve
-      - 'no'
-      - ts
-      - pdt
-    Ticker:
-      type: object
-      description: 'Real-time market data snapshot for a specific trading pair.
-
-        Includes the current best bid/ask prices and the most recent trade price.'
-      required:
-      - symbol
-      - bid
-      - ask
-      - mid
-      - last_price
-      properties:
-        symbol:
-          type: string
-          description: The unique identifier for the currency pair (e.g., `BTC/USD`).
-          example: BTC/USD
-        bid:
-          type: string
-          format: decimal
-          description: 'The current highest price a buyer is willing to pay.
-
-            Represents the top price in the buy order book.'
-          example: '65100.50'
-        ask:
-          type: string
-          format: decimal
-          description: 'The current lowest price a seller is willing to accept.
-
-            Represents the top price in the sell order book.'
-          example: '65101.00'
-        mid:
-          type: string
-          format: decimal
-          description: 'The arithmetic midpoint between the best bid and best ask prices.
-
-            Calculated as `(bid + ask) / 2`.'
-          example: '65100.75'
-        last_price:
-          type: string
-          format: decimal
-          description: The price at which the most recent trade was successfully executed.
-          example: '65101.00'
-    TickersResponse:
-      type: object
-      description: Response containing ticker information for currency pairs.
-      required:
-      - data
-      - metadata
-      properties:
-        data:
-          type: array
-          description: List of ticker information for currency pairs.
-          items:
-            $ref: '#/components/schemas/Ticker'
-        metadata:
-          type: object
-          description: Metadata about the response.
-          required:
-          - timestamp
-          properties:
-            timestamp:
-              type: integer
-              format: int64
-              description: The time the data was captured in Unix epoch milliseconds.
-              example: 1770201294631
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Forbidden
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Request timestamp is in the future
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Something went wrong!
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: API key can only be used for authentication from whitelisted IP
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: 'No such pair: BTC-BTC'
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    RateLimitExceeded:
+      description: Rate Limit Exceeded
+      headers:
+        Retry-After:
+          description: The number of milliseconds to wait before making a new request.
+          schema:
+            type: integer
+            example: 5000
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Rate Limit Exceeded
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
   examples:
     TickersResponseExample:
       value:
@@ -533,82 +375,7 @@ components:
           low: '90358.84'
           close: '90395'
           volume: '0.00230816'
-  responses:
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Forbidden
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    Conflict:
-      description: Conflict
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Request timestamp is in the future
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    ServerError:
-      description: Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Something went wrong!
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: 'No such pair: BTC-BTC'
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: API key can only be used for authentication from whitelisted IP
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    RateLimitExceeded:
-      description: Rate Limit Exceeded
-      headers:
-        Retry-After:
-          description: The number of milliseconds to wait before making a new request.
-          schema:
-            type: integer
-            example: 5000
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Rate Limit Exceeded
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
   parameters:
-    XRevxTimestamp:
-      in: header
-      name: X-Revx-Timestamp
-      required: true
-      description: "Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers."
-      schema:
-        type: integer
-        example: 1746007718237
     XRevxSignature:
       in: header
       name: X-Revx-Signature
@@ -617,6 +384,239 @@ components:
       schema:
         type: string
         example: 2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+
+    XRevxTimestamp:
+      in: header
+      name: X-Revx-Timestamp
+      required: true
+      description: "Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers."
+      schema:
+        type: integer
+        example: 1746007718237
+  schemas:
+    TickersResponse:
+      type: object
+      description: Response containing ticker information for currency pairs.
+      required:
+      - data
+      - metadata
+      properties:
+        data:
+          type: array
+          description: List of ticker information for currency pairs.
+          items:
+            $ref: '#/components/schemas/Ticker'
+        metadata:
+          type: object
+          description: Metadata about the response.
+          required:
+          - timestamp
+          properties:
+            timestamp:
+              type: integer
+              format: int64
+              description: The time the data was captured in Unix epoch milliseconds.
+              example: 1770201294631
+    Candle:
+      type: object
+      required:
+      - start
+      - open
+      - high
+      - low
+      - close
+      - volume
+      properties:
+        start:
+          type: integer
+          format: int64
+          description: Start timestamp of the candle in Unix epoch milliseconds.
+        open:
+          type: string
+          format: decimal
+          description: Opening price.
+        high:
+          type: string
+          format: decimal
+          description: Highest price during the interval.
+        low:
+          type: string
+          format: decimal
+          description: Lowest price during the interval.
+        close:
+          type: string
+          format: decimal
+          description: Closing price.
+        volume:
+          type: string
+          format: decimal
+          description: Total trading volume during the interval.
+    ErrorResponse:
+      type: object
+      description: Standard error response structure
+      required:
+      - error_id
+      - message
+      - timestamp
+      properties:
+        error_id:
+          type: string
+          format: uuid
+          description: Unique identifier for this specific error occurrence.
+        message:
+          type: string
+          description: Human-readable description of the error.
+        timestamp:
+          type: integer
+          format: int64
+          description: The time the error occurred in Unix epoch milliseconds.
+    OrderBook:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            asks:
+              type: array
+              description: The list of asks (sell orders), sorted by price in descending order.
+              items:
+                $ref: '#/components/schemas/OrderBookPriceLevel'
+            bids:
+              type: array
+              description: The list of bids (buy orders), sorted by price in descending order.
+              items:
+                $ref: '#/components/schemas/OrderBookPriceLevel'
+          required:
+          - asks
+          - bids
+        metadata:
+          type: object
+          properties:
+            timestamp:
+              type: integer
+              format: int64
+              description: Timestamp when the order book snapshot was generated, returned in Unix epoch milliseconds.
+              example: 3318215482991
+          required:
+          - timestamp
+      required:
+      - data
+      - metadata
+    Ticker:
+      type: object
+      description: 'Real-time market data snapshot for a specific trading pair.
+
+        Includes the current best bid/ask prices and the most recent trade price.'
+      required:
+      - symbol
+      - bid
+      - ask
+      - mid
+      - last_price
+      properties:
+        symbol:
+          type: string
+          description: The unique identifier for the currency pair (e.g., `BTC/USD`).
+          example: BTC/USD
+        bid:
+          type: string
+          format: decimal
+          description: 'The current highest price a buyer is willing to pay.
+
+            Represents the top price in the buy order book.'
+          example: '65100.50'
+        ask:
+          type: string
+          format: decimal
+          description: 'The current lowest price a seller is willing to accept.
+
+            Represents the top price in the sell order book.'
+          example: '65101.00'
+        mid:
+          type: string
+          format: decimal
+          description: 'The arithmetic midpoint between the best bid and best ask prices.
+
+            Calculated as `(bid + ask) / 2`.'
+          example: '65100.75'
+        last_price:
+          type: string
+          format: decimal
+          description: The price at which the most recent trade was successfully executed.
+          example: '65101.00'
+    OrderBookPriceLevel:
+      type: object
+      description: A single order book price level.
+      properties:
+        aid:
+          type: string
+          description: Crypto-asset ID code.
+          example: ETH
+        anm:
+          type: string
+          description: Crypto-asset full name.
+          example: Ethereum
+        s:
+          type: string
+          description: The side of the price level.
+          enum:
+          - SELL
+          - BUYI
+          example: SELL
+        p:
+          type: string
+          description: Price in major currency units. For example, for USD, 4600 represents 4600 dollars.
+          example: '4600'
+        pc:
+          type: string
+          description: Price currency.
+          example: USD
+        pn:
+          type: string
+          description: Price notation.
+          example: MONE
+        q:
+          type: string
+          description: Aggregated quantity at this price level.
+          example: '17'
+        qc:
+          type: string
+          description: Quantity currency.
+          example: ETH
+        qn:
+          type: string
+          description: Quantity notation.
+          example: UNIT
+        ve:
+          type: string
+          description: Venue of execution. Always equals `REVX`.
+          example: REVX
+        'no':
+          type: string
+          description: Number of orders at the price level.
+          example: '3'
+        ts:
+          type: string
+          description: Trading system. Always equals `CLOB` (Central Limit Order Book).
+          example: CLOB
+        pdt:
+          type: integer
+          format: int64
+          description: Publication date and time, returned in Unix epoch milliseconds
+          example: 3318215482991
+      required:
+      - aid
+      - anm
+      - s
+      - p
+      - pc
+      - pn
+      - q
+      - qc
+      - qn
+      - ve
+      - 'no'
+      - ts
+      - pdt
   securitySchemes:
     ApiKey:
       type: apiKey

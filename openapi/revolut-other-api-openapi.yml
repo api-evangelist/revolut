@@ -200,66 +200,6 @@ components:
       required: true
       description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
   schemas:
-    Error:
-      title: Error
-      type: object
-      properties:
-        errorId:
-          type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        timestamp:
-          type: integer
-          description: The date and time the error happened.
-      required:
-      - errorId
-      - timestamp
-    Synchronous-Webhook:
-      title: SynchronousWebhook
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the synchronous webhook object.
-        signing_key:
-          type: string
-          pattern: ^swsk_[a-zA-Z0-9]{32}$
-          description: 'A randomly generated signing key, which can be used by merchants to authenticate requests from Revolut by verifying the signature. For more information, see: [Payload Signature](https://developer.revolut.com/docs/api/merchant#authentication).'
-        url:
-          type: string
-          format: uri
-          pattern: ^https:\/{2}.+/gi
-          maxLength: 2000
-          description: 'The valid URL of the endpoint, that uses HTTPS URL schema. Revolut sends the shipping address of the customer to this URL for validation.
-
-
-            :::warning
-
-            Restrictions:
-
-            - Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)
-
-            - URI scheme is required and must be `https`
-
-            - URI host is required and cannot be `localhost` or an IP address
-
-            - Max length: `2000`
-
-            - Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)
-
-            :::'
-        event_type:
-          type: string
-          enum:
-          - fast_checkout.validate_address
-          description: "Type of event this synchronous webhook is configured for.\n\n:::note\nAt the moment, synchronous webhooks only support address validation events. \n:::"
-        location_id:
-          $ref: '#/components/schemas/Location-Id'
-      required:
-      - id
-      - signing_key
-      - url
-      - event_type
     Synchronous-Webhook-Creation:
       title: SynchronousWebhookCreation
       type: object
@@ -312,6 +252,66 @@ components:
         For more information, see: [Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).
 
         :::        '
+    Synchronous-Webhook:
+      title: SynchronousWebhook
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the synchronous webhook object.
+        signing_key:
+          type: string
+          pattern: ^swsk_[a-zA-Z0-9]{32}$
+          description: 'A randomly generated signing key, which can be used by merchants to authenticate requests from Revolut by verifying the signature. For more information, see: [Payload Signature](https://developer.revolut.com/docs/api/merchant#authentication).'
+        url:
+          type: string
+          format: uri
+          pattern: ^https:\/{2}.+/gi
+          maxLength: 2000
+          description: 'The valid URL of the endpoint, that uses HTTPS URL schema. Revolut sends the shipping address of the customer to this URL for validation.
+
+
+            :::warning
+
+            Restrictions:
+
+            - Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)
+
+            - URI scheme is required and must be `https`
+
+            - URI host is required and cannot be `localhost` or an IP address
+
+            - Max length: `2000`
+
+            - Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)
+
+            :::'
+        event_type:
+          type: string
+          enum:
+          - fast_checkout.validate_address
+          description: "Type of event this synchronous webhook is configured for.\n\n:::note\nAt the moment, synchronous webhooks only support address validation events. \n:::"
+        location_id:
+          $ref: '#/components/schemas/Location-Id'
+      required:
+      - id
+      - signing_key
+      - url
+      - event_type
+    Error:
+      title: Error
+      type: object
+      properties:
+        errorId:
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        timestamp:
+          type: integer
+          description: The date and time the error happened.
+      required:
+      - errorId
+      - timestamp
   securitySchemes:
     Api-Key:
       type: apiKey
