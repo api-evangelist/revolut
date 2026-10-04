@@ -658,16 +658,6 @@ paths:
       - Tax Rates
 components:
   schemas:
-    UpdateTaxRateRequest:
-      type: object
-      description: The new setting for the tax rate.
-      minProperties: 1
-      properties:
-        name:
-          description: The new name for the tax rate.
-          type: string
-          minLength: 1
-          maxLength: 20
     ResourceCreatedResponse:
       description: Successfully created resource.
       type: object
@@ -693,22 +683,6 @@ components:
           minimum: 0
           maximum: 100
           description: The tax rate percentage applied to the taxable amount. For example, `23` for 23%.
-    ErrorWithId:
-      required:
-      - code
-      - message
-      - error_id
-      type: object
-      properties:
-        error_id:
-          type: string
-          description: The ID of the specific error instance. Used for traceability.
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
     TaxRateResponse:
       type: object
       required:
@@ -748,6 +722,32 @@ components:
       format: byte
       description: "Cursor for the next page. \nUsed for pagination when the total number of results exceeds the maximum number per page.\n\nTo get the next page of results, make a new request and set `page_token` to the `next_page_token` value returned in the previous response.\n:::note\nIf there are no more results to fetch, `next_page_token` is not returned in the response.\n:::"
       example: MjAyNi0wMS0wMVQwOToxMzoxNS40MDZaN2RhNTFjZGY0LTZiYjctNDRkNi04OWU1LTc2OWEzZGYxZDc5ZA
+    UpdateTaxRateRequest:
+      type: object
+      description: The new setting for the tax rate.
+      minProperties: 1
+      properties:
+        name:
+          description: The new name for the tax rate.
+          type: string
+          minLength: 1
+          maxLength: 20
+    ErrorWithId:
+      required:
+      - code
+      - message
+      - error_id
+      type: object
+      properties:
+        error_id:
+          type: string
+          description: The ID of the specific error instance. Used for traceability.
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
     CreateTaxRateRequest:
       allOf:
       - $ref: '#/components/schemas/AccountingTaxRate'
@@ -756,19 +756,28 @@ components:
         - name
         - percentage
   responses:
-    Forbidden:
-      description: 'Action forbidden - insufficient permissions to perform this action
+    Unauthorized:
+      description: 'Unauthorized – authentication credentials are missing or invalid
 
 
-        Returned, for example, when you don''t have permissions necessary to perform this action.'
+        Returned when the request was not fulfilled because authentication has failed or has not been provided.'
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorWithId'
-          example:
-            error_id: c5deadcc-1934-4438-818a-3c7ca1e6c01c
-            code: 9002
-            message: This action is forbidden
+          examples:
+            access_token_invalid_or_expired:
+              summary: Access token invalid or expired
+              value:
+                error_id: 9d66499d-3fc5-45e9-92f6-3ddcad4793c6
+                code: 1000
+                message: Access token is invalid or has expired. Please refresh your access token or generate a new one following the 'Get a new access token' guide in the Revolut API docs.
+            invalid_token:
+              summary: Invalid token
+              value:
+                error_id: 7835beae-98ed-42dc-b993-95f4ded951a1
+                code: 1000
+                message: Invalid token. The authorization header must follow the 'Bearer <token>' format.
     InternalServerError:
       description: 'Internal server error
 
@@ -782,6 +791,19 @@ components:
             error_id: 7f96652e-7518-4229-872b-4e4c867fb4da
             code: 5000
             message: An unexpected error occurred while processing your request. If the issue persists, please contact support
+    Forbidden:
+      description: 'Action forbidden - insufficient permissions to perform this action
+
+
+        Returned, for example, when you don''t have permissions necessary to perform this action.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorWithId'
+          example:
+            error_id: c5deadcc-1934-4438-818a-3c7ca1e6c01c
+            code: 9002
+            message: This action is forbidden
     ServiceUnavailable:
       description: 'Service Unavailable
 
@@ -840,28 +862,6 @@ components:
               summary: Resource created
               value:
                 id: 6a37383e-cfd3-4a2f-aa81-e3a6e6939efa
-    Unauthorized:
-      description: 'Unauthorized – authentication credentials are missing or invalid
-
-
-        Returned when the request was not fulfilled because authentication has failed or has not been provided.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorWithId'
-          examples:
-            access_token_invalid_or_expired:
-              summary: Access token invalid or expired
-              value:
-                error_id: 9d66499d-3fc5-45e9-92f6-3ddcad4793c6
-                code: 1000
-                message: Access token is invalid or has expired. Please refresh your access token or generate a new one following the 'Get a new access token' guide in the Revolut API docs.
-            invalid_token:
-              summary: Invalid token
-              value:
-                error_id: 7835beae-98ed-42dc-b993-95f4ded951a1
-                code: 1000
-                message: Invalid token. The authorization header must follow the 'Bearer <token>' format.
   parameters:
     PageToken:
       in: query

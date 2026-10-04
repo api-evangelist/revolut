@@ -84,74 +84,108 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Forbidden
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    Conflict:
-      description: Conflict
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Request timestamp is in the future
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    ServerError:
-      description: Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Something went wrong!
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: API key can only be used for authentication from whitelisted IP
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    RateLimitExceeded:
-      description: Rate Limit Exceeded
-      headers:
-        Retry-After:
-          description: The number of milliseconds to wait before making a new request.
-          schema:
-            type: integer
-            example: 5000
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Rate Limit Exceeded
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
+  examples:
+    CurrenciesResponseExample:
+      value:
+        BTC:
+          symbol: BTC
+          name: Bitcoin
+          scale: 8
+          asset_type: crypto
+          status: active
+        ETH:
+          symbol: ETH
+          name: Ethereum
+          scale: 8
+          asset_type: crypto
+          status: active
+    CurrencyPairsResponseExample:
+      value:
+        BTC/USD:
+          base: BTC
+          quote: USD
+          base_step: '0.0000001'
+          quote_step: '0.01'
+          min_order_size: '0.0000001'
+          max_order_size: '1000'
+          min_order_size_quote: '0.01'
+          status: active
+        ETH/EUR:
+          base: ETH
+          quote: EUR
+          base_step: '0.0000001'
+          quote_step: '0.01'
+          min_order_size: '0.00001'
+          max_order_size: '9000'
+          min_order_size_quote: '0.01'
+          status: active
   schemas:
-    CurrenciesResponse:
+    ErrorResponse:
       type: object
-      description: "Supported currencies, represented as an object containing other objects.\n\nThis outer object contains multiple key-value pairs, where each key is a currency code (e.g. `BTC`, `ETH`), and each corresponding value is an inner object containing details about that currency.\n\n<b><pre> &lt; * &gt; </pre></b>\n<details id='currency-schema'>\n  <summary>\n    The inner object representing a single currency. It has the following schema: \n  </summary>\n\n  | Parameter | Description |\n  |-----------|-------------|\n  | **`symbol`**    | The symbol of the currency. |\n  | **`name`**    | The full name of the currency. |\n  | **`scale`**    | The scale of the currency, that is, the number of decimal places used to express the currency's smallest unit. <br/> For example, a scale of `8` means that the currency amount can be represented with precision up to eight decimal places, e.g. BTC: `0.00000001`. |\n  | **`asset_type`**    | The type of the currency. Possible values are: `fiat`, `crypto`. |\n  | **`status`**    | Indicates whether it is available for use. |\n\n</details>"
-      additionalProperties:
-        $ref: '#/components/schemas/Currency'
+      description: Standard error response structure
+      required:
+      - error_id
+      - message
+      - timestamp
+      properties:
+        error_id:
+          type: string
+          format: uuid
+          description: Unique identifier for this specific error occurrence.
+        message:
+          type: string
+          description: Human-readable description of the error.
+        timestamp:
+          type: integer
+          format: int64
+          description: The time the error occurred in Unix epoch milliseconds.
     CurrencyPairsResponse:
       type: object
       description: "Supported currency pairs, represented as an object containing other objects.\n\nThis outer object contains multiple key-value pairs, where each key is a currency pair code (e.g. `BTC/USD`, `ETH/EUR`), and each corresponding value is an inner object containing details about that currency pair.\n\n<b><pre> &lt; * &gt; </pre></b>\n<details id='currency-pair-schema'>\n  <summary>\n    The inner object representing a single currency pair. It has the following schema: \n  </summary>\n\n  | Parameter | Description |\n  |-----------|-------------|\n  | **`base`**    | The base currency. |\n  | **`quote`**    | The quote currency. |\n  | **`base_step`**    | The minimal step for changing the quantity in the base currency. |\n  | **`quote_step`**    | The minimal step for changing the amount in the quote currency. |\n  | **`min_order_size`**    | The minimal order quantity (in the base currency) accepted by the exchange. |\n  | **`max_order_size`**    | The maximal order quantity (in the base currency) accepted by the exchange. |\n  | **`min_order_size_quote`**    | The minimal order quantity (in the quote currency) accepted by the exchange. |\n  | **`status`**    | The status of the currency pair. <br/>Indicates whether it is available for use. <br/>Possible values are: `active`, `inactive`. |\n\n</details>"
       additionalProperties:
         $ref: '#/components/schemas/CurrencyPair'
+    Currency:
+      type: object
+      description: A supported currency.
+      properties:
+        symbol:
+          type: string
+          description: The symbol of the currency.
+        name:
+          type: string
+          description: The full name of the currency.
+        scale:
+          type: integer
+          description: "The scale of the currency, that is, the number of decimal places used to express the currency's smallest unit. \n\nFor example, a scale of `8` means that the currency amount can be represented with precision up to eight decimal places, e.g. BTC: `0.00000001`."
+        asset_type:
+          type: string
+          description: The type of the currency.
+          enum:
+          - fiat
+          - crypto
+        status:
+          type: string
+          description: "The status of the currency. \nIndicates whether it is available for use."
+          enum:
+          - active
+          - inactive
+      example:
+        symbol: BTC
+        name: Bitcoin
+        scale: 8
+        asset_type: crypto
+        status: active
+      required:
+      - symbol
+      - name
+      - scale
+      - asset_type
+      - status
+    CurrenciesResponse:
+      type: object
+      description: "Supported currencies, represented as an object containing other objects.\n\nThis outer object contains multiple key-value pairs, where each key is a currency code (e.g. `BTC`, `ETH`), and each corresponding value is an inner object containing details about that currency.\n\n<b><pre> &lt; * &gt; </pre></b>\n<details id='currency-schema'>\n  <summary>\n    The inner object representing a single currency. It has the following schema: \n  </summary>\n\n  | Parameter | Description |\n  |-----------|-------------|\n  | **`symbol`**    | The symbol of the currency. |\n  | **`name`**    | The full name of the currency. |\n  | **`scale`**    | The scale of the currency, that is, the number of decimal places used to express the currency's smallest unit. <br/> For example, a scale of `8` means that the currency amount can be represented with precision up to eight decimal places, e.g. BTC: `0.00000001`. |\n  | **`asset_type`**    | The type of the currency. Possible values are: `fiat`, `crypto`. |\n  | **`status`**    | Indicates whether it is available for use. |\n\n</details>"
+      additionalProperties:
+        $ref: '#/components/schemas/Currency'
     CurrencyPair:
       type: object
       description: A supported currency pair.
@@ -206,71 +240,64 @@ components:
         max_order_size: '1000'
         min_order_size_quote: '0.01'
         status: active
-    Currency:
-      type: object
-      description: A supported currency.
-      properties:
-        symbol:
-          type: string
-          description: The symbol of the currency.
-        name:
-          type: string
-          description: The full name of the currency.
-        scale:
-          type: integer
-          description: "The scale of the currency, that is, the number of decimal places used to express the currency's smallest unit. \n\nFor example, a scale of `8` means that the currency amount can be represented with precision up to eight decimal places, e.g. BTC: `0.00000001`."
-        asset_type:
-          type: string
-          description: The type of the currency.
-          enum:
-          - fiat
-          - crypto
-        status:
-          type: string
-          description: "The status of the currency. \nIndicates whether it is available for use."
-          enum:
-          - active
-          - inactive
-      example:
-        symbol: BTC
-        name: Bitcoin
-        scale: 8
-        asset_type: crypto
-        status: active
-      required:
-      - symbol
-      - name
-      - scale
-      - asset_type
-      - status
-    ErrorResponse:
-      type: object
-      description: Standard error response structure
-      required:
-      - error_id
-      - message
-      - timestamp
-      properties:
-        error_id:
-          type: string
-          format: uuid
-          description: Unique identifier for this specific error occurrence.
-        message:
-          type: string
-          description: Human-readable description of the error.
-        timestamp:
-          type: integer
-          format: int64
-          description: The time the error occurred in Unix epoch milliseconds.
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: API key can only be used for authentication from whitelisted IP
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    RateLimitExceeded:
+      description: Rate Limit Exceeded
+      headers:
+        Retry-After:
+          description: The number of milliseconds to wait before making a new request.
+          schema:
+            type: integer
+            example: 5000
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Rate Limit Exceeded
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Forbidden
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Something went wrong!
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Request timestamp is in the future
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
   parameters:
-    XRevxSignature:
-      in: header
-      name: X-Revx-Signature
-      required: true
-      description: "The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::"
-      schema:
-        type: string
-        example: 2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+
     XRevxTimestamp:
       in: header
       name: X-Revx-Timestamp
@@ -279,41 +306,14 @@ components:
       schema:
         type: integer
         example: 1746007718237
-  examples:
-    CurrencyPairsResponseExample:
-      value:
-        BTC/USD:
-          base: BTC
-          quote: USD
-          base_step: '0.0000001'
-          quote_step: '0.01'
-          min_order_size: '0.0000001'
-          max_order_size: '1000'
-          min_order_size_quote: '0.01'
-          status: active
-        ETH/EUR:
-          base: ETH
-          quote: EUR
-          base_step: '0.0000001'
-          quote_step: '0.01'
-          min_order_size: '0.00001'
-          max_order_size: '9000'
-          min_order_size_quote: '0.01'
-          status: active
-    CurrenciesResponseExample:
-      value:
-        BTC:
-          symbol: BTC
-          name: Bitcoin
-          scale: 8
-          asset_type: crypto
-          status: active
-        ETH:
-          symbol: ETH
-          name: Ethereum
-          scale: 8
-          asset_type: crypto
-          status: active
+    XRevxSignature:
+      in: header
+      name: X-Revx-Signature
+      required: true
+      description: "The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::"
+      schema:
+        type: string
+        example: 2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+
   securitySchemes:
     ApiKey:
       type: apiKey

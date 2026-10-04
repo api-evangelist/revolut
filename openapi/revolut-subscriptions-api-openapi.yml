@@ -1464,593 +1464,187 @@ paths:
       security:
       - Api-Key: []
 components:
-  examples:
-    Res-Subscription-Plan-With-Items:
-      summary: Plan with flat and usage-based subscription items
-      value:
-        id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-        name: Professional Platform Plan
-        state: active
-        created_at: '2026-01-10T09:00:00.000000Z'
-        updated_at: '2026-01-10T09:00:00.000000Z'
-        variations:
-        - id: b2c3d4e5-f6a7-8901-bcde-f12345678901
-          phases:
-          - id: c3d4e5f6-a7b8-9012-cdef-123456789012
-            ordinal: 1
-            cycle_duration: P1M
-            amount: 4900
-            currency: GBP
-            subscription_items:
-            - id: d4e5f6a7-b8c9-0123-defa-234567890123
-              type: flat
-              name: Platform License
-              unit: subscription
-              quantity: 1
-              amount: 4900
-              currency: GBP
-            - id: e5f6a7b8-c9d0-1234-efab-345678901234
-              type: usage
-              name: API Calls
-              unit: call
-              code: api_calls
-              usage_aggregation_method: sum
-              amount: 1
-              currency: GBP
-    Req-Subscription-Setup-Order:
-      summary: Subscription with redirect URL
-      value:
-        plan_variation_id: 550e8400-e29b-41d4-a716-446655440000
-        customer_id: 650e8400-e29b-41d4-a716-446655440001
-        setup_order_redirect_url: https://example.com/subscription/setup/complete
-        external_reference: ext-ref-12345
-    Res-Subscription-Plan-Limited:
-      summary: Plan that ends after 12 months
-      value:
-        id: 550e8400-e29b-41d4-a716-446655440003
-        name: 12-month Limited Plan
-        state: active
-        created_at: '2025-06-05T21:00:00.036001Z'
-        updated_at: '2025-06-05T21:00:00.036001Z'
-        variations:
-        - id: 550e8400-e29b-41d4-a716-446655440004
-          phases:
-          - id: 550e8400-e29b-41d4-a716-446655440005
-            ordinal: 1
-            cycle_duration: P1M
-            cycle_count: 12
-            amount: 1000
-            currency: GBP
-    Req-Subscription-Plan-Limited:
-      summary: Plan that ends after 12 months
-      value:
-        name: 12-month Limited Plan
-        variations:
-        - phases:
-          - ordinal: 1
-            cycle_duration: P1M
-            cycle_count: 12
-            amount: 1000
-            currency: GBP
-    Res-Subscription-Usage:
-      summary: Successful usage record creation
-      description: Returns the reported usages
-      value:
-        id: 750e8400-e29b-41d4-a716-446655440000
-        subscription_id: 550e8400-e29b-41d4-a716-446655440000
-        subscription_cycle_id: 850e8400-e29b-41d4-a716-446655440000
-        subscription_item_code: api_calls
-        usage_date: '2026-03-01T21:00:00Z'
-        quantity: 100
-        metadata:
-          user_id: '12345'
-          api_version: v2
-        created_at: '2026-03-01T21:05:00Z'
-        updated_at: '2026-03-01T21:05:00Z'
-    Res-Subscription-Setup-Order:
-      summary: Subscription created with setup order
-      value:
-        id: 550e8400-e29b-41d4-a716-446655440000
-        external_reference: ext-ref-12345
-        state: pending
-        customer_id: 650e8400-e29b-41d4-a716-446655440001
-        plan_id: 750e8400-e29b-41d4-a716-446655440002
-        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
-        payment_method_type: automatic
-        created_at: '2025-06-05T21:00:00.036001Z'
-        updated_at: '2025-06-05T21:00:00.036001Z'
-        setup_order_id: a50e8400-e29b-41d4-a716-446655440005
-        current_cycle_id: a31627fb-b037-4566-8d7b-f380c1f44653
-    Req-Subscription-Usage-Update:
-      summary: Update both quantity and metadata
-      value:
-        quantity: 200
-        metadata:
-          user_id: '54321'
-    Req-Subscription-Setup-Order-No-URL:
-      summary: Subscription without redirect URL
-      value:
-        plan_variation_id: 550e8400-e29b-41d4-a716-446655440000
-        customer_id: 650e8400-e29b-41d4-a716-446655440001
-        external_reference: ext-ref-12345
-    Req-Subscription-Usage-Update-Quantity:
-      summary: Update quantity
-      value:
-        quantity: 150
-    Req-Subscription-Plan-Package:
-      summary: Usage-based plan with block pricing (price per 1000 units)
-      value:
-        name: SMS Plan
-        variations:
-        - phases:
-          - ordinal: 1
-            cycle_duration: P1M
-            subscription_items:
-            - name: SMS Messages
-              type: usage
-              currency: GBP
-              unit: messages
-              code: sms_messages
-              usage_aggregation_method: sum
-              package_size: 1000
-              amount: 500
-    Res-Subscription-Plan-Hybrid:
-      summary: Hybrid plan with flat base fee and usage-based items
-      value:
-        id: b22198c4-724d-4e9e-b9e3-827c3f78e456
-        name: Professional Plan
-        state: active
-        created_at: '2026-04-15T18:02:11.000Z'
-        updated_at: '2026-04-15T18:02:11.000Z'
-        variations:
-        - id: d4e0a171-4f4e-484b-b0a2-22085059df77
-          phases:
-          - id: ffeed491-c895-4bfa-ba05-a3a088842e22
-            ordinal: 1
-            cycle_duration: P1M
-            subscription_items:
-            - name: Base Subscription
-              type: flat
-              quantity: 1
-              amount: 2900
-              currency: GBP
-              unit: subscription
-            - name: API Calls
-              type: usage
-              currency: GBP
-              unit: calls
-              code: api_calls
-              usage_aggregation_method: sum
-              amount: 10
-            - name: Storage
-              type: usage
-              currency: GBP
-              unit: gb
-              code: storage_gb
-              usage_aggregation_method: max
-              package_size: 1
-              tiers:
-              - upper_quantity_threshold: 10
-                amount: 0
-              - upper_quantity_threshold: 100
-                amount: 50
-              - amount: 30
-    Res-Subscription-Plan-Usage-Base:
-      summary: Usage-based plan with tiered pricing
-      value:
-        id: 8d2c8872-9e8a-4b1a-827c-3f78e1234abc
-        name: API Usage Plan
-        state: active
-        created_at: '2026-04-15T17:58:36.000Z'
-        updated_at: '2026-04-15T17:58:36.000Z'
-        variations:
-        - id: a4e0a171-4f4e-484b-b0a2-22085059df99
-          phases:
-          - id: ceed2491-c895-4bfa-ba05-a3a088842e11
-            ordinal: 1
-            cycle_duration: P1M
-            subscription_items:
-            - name: API Calls
-              type: usage
-              currency: GBP
-              unit: calls
-              code: api_calls
-              usage_aggregation_method: sum
-              tiers:
-              - upper_quantity_threshold: 1000
-                amount: 0
-              - upper_quantity_threshold: 10000
-                amount: 10
-              - amount: 5
-    Res-Subscriptions-List:
-      summary: List of subscriptions
-      value:
-        next_page_token: 9e5d2caa-bb60-4b5b-b7cf-6345bbdff67e
-        subscriptions:
-        - id: 550e8400-e29b-41d4-a716-446655440000
-          external_reference: ext-ref-12345
-          state: active
-          customer_id: 650e8400-e29b-41d4-a716-446655440001
-          plan_id: 750e8400-e29b-41d4-a716-446655440002
-          plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
-          payment_method_type: automatic
-          payment_method_id: 6689e244-8af7-4ada-9448-a91f02d4f192
-          created_at: '2025-06-05T21:00:00.036001Z'
-          updated_at: '2025-06-05T21:00:00.036001Z'
-          start_date: '2025-06-05T21:00:00.036001Z'
-          current_cycle_id: 950e8400-e29b-41d4-a716-446655440004
-        - id: 550e8400-e29b-41d4-a716-446655440010
-          state: pending
-          customer_id: 650e8400-e29b-41d4-a716-446655440011
-          plan_id: 750e8400-e29b-41d4-a716-446655440012
-          plan_variation_id: 850e8400-e29b-41d4-a716-446655440013
-          payment_method_type: automatic
-          created_at: '2025-06-04T21:00:00.036001Z'
-          updated_at: '2025-06-04T21:00:00.036001Z'
-          current_cycle_id: a31627fb-b037-4566-8d7b-f380c1f44653
-    Res-Subscription-Cycles-List:
-      summary: List of subscription cycles
-      value:
-        next_page_token: 9e5d2caa-bb60-4b5b-b7cf-6345bbdff67e
-        cycles:
-        - id: 550e8400-e29b-41d4-a716-446655440010
-          subscription_id: 650e8400-e29b-41d4-a716-446655440001
-          plan_variation_id: 750e8400-e29b-41d4-a716-446655440002
-          plan_variation_phase_id: 850e8400-e29b-41d4-a716-446655440003
-          number: 2
-          previous_cycle_id: 550e8400-e29b-41d4-a716-446655440000
-          state: active
-          start_date: '2025-07-05T21:00:00.036001Z'
-          end_date: '2025-08-05T21:00:00.036001Z'
-          order_id: a50e8400-e29b-41d4-a716-446655440015
-          trial: false
-        - id: 550e8400-e29b-41d4-a716-446655440000
-          subscription_id: 650e8400-e29b-41d4-a716-446655440001
-          plan_variation_id: 750e8400-e29b-41d4-a716-446655440002
-          number: 1
-          state: finished
-          start_date: '2025-06-05T21:00:00.036001Z'
-          end_date: '2025-07-05T21:00:00.036001Z'
-          order_id: a50e8400-e29b-41d4-a716-446655440005
-          trial: true
-    Res-Subscription-Cycle-Finished:
-      summary: Finished subscription cycle
-      value:
-        id: 950e8400-e29b-41d4-a716-446655440004
-        subscription_id: 650e8400-e29b-41d4-a716-446655440001
-        plan_variation_id: 750e8400-e29b-41d4-a716-446655440002
-        plan_variation_phase_id: 850e8400-e29b-41d4-a716-446655440003
-        number: 1
-        state: finished
-        start_date: '2025-06-05T21:00:00.036001Z'
-        end_date: '2025-07-05T21:00:00.036001Z'
-        order_id: b50e8400-e29b-41d4-a716-446655440006
-        trial: true
-    Res-Usage-List:
-      summary: Retrieve a list of usage records
-      value:
-        next_page_token: 9e5d2caa-bb60-4b5b-b7cf-6345bbdff67e
-        subscription_usages:
-        - id: 750e8400-e29b-41d4-a716-446655440000
-          subscription_id: 550e8400-e29b-41d4-a716-446655440000
-          subscription_cycle_id: 850e8400-e29b-41d4-a716-446655440000
-          subscription_item_code: api_calls
-          usage_date: '2026-03-01T21:00:00Z'
-          quantity: 100
-          metadata:
-            user_id: '12345'
-            api_version: v2
-          created_at: '2026-03-01T21:05:00Z'
-          updated_at: '2026-03-01T21:05:00Z'
-        - id: bc903328-9f37-4d7a-8f56-02e5b7c76891
-          subscription_id: 550e8400-e29b-41d4-a716-446655440000
-          subscription_cycle_id: 850e8400-e29b-41d4-a716-446655440000
-          subscription_item_code: api_calls
-          usage_date: '2026-03-01T22:15:00Z'
-          quantity: 50
-          metadata:
-            user_id: '12345'
-            api_version: v2
-          created_at: '2026-03-01T22:20:00Z'
-          updated_at: '2026-03-01T22:20:00Z'
-    Req-Subscription-Plan-With-Items:
-      summary: Plan with flat and usage-based subscription items
-      value:
-        name: Professional Platform Plan
-        variations:
-        - phases:
-          - ordinal: 1
-            cycle_duration: P1M
-            amount: 4900
-            currency: GBP
-            subscription_items:
-            - type: flat
-              name: Platform License
-              unit: subscription
-              quantity: 1
-              amount: 4900
-              currency: GBP
-            - type: usage
-              name: API Calls
-              unit: call
-              code: api_calls
-              usage_aggregation_method: sum
-              amount: 1
-              currency: GBP
-    Req-Subscription-Update:
-      summary: Update subscription
-      value:
-        external_reference: ext-ref-12345
-    Req-Subscription-Plan-With-Trial-Duration:
-      summary: Plan with trial duration
-      value:
-        name: Premium Plan with 14-day Trial
-        trial_duration: P14D
-        variations:
-        - phases:
-          - ordinal: 1
-            cycle_duration: P1M
-            amount: 9900
-            currency: GBP
-    Req-Subscription-Usage:
-      summary: Report active license seats
-      description: Reporting active seats used during a period
-      value:
-        subscription_id: 550e8400-e29b-41d4-a716-446655440000
-        subscription_item_code: active_seats
-        usage_date: '2026-03-15T09:30:00Z'
-        quantity: 12
-        metadata:
-          department: engineering
-          update_type: onboarding
-    Req-Subscription-Change-Plan-With-Phase:
-      summary: Schedule plan change to a specific phase
-      value:
-        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
-        plan_variation_phase_id: 950e8400-e29b-41d4-a716-446655440004
-        scheduled: at_cycle_end
-    Req-Subscription-Plan-Hybrid:
-      summary: Hybrid plan with flat base fee and usage-based items
-      value:
-        name: Professional Plan
-        variations:
-        - phases:
-          - ordinal: 1
-            cycle_duration: P1M
-            subscription_items:
-            - name: Base Subscription
-              type: flat
-              quantity: 1
-              amount: 2900
-              currency: GBP
-              unit: subscription
-            - name: API Calls
-              type: usage
-              currency: GBP
-              unit: calls
-              code: api_calls
-              usage_aggregation_method: sum
-              amount: 10
-            - name: Storage
-              type: usage
-              currency: GBP
-              unit: gb
-              code: storage_gb
-              usage_aggregation_method: max
-              package_size: 1
-              tiers:
-              - upper_quantity_threshold: 10
-                amount: 0
-              - upper_quantity_threshold: 100
-                amount: 50
-              - amount: 30
-    Req-Subscription-Plan-Usage-Base:
-      summary: Usage-based plan with tiered pricing
-      value:
-        name: API Usage Plan
-        variations:
-        - phases:
-          - ordinal: 1
-            cycle_duration: P1M
-            subscription_items:
-            - name: API Calls
-              type: usage
-              currency: GBP
-              unit: calls
-              code: api_calls
-              usage_aggregation_method: sum
-              tiers:
-              - upper_quantity_threshold: 1000
-                amount: 0
-              - upper_quantity_threshold: 10000
-                amount: 10
-              - amount: 5
-    Res-Subscription-Active:
-      summary: Active subscription
-      value:
-        id: 550e8400-e29b-41d4-a716-446655440000
-        external_reference: ext-ref-12345
-        state: active
-        customer_id: 650e8400-e29b-41d4-a716-446655440001
-        plan_id: 750e8400-e29b-41d4-a716-446655440002
-        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
-        payment_method_type: automatic
-        payment_method_id: 6689e244-8af7-4ada-9448-a91f02d4f192
-        created_at: '2025-06-05T21:00:00.036001Z'
-        updated_at: '2025-06-05T21:00:00.036001Z'
-        start_date: '2025-06-05T21:00:00.036001Z'
-        current_cycle_id: 950e8400-e29b-41d4-a716-446655440004
-        trial_duration: P14D
-        trial_end_date: '2025-06-19T21:00:00.036001Z'
-    Res-Subscription-Plan-Simple:
-      summary: Simple yearly and monthly plan
-      value:
-        id: f757b068-f287-43c8-8d05-9c073fecbe73
-        name: Enterprise Pro Plan
-        state: active
-        created_at: '2026-01-26T08:59:09.433527Z'
-        updated_at: '2026-01-26T08:59:09.433527Z'
-        variations:
-        - id: f4e0a171-4f4e-484b-b0a2-22085059af65
-          phases:
-          - id: 23319d04-4b23-4ae7-ba54-82112c752683
-            ordinal: 1
-            cycle_duration: P1M
-            amount: 990
-            currency: GBP
-        - id: 7cf47b0d-3da9-496b-a4e9-fbbe43c33ee3
-          phases:
-          - id: feed2491-c895-4bfa-ba05-a3a088842d5c
-            ordinal: 1
-            cycle_duration: P1Y
-            amount: 9990
-            currency: GBP
-    Res-Subscription-Setup-Order-No-URL:
-      summary: Subscription created with setup order (no redirect URL)
-      value:
-        id: 550e8400-e29b-41d4-a716-446655440006
-        external_reference: ext-ref-12345
-        state: pending
-        customer_id: 650e8400-e29b-41d4-a716-446655440001
-        plan_id: 750e8400-e29b-41d4-a716-446655440002
-        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
-        payment_method_type: automatic
-        created_at: '2025-06-05T21:00:00.036001Z'
-        updated_at: '2025-06-05T21:00:00.036001Z'
-        setup_order_id: a50e8400-e29b-41d4-a716-446655440007
-        current_cycle_id: a31627fb-b037-4566-8d7b-f380c1f44654
-    Res-Subscription-Plans-List:
-      summary: List of subscription plans
-      value:
-        next_page_token: 9e5d2caa-bb60-4b5b-b7cf-6345bbdff67e
-        subscription_plans:
-        - id: 550e8400-e29b-41d4-a716-446655440000
-          name: Premium Plan with 14-days Trial
-          state: active
-          trial_duration: P14D
-          created_at: '2025-06-05T21:00:00.036001Z'
-          updated_at: '2025-06-05T21:00:00.036001Z'
-          variations:
-          - id: 550e8400-e29b-41d4-a716-446655440001
-            phases:
-            - id: 550e8400-e29b-41d4-a716-446655440002
-              ordinal: 1
-              cycle_duration: P1Y
-              amount: 99900
-              currency: GBP
-        - id: f757b068-f287-43c8-8d05-9c073fecbe73
-          name: Enterprise Pro Plan
-          state: active
-          created_at: '2026-01-26T08:59:09.433527Z'
-          updated_at: '2026-01-26T08:59:09.433527Z'
-          variations:
-          - id: f4e0a171-4f4e-484b-b0a2-22085059af65
-            phases:
-            - id: 23319d04-4b23-4ae7-ba54-82112c752683
-              ordinal: 1
-              cycle_duration: P1M
-              amount: 990
-              currency: GBP
-          - id: 7cf47b0d-3da9-496b-a4e9-fbbe43c33ee3
-            phases:
-            - id: feed2491-c895-4bfa-ba05-a3a088842d5c
-              ordinal: 1
-              cycle_duration: P1Y
-              amount: 9990
-              currency: GBP
-    Req-Subscription-Change-Plan:
-      summary: Schedule plan change at cycle end
-      value:
-        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
-        scheduled: at_cycle_end
-    Res-Subscription-Plan-Package:
-      summary: Usage-based plan with block pricing (price per 1000 units)
-      value:
-        id: e33198c4-124d-4e9e-b9e3-827c3f78e789
-        name: SMS Plan
-        state: active
-        created_at: '2026-04-15T18:05:42.000Z'
-        updated_at: '2026-04-15T18:05:42.000Z'
-        variations:
-        - id: c4e0a171-4f4e-484b-b0a2-22085059df44
-          phases:
-          - id: ddeed491-c895-4bfa-ba05-a3a088842e33
-            ordinal: 1
-            cycle_duration: P1M
-            subscription_items:
-            - name: SMS Messages
-              type: usage
-              currency: GBP
-              unit: messages
-              code: sms_messages
-              usage_aggregation_method: sum
-              package_size: 1000
-              amount: 500
-    Req-Subscription-Skip-Trial:
-      summary: Subscription skipping trial predefined in plan
-      value:
-        plan_variation_id: 550e8400-e29b-41d4-a716-446655440000
-        customer_id: 650e8400-e29b-41d4-a716-446655440001
-        payment_method_id: 6689e244-8af7-4ada-9448-a91f02d4f192
-        trial_duration: P0D
-        external_reference: ext-ref-12345
-    Req-Subscription-Usage-Update-Metadata:
-      summary: Update metadata
-      value:
-        metadata:
-          user_id: '67890'
-          api_version: v3
-    Res-Subscription-Plan-With-Trial-Duration:
-      summary: Plan with trial duration
-      value:
-        id: 750e8400-e29b-41d4-a716-446655440010
-        name: Premium Plan with 14-day Trial
-        trial_duration: P14D
-        state: active
-        created_at: '2025-06-04T21:00:00.036001Z'
-        updated_at: '2025-06-04T21:00:00.036001Z'
-        variations:
-        - id: 850e8400-e29b-41d4-a716-446655440011
-          phases:
-          - id: 950e8400-e29b-41d4-a716-446655440012
-            ordinal: 1
-            cycle_duration: P1M
-            amount: 9900
-            currency: GBP
-    Req-Subscription-Change-Plan-With-Reason:
-      summary: Schedule plan change with reason
-      value:
-        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
-        scheduled: at_cycle_end
-        reason: customer_request
-    Req-Subscription-With-Trial:
-      summary: Subscription with trial period overriding the trial duration from plan
-      value:
-        plan_variation_id: 550e8400-e29b-41d4-a716-446655440000
-        customer_id: 650e8400-e29b-41d4-a716-446655440001
-        payment_method_id: 6689e244-8af7-4ada-9448-a91f02d4f192
-        trial_duration: P14D
-        external_reference: ext-ref-12345
-    Req-Subscription-Update-Renewal-Date:
-      summary: Update renewal date
-      value:
-        renewal_date: '2026-07-01T00:00:00Z'
-    Req-Subscription-Plan-Simple:
-      summary: Simple yearly and monthly plan
-      value:
-        name: Enterprise Pro Plan
-        variations:
-        - phases:
-          - ordinal: 1
-            cycle_duration: P1Y
-            amount: 99900
-            currency: GBP
-        - phases:
-          - ordinal: 1
-            cycle_duration: P1M
-            amount: 9900
-            currency: GBP
   schemas:
+    Subscription-Item-Quantity:
+      type: number
+      description: The quantity of the item.
+      example: 1
+    Subscription-Item-Package-Size:
+      type: number
+      description: 'The number of units grouped together as a single billable package. Used to enable pricing of items that are too inexpensive to charge individually.
+
+
+        For example, a `package_size` of `1000` with a unit price of 10 minor units (£0.10 in GBP) lets you sell 1000 tokens for £0.10 — effectively pricing each token at £0.0001, below the minimum chargeable amount.
+
+
+        Set to `1` to price each unit individually.'
+      example: 1
+    Subscription-Plan-Variation-Creation:
+      type: object
+      required:
+      - phases
+      properties:
+        phases:
+          type: array
+          minItems: 1
+          description: List of billing phases for this variation.
+          items:
+            $ref: '#/components/schemas/Subscription-Plan-Phase-Creation'
+    Subscription-Plan-Updated:
+      type: string
+      format: date-time
+      description: The date and time the subscription plan was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+    Subscription-Trial-End-Date:
+      type:
+      - string
+      - 'null'
+      format: date-time
+      description: 'The date and time when the subscription''s trial period ends in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+
+
+        This value is automatically calculated by the system as: `start_date` + `trial_duration`
+
+
+        The `trial_duration` used in the calculation comes from either:
+
+        - The subscription''s custom `trial_duration` (if provided at creation time), or
+
+        - The plan''s default `trial_duration` (if no override was specified)
+
+
+        This field is `null` when the subscription has no trial period (e.g., when `trial_duration` is not set or is `"P0D"`).'
+      example: '2025-06-19T21:00:00.036001Z'
+    Subscription-Item-Type:
+      type: string
+      description: The type of subscription item.
+      enum:
+      - flat
+      - usage
+      example: flat
+    Subscription-Updated:
+      type: string
+      format: date-time
+      description: The date and time the subscription was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+    Subscription-Update:
+      type: object
+      properties:
+        external_reference:
+          $ref: '#/components/schemas/Subscription-External-Reference'
+    Subscription-Payment-Method-Type:
+      type: string
+      enum:
+      - automatic
+      - manual
+      description: 'The type of payment method used for the subscription.
+
+
+        | Type | Description |
+
+        | ---- | ----------- |
+
+        | `automatic` | Payments are automatically charged to the customer''s saved payment method. |
+
+        | `manual` | Payments require manual processing by the customer. |'
+    Subscription-Item-Usage:
+      type: object
+      description: Object structure of usage subscription item.
+      properties:
+        id:
+          $ref: '#/components/schemas/Subscription-Item-Id'
+        name:
+          $ref: '#/components/schemas/Subscription-Item-Name'
+        type:
+          $ref: '#/components/schemas/Subscription-Item-Type'
+        package_size:
+          $ref: '#/components/schemas/Subscription-Item-Package-Size'
+        unit:
+          $ref: '#/components/schemas/Subscription-Item-Unit'
+        amount:
+          type: integer
+          description: Flat amount per unit in minor currency units. Mutually exclusive with `tiers`.
+          example: 10
+        currency:
+          $ref: '#/components/schemas/Currency'
+        tiers:
+          type: array
+          description: Graduated pricing tiers. Mutually exclusive with `amount`.
+          items:
+            $ref: '#/components/schemas/Subscription-Item-Tier'
+        code:
+          $ref: '#/components/schemas/Subscription-Item-Code'
+        usage_aggregation_method:
+          $ref: '#/components/schemas/Usage-Aggregation-Method'
+      required:
+      - id
+      - name
+      - type
+      - currency
+      - unit
+      - code
+      - usage_aggregation_method
+    Subscription-Cycle-End-Date:
+      type: string
+      format: date-time
+      description: The date and time the subscription cycle ends in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+    Subscription-Plan-Phase-Creation:
+      type: object
+      properties:
+        ordinal:
+          $ref: '#/components/schemas/Subscription-Plan-Ordinal'
+        cycle_duration:
+          $ref: '#/components/schemas/Cycle-Duration'
+        cycle_count:
+          $ref: '#/components/schemas/Cycle-Count'
+        amount:
+          $ref: '#/components/schemas/Subscription-Amount'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        subscription_items:
+          $ref: '#/components/schemas/Subscription-Items-Creation'
+      required:
+      - ordinal
+      - cycle_duration
+      - amount
+      - currency
+    Subscription-Cycle-State:
+      type: string
+      enum:
+      - pending
+      - active
+      - finished
+      description: 'The state of the subscription cycle.
+
+
+        | State | Description |
+
+        | ----- | ----------- |
+
+        | `pending` | The cycle has been created but has not yet started. A cycle can enter this state automatically when usage is reported for a future cycle via `POST /api/subscription-usages`. |
+
+        | `active` | The cycle is currently active and in progress. |
+
+        | `finished` | The cycle has completed. |'
+    Subscription-Plan-Phase:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Subscription-Plan-Phase-Id'
+        ordinal:
+          $ref: '#/components/schemas/Subscription-Plan-Ordinal'
+        cycle_duration:
+          $ref: '#/components/schemas/Cycle-Duration'
+        cycle_count:
+          $ref: '#/components/schemas/Cycle-Count'
+        amount:
+          $ref: '#/components/schemas/Subscription-Amount'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        subscription_items:
+          $ref: '#/components/schemas/Subscription-Items'
+      required:
+      - id
+      - ordinal
+      - cycle_duration
     Subscriptions:
       type: object
       required:
@@ -2063,36 +1657,6 @@ components:
           description: List of subscriptions.
           items:
             $ref: '#/components/schemas/Subscription'
-    Subscription-Item-Flat:
-      type: object
-      description: Object structure of flat subscription item.
-      properties:
-        id:
-          $ref: '#/components/schemas/Subscription-Item-Id'
-        name:
-          $ref: '#/components/schemas/Subscription-Item-Name'
-        type:
-          $ref: '#/components/schemas/Subscription-Item-Type'
-        package_size:
-          $ref: '#/components/schemas/Subscription-Item-Package-Size'
-        unit:
-          $ref: '#/components/schemas/Subscription-Item-Unit'
-        quantity:
-          $ref: '#/components/schemas/Subscription-Item-Quantity'
-        amount:
-          type: integer
-          description: Amount in minor currency units (e.g., cents for USD).
-          example: 9900
-        currency:
-          $ref: '#/components/schemas/Currency'
-      required:
-      - id
-      - name
-      - type
-      - amount
-      - currency
-      - unit
-      - quantity
     Subscription:
       type: object
       required:
@@ -2138,6 +1702,10 @@ components:
           $ref: '#/components/schemas/Setup-Order-Id'
         scheduled_action:
           $ref: '#/components/schemas/Subscription-Scheduled-Action'
+    Subscription-Item-Id:
+      type: string
+      format: uuid
+      description: The unique identifier of the subscription item.
     Subscription-Usages:
       type: object
       properties:
@@ -2148,100 +1716,72 @@ components:
           description: List of subscription usages.
           items:
             $ref: '#/components/schemas/Subscription-Usage'
-    Subscription-Change-Plan-Reason:
-      type: string
-      description: 'The reason for the scheduled action. This field is informational and does not affect how the action is processed.
-
-
-        | Value | Description |
-
-        | ----- | ----------- |
-
-        | `customer_request` | The action was requested by the customer. |
-
-        | `merchant_request` | The action was initiated by the merchant. |'
-      enum:
-      - customer_request
-      - merchant_request
-      default: merchant_request
-      example: customer_request
-    Subscription-Change-Plan:
+    Subscription-Plan-Creation:
       type: object
+      required:
+      - name
+      - variations
       properties:
+        name:
+          $ref: '#/components/schemas/Subscription-Plan-Name'
+        trial_duration:
+          $ref: '#/components/schemas/Subscription-Plan-Trial-Duration'
+        variations:
+          type: array
+          minItems: 1
+          description: List of subscription plan variations (e.g., monthly, yearly pricing options).
+          items:
+            $ref: '#/components/schemas/Subscription-Plan-Variation-Creation'
+    Subscription-Item-Name:
+      type: string
+      description: The name of the subscription item.
+      maxLength: 250
+      example: Base Subscription Fee
+    Subscription-Usage-Quantity:
+      type: number
+      description: "The quantity of consumption to record for this usage report. \n\nSupports up to 20 digits before and 20 digits after the decimal point."
+      example: 100.5
+      exclusiveMinimum: 0
+    Subscription-Plan-Id:
+      type: string
+      format: uuid
+      description: Unique identifier for the subscription plan.
+    Subscription-Scheduled-Action-Change-Plan:
+      title: Subscription-Scheduled-Action-Change-Plan
+      type: object
+      description: A plan variation change scheduled to take effect at the end of the current billing cycle.
+      required:
+      - type
+      - reason
+      - plan_variation_id
+      properties:
+        type:
+          $ref: '#/components/schemas/Subscription-Scheduled-Action-Type'
+        reason:
+          $ref: '#/components/schemas/Subscription-Change-Plan-Reason'
         plan_variation_id:
           $ref: '#/components/schemas/Subscription-Plan-Variation-Id'
         plan_variation_phase_id:
           $ref: '#/components/schemas/Subscription-Plan-Phase-Id'
-        scheduled:
-          type: string
-          description: 'When the plan change should take effect.
-
-
-            | Value | Description |
-
-            | ----- | ----------- |
-
-            | `at_cycle_end` | The change is applied at the end of the current billing cycle. |'
-          enum:
-          - at_cycle_end
-          example: at_cycle_end
-        reason:
-          $ref: '#/components/schemas/Subscription-Change-Plan-Reason'
-      required:
-      - plan_variation_id
-      - scheduled
-    Setup-Order-Redirect-URL:
+    Order-Id:
       type: string
-      format: uri
-      pattern: ^https?:\/{2}.+/gi
-      maxLength: 2000
-      description: 'The URL to which the customer is redirected after completing the setup order on the Revolut Hosted Payment Page.
-
-
-        When provided, the response will include a `setup_order_id`. Use the [Retrieve an order](https://developer.revolut.com/docs/api/merchant#retrieve-order) endpoint with this `setup_order_id` to get the `checkout_url` for redirecting the customer to the Hosted Payment Page.
-
-
-        :::warning
-
-        Restrictions:
-
-        - Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)
-
-        - URI scheme is required and must be either `http` or `https`
-
-        - URI host is required and cannot be `localhost` or an IP address
-
-        - Max length: `2000`
-
-        - Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)
-
-        :::'
-    Usage-Aggregation-Method:
+      format: uuid
+      description: Permanent order ID used to retrieve, capture, cancel, or refund an order after authorization.
+    Subscription-Cycle-Post-Billing-Order-Id:
       type: string
-      description: 'The method used to aggregate usage events over a billing cycle to calculate the chargeable amount.
+      format: uuid
+      description: 'The ID of the order created after the cycle''s `usage_cutoff_date` to charge usage-based items accumulated during the cycle.
 
 
-        | Value | Behaviour |
+        | Scenario | Detail |
 
-        | ----- | --------- |
+        | -------- | ------ |
 
-        | `sum` | Totals all reported usage events during the cycle. Use for cumulative metrics (e.g., API calls, data transferred). |
+        | Ongoing subscription | This order also acts as the next cycle''s `order_id`, combining usage post-billing for the current cycle with pre-billing for the next. |
 
-        | `latest` | Uses the most recently reported value at the end of the cycle. If no usage is reported in a cycle, `0` is used — values do not carry over from previous cycles. Use for gauge-style metrics (e.g., active seats). |
+        | Last cycle | A standalone finishing order is created to charge all usage from this cycle. |
 
-        | `max` | Uses the peak value reported during the cycle. Use for capacity-based billing (e.g., max concurrent connections). |'
-      enum:
-      - sum
-      - latest
-      - max
-      example: sum
-    Subscription-Cycle-Usage-Cutoff-Date:
-      type: string
-      format: date-time
-      description: 'The deadline for submitting or correcting usage records for this cycle, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-
-
-        Set to 12 hours after the cycle''s `end_date` by default. After this time, Revolut aggregates all reported usage records and creates the `post_billing_order_id` to initiate the charge.
+        | Subscription ended with unpaid cycles | The finishing order consolidates all outstanding usage charges, including any from previous cycles where payment failed. |
 
 
         :::note
@@ -2249,6 +1789,50 @@ components:
         Only present for cycles that include usage-based subscription items.
 
         :::'
+    Subscription-Usage-Date:
+      type: string
+      format: date-time
+      description: 'The timestamp indicating when the consumption actually occurred.
+
+
+        | Constraint | Detail |
+
+        | ---------- | ------ |
+
+        | Format | [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time string (e.g., `YYYY-MM-DDTHH:mm:ssZ`). |
+
+        | Timezone | Must be UTC. |
+
+        | Validation | Revolut uses this to identify the applicable billing cycle. Accepted for the active cycle (`start_date ≤ usage_date < end_date`), for a recently ended cycle before its `usage_cutoff_date`, and for the one next upcoming cycle. Other dates are rejected. |'
+      example: '2026-03-01T21:00:00Z'
+    Subscription-Plan-Trial-Duration:
+      type: string
+      format: duration
+      description: 'The default trial period duration for this subscription plan in [ISO 8601 duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations) (e.g., "P14D" for 14 days).
+
+
+        This value serves as the default trial duration for all subscriptions created from this plan. Individual subscriptions can override this value at creation time.
+
+
+        :::note
+
+        Only days (`D`) are allowed. Time components such as hours, minutes, or seconds are not permitted.
+
+        :::'
+      example: P14D
+      pattern: ^P[0-9]+D$
+    Subscription-Item:
+      title: Subscription item
+      type: object
+      description: A subscription item that defines a billing line within a plan phase. Can be either a fixed-fee (flat) item or a metered (usage) item.
+      discriminator:
+        propertyName: type
+        mapping:
+          flat: '#/components/schemas/Subscription-Item-Flat'
+          usage: '#/components/schemas/Subscription-Item-Usage'
+      oneOf:
+      - $ref: '#/components/schemas/Subscription-Item-Flat'
+      - $ref: '#/components/schemas/Subscription-Item-Usage'
     Subscription-Cycle:
       type: object
       required:
@@ -2284,70 +1868,118 @@ components:
           $ref: '#/components/schemas/Subscription-Cycle-Post-Billing-Order-Id'
         trial:
           $ref: '#/components/schemas/Subscription-Cycle-Trial'
-    Cycle-Number:
-      type: integer
-      minimum: 1
-      description: 'The sequential cycle number within the subscription.
-
-
-        Starts at `1` for the first cycle and increments with each new billing cycle.'
-    Subscription-Usage-Creation:
+    Subscription-Items-Creation:
+      type: array
+      description: A list of subscription items for this phase.
+      items:
+        $ref: '#/components/schemas/Subscription-Item-Creation'
+    Subscription-Usage-Metadata:
       type: object
-      required:
-      - subscription_id
-      - subscription_item_code
-      - usage_date
-      - quantity
+      description: 'Key-value pairs you can attach to a usage record for your own tracking and reporting purposes.
+
+
+        | Constraint | Detail |
+
+        | ---------- | ------ |
+
+        | Keys | Maximum 50 keys per record. |
+
+        | Value types | String, number, or boolean only. |
+
+        | Number precision | Up to 20 digits before and 20 digits after the decimal point. |'
+      example:
+        user_id: '12345'
+        api_version: v2
+        usage_rate: 1.5
+        is_trial: true
+      additionalProperties:
+        anyOf:
+        - type: string
+        - type: number
+        - type: boolean
+      maxProperties: 50
+    Error-v2:
+      title: Error
+      type: object
       properties:
-        subscription_id:
-          $ref: '#/components/schemas/Subscription-Id'
-        subscription_item_code:
-          $ref: '#/components/schemas/Subscription-Item-Code'
-        usage_date:
-          $ref: '#/components/schemas/Subscription-Usage-Date'
+        code:
+          type: string
+          description: 'An identifier that can be used to determine what went wrong.
+
+
+            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
+        message:
+          type: string
+          description: Some human readable text describing what went wrong.
+        timestamp:
+          type: integer
+          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
+    Subscription-Item-Unit:
+      type: string
+      description: The unit of measurement for the item.
+      maxLength: 100
+      example: subscription
+    Next-Page-Token:
+      type:
+      - string
+      - 'null'
+      description: 'Token for retrieving the next page of results. Use this token as the value of the `page_token` query parameter in your next request to retrieve the next page.
+
+
+        If not present, there are no more results to retrieve.'
+    Previous-Cycle-Id:
+      type:
+      - string
+      - 'null'
+      format: uuid
+      description: 'The unique identifier of the previous billing cycle.
+
+
+        This field is `null` for the first cycle in a subscription.'
+    Subscription-Usage-Created-Date:
+      type: string
+      format: date-time
+      description: The date and time the usage record was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+      example: '2026-03-01T21:05:00Z'
+    Subscription-Item-Tier:
+      type: object
+      properties:
+        upper_quantity_threshold:
+          type:
+          - number
+          - 'null'
+          description: The upper bound of the tier (exclusive). Null means unlimited.
+          example: 100
+        amount:
+          type: integer
+          description: Per-unit amount in minor currency units (e.g., cents for USD) charged for usage within this tier's threshold range.
+          example: 500
+      required:
+      - amount
+    Subscription-Usage-Update:
+      type: object
+      properties:
         quantity:
           $ref: '#/components/schemas/Subscription-Usage-Quantity'
         metadata:
           $ref: '#/components/schemas/Subscription-Usage-Metadata'
-    Subscription-Scheduled-Action-Change-Plan:
-      title: Subscription-Scheduled-Action-Change-Plan
+    Subscription-Update-Renewal-Date:
       type: object
-      description: A plan variation change scheduled to take effect at the end of the current billing cycle.
-      required:
-      - type
-      - reason
-      - plan_variation_id
       properties:
-        type:
-          $ref: '#/components/schemas/Subscription-Scheduled-Action-Type'
-        reason:
-          $ref: '#/components/schemas/Subscription-Change-Plan-Reason'
-        plan_variation_id:
-          $ref: '#/components/schemas/Subscription-Plan-Variation-Id'
-        plan_variation_phase_id:
-          $ref: '#/components/schemas/Subscription-Plan-Phase-Id'
-    Subscription-Plan-Ordinal:
-      type: integer
-      minimum: 1
-      description: 'The sequential order of this phase in the subscription billing lifecycle.
+        renewal_date:
+          type: string
+          format: date-time
+          description: 'The new renewal date for the subscription, expressed as a UTC date-time value.
 
 
-        Phases execute in ascending order based on this value:
-
-        - Phase with `ordinal=1` executes first
-
-        - Phase with `ordinal=2` executes second, and so on
-
-
-        When a phase completes its `cycle_count`, the subscription automatically progresses to the phase with the next `ordinal` value.
-
-
-        **Example**: A subscription with phases ordered as `ordinal=1` (trial), `ordinal=2` (regular), `ordinal=3` (discounted) will progress through them in that sequence.'
-      title: Subscription-Plan-Ordinal
-    Subscription-Cycle-Id:
+            Must be set to a date later than the current renewal date; earlier dates are rejected.'
+          example: '2026-07-01T00:00:00Z'
+      required:
+      - renewal_date
+    Subscription-Id:
       type: string
       format: uuid
-      description: Unique identifier for the subscription cycle.
+      description: Unique identifier for the subscription.
     Subscription-Plans:
       type: object
       required:
@@ -2366,187 +1998,85 @@ components:
           description: List of subscription plans.
           items:
             $ref: '#/components/schemas/Subscription-Plan'
-    Subscription-Creation:
+    Subscription-Plan-Variation:
       type: object
-      required:
-      - plan_variation_id
-      - customer_id
-      properties:
-        plan_variation_id:
-          $ref: '#/components/schemas/Subscription-Plan-Variation-Id'
-        customer_id:
-          $ref: '#/components/schemas/Customer-Id'
-        external_reference:
-          $ref: '#/components/schemas/Subscription-External-Reference'
-        setup_order_redirect_url:
-          $ref: '#/components/schemas/Setup-Order-Redirect-URL'
-        trial_duration:
-          $ref: '#/components/schemas/Subscription-Trial-Duration'
-    Subscription-Usage-Updated-Date:
-      type: string
-      format: date-time
-      description: The date and time the usage record was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-      example: '2026-03-01T21:05:00Z'
-    Subscription-Scheduled-Action-Type:
-      type: string
-      description: 'The type of the scheduled action.
-
-
-        | Value | Description |
-
-        | ----- | ----------- |
-
-        | `cancel` | A cancellation scheduled to take effect at the end of the current billing cycle. |
-
-        | `change_plan_variation` | A plan variation change scheduled to take effect at the end of the current billing cycle. |'
-      enum:
-      - cancel
-      - change_plan_variation
-      example: change_plan_variation
-    Subscription-Item-Tier:
-      type: object
-      properties:
-        upper_quantity_threshold:
-          type:
-          - number
-          - 'null'
-          description: The upper bound of the tier (exclusive). Null means unlimited.
-          example: 100
-        amount:
-          type: integer
-          description: Per-unit amount in minor currency units (e.g., cents for USD) charged for usage within this tier's threshold range.
-          example: 500
-      required:
-      - amount
-    Cycle-Duration:
-      type: string
-      format: duration
-      description: 'The length of each billing cycle for this phase in [ISO 8601 duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations).
-
-
-        This determines how often the customer is billed during this phase. The total time spent in a phase is `cycle_duration × cycle_count`.
-
-
-        **Common durations**:
-
-
-        | Duration | Description |
-
-        | -------- | ----------- |
-
-        | `P1M` | 1 month |
-
-        | `P1Y` | 1 year |
-
-        | `P15D` | 15 days |
-
-        | `P1W` | 1 week |
-
-        | `PT2H` | 2 hours |
-
-
-        **Example**: If `cycle_duration=P1M` and `cycle_count=12`, the customer will be billed monthly for 12 months (1 year total).'
-    Currency:
-      type: string
-      format: ISO 4217
-      minLength: 3
-      maxLength: 3
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
-
-
-        :::info
-
-        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
-
-        :::'
-    Subscription-Plan-Created:
-      type: string
-      format: date-time
-      description: The date and time the subscription plan was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-    Subscription-Cycle-Post-Billing-Order-Id:
-      type: string
-      format: uuid
-      description: 'The ID of the order created after the cycle''s `usage_cutoff_date` to charge usage-based items accumulated during the cycle.
-
-
-        | Scenario | Detail |
-
-        | -------- | ------ |
-
-        | Ongoing subscription | This order also acts as the next cycle''s `order_id`, combining usage post-billing for the current cycle with pre-billing for the next. |
-
-        | Last cycle | A standalone finishing order is created to charge all usage from this cycle. |
-
-        | Subscription ended with unpaid cycles | The finishing order consolidates all outstanding usage charges, including any from previous cycles where payment failed. |
-
-
-        :::note
-
-        Only present for cycles that include usage-based subscription items.
-
-        :::'
-    Subscription-Plan-Phase:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/Subscription-Plan-Phase-Id'
-        ordinal:
-          $ref: '#/components/schemas/Subscription-Plan-Ordinal'
-        cycle_duration:
-          $ref: '#/components/schemas/Cycle-Duration'
-        cycle_count:
-          $ref: '#/components/schemas/Cycle-Count'
-        amount:
-          $ref: '#/components/schemas/Subscription-Amount'
-        currency:
-          $ref: '#/components/schemas/Currency'
-        subscription_items:
-          $ref: '#/components/schemas/Subscription-Items'
       required:
       - id
-      - ordinal
-      - cycle_duration
-    Subscription-Plan-Phase-Creation:
-      type: object
+      - phases
       properties:
-        ordinal:
-          $ref: '#/components/schemas/Subscription-Plan-Ordinal'
-        cycle_duration:
-          $ref: '#/components/schemas/Cycle-Duration'
-        cycle_count:
-          $ref: '#/components/schemas/Cycle-Count'
-        amount:
-          $ref: '#/components/schemas/Subscription-Amount'
-        currency:
-          $ref: '#/components/schemas/Currency'
-        subscription_items:
-          $ref: '#/components/schemas/Subscription-Items-Creation'
-      required:
-      - ordinal
-      - cycle_duration
-      - amount
-      - currency
+        id:
+          $ref: '#/components/schemas/Subscription-Plan-Variation-Id'
+        phases:
+          type: array
+          description: List of billing phases for this variation.
+          items:
+            $ref: '#/components/schemas/Subscription-Plan-Phase'
     Subscription-Items:
       type: array
       description: A list of subscription items for this phase.
       items:
         $ref: '#/components/schemas/Subscription-Item'
-    Subscription-Plan-Creation:
+    Cycle-Count:
+      type:
+      - integer
+      - 'null'
+      minimum: 1
+      description: 'Number of billing cycles for this phase before moving to the next phase.
+
+
+        | Value | Behavior |
+
+        | ----- | -------- |
+
+        | `null` or omitted | Phase continues indefinitely. The subscription remains in this phase with no automatic progression. |
+
+        | Specific number (e.g., `1`, `3`, `12`) | After completing this many billing cycles, the subscription automatically moves to the next phase as determined by the `ordinal` field. |
+
+
+        **Example**: If `cycle_count=3` and `cycle_duration=P1M`, the subscription will complete 3 monthly cycles then move to the phase with the next highest `ordinal` value.
+
+
+        :::note
+
+        If no next phase exists in after a cycle with a specific `cycle_count`, the subscription will automatically stop when it completes its cycles.
+
+        :::'
+      title: Cycle-Count
+    Subscription-Usage:
       type: object
       required:
-      - name
-      - variations
+      - id
+      - subscription_id
+      - subscription_cycle_id
+      - subscription_item_code
+      - usage_date
+      - quantity
+      - created_at
+      - updated_at
       properties:
-        name:
-          $ref: '#/components/schemas/Subscription-Plan-Name'
-        trial_duration:
-          $ref: '#/components/schemas/Subscription-Plan-Trial-Duration'
-        variations:
-          type: array
-          minItems: 1
-          description: List of subscription plan variations (e.g., monthly, yearly pricing options).
-          items:
-            $ref: '#/components/schemas/Subscription-Plan-Variation-Creation'
+        id:
+          $ref: '#/components/schemas/Subscription-Usage-Id'
+        subscription_id:
+          $ref: '#/components/schemas/Subscription-Id'
+        subscription_cycle_id:
+          $ref: '#/components/schemas/Subscription-Cycle-Id'
+        subscription_item_code:
+          $ref: '#/components/schemas/Subscription-Item-Code'
+        usage_date:
+          $ref: '#/components/schemas/Subscription-Usage-Date'
+        quantity:
+          $ref: '#/components/schemas/Subscription-Usage-Quantity'
+        metadata:
+          $ref: '#/components/schemas/Subscription-Usage-Metadata'
+        created_at:
+          $ref: '#/components/schemas/Subscription-Usage-Created-Date'
+        updated_at:
+          $ref: '#/components/schemas/Subscription-Usage-Updated-Date'
+    Subscription-Plan-Name:
+      type: string
+      minLength: 1
+      maxLength: 1024
+      description: The name of the subscription plan.
     Subscription-Plan-State:
       type: string
       enum:
@@ -2562,91 +2092,124 @@ components:
         | `active` | The plan is active and can be used to create new subscriptions. |
 
         | `deactivated` | The plan has been deactivated and cannot be used for new subscriptions. |'
+    Payment-Method-Id:
+      type: string
+      format: uuid
+      description: Unique identifier for the payment method.
+    Usage-Aggregation-Method:
+      type: string
+      description: 'The method used to aggregate usage events over a billing cycle to calculate the chargeable amount.
+
+
+        | Value | Behaviour |
+
+        | ----- | --------- |
+
+        | `sum` | Totals all reported usage events during the cycle. Use for cumulative metrics (e.g., API calls, data transferred). |
+
+        | `latest` | Uses the most recently reported value at the end of the cycle. If no usage is reported in a cycle, `0` is used — values do not carry over from previous cycles. Use for gauge-style metrics (e.g., active seats). |
+
+        | `max` | Uses the peak value reported during the cycle. Use for capacity-based billing (e.g., max concurrent connections). |'
+      enum:
+      - sum
+      - latest
+      - max
+      example: sum
+    Subscription-Item-Flat:
+      type: object
+      description: Object structure of flat subscription item.
+      properties:
+        id:
+          $ref: '#/components/schemas/Subscription-Item-Id'
+        name:
+          $ref: '#/components/schemas/Subscription-Item-Name'
+        type:
+          $ref: '#/components/schemas/Subscription-Item-Type'
+        package_size:
+          $ref: '#/components/schemas/Subscription-Item-Package-Size'
+        unit:
+          $ref: '#/components/schemas/Subscription-Item-Unit'
+        quantity:
+          $ref: '#/components/schemas/Subscription-Item-Quantity'
+        amount:
+          type: integer
+          description: Amount in minor currency units (e.g., cents for USD).
+          example: 9900
+        currency:
+          $ref: '#/components/schemas/Currency'
+      required:
+      - id
+      - name
+      - type
+      - amount
+      - currency
+      - unit
+      - quantity
+    Subscription-Plan-Created:
+      type: string
+      format: date-time
+      description: The date and time the subscription plan was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+    Subscription-Start-Date:
+      type:
+      - string
+      - 'null'
+      format: date-time
+      description: 'The date and time the subscription started in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+
+
+        This field is `null` until the subscription becomes active.'
+    Subscription-Change-Plan:
+      type: object
+      properties:
+        plan_variation_id:
+          $ref: '#/components/schemas/Subscription-Plan-Variation-Id'
+        plan_variation_phase_id:
+          $ref: '#/components/schemas/Subscription-Plan-Phase-Id'
+        scheduled:
+          type: string
+          description: 'When the plan change should take effect.
+
+
+            | Value | Description |
+
+            | ----- | ----------- |
+
+            | `at_cycle_end` | The change is applied at the end of the current billing cycle. |'
+          enum:
+          - at_cycle_end
+          example: at_cycle_end
+        reason:
+          $ref: '#/components/schemas/Subscription-Change-Plan-Reason'
+      required:
+      - plan_variation_id
+      - scheduled
+    Subscription-Plan-Phase-Id:
+      type: string
+      format: uuid
+      description: Unique identifier for the subscription plan phase.
     Subscription-Usage-Id:
       type: string
       format: uuid
       description: The unique identifier of the usage record.
-    Subscription-Plan-Variation-Creation:
+    Subscription-Item-Creation:
+      title: Subscription item
       type: object
-      required:
-      - phases
-      properties:
-        phases:
-          type: array
-          minItems: 1
-          description: List of billing phases for this variation.
-          items:
-            $ref: '#/components/schemas/Subscription-Plan-Phase-Creation'
-    Customer-Id:
-      type: string
-      format: uuid
-      description: Unique identifier for the customer.
-    Subscription-State:
-      type: string
-      enum:
-      - pending
-      - active
-      - overdue
-      - paused
-      - cancelled
-      - finished
-      description: 'The state of the subscription.
+      description: A subscription item for a plan phase. Can be either a fixed-fee (flat) item or a metered (usage) item.
+      discriminator:
+        propertyName: type
+        mapping:
+          flat: '#/components/schemas/Subscription-Item-Flat-Creation'
+          usage: '#/components/schemas/Subscription-Item-Usage-Creation'
+      oneOf:
+      - $ref: '#/components/schemas/Subscription-Item-Flat-Creation'
+      - $ref: '#/components/schemas/Subscription-Item-Usage-Creation'
+    Cycle-Number:
+      type: integer
+      minimum: 1
+      description: 'The sequential cycle number within the subscription.
 
 
-        | State | Description |
-
-        | ----- | ----------- |
-
-        | `pending` | The subscription has been created but is not yet active. This typically occurs when awaiting the first payment or setup completion. |
-
-        | `active` | The subscription is currently active and billing cycles are processing normally. |
-
-        | `overdue` | The subscription has a failed payment and is awaiting resolution. |
-
-        | `paused` | The subscription has been temporarily paused and no billing will occur. |
-
-        | `cancelled` | The subscription has been cancelled and will not renew. |
-
-        | `finished` | The subscription has completed all billing cycles (for limited-duration subscriptions). |'
-    Subscription-Cycle-Start-Date:
-      type: string
-      format: date-time
-      description: The date and time the subscription cycle starts in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-    Subscription-Plan-Variation:
-      type: object
-      required:
-      - id
-      - phases
-      properties:
-        id:
-          $ref: '#/components/schemas/Subscription-Plan-Variation-Id'
-        phases:
-          type: array
-          description: List of billing phases for this variation.
-          items:
-            $ref: '#/components/schemas/Subscription-Plan-Phase'
-    Subscription-Plan-Updated:
-      type: string
-      format: date-time
-      description: The date and time the subscription plan was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-    Subscription-Item-Type:
-      type: string
-      description: The type of subscription item.
-      enum:
-      - flat
-      - usage
-      example: flat
-    Subscription-Item-Code:
-      type: string
-      description: 'A merchant-defined identifier for a usage-based subscription item. You set this code on each usage item when creating a subscription plan, and supply it when reporting consumption on [Create a subscription usage endpoint](https://developer.revolut.com/docs/api/merchant#create-subscription-usage) to target the correct metered item.
-
-
-        This allows a subscription with multiple usage items (e.g., `api_calls` and `storage_gb`) to receive consumption reports against the right item without relying on internal IDs.
-
-
-        The code must be unique within a plan phase.'
-      maxLength: 250
-      example: api_calls
+        Starts at `1` for the first cycle and increments with each new billing cycle.'
     Subscription-Item-Usage-Creation:
       type: object
       description: Object structure for usage subscription item.
@@ -2681,240 +2244,43 @@ components:
       - unit
       - code
       - usage_aggregation_method
-    Subscription-Scheduled-Action-Cancel:
-      title: Subscription-Scheduled-Action-Cancel
-      type: object
-      description: A cancellation scheduled to take effect at the end of the current billing cycle.
-      required:
-      - type
-      - reason
-      properties:
-        type:
-          $ref: '#/components/schemas/Subscription-Scheduled-Action-Type'
-        reason:
-          $ref: '#/components/schemas/Subscription-Change-Plan-Reason'
-    Subscription-Usage-Quantity:
-      type: number
-      description: "The quantity of consumption to record for this usage report. \n\nSupports up to 20 digits before and 20 digits after the decimal point."
-      example: 100.5
-      exclusiveMinimum: 0
-    Subscription-Trial-End-Date:
-      type:
-      - string
-      - 'null'
+    Subscription-External-Reference:
+      type: string
+      maxLength: 1024
+      description: 'Optional external reference for the subscription.
+
+
+        Use this field to store your own system''s identifier for easy tracking and correlation.'
+    Subscription-Cycle-Start-Date:
+      type: string
       format: date-time
-      description: 'The date and time when the subscription''s trial period ends in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-
-
-        This value is automatically calculated by the system as: `start_date` + `trial_duration`
-
-
-        The `trial_duration` used in the calculation comes from either:
-
-        - The subscription''s custom `trial_duration` (if provided at creation time), or
-
-        - The plan''s default `trial_duration` (if no override was specified)
-
-
-        This field is `null` when the subscription has no trial period (e.g., when `trial_duration` is not set or is `"P0D"`).'
-      example: '2025-06-19T21:00:00.036001Z'
-    Cycle-Count:
-      type:
-      - integer
-      - 'null'
-      minimum: 1
-      description: 'Number of billing cycles for this phase before moving to the next phase.
-
-
-        | Value | Behavior |
-
-        | ----- | -------- |
-
-        | `null` or omitted | Phase continues indefinitely. The subscription remains in this phase with no automatic progression. |
-
-        | Specific number (e.g., `1`, `3`, `12`) | After completing this many billing cycles, the subscription automatically moves to the next phase as determined by the `ordinal` field. |
-
-
-        **Example**: If `cycle_count=3` and `cycle_duration=P1M`, the subscription will complete 3 monthly cycles then move to the phase with the next highest `ordinal` value.
-
-
-        :::note
-
-        If no next phase exists in after a cycle with a specific `cycle_count`, the subscription will automatically stop when it completes its cycles.
-
-        :::'
-      title: Cycle-Count
-    Subscription-Item-Package-Size:
-      type: number
-      description: 'The number of units grouped together as a single billable package. Used to enable pricing of items that are too inexpensive to charge individually.
-
-
-        For example, a `package_size` of `1000` with a unit price of 10 minor units (£0.10 in GBP) lets you sell 1000 tokens for £0.10 — effectively pricing each token at £0.0001, below the minimum chargeable amount.
-
-
-        Set to `1` to price each unit individually.'
-      example: 1
+      description: The date and time the subscription cycle starts in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+    Subscription-Created:
+      type: string
+      format: date-time
+      description: The date and time the subscription was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
     Subscription-Plan-Variation-Id:
       type: string
       format: uuid
       description: Unique identifier for the subscription plan variation.
-    Subscription-Item-Flat-Creation:
-      type: object
-      description: Object structure of flat subscription item.
-      properties:
-        name:
-          $ref: '#/components/schemas/Subscription-Item-Name'
-        type:
-          $ref: '#/components/schemas/Subscription-Item-Type'
-        package_size:
-          $ref: '#/components/schemas/Subscription-Item-Package-Size'
-        unit:
-          $ref: '#/components/schemas/Subscription-Item-Unit'
-        quantity:
-          $ref: '#/components/schemas/Subscription-Item-Quantity'
-        amount:
-          type: integer
-          description: Amount in minor currency units (e.g., cents for USD).
-          example: 9900
-        currency:
-          $ref: '#/components/schemas/Currency'
-      required:
-      - name
-      - type
-      - amount
-      - currency
-      - unit
-      - quantity
-    Subscription-Plan:
-      type: object
-      required:
-      - id
-      - name
-      - state
-      - created_at
-      - updated_at
-      - variations
-      properties:
-        id:
-          $ref: '#/components/schemas/Subscription-Plan-Id'
-        name:
-          $ref: '#/components/schemas/Subscription-Plan-Name'
-        trial_duration:
-          $ref: '#/components/schemas/Subscription-Plan-Trial-Duration'
-        state:
-          $ref: '#/components/schemas/Subscription-Plan-State'
-        created_at:
-          $ref: '#/components/schemas/Subscription-Plan-Created'
-        updated_at:
-          $ref: '#/components/schemas/Subscription-Plan-Updated'
-        variations:
-          type: array
-          description: List of subscription plan variations.
-          items:
-            $ref: '#/components/schemas/Subscription-Plan-Variation'
-    Subscription-Item-Name:
-      type: string
-      description: The name of the subscription item.
-      maxLength: 250
-      example: Base Subscription Fee
-    Subscription-Updated:
-      type: string
-      format: date-time
-      description: The date and time the subscription was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-    Subscription-Usage-Update:
-      type: object
-      properties:
-        quantity:
-          $ref: '#/components/schemas/Subscription-Usage-Quantity'
-        metadata:
-          $ref: '#/components/schemas/Subscription-Usage-Metadata'
-    Subscription-Usage:
-      type: object
-      required:
-      - id
-      - subscription_id
-      - subscription_cycle_id
-      - subscription_item_code
-      - usage_date
-      - quantity
-      - created_at
-      - updated_at
-      properties:
-        id:
-          $ref: '#/components/schemas/Subscription-Usage-Id'
-        subscription_id:
-          $ref: '#/components/schemas/Subscription-Id'
-        subscription_cycle_id:
-          $ref: '#/components/schemas/Subscription-Cycle-Id'
-        subscription_item_code:
-          $ref: '#/components/schemas/Subscription-Item-Code'
-        usage_date:
-          $ref: '#/components/schemas/Subscription-Usage-Date'
-        quantity:
-          $ref: '#/components/schemas/Subscription-Usage-Quantity'
-        metadata:
-          $ref: '#/components/schemas/Subscription-Usage-Metadata'
-        created_at:
-          $ref: '#/components/schemas/Subscription-Usage-Created-Date'
-        updated_at:
-          $ref: '#/components/schemas/Subscription-Usage-Updated-Date'
-    Subscription-Update:
-      type: object
-      properties:
-        external_reference:
-          $ref: '#/components/schemas/Subscription-External-Reference'
-    Subscription-Amount:
+    Subscription-Plan-Ordinal:
       type: integer
-      minimum: 0
-      description: 'Subscription amount in minor currency units (e.g., cents for USD, pence for GBP).
+      minimum: 1
+      description: 'The sequential order of this phase in the subscription billing lifecycle.
 
 
-        For example, `9900` in `GBP` represents £99.00.
+        Phases execute in ascending order based on this value:
+
+        - Phase with `ordinal=1` executes first
+
+        - Phase with `ordinal=2` executes second, and so on
 
 
-        :::info
-
-        Conversion between major and minor units varies by currency. For instance, `100` minor units equal £1.00 in `GBP`, whereas in `ISK` they represent 100 units. For more details, see the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217).
-
-        :::'
-    Subscription-Items-Creation:
-      type: array
-      description: A list of subscription items for this phase.
-      items:
-        $ref: '#/components/schemas/Subscription-Item-Creation'
-    Subscription-Payment-Method-Type:
-      type: string
-      enum:
-      - automatic
-      - manual
-      description: 'The type of payment method used for the subscription.
+        When a phase completes its `cycle_count`, the subscription automatically progresses to the phase with the next `ordinal` value.
 
 
-        | Type | Description |
-
-        | ---- | ----------- |
-
-        | `automatic` | Payments are automatically charged to the customer''s saved payment method. |
-
-        | `manual` | Payments require manual processing by the customer. |'
-    Subscription-Start-Date:
-      type:
-      - string
-      - 'null'
-      format: date-time
-      description: 'The date and time the subscription started in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-
-
-        This field is `null` until the subscription becomes active.'
-    Previous-Cycle-Id:
-      type:
-      - string
-      - 'null'
-      format: uuid
-      description: 'The unique identifier of the previous billing cycle.
-
-
-        This field is `null` for the first cycle in a subscription.'
+        **Example**: A subscription with phases ordered as `ordinal=1` (trial), `ordinal=2` (regular), `ordinal=3` (discounted) will progress through them in that sequence.'
+      title: Subscription-Plan-Ordinal
     Subscription-Scheduled-Action:
       description: A pending scheduled action on the subscription, applied at the end of the current billing cycle.
       type: object
@@ -2926,274 +2292,6 @@ components:
       oneOf:
       - $ref: '#/components/schemas/Subscription-Scheduled-Action-Cancel'
       - $ref: '#/components/schemas/Subscription-Scheduled-Action-Change-Plan'
-    Subscription-Cycles:
-      type: object
-      required:
-      - cycles
-      properties:
-        next_page_token:
-          type:
-          - string
-          - 'null'
-          description: 'Token for retrieving the next page of results.
-
-
-            If not present, there are no more results to retrieve.'
-        cycles:
-          type: array
-          description: List of subscription cycles.
-          items:
-            $ref: '#/components/schemas/Subscription-Cycle'
-    Subscription-Item-Usage:
-      type: object
-      description: Object structure of usage subscription item.
-      properties:
-        id:
-          $ref: '#/components/schemas/Subscription-Item-Id'
-        name:
-          $ref: '#/components/schemas/Subscription-Item-Name'
-        type:
-          $ref: '#/components/schemas/Subscription-Item-Type'
-        package_size:
-          $ref: '#/components/schemas/Subscription-Item-Package-Size'
-        unit:
-          $ref: '#/components/schemas/Subscription-Item-Unit'
-        amount:
-          type: integer
-          description: Flat amount per unit in minor currency units. Mutually exclusive with `tiers`.
-          example: 10
-        currency:
-          $ref: '#/components/schemas/Currency'
-        tiers:
-          type: array
-          description: Graduated pricing tiers. Mutually exclusive with `amount`.
-          items:
-            $ref: '#/components/schemas/Subscription-Item-Tier'
-        code:
-          $ref: '#/components/schemas/Subscription-Item-Code'
-        usage_aggregation_method:
-          $ref: '#/components/schemas/Usage-Aggregation-Method'
-      required:
-      - id
-      - name
-      - type
-      - currency
-      - unit
-      - code
-      - usage_aggregation_method
-    Subscription-Plan-Phase-Id:
-      type: string
-      format: uuid
-      description: Unique identifier for the subscription plan phase.
-    Subscription-Id:
-      type: string
-      format: uuid
-      description: Unique identifier for the subscription.
-    Subscription-Item-Creation:
-      title: Subscription item
-      type: object
-      description: A subscription item for a plan phase. Can be either a fixed-fee (flat) item or a metered (usage) item.
-      discriminator:
-        propertyName: type
-        mapping:
-          flat: '#/components/schemas/Subscription-Item-Flat-Creation'
-          usage: '#/components/schemas/Subscription-Item-Usage-Creation'
-      oneOf:
-      - $ref: '#/components/schemas/Subscription-Item-Flat-Creation'
-      - $ref: '#/components/schemas/Subscription-Item-Usage-Creation'
-    Subscription-Item:
-      title: Subscription item
-      type: object
-      description: A subscription item that defines a billing line within a plan phase. Can be either a fixed-fee (flat) item or a metered (usage) item.
-      discriminator:
-        propertyName: type
-        mapping:
-          flat: '#/components/schemas/Subscription-Item-Flat'
-          usage: '#/components/schemas/Subscription-Item-Usage'
-      oneOf:
-      - $ref: '#/components/schemas/Subscription-Item-Flat'
-      - $ref: '#/components/schemas/Subscription-Item-Usage'
-    Subscription-Item-Id:
-      type: string
-      format: uuid
-      description: The unique identifier of the subscription item.
-    Subscription-Cycle-State:
-      type: string
-      enum:
-      - pending
-      - active
-      - finished
-      description: 'The state of the subscription cycle.
-
-
-        | State | Description |
-
-        | ----- | ----------- |
-
-        | `pending` | The cycle has been created but has not yet started. A cycle can enter this state automatically when usage is reported for a future cycle via `POST /api/subscription-usages`. |
-
-        | `active` | The cycle is currently active and in progress. |
-
-        | `finished` | The cycle has completed. |'
-    Payment-Method-Id:
-      type: string
-      format: uuid
-      description: Unique identifier for the payment method.
-    Subscription-Created:
-      type: string
-      format: date-time
-      description: The date and time the subscription was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-    Setup-Order-Id:
-      type: string
-      format: uuid
-      description: 'The ID of the order created for handling the setup payment for the subscription.
-
-
-        Use the [Retrieve an order](https://developer.revolut.com/docs/api/merchant#retrieve-order) endpoint with this ID to get order details, including the `checkout_url` for redirecting customers to the Hosted Payment Page or the `token` for widget integration.
-
-
-        :::note
-
-        The order is created in parallel to the subscription and is used to collect the initial payment and save the customer''s payment method for future billing cycles.
-
-        :::'
-    Subscription-Item-Unit:
-      type: string
-      description: The unit of measurement for the item.
-      maxLength: 100
-      example: subscription
-    Subscription-Usage-Created-Date:
-      type: string
-      format: date-time
-      description: The date and time the usage record was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-      example: '2026-03-01T21:05:00Z'
-    Subscription-Update-Renewal-Date:
-      type: object
-      properties:
-        renewal_date:
-          type: string
-          format: date-time
-          description: 'The new renewal date for the subscription, expressed as a UTC date-time value.
-
-
-            Must be set to a date later than the current renewal date; earlier dates are rejected.'
-          example: '2026-07-01T00:00:00Z'
-      required:
-      - renewal_date
-    Subscription-Plan-Trial-Duration:
-      type: string
-      format: duration
-      description: 'The default trial period duration for this subscription plan in [ISO 8601 duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations) (e.g., "P14D" for 14 days).
-
-
-        This value serves as the default trial duration for all subscriptions created from this plan. Individual subscriptions can override this value at creation time.
-
-
-        :::note
-
-        Only days (`D`) are allowed. Time components such as hours, minutes, or seconds are not permitted.
-
-        :::'
-      example: P14D
-      pattern: ^P[0-9]+D$
-    Subscription-Plan-Name:
-      type: string
-      minLength: 1
-      maxLength: 1024
-      description: The name of the subscription plan.
-    Subscription-Usage-Date:
-      type: string
-      format: date-time
-      description: 'The timestamp indicating when the consumption actually occurred.
-
-
-        | Constraint | Detail |
-
-        | ---------- | ------ |
-
-        | Format | [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time string (e.g., `YYYY-MM-DDTHH:mm:ssZ`). |
-
-        | Timezone | Must be UTC. |
-
-        | Validation | Revolut uses this to identify the applicable billing cycle. Accepted for the active cycle (`start_date ≤ usage_date < end_date`), for a recently ended cycle before its `usage_cutoff_date`, and for the one next upcoming cycle. Other dates are rejected. |'
-      example: '2026-03-01T21:00:00Z'
-    Subscription-External-Reference:
-      type: string
-      maxLength: 1024
-      description: 'Optional external reference for the subscription.
-
-
-        Use this field to store your own system''s identifier for easy tracking and correlation.'
-    Subscription-Cycle-Trial:
-      type: boolean
-      description: "Indicates whether this billing cycle occurs during the subscription's trial period.\n\nThis value is automatically calculated by the system based on the cycle's timing relative to the subscription's trial period. Returns `true` if the cycle is within the trial period (before `trial_end_date`), otherwise `false`. \n\nTrial cycles typically have different billing behavior, such as reduced or zero charges."
-      default: false
-      example: false
-    Order-Id:
-      type: string
-      format: uuid
-      description: Permanent order ID used to retrieve, capture, cancel, or refund an order after authorization.
-    Subscription-Cycle-End-Date:
-      type: string
-      format: date-time
-      description: The date and time the subscription cycle ends in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-    Error-v2:
-      title: Error
-      type: object
-      properties:
-        code:
-          type: string
-          description: 'An identifier that can be used to determine what went wrong.
-
-
-            Error codes are not globally unique, but uniqueness is guaranteed within endpoints.'
-        message:
-          type: string
-          description: Some human readable text describing what went wrong.
-        timestamp:
-          type: integer
-          description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
-    Subscription-Usage-Metadata:
-      type: object
-      description: 'Key-value pairs you can attach to a usage record for your own tracking and reporting purposes.
-
-
-        | Constraint | Detail |
-
-        | ---------- | ------ |
-
-        | Keys | Maximum 50 keys per record. |
-
-        | Value types | String, number, or boolean only. |
-
-        | Number precision | Up to 20 digits before and 20 digits after the decimal point. |'
-      example:
-        user_id: '12345'
-        api_version: v2
-        usage_rate: 1.5
-        is_trial: true
-      additionalProperties:
-        anyOf:
-        - type: string
-        - type: number
-        - type: boolean
-      maxProperties: 50
-    Next-Page-Token:
-      type:
-      - string
-      - 'null'
-      description: 'Token for retrieving the next page of results. Use this token as the value of the `page_token` query parameter in your next request to retrieve the next page.
-
-
-        If not present, there are no more results to retrieve.'
-    Subscription-Item-Quantity:
-      type: number
-      description: The quantity of the item.
-      example: 1
-    Subscription-Plan-Id:
-      type: string
-      format: uuid
-      description: Unique identifier for the subscription plan.
     Subscription-Trial-Duration:
       type: string
       format: duration
@@ -3224,16 +2322,361 @@ components:
         :::'
       example: P14D
       pattern: ^P[0-9]+D$
+    Subscription-Scheduled-Action-Type:
+      type: string
+      description: 'The type of the scheduled action.
+
+
+        | Value | Description |
+
+        | ----- | ----------- |
+
+        | `cancel` | A cancellation scheduled to take effect at the end of the current billing cycle. |
+
+        | `change_plan_variation` | A plan variation change scheduled to take effect at the end of the current billing cycle. |'
+      enum:
+      - cancel
+      - change_plan_variation
+      example: change_plan_variation
+    Subscription-Scheduled-Action-Cancel:
+      title: Subscription-Scheduled-Action-Cancel
+      type: object
+      description: A cancellation scheduled to take effect at the end of the current billing cycle.
+      required:
+      - type
+      - reason
+      properties:
+        type:
+          $ref: '#/components/schemas/Subscription-Scheduled-Action-Type'
+        reason:
+          $ref: '#/components/schemas/Subscription-Change-Plan-Reason'
+    Subscription-State:
+      type: string
+      enum:
+      - pending
+      - active
+      - overdue
+      - paused
+      - cancelled
+      - finished
+      description: 'The state of the subscription.
+
+
+        | State | Description |
+
+        | ----- | ----------- |
+
+        | `pending` | The subscription has been created but is not yet active. This typically occurs when awaiting the first payment or setup completion. |
+
+        | `active` | The subscription is currently active and billing cycles are processing normally. |
+
+        | `overdue` | The subscription has a failed payment and is awaiting resolution. |
+
+        | `paused` | The subscription has been temporarily paused and no billing will occur. |
+
+        | `cancelled` | The subscription has been cancelled and will not renew. |
+
+        | `finished` | The subscription has completed all billing cycles (for limited-duration subscriptions). |'
+    Subscription-Cycle-Trial:
+      type: boolean
+      description: "Indicates whether this billing cycle occurs during the subscription's trial period.\n\nThis value is automatically calculated by the system based on the cycle's timing relative to the subscription's trial period. Returns `true` if the cycle is within the trial period (before `trial_end_date`), otherwise `false`. \n\nTrial cycles typically have different billing behavior, such as reduced or zero charges."
+      default: false
+      example: false
+    Subscription-Amount:
+      type: integer
+      minimum: 0
+      description: 'Subscription amount in minor currency units (e.g., cents for USD, pence for GBP).
+
+
+        For example, `9900` in `GBP` represents £99.00.
+
+
+        :::info
+
+        Conversion between major and minor units varies by currency. For instance, `100` minor units equal £1.00 in `GBP`, whereas in `ISK` they represent 100 units. For more details, see the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217).
+
+        :::'
+    Subscription-Cycle-Usage-Cutoff-Date:
+      type: string
+      format: date-time
+      description: 'The deadline for submitting or correcting usage records for this cycle, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+
+
+        Set to 12 hours after the cycle''s `end_date` by default. After this time, Revolut aggregates all reported usage records and creates the `post_billing_order_id` to initiate the charge.
+
+
+        :::note
+
+        Only present for cycles that include usage-based subscription items.
+
+        :::'
+    Subscription-Change-Plan-Reason:
+      type: string
+      description: 'The reason for the scheduled action. This field is informational and does not affect how the action is processed.
+
+
+        | Value | Description |
+
+        | ----- | ----------- |
+
+        | `customer_request` | The action was requested by the customer. |
+
+        | `merchant_request` | The action was initiated by the merchant. |'
+      enum:
+      - customer_request
+      - merchant_request
+      default: merchant_request
+      example: customer_request
+    Setup-Order-Id:
+      type: string
+      format: uuid
+      description: 'The ID of the order created for handling the setup payment for the subscription.
+
+
+        Use the [Retrieve an order](https://developer.revolut.com/docs/api/merchant#retrieve-order) endpoint with this ID to get order details, including the `checkout_url` for redirecting customers to the Hosted Payment Page or the `token` for widget integration.
+
+
+        :::note
+
+        The order is created in parallel to the subscription and is used to collect the initial payment and save the customer''s payment method for future billing cycles.
+
+        :::'
+    Cycle-Duration:
+      type: string
+      format: duration
+      description: 'The length of each billing cycle for this phase in [ISO 8601 duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations).
+
+
+        This determines how often the customer is billed during this phase. The total time spent in a phase is `cycle_duration × cycle_count`.
+
+
+        **Common durations**:
+
+
+        | Duration | Description |
+
+        | -------- | ----------- |
+
+        | `P1M` | 1 month |
+
+        | `P1Y` | 1 year |
+
+        | `P15D` | 15 days |
+
+        | `P1W` | 1 week |
+
+        | `PT2H` | 2 hours |
+
+
+        **Example**: If `cycle_duration=P1M` and `cycle_count=12`, the customer will be billed monthly for 12 months (1 year total).'
+    Subscription-Cycles:
+      type: object
+      required:
+      - cycles
+      properties:
+        next_page_token:
+          type:
+          - string
+          - 'null'
+          description: 'Token for retrieving the next page of results.
+
+
+            If not present, there are no more results to retrieve.'
+        cycles:
+          type: array
+          description: List of subscription cycles.
+          items:
+            $ref: '#/components/schemas/Subscription-Cycle'
+    Subscription-Creation:
+      type: object
+      required:
+      - plan_variation_id
+      - customer_id
+      properties:
+        plan_variation_id:
+          $ref: '#/components/schemas/Subscription-Plan-Variation-Id'
+        customer_id:
+          $ref: '#/components/schemas/Customer-Id'
+        external_reference:
+          $ref: '#/components/schemas/Subscription-External-Reference'
+        setup_order_redirect_url:
+          $ref: '#/components/schemas/Setup-Order-Redirect-URL'
+        trial_duration:
+          $ref: '#/components/schemas/Subscription-Trial-Duration'
+    Setup-Order-Redirect-URL:
+      type: string
+      format: uri
+      pattern: ^https?:\/{2}.+/gi
+      maxLength: 2000
+      description: 'The URL to which the customer is redirected after completing the setup order on the Revolut Hosted Payment Page.
+
+
+        When provided, the response will include a `setup_order_id`. Use the [Retrieve an order](https://developer.revolut.com/docs/api/merchant#retrieve-order) endpoint with this `setup_order_id` to get the `checkout_url` for redirecting the customer to the Hosted Payment Page.
+
+
+        :::warning
+
+        Restrictions:
+
+        - Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)
+
+        - URI scheme is required and must be either `http` or `https`
+
+        - URI host is required and cannot be `localhost` or an IP address
+
+        - Max length: `2000`
+
+        - Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)
+
+        :::'
+    Subscription-Cycle-Id:
+      type: string
+      format: uuid
+      description: Unique identifier for the subscription cycle.
+    Subscription-Usage-Updated-Date:
+      type: string
+      format: date-time
+      description: The date and time the usage record was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+      example: '2026-03-01T21:05:00Z'
+    Subscription-Item-Flat-Creation:
+      type: object
+      description: Object structure of flat subscription item.
+      properties:
+        name:
+          $ref: '#/components/schemas/Subscription-Item-Name'
+        type:
+          $ref: '#/components/schemas/Subscription-Item-Type'
+        package_size:
+          $ref: '#/components/schemas/Subscription-Item-Package-Size'
+        unit:
+          $ref: '#/components/schemas/Subscription-Item-Unit'
+        quantity:
+          $ref: '#/components/schemas/Subscription-Item-Quantity'
+        amount:
+          type: integer
+          description: Amount in minor currency units (e.g., cents for USD).
+          example: 9900
+        currency:
+          $ref: '#/components/schemas/Currency'
+      required:
+      - name
+      - type
+      - amount
+      - currency
+      - unit
+      - quantity
+    Currency:
+      type: string
+      format: ISO 4217
+      minLength: 3
+      maxLength: 3
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
+
+
+        :::info
+
+        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
+
+        :::'
+    Customer-Id:
+      type: string
+      format: uuid
+      description: Unique identifier for the customer.
+    Subscription-Usage-Creation:
+      type: object
+      required:
+      - subscription_id
+      - subscription_item_code
+      - usage_date
+      - quantity
+      properties:
+        subscription_id:
+          $ref: '#/components/schemas/Subscription-Id'
+        subscription_item_code:
+          $ref: '#/components/schemas/Subscription-Item-Code'
+        usage_date:
+          $ref: '#/components/schemas/Subscription-Usage-Date'
+        quantity:
+          $ref: '#/components/schemas/Subscription-Usage-Quantity'
+        metadata:
+          $ref: '#/components/schemas/Subscription-Usage-Metadata'
+    Subscription-Plan:
+      type: object
+      required:
+      - id
+      - name
+      - state
+      - created_at
+      - updated_at
+      - variations
+      properties:
+        id:
+          $ref: '#/components/schemas/Subscription-Plan-Id'
+        name:
+          $ref: '#/components/schemas/Subscription-Plan-Name'
+        trial_duration:
+          $ref: '#/components/schemas/Subscription-Plan-Trial-Duration'
+        state:
+          $ref: '#/components/schemas/Subscription-Plan-State'
+        created_at:
+          $ref: '#/components/schemas/Subscription-Plan-Created'
+        updated_at:
+          $ref: '#/components/schemas/Subscription-Plan-Updated'
+        variations:
+          type: array
+          description: List of subscription plan variations.
+          items:
+            $ref: '#/components/schemas/Subscription-Plan-Variation'
+    Subscription-Item-Code:
+      type: string
+      description: 'A merchant-defined identifier for a usage-based subscription item. You set this code on each usage item when creating a subscription plan, and supply it when reporting consumption on [Create a subscription usage endpoint](https://developer.revolut.com/docs/api/merchant#create-subscription-usage) to target the correct metered item.
+
+
+        This allows a subscription with multiple usage items (e.g., `api_calls` and `storage_gb`) to receive consumption reports against the right item without relying on internal IDs.
+
+
+        The code must be unique within a plan phase.'
+      maxLength: 250
+      example: api_calls
   parameters:
-    Subscription-Plan-Id:
-      name: subscription_plan_id
+    Subscription-Id:
+      name: subscription_id
       in: path
       schema:
         type: string
         format: uuid
         description: A UUID string, typically used to identify resources.
       required: true
-      description: The ID of the subscription plan.
+      description: The ID of the subscription.
+    To:
+      name: to
+      in: query
+      schema:
+        type: string
+        format: date-time
+      description: Filter records created until this date/time. Used for **filtering**.
+      required: false
+    Subscription-Cycle-Id-Query:
+      name: subscription_cycle_id
+      in: query
+      schema:
+        type: string
+        format: uuid
+      description: Filter usages by the ID of the subscription cycle.
+      required: false
+    Idempotency-Key-Required:
+      name: Idempotency-Key
+      in: header
+      schema:
+        type: string
+      required: true
+      description: 'The `Idempotency-Key` ensures that requests are processed only once, preventing multiple executions of the same operation due to retries or duplicate requests.
+
+
+        This header is required. It can accept any unique string value the merchant uses.
+
+
+        A recommended practice is to use a unique identifier from your system (such as the entity''s ID or a request UUID) as the idempotency key. This facilitates tracking and managing requests effectively.'
     Authorization:
       name: Authorization
       in: header
@@ -3243,30 +2686,15 @@ components:
         example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
       required: true
       description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
-    Subscription-Id-Query:
-      name: subscription_id
+    Limit:
+      name: limit
       in: query
       schema:
-        type: string
-        format: uuid
-      description: Filter usages by the ID of the subscription.
-      required: false
-    Cycle-Id:
-      name: cycle_id
-      in: path
-      schema:
-        type: string
-        format: uuid
-        description: A UUID string, typically used to identify resources.
-      required: true
-      description: The ID of the subscription cycle.
-    To-Usage-Date:
-      name: to_usage_date
-      in: query
-      schema:
-        type: string
-        format: date-time
-      description: Filter usage records with a `usage_date` before this date and time.
+        type: integer
+        minimum: 1
+        maximum: 500
+        default: 100
+      description: Maximum number of records to return. Used for **pagination**.
       required: false
     Page-Token:
       name: page_token
@@ -3284,6 +2712,60 @@ components:
         description: A UUID string, typically used to identify resources.
       required: true
       description: The ID of the usage record.
+    To-Usage-Date:
+      name: to_usage_date
+      in: query
+      schema:
+        type: string
+        format: date-time
+      description: Filter usage records with a `usage_date` before this date and time.
+      required: false
+    Idempotency-Key:
+      name: Idempotency-Key
+      in: header
+      schema:
+        type: string
+      required: false
+      description: 'The `Idempotency-Key` ensures that requests are processed only once, preventing multiple executions of the same operation due to retries or duplicate requests.
+
+
+        This header is optional and can accept any unique string value the merchant uses.
+
+
+        A recommended practice is to use a unique identifier from your system (such as the entity''s ID or a request UUID) as the idempotency key. This facilitates tracking and managing requests effectively.'
+    Cycle-Id:
+      name: cycle_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the subscription cycle.
+    From-Usage-Date:
+      name: from_usage_date
+      in: query
+      schema:
+        type: string
+        format: date-time
+      description: Filter usage records with a `usage_date` on or after this date and time.
+      required: false
+    From:
+      name: from
+      in: query
+      schema:
+        type: string
+        format: date-time
+      description: Filter records created from this date/time. Used for **filtering**.
+      required: false
+    Subscription-Id-Query:
+      name: subscription_id
+      in: query
+      schema:
+        type: string
+        format: uuid
+      description: Filter usages by the ID of the subscription.
+      required: false
     Revolut-Api-Version:
       name: Revolut-Api-Version
       in: header
@@ -3313,83 +2795,601 @@ components:
 
         :::'
       x-config-always-visible-in-example: true
-    From:
-      name: from
-      in: query
-      schema:
-        type: string
-        format: date-time
-      description: Filter records created from this date/time. Used for **filtering**.
-      required: false
-    Idempotency-Key-Required:
-      name: Idempotency-Key
-      in: header
-      schema:
-        type: string
-      required: true
-      description: 'The `Idempotency-Key` ensures that requests are processed only once, preventing multiple executions of the same operation due to retries or duplicate requests.
-
-
-        This header is required. It can accept any unique string value the merchant uses.
-
-
-        A recommended practice is to use a unique identifier from your system (such as the entity''s ID or a request UUID) as the idempotency key. This facilitates tracking and managing requests effectively.'
-    Subscription-Id:
-      name: subscription_id
+    Subscription-Plan-Id:
+      name: subscription_plan_id
       in: path
       schema:
         type: string
         format: uuid
         description: A UUID string, typically used to identify resources.
       required: true
-      description: The ID of the subscription.
-    Idempotency-Key:
-      name: Idempotency-Key
-      in: header
-      schema:
-        type: string
-      required: false
-      description: 'The `Idempotency-Key` ensures that requests are processed only once, preventing multiple executions of the same operation due to retries or duplicate requests.
-
-
-        This header is optional and can accept any unique string value the merchant uses.
-
-
-        A recommended practice is to use a unique identifier from your system (such as the entity''s ID or a request UUID) as the idempotency key. This facilitates tracking and managing requests effectively.'
-    From-Usage-Date:
-      name: from_usage_date
-      in: query
-      schema:
-        type: string
-        format: date-time
-      description: Filter usage records with a `usage_date` on or after this date and time.
-      required: false
-    Subscription-Cycle-Id-Query:
-      name: subscription_cycle_id
-      in: query
-      schema:
-        type: string
-        format: uuid
-      description: Filter usages by the ID of the subscription cycle.
-      required: false
-    To:
-      name: to
-      in: query
-      schema:
-        type: string
-        format: date-time
-      description: Filter records created until this date/time. Used for **filtering**.
-      required: false
-    Limit:
-      name: limit
-      in: query
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 500
-        default: 100
-      description: Maximum number of records to return. Used for **pagination**.
-      required: false
+      description: The ID of the subscription plan.
+  examples:
+    Req-Subscription-Change-Plan:
+      summary: Schedule plan change at cycle end
+      value:
+        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
+        scheduled: at_cycle_end
+    Req-Subscription-Setup-Order:
+      summary: Subscription with redirect URL
+      value:
+        plan_variation_id: 550e8400-e29b-41d4-a716-446655440000
+        customer_id: 650e8400-e29b-41d4-a716-446655440001
+        setup_order_redirect_url: https://example.com/subscription/setup/complete
+        external_reference: ext-ref-12345
+    Req-Subscription-Plan-Simple:
+      summary: Simple yearly and monthly plan
+      value:
+        name: Enterprise Pro Plan
+        variations:
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1Y
+            amount: 99900
+            currency: GBP
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1M
+            amount: 9900
+            currency: GBP
+    Res-Subscription-Plan-With-Items:
+      summary: Plan with flat and usage-based subscription items
+      value:
+        id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        name: Professional Platform Plan
+        state: active
+        created_at: '2026-01-10T09:00:00.000000Z'
+        updated_at: '2026-01-10T09:00:00.000000Z'
+        variations:
+        - id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+          phases:
+          - id: c3d4e5f6-a7b8-9012-cdef-123456789012
+            ordinal: 1
+            cycle_duration: P1M
+            amount: 4900
+            currency: GBP
+            subscription_items:
+            - id: d4e5f6a7-b8c9-0123-defa-234567890123
+              type: flat
+              name: Platform License
+              unit: subscription
+              quantity: 1
+              amount: 4900
+              currency: GBP
+            - id: e5f6a7b8-c9d0-1234-efab-345678901234
+              type: usage
+              name: API Calls
+              unit: call
+              code: api_calls
+              usage_aggregation_method: sum
+              amount: 1
+              currency: GBP
+    Res-Subscription-Plans-List:
+      summary: List of subscription plans
+      value:
+        next_page_token: 9e5d2caa-bb60-4b5b-b7cf-6345bbdff67e
+        subscription_plans:
+        - id: 550e8400-e29b-41d4-a716-446655440000
+          name: Premium Plan with 14-days Trial
+          state: active
+          trial_duration: P14D
+          created_at: '2025-06-05T21:00:00.036001Z'
+          updated_at: '2025-06-05T21:00:00.036001Z'
+          variations:
+          - id: 550e8400-e29b-41d4-a716-446655440001
+            phases:
+            - id: 550e8400-e29b-41d4-a716-446655440002
+              ordinal: 1
+              cycle_duration: P1Y
+              amount: 99900
+              currency: GBP
+        - id: f757b068-f287-43c8-8d05-9c073fecbe73
+          name: Enterprise Pro Plan
+          state: active
+          created_at: '2026-01-26T08:59:09.433527Z'
+          updated_at: '2026-01-26T08:59:09.433527Z'
+          variations:
+          - id: f4e0a171-4f4e-484b-b0a2-22085059af65
+            phases:
+            - id: 23319d04-4b23-4ae7-ba54-82112c752683
+              ordinal: 1
+              cycle_duration: P1M
+              amount: 990
+              currency: GBP
+          - id: 7cf47b0d-3da9-496b-a4e9-fbbe43c33ee3
+            phases:
+            - id: feed2491-c895-4bfa-ba05-a3a088842d5c
+              ordinal: 1
+              cycle_duration: P1Y
+              amount: 9990
+              currency: GBP
+    Req-Subscription-Update:
+      summary: Update subscription
+      value:
+        external_reference: ext-ref-12345
+    Req-Subscription-Usage:
+      summary: Report active license seats
+      description: Reporting active seats used during a period
+      value:
+        subscription_id: 550e8400-e29b-41d4-a716-446655440000
+        subscription_item_code: active_seats
+        usage_date: '2026-03-15T09:30:00Z'
+        quantity: 12
+        metadata:
+          department: engineering
+          update_type: onboarding
+    Req-Subscription-Plan-Usage-Base:
+      summary: Usage-based plan with tiered pricing
+      value:
+        name: API Usage Plan
+        variations:
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1M
+            subscription_items:
+            - name: API Calls
+              type: usage
+              currency: GBP
+              unit: calls
+              code: api_calls
+              usage_aggregation_method: sum
+              tiers:
+              - upper_quantity_threshold: 1000
+                amount: 0
+              - upper_quantity_threshold: 10000
+                amount: 10
+              - amount: 5
+    Res-Subscription-Cycle-Finished:
+      summary: Finished subscription cycle
+      value:
+        id: 950e8400-e29b-41d4-a716-446655440004
+        subscription_id: 650e8400-e29b-41d4-a716-446655440001
+        plan_variation_id: 750e8400-e29b-41d4-a716-446655440002
+        plan_variation_phase_id: 850e8400-e29b-41d4-a716-446655440003
+        number: 1
+        state: finished
+        start_date: '2025-06-05T21:00:00.036001Z'
+        end_date: '2025-07-05T21:00:00.036001Z'
+        order_id: b50e8400-e29b-41d4-a716-446655440006
+        trial: true
+    Req-Subscription-Plan-With-Trial-Duration:
+      summary: Plan with trial duration
+      value:
+        name: Premium Plan with 14-day Trial
+        trial_duration: P14D
+        variations:
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1M
+            amount: 9900
+            currency: GBP
+    Req-Subscription-With-Trial:
+      summary: Subscription with trial period overriding the trial duration from plan
+      value:
+        plan_variation_id: 550e8400-e29b-41d4-a716-446655440000
+        customer_id: 650e8400-e29b-41d4-a716-446655440001
+        payment_method_id: 6689e244-8af7-4ada-9448-a91f02d4f192
+        trial_duration: P14D
+        external_reference: ext-ref-12345
+    Res-Subscription-Plan-Usage-Base:
+      summary: Usage-based plan with tiered pricing
+      value:
+        id: 8d2c8872-9e8a-4b1a-827c-3f78e1234abc
+        name: API Usage Plan
+        state: active
+        created_at: '2026-04-15T17:58:36.000Z'
+        updated_at: '2026-04-15T17:58:36.000Z'
+        variations:
+        - id: a4e0a171-4f4e-484b-b0a2-22085059df99
+          phases:
+          - id: ceed2491-c895-4bfa-ba05-a3a088842e11
+            ordinal: 1
+            cycle_duration: P1M
+            subscription_items:
+            - name: API Calls
+              type: usage
+              currency: GBP
+              unit: calls
+              code: api_calls
+              usage_aggregation_method: sum
+              tiers:
+              - upper_quantity_threshold: 1000
+                amount: 0
+              - upper_quantity_threshold: 10000
+                amount: 10
+              - amount: 5
+    Req-Subscription-Usage-Update:
+      summary: Update both quantity and metadata
+      value:
+        quantity: 200
+        metadata:
+          user_id: '54321'
+    Req-Subscription-Change-Plan-With-Reason:
+      summary: Schedule plan change with reason
+      value:
+        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
+        scheduled: at_cycle_end
+        reason: customer_request
+    Req-Subscription-Plan-With-Items:
+      summary: Plan with flat and usage-based subscription items
+      value:
+        name: Professional Platform Plan
+        variations:
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1M
+            amount: 4900
+            currency: GBP
+            subscription_items:
+            - type: flat
+              name: Platform License
+              unit: subscription
+              quantity: 1
+              amount: 4900
+              currency: GBP
+            - type: usage
+              name: API Calls
+              unit: call
+              code: api_calls
+              usage_aggregation_method: sum
+              amount: 1
+              currency: GBP
+    Req-Subscription-Plan-Limited:
+      summary: Plan that ends after 12 months
+      value:
+        name: 12-month Limited Plan
+        variations:
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1M
+            cycle_count: 12
+            amount: 1000
+            currency: GBP
+    Res-Subscription-Setup-Order-No-URL:
+      summary: Subscription created with setup order (no redirect URL)
+      value:
+        id: 550e8400-e29b-41d4-a716-446655440006
+        external_reference: ext-ref-12345
+        state: pending
+        customer_id: 650e8400-e29b-41d4-a716-446655440001
+        plan_id: 750e8400-e29b-41d4-a716-446655440002
+        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
+        payment_method_type: automatic
+        created_at: '2025-06-05T21:00:00.036001Z'
+        updated_at: '2025-06-05T21:00:00.036001Z'
+        setup_order_id: a50e8400-e29b-41d4-a716-446655440007
+        current_cycle_id: a31627fb-b037-4566-8d7b-f380c1f44654
+    Res-Subscription-Plan-Hybrid:
+      summary: Hybrid plan with flat base fee and usage-based items
+      value:
+        id: b22198c4-724d-4e9e-b9e3-827c3f78e456
+        name: Professional Plan
+        state: active
+        created_at: '2026-04-15T18:02:11.000Z'
+        updated_at: '2026-04-15T18:02:11.000Z'
+        variations:
+        - id: d4e0a171-4f4e-484b-b0a2-22085059df77
+          phases:
+          - id: ffeed491-c895-4bfa-ba05-a3a088842e22
+            ordinal: 1
+            cycle_duration: P1M
+            subscription_items:
+            - name: Base Subscription
+              type: flat
+              quantity: 1
+              amount: 2900
+              currency: GBP
+              unit: subscription
+            - name: API Calls
+              type: usage
+              currency: GBP
+              unit: calls
+              code: api_calls
+              usage_aggregation_method: sum
+              amount: 10
+            - name: Storage
+              type: usage
+              currency: GBP
+              unit: gb
+              code: storage_gb
+              usage_aggregation_method: max
+              package_size: 1
+              tiers:
+              - upper_quantity_threshold: 10
+                amount: 0
+              - upper_quantity_threshold: 100
+                amount: 50
+              - amount: 30
+    Res-Subscription-Setup-Order:
+      summary: Subscription created with setup order
+      value:
+        id: 550e8400-e29b-41d4-a716-446655440000
+        external_reference: ext-ref-12345
+        state: pending
+        customer_id: 650e8400-e29b-41d4-a716-446655440001
+        plan_id: 750e8400-e29b-41d4-a716-446655440002
+        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
+        payment_method_type: automatic
+        created_at: '2025-06-05T21:00:00.036001Z'
+        updated_at: '2025-06-05T21:00:00.036001Z'
+        setup_order_id: a50e8400-e29b-41d4-a716-446655440005
+        current_cycle_id: a31627fb-b037-4566-8d7b-f380c1f44653
+    Req-Subscription-Skip-Trial:
+      summary: Subscription skipping trial predefined in plan
+      value:
+        plan_variation_id: 550e8400-e29b-41d4-a716-446655440000
+        customer_id: 650e8400-e29b-41d4-a716-446655440001
+        payment_method_id: 6689e244-8af7-4ada-9448-a91f02d4f192
+        trial_duration: P0D
+        external_reference: ext-ref-12345
+    Res-Subscription-Plan-Package:
+      summary: Usage-based plan with block pricing (price per 1000 units)
+      value:
+        id: e33198c4-124d-4e9e-b9e3-827c3f78e789
+        name: SMS Plan
+        state: active
+        created_at: '2026-04-15T18:05:42.000Z'
+        updated_at: '2026-04-15T18:05:42.000Z'
+        variations:
+        - id: c4e0a171-4f4e-484b-b0a2-22085059df44
+          phases:
+          - id: ddeed491-c895-4bfa-ba05-a3a088842e33
+            ordinal: 1
+            cycle_duration: P1M
+            subscription_items:
+            - name: SMS Messages
+              type: usage
+              currency: GBP
+              unit: messages
+              code: sms_messages
+              usage_aggregation_method: sum
+              package_size: 1000
+              amount: 500
+    Res-Subscription-Usage:
+      summary: Successful usage record creation
+      description: Returns the reported usages
+      value:
+        id: 750e8400-e29b-41d4-a716-446655440000
+        subscription_id: 550e8400-e29b-41d4-a716-446655440000
+        subscription_cycle_id: 850e8400-e29b-41d4-a716-446655440000
+        subscription_item_code: api_calls
+        usage_date: '2026-03-01T21:00:00Z'
+        quantity: 100
+        metadata:
+          user_id: '12345'
+          api_version: v2
+        created_at: '2026-03-01T21:05:00Z'
+        updated_at: '2026-03-01T21:05:00Z'
+    Req-Subscription-Plan-Hybrid:
+      summary: Hybrid plan with flat base fee and usage-based items
+      value:
+        name: Professional Plan
+        variations:
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1M
+            subscription_items:
+            - name: Base Subscription
+              type: flat
+              quantity: 1
+              amount: 2900
+              currency: GBP
+              unit: subscription
+            - name: API Calls
+              type: usage
+              currency: GBP
+              unit: calls
+              code: api_calls
+              usage_aggregation_method: sum
+              amount: 10
+            - name: Storage
+              type: usage
+              currency: GBP
+              unit: gb
+              code: storage_gb
+              usage_aggregation_method: max
+              package_size: 1
+              tiers:
+              - upper_quantity_threshold: 10
+                amount: 0
+              - upper_quantity_threshold: 100
+                amount: 50
+              - amount: 30
+    Res-Subscription-Active:
+      summary: Active subscription
+      value:
+        id: 550e8400-e29b-41d4-a716-446655440000
+        external_reference: ext-ref-12345
+        state: active
+        customer_id: 650e8400-e29b-41d4-a716-446655440001
+        plan_id: 750e8400-e29b-41d4-a716-446655440002
+        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
+        payment_method_type: automatic
+        payment_method_id: 6689e244-8af7-4ada-9448-a91f02d4f192
+        created_at: '2025-06-05T21:00:00.036001Z'
+        updated_at: '2025-06-05T21:00:00.036001Z'
+        start_date: '2025-06-05T21:00:00.036001Z'
+        current_cycle_id: 950e8400-e29b-41d4-a716-446655440004
+        trial_duration: P14D
+        trial_end_date: '2025-06-19T21:00:00.036001Z'
+    Res-Subscription-Plan-Limited:
+      summary: Plan that ends after 12 months
+      value:
+        id: 550e8400-e29b-41d4-a716-446655440003
+        name: 12-month Limited Plan
+        state: active
+        created_at: '2025-06-05T21:00:00.036001Z'
+        updated_at: '2025-06-05T21:00:00.036001Z'
+        variations:
+        - id: 550e8400-e29b-41d4-a716-446655440004
+          phases:
+          - id: 550e8400-e29b-41d4-a716-446655440005
+            ordinal: 1
+            cycle_duration: P1M
+            cycle_count: 12
+            amount: 1000
+            currency: GBP
+    Req-Subscription-Setup-Order-No-URL:
+      summary: Subscription without redirect URL
+      value:
+        plan_variation_id: 550e8400-e29b-41d4-a716-446655440000
+        customer_id: 650e8400-e29b-41d4-a716-446655440001
+        external_reference: ext-ref-12345
+    Req-Subscription-Usage-Update-Quantity:
+      summary: Update quantity
+      value:
+        quantity: 150
+    Req-Subscription-Update-Renewal-Date:
+      summary: Update renewal date
+      value:
+        renewal_date: '2026-07-01T00:00:00Z'
+    Req-Subscription-Plan-Package:
+      summary: Usage-based plan with block pricing (price per 1000 units)
+      value:
+        name: SMS Plan
+        variations:
+        - phases:
+          - ordinal: 1
+            cycle_duration: P1M
+            subscription_items:
+            - name: SMS Messages
+              type: usage
+              currency: GBP
+              unit: messages
+              code: sms_messages
+              usage_aggregation_method: sum
+              package_size: 1000
+              amount: 500
+    Res-Subscription-Cycles-List:
+      summary: List of subscription cycles
+      value:
+        next_page_token: 9e5d2caa-bb60-4b5b-b7cf-6345bbdff67e
+        cycles:
+        - id: 550e8400-e29b-41d4-a716-446655440010
+          subscription_id: 650e8400-e29b-41d4-a716-446655440001
+          plan_variation_id: 750e8400-e29b-41d4-a716-446655440002
+          plan_variation_phase_id: 850e8400-e29b-41d4-a716-446655440003
+          number: 2
+          previous_cycle_id: 550e8400-e29b-41d4-a716-446655440000
+          state: active
+          start_date: '2025-07-05T21:00:00.036001Z'
+          end_date: '2025-08-05T21:00:00.036001Z'
+          order_id: a50e8400-e29b-41d4-a716-446655440015
+          trial: false
+        - id: 550e8400-e29b-41d4-a716-446655440000
+          subscription_id: 650e8400-e29b-41d4-a716-446655440001
+          plan_variation_id: 750e8400-e29b-41d4-a716-446655440002
+          number: 1
+          state: finished
+          start_date: '2025-06-05T21:00:00.036001Z'
+          end_date: '2025-07-05T21:00:00.036001Z'
+          order_id: a50e8400-e29b-41d4-a716-446655440005
+          trial: true
+    Res-Subscription-Plan-Simple:
+      summary: Simple yearly and monthly plan
+      value:
+        id: f757b068-f287-43c8-8d05-9c073fecbe73
+        name: Enterprise Pro Plan
+        state: active
+        created_at: '2026-01-26T08:59:09.433527Z'
+        updated_at: '2026-01-26T08:59:09.433527Z'
+        variations:
+        - id: f4e0a171-4f4e-484b-b0a2-22085059af65
+          phases:
+          - id: 23319d04-4b23-4ae7-ba54-82112c752683
+            ordinal: 1
+            cycle_duration: P1M
+            amount: 990
+            currency: GBP
+        - id: 7cf47b0d-3da9-496b-a4e9-fbbe43c33ee3
+          phases:
+          - id: feed2491-c895-4bfa-ba05-a3a088842d5c
+            ordinal: 1
+            cycle_duration: P1Y
+            amount: 9990
+            currency: GBP
+    Res-Subscription-Plan-With-Trial-Duration:
+      summary: Plan with trial duration
+      value:
+        id: 750e8400-e29b-41d4-a716-446655440010
+        name: Premium Plan with 14-day Trial
+        trial_duration: P14D
+        state: active
+        created_at: '2025-06-04T21:00:00.036001Z'
+        updated_at: '2025-06-04T21:00:00.036001Z'
+        variations:
+        - id: 850e8400-e29b-41d4-a716-446655440011
+          phases:
+          - id: 950e8400-e29b-41d4-a716-446655440012
+            ordinal: 1
+            cycle_duration: P1M
+            amount: 9900
+            currency: GBP
+    Req-Subscription-Change-Plan-With-Phase:
+      summary: Schedule plan change to a specific phase
+      value:
+        plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
+        plan_variation_phase_id: 950e8400-e29b-41d4-a716-446655440004
+        scheduled: at_cycle_end
+    Res-Subscriptions-List:
+      summary: List of subscriptions
+      value:
+        next_page_token: 9e5d2caa-bb60-4b5b-b7cf-6345bbdff67e
+        subscriptions:
+        - id: 550e8400-e29b-41d4-a716-446655440000
+          external_reference: ext-ref-12345
+          state: active
+          customer_id: 650e8400-e29b-41d4-a716-446655440001
+          plan_id: 750e8400-e29b-41d4-a716-446655440002
+          plan_variation_id: 850e8400-e29b-41d4-a716-446655440003
+          payment_method_type: automatic
+          payment_method_id: 6689e244-8af7-4ada-9448-a91f02d4f192
+          created_at: '2025-06-05T21:00:00.036001Z'
+          updated_at: '2025-06-05T21:00:00.036001Z'
+          start_date: '2025-06-05T21:00:00.036001Z'
+          current_cycle_id: 950e8400-e29b-41d4-a716-446655440004
+        - id: 550e8400-e29b-41d4-a716-446655440010
+          state: pending
+          customer_id: 650e8400-e29b-41d4-a716-446655440011
+          plan_id: 750e8400-e29b-41d4-a716-446655440012
+          plan_variation_id: 850e8400-e29b-41d4-a716-446655440013
+          payment_method_type: automatic
+          created_at: '2025-06-04T21:00:00.036001Z'
+          updated_at: '2025-06-04T21:00:00.036001Z'
+          current_cycle_id: a31627fb-b037-4566-8d7b-f380c1f44653
+    Res-Usage-List:
+      summary: Retrieve a list of usage records
+      value:
+        next_page_token: 9e5d2caa-bb60-4b5b-b7cf-6345bbdff67e
+        subscription_usages:
+        - id: 750e8400-e29b-41d4-a716-446655440000
+          subscription_id: 550e8400-e29b-41d4-a716-446655440000
+          subscription_cycle_id: 850e8400-e29b-41d4-a716-446655440000
+          subscription_item_code: api_calls
+          usage_date: '2026-03-01T21:00:00Z'
+          quantity: 100
+          metadata:
+            user_id: '12345'
+            api_version: v2
+          created_at: '2026-03-01T21:05:00Z'
+          updated_at: '2026-03-01T21:05:00Z'
+        - id: bc903328-9f37-4d7a-8f56-02e5b7c76891
+          subscription_id: 550e8400-e29b-41d4-a716-446655440000
+          subscription_cycle_id: 850e8400-e29b-41d4-a716-446655440000
+          subscription_item_code: api_calls
+          usage_date: '2026-03-01T22:15:00Z'
+          quantity: 50
+          metadata:
+            user_id: '12345'
+            api_version: v2
+          created_at: '2026-03-01T22:20:00Z'
+          updated_at: '2026-03-01T22:20:00Z'
+    Req-Subscription-Usage-Update-Metadata:
+      summary: Update metadata
+      value:
+        metadata:
+          user_id: '67890'
+          api_version: v3
   securitySchemes:
     Api-Key:
       type: apiKey

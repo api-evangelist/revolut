@@ -695,88 +695,16 @@ paths:
                 $ref: '#/components/schemas/OBErrorResponse1'
 components:
   schemas:
-    OBError1:
-      required:
-      - ErrorCode
-      - Message
-      type: object
-      properties:
-        ErrorCode:
-          maxLength: 128
-          minLength: 1
-          type: string
-          description: The error code in low level, for example, `UK.OBIE.Field.Missing`.
-        Message:
-          maxLength: 500
-          minLength: 1
-          type: string
-          description: 'The description of the error that occurred.
-
-            For example, `A mandatory field isn''t supplied`, `RequestedExecutionDateTime must be in future`, and `OBIE doesn''t standardise this field`.'
-    OBExternalPaymentContext1Code:
-      type: string
-      description: The payment context.
-      enum:
-      - BillPayment
-      - EcommerceGoods
-      - EcommerceServices
-      - Other
-      - PartyToParty
-    OBErrorResponse1:
-      required:
-      - Code
-      - Errors
-      - Message
-      type: object
-      properties:
-        Code:
-          maxLength: 40
-          minLength: 1
-          type: string
-          description: The error code in high level that helps categorize the error.
-        Id:
-          maxLength: 40
-          minLength: 1
-          type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        Message:
-          maxLength: 500
-          minLength: 1
-          type: string
-          description: 'The error message.
-
-            For example, `There is something wrong with the request parameters provided`.'
-        Errors:
-          minItems: 1
-          type: array
-          items:
-            $ref: '#/components/schemas/OBError1'
-      description: The detailed information about the error to help troubleshooting.
-    OBWriteDataDomesticStandingOrderConsent2:
-      required:
-      - Initiation
-      - Permission
-      type: object
-      properties:
-        Permission:
-          $ref: '#/components/schemas/OBExternalPermissions2Code'
-        Initiation:
-          $ref: '#/components/schemas/OBDomesticStandingOrder2'
-    OBWriteDataDomesticStandingOrderResponse2:
+    OBWriteDataDomesticStandingOrderConsentResponse2:
       required:
       - ConsentId
       - CreationDateTime
-      - DomesticStandingOrderId
       - Initiation
+      - Permission
       - Status
       - StatusUpdateDateTime
       type: object
       properties:
-        DomesticStandingOrderId:
-          maxLength: 40
-          minLength: 1
-          type: string
-          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the domestic standing order resource.
         ConsentId:
           maxLength: 128
           minLength: 1
@@ -795,7 +723,7 @@ components:
             For example: `2017-04-05T10:43:07+00:00`.'
           format: date-time
         Status:
-          $ref: '#/components/schemas/OBExternalStatus1Code'
+          $ref: '#/components/schemas/OBExternalConsentStatus1Code'
         StatusUpdateDateTime:
           type: string
           description: 'The date and time when the resource status was updated.
@@ -808,108 +736,10 @@ components:
 
             For example: `2017-04-05T10:43:07+00:00`.'
           format: date-time
-        Initiation:
-          $ref: '#/components/schemas/OBDomesticStandingOrderInitiationResponse'
         Permission:
           $ref: '#/components/schemas/OBExternalPermissions2Code'
-    OBCashAccountDebtorResponse:
-      required:
-      - Identification
-      - SchemeName
-      type: object
-      description: 'The details to identify the account which was used to approve the payment consent.
-
-
-        This information can be used as a refund address.'
-      properties:
-        SchemeName:
-          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
-        Identification:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: The identifier assigned to the account, which is known by the account owner.
-        Name:
-          maxLength: 70
-          minLength: 1
-          type: string
-          description: 'The name or names of the account owner(s) represented at an account level.
-
-
-            The account name is not the product name or the nickname of the account.
-
-
-            :::warning[Name validation]
-
-            This field will only return the actual owner(s) name if `DebtorAccount` was not defined in the consent.
-
-
-            If it was defined in the consent, the same value from the consent will be returned.
-
-            :::'
-        SecondaryIdentification:
-          maxLength: 34
-          minLength: 1
-          type: string
-          description: 'The secondary account ID that the account servicing institution assigns.
-
-
-            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
-    OBExternalMerchantCustomerIdentification:
-      type: string
-      description: The merchant customer identification.
-    OBExternalConsentStatus1Code:
-      type: string
-      description: The status of the consent.
-      enum:
-      - Authorised
-      - AwaitingAuthorisation
-      - Consumed
-      - Rejected
-    OBExternalMerchantCategoryCode:
-      type: string
-      description: The merchant category code.
-    OBCashAccountCreditor3:
-      required:
-      - Identification
-      - Name
-      - SchemeName
-      type: object
-      properties:
-        SchemeName:
-          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
-        Identification:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: The account ID that the institution assigns to identify an account, which is known by the account owner.
-        Name:
-          maxLength: 70
-          minLength: 1
-          type: string
-          description: 'The account name that the account servicing institution assigns.
-
-
-            The account name is the name or names of the account owner(s) represented at an account level.
-
-
-            The account name is not the product name or the nickname of the account.
-
-
-            :::note
-
-            [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary)s might optionally validate this name to confirm the payee.
-
-            :::'
-        SecondaryIdentification:
-          maxLength: 34
-          minLength: 1
-          type: string
-          description: 'The secondary account ID that the account servicing institution assigns.
-
-
-            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
-      description: The details to identify the account.
+        Initiation:
+          $ref: '#/components/schemas/OBDomesticStandingOrder2'
     OBWriteDomesticStandingOrderConsent2:
       required:
       - Data
@@ -918,6 +748,84 @@ components:
       properties:
         Data:
           $ref: '#/components/schemas/OBWriteDataDomesticStandingOrderConsent2'
+        Risk:
+          $ref: '#/components/schemas/OBRisk1'
+    OBDomesticStandingOrder2:
+      type: object
+      description: The Initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds from the debtor account to the creditor for a domestic standing order.
+      allOf:
+      - $ref: '#/components/schemas/OBDomesticStandingOrderBase'
+      - type: object
+        properties:
+          DebtorAccount:
+            $ref: '#/components/schemas/OBCashAccountDebtor4'
+      - type: object
+        required:
+        - CreditorAccount
+        - FirstPaymentAmount
+        - FirstPaymentDateTime
+        - Frequency
+    OBExternalConsentStatus1Code:
+      type: string
+      description: The status of the consent.
+      enum:
+      - Authorised
+      - AwaitingAuthorisation
+      - Consumed
+      - Rejected
+    OBExternalAccountIdentification4Code:
+      type: string
+      description: The name of the identification scheme.
+      enum:
+      - UK.OBIE.IBAN
+      - UK.OBIE.SortCodeAccountNumber
+      - US.RoutingNumberAccountNumber
+      - US.BranchCodeAccountNumber
+      example: UK.OBIE.IBAN
+    OBExternalStatus1Code:
+      type: string
+      description: The status of the payment.
+      enum:
+      - InitiationCompleted
+      - InitiationFailed
+      - InitiationPending
+    OBWriteDomesticStandingOrderResponse2:
+      required:
+      - Data
+      - Links
+      - Meta
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataDomesticStandingOrderResponse2'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+    OBDomesticStandingOrderInitiationResponse:
+      type: object
+      description: The Initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds from the debtor account to the creditor for a domestic standing order.
+      allOf:
+      - $ref: '#/components/schemas/OBDomesticStandingOrderBase'
+      - type: object
+        properties:
+          DebtorAccount:
+            $ref: '#/components/schemas/OBCashAccountDebtorResponse'
+      - type: object
+        required:
+        - CreditorAccount
+        - FirstPaymentAmount
+        - FirstPaymentDateTime
+        - Frequency
+        - DebtorAccount
+    OBWriteDomesticStandingOrder2:
+      required:
+      - Data
+      - Risk
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataDomesticStandingOrder2'
         Risk:
           $ref: '#/components/schemas/OBRisk1'
     Meta:
@@ -929,25 +837,6 @@ components:
           description: Used for pagination. Indicates how many pages of results are available.
           format: int32
       description: Meta data relevant to the payload.
-    OBWriteDomesticStandingOrder2:
-      required:
-      - Data
-      - Risk
-      type: object
-      properties:
-        Data:
-          $ref: '#/components/schemas/OBWriteDataDomesticStandingOrder2'
-        Risk:
-          $ref: '#/components/schemas/OBRisk1'
-    OBExternalAccountIdentification4Code:
-      type: string
-      description: The name of the identification scheme.
-      enum:
-      - UK.OBIE.IBAN
-      - UK.OBIE.SortCodeAccountNumber
-      - US.RoutingNumberAccountNumber
-      - US.BranchCodeAccountNumber
-      example: UK.OBIE.IBAN
     OBDomesticStandingOrderBase:
       type: object
       properties:
@@ -1051,51 +940,24 @@ components:
         CreditorAccount:
           $ref: '#/components/schemas/OBCashAccountCreditor3'
       description: The Initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds from the debtor account to the creditor for a domestic standing order.
-    OBWriteDataDomesticStandingOrderConsentResponse2:
+    Links:
       required:
-      - ConsentId
-      - CreationDateTime
-      - Initiation
-      - Permission
-      - Status
-      - StatusUpdateDateTime
+      - Self
       type: object
       properties:
-        ConsentId:
-          maxLength: 128
-          minLength: 1
+        Self:
           type: string
-          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
-        CreationDateTime:
+          description: The absolute URI to the resource.
+          format: uri
+        Next:
           type: string
-          description: 'The date and time when the resource was created.
-
-
-            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
-
-            All date-time fields in responses must include the timezone.
-
-
-            For example: `2017-04-05T10:43:07+00:00`.'
-          format: date-time
-        Status:
-          $ref: '#/components/schemas/OBExternalConsentStatus1Code'
-        StatusUpdateDateTime:
+          description: The absolute URI to the next pagination resource.
+          format: uri
+        Prev:
           type: string
-          description: 'The date and time when the resource status was updated.
-
-
-            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
-
-            All date-time fields in responses must include the timezone.
-
-
-            For example: `2017-04-05T10:43:07+00:00`.'
-          format: date-time
-        Permission:
-          $ref: '#/components/schemas/OBExternalPermissions2Code'
-        Initiation:
-          $ref: '#/components/schemas/OBDomesticStandingOrder2'
+          description: The absolute URI to the previous pagination resource.
+          format: uri
+      description: Links relevant to the payload.
     OBCashAccountDebtor4:
       required:
       - Identification
@@ -1138,51 +1000,52 @@ components:
 
 
             Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
-    OBDomesticStandingOrder2:
-      type: object
-      description: The Initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds from the debtor account to the creditor for a domestic standing order.
-      allOf:
-      - $ref: '#/components/schemas/OBDomesticStandingOrderBase'
-      - type: object
-        properties:
-          DebtorAccount:
-            $ref: '#/components/schemas/OBCashAccountDebtor4'
-      - type: object
-        required:
-        - CreditorAccount
-        - FirstPaymentAmount
-        - FirstPaymentDateTime
-        - Frequency
-    OBExternalStatus1Code:
+    OBExternalPaymentContext1Code:
       type: string
-      description: The status of the payment.
+      description: The payment context.
       enum:
-      - InitiationCompleted
-      - InitiationFailed
-      - InitiationPending
-    Links:
+      - BillPayment
+      - EcommerceGoods
+      - EcommerceServices
+      - Other
+      - PartyToParty
+    OBError1:
       required:
-      - Self
+      - ErrorCode
+      - Message
       type: object
       properties:
-        Self:
+        ErrorCode:
+          maxLength: 128
+          minLength: 1
           type: string
-          description: The absolute URI to the resource.
-          format: uri
-        Next:
+          description: The error code in low level, for example, `UK.OBIE.Field.Missing`.
+        Message:
+          maxLength: 500
+          minLength: 1
           type: string
-          description: The absolute URI to the next pagination resource.
-          format: uri
-        Prev:
-          type: string
-          description: The absolute URI to the previous pagination resource.
-          format: uri
-      description: Links relevant to the payload.
-    OBExternalPermissions2Code:
+          description: 'The description of the error that occurred.
+
+            For example, `A mandatory field isn''t supplied`, `RequestedExecutionDateTime must be in future`, and `OBIE doesn''t standardise this field`.'
+    OBExternalMerchantCustomerIdentification:
       type: string
-      description: The Open Banking service request type.
-      enum:
-      - Create
+      description: The merchant customer identification.
+    OBWriteDomesticStandingOrderConsentResponse2:
+      required:
+      - Data
+      - Links
+      - Meta
+      - Risk
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataDomesticStandingOrderConsentResponse2'
+        Risk:
+          $ref: '#/components/schemas/OBRisk1'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
     OBRisk1:
       type: object
       properties:
@@ -1242,6 +1105,111 @@ components:
               description: The name of the country.
           description: The information that locates and identifies the delivery address, as defined by postal services or in free format text.
       description: The Risk section contains the risk indicators that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which can be used to specify additional details for risk scoring for account information.
+    OBExternalMerchantCategoryCode:
+      type: string
+      description: The merchant category code.
+    OBExternalPermissions2Code:
+      type: string
+      description: The Open Banking service request type.
+      enum:
+      - Create
+    OBWriteDataDomesticStandingOrderResponse2:
+      required:
+      - ConsentId
+      - CreationDateTime
+      - DomesticStandingOrderId
+      - Initiation
+      - Status
+      - StatusUpdateDateTime
+      type: object
+      properties:
+        DomesticStandingOrderId:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the domestic standing order resource.
+        ConsentId:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
+        CreationDateTime:
+          type: string
+          description: 'The date and time when the resource was created.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Status:
+          $ref: '#/components/schemas/OBExternalStatus1Code'
+        StatusUpdateDateTime:
+          type: string
+          description: 'The date and time when the resource status was updated.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Initiation:
+          $ref: '#/components/schemas/OBDomesticStandingOrderInitiationResponse'
+        Permission:
+          $ref: '#/components/schemas/OBExternalPermissions2Code'
+    OBCashAccountDebtorResponse:
+      required:
+      - Identification
+      - SchemeName
+      type: object
+      description: 'The details to identify the account which was used to approve the payment consent.
+
+
+        This information can be used as a refund address.'
+      properties:
+        SchemeName:
+          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
+        Identification:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The identifier assigned to the account, which is known by the account owner.
+        Name:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: 'The name or names of the account owner(s) represented at an account level.
+
+
+            The account name is not the product name or the nickname of the account.
+
+
+            :::warning[Name validation]
+
+            This field will only return the actual owner(s) name if `DebtorAccount` was not defined in the consent.
+
+
+            If it was defined in the consent, the same value from the consent will be returned.
+
+            :::'
+        SecondaryIdentification:
+          maxLength: 34
+          minLength: 1
+          type: string
+          description: 'The secondary account ID that the account servicing institution assigns.
+
+
+            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
+    OBActiveCurrencyAndAmount_SimpleType:
+      pattern: ^\d{1,13}\.\d{1,5}$
+      type: string
+      description: The amount of money where the unit of currency is explicit and compliant with [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217).
     OBWriteDataDomesticStandingOrder2:
       required:
       - ConsentId
@@ -1255,55 +1223,87 @@ components:
           description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
         Initiation:
           $ref: '#/components/schemas/OBDomesticStandingOrder2'
-    OBActiveCurrencyAndAmount_SimpleType:
-      pattern: ^\d{1,13}\.\d{1,5}$
-      type: string
-      description: The amount of money where the unit of currency is explicit and compliant with [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217).
-    OBWriteDomesticStandingOrderConsentResponse2:
+    OBWriteDataDomesticStandingOrderConsent2:
       required:
-      - Data
-      - Links
-      - Meta
-      - Risk
+      - Initiation
+      - Permission
       type: object
       properties:
-        Data:
-          $ref: '#/components/schemas/OBWriteDataDomesticStandingOrderConsentResponse2'
-        Risk:
-          $ref: '#/components/schemas/OBRisk1'
-        Links:
-          $ref: '#/components/schemas/Links'
-        Meta:
-          $ref: '#/components/schemas/Meta'
-    OBWriteDomesticStandingOrderResponse2:
+        Permission:
+          $ref: '#/components/schemas/OBExternalPermissions2Code'
+        Initiation:
+          $ref: '#/components/schemas/OBDomesticStandingOrder2'
+    OBCashAccountCreditor3:
       required:
-      - Data
-      - Links
-      - Meta
+      - Identification
+      - Name
+      - SchemeName
       type: object
       properties:
-        Data:
-          $ref: '#/components/schemas/OBWriteDataDomesticStandingOrderResponse2'
-        Links:
-          $ref: '#/components/schemas/Links'
-        Meta:
-          $ref: '#/components/schemas/Meta'
-    OBDomesticStandingOrderInitiationResponse:
+        SchemeName:
+          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
+        Identification:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The account ID that the institution assigns to identify an account, which is known by the account owner.
+        Name:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: 'The account name that the account servicing institution assigns.
+
+
+            The account name is the name or names of the account owner(s) represented at an account level.
+
+
+            The account name is not the product name or the nickname of the account.
+
+
+            :::note
+
+            [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary)s might optionally validate this name to confirm the payee.
+
+            :::'
+        SecondaryIdentification:
+          maxLength: 34
+          minLength: 1
+          type: string
+          description: 'The secondary account ID that the account servicing institution assigns.
+
+
+            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
+      description: The details to identify the account.
+    OBErrorResponse1:
+      required:
+      - Code
+      - Errors
+      - Message
       type: object
-      description: The Initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds from the debtor account to the creditor for a domestic standing order.
-      allOf:
-      - $ref: '#/components/schemas/OBDomesticStandingOrderBase'
-      - type: object
-        properties:
-          DebtorAccount:
-            $ref: '#/components/schemas/OBCashAccountDebtorResponse'
-      - type: object
-        required:
-        - CreditorAccount
-        - FirstPaymentAmount
-        - FirstPaymentDateTime
-        - Frequency
-        - DebtorAccount
+      properties:
+        Code:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The error code in high level that helps categorize the error.
+        Id:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'The error message.
+
+            For example, `There is something wrong with the request parameters provided`.'
+        Errors:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OBError1'
+      description: The detailed information about the error to help troubleshooting.
   securitySchemes:
     AccessToken:
       type: apiKey

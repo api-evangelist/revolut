@@ -294,50 +294,21 @@ paths:
       - Locations
 components:
   schemas:
-    Location-Online:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/Location-Id'
-        name:
-          $ref: '#/components/schemas/Location-Name'
-        type:
-          $ref: '#/components/schemas/Location-Type'
-        details:
-          $ref: '#/components/schemas/Location-Online-Details'
-      required:
-      - id
-      - name
-      - type
-      - details
-    Location-Physical:
-      title: Location
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/Location-Id'
-        name:
-          $ref: '#/components/schemas/Location-Name'
-        type:
-          $ref: '#/components/schemas/Location-Type'
-        details:
-          $ref: '#/components/schemas/Location-Physical-Details'
-      required:
-      - id
-      - name
-      - type
-      - details
-    Location-Creation:
-      type: object
-      description: Request body for creating a location. The structure of the `details` object depends on the `type` of the location.
-      oneOf:
-      - $ref: '#/components/schemas/Location-Creation-Online'
-      - $ref: '#/components/schemas/Location-Creation-Physical'
-      discriminator:
-        propertyName: type
-        mapping:
-          online: '#/components/schemas/Location-Creation-Online'
-          physical: '#/components/schemas/Location-Creation-Physical'
+    Location-Type:
+      type: string
+      description: 'Type of the location.
+
+
+        | Value | Description |
+
+        | ----- | ----------- |
+
+        | `online` | Represents an online store. |
+
+        | `physical` | Represents a physical point of sale. |'
+      enum:
+      - online
+      - physical
     Location-Update-Online:
       type: object
       properties:
@@ -345,117 +316,6 @@ components:
           $ref: '#/components/schemas/Location-Name'
         details:
           $ref: '#/components/schemas/Location-Online-Details'
-    Location-Physical-Details:
-      type: object
-      description: Additional details of the location.
-      properties:
-        address:
-          $ref: '#/components/schemas/Address-v3'
-        geo_location:
-          $ref: '#/components/schemas/Geo-Location'
-        opening_hours:
-          $ref: '#/components/schemas/Opening-Hours'
-      required:
-      - address
-      - geo_location
-      - opening_hours
-    Location-Online-Details:
-      type: object
-      description: Additional details of the location.
-      properties:
-        domain:
-          type: string
-          description: 'Domain address of the location. Required for online locations.
-
-
-            :::warning
-
-            The `domain` parameter''s value must be unique across all locations.
-
-            :::'
-      required:
-      - domain
-    Address-v3:
-      type: object
-      description: Details of a physical address.
-      properties:
-        street_line_1:
-          type: string
-          description: Primary address line.
-          maxLength: 100
-        street_line_2:
-          type: string
-          description: Secondary address line, such as floor and apartment number.
-          maxLength: 100
-        region:
-          type: string
-          description: State or province of the address.
-          maxLength: 100
-        city:
-          type: string
-          description: City of the address.
-          maxLength: 100
-        country_code:
-          type: string
-          pattern: ^[A-Z]{2}$
-          description: ISO 2-letter country code.
-          minLength: 2
-          maxLength: 2
-        postcode:
-          type: string
-          description: Postal code of the address.
-          maxLength: 100
-      required:
-      - street_line_1
-      - city
-      - country_code
-      - postcode
-    Location-Name:
-      type: string
-      description: "Name of the location. \n\n:::warning\nThe `name` parameter's value must be unique across all locations.\n:::"
-    Geo-Location:
-      type: object
-      description: Coordinates of the location.
-      properties:
-        lat:
-          type: number
-          format: double
-          description: The latitude of the location, in decimal degrees.
-          minimum: -90
-          maximum: 90
-        lon:
-          type: number
-          format: double
-          description: To longitude of the location, in decimal degrees.
-          minimum: -180
-          maximum: 180
-      required:
-      - lat
-      - lon
-    Location-Id:
-      type: string
-      format: uuid
-      description: 'Unique ID representing the location where merchants sells products.
-
-
-        :::info
-
-        For more information, see: [Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).
-
-        :::        '
-    Location-Creation-Online:
-      type: object
-      properties:
-        name:
-          $ref: '#/components/schemas/Location-Name'
-        type:
-          $ref: '#/components/schemas/Location-Type'
-        details:
-          $ref: '#/components/schemas/Location-Online-Details'
-      required:
-      - name
-      - type
-      - details
     Opening-Hours:
       type: object
       description: 'An object containing the opening hours for each day of the week.
@@ -484,54 +344,6 @@ components:
         sunday:
           description: Opening hours for Sunday.
           $ref: '#/components/schemas/Day-Opening-Hours'
-    Location-Update:
-      type: object
-      description: Request body for updating a location. The structure of the `details` object depends on the `type` of the location.
-      oneOf:
-      - $ref: '#/components/schemas/Location-Update-Online'
-      - $ref: '#/components/schemas/Location-Update-Physical'
-      discriminator:
-        propertyName: type
-        mapping:
-          online: '#/components/schemas/Location-Update-Online'
-          physical: '#/components/schemas/Location-Update-Physical'
-    Error:
-      title: Error
-      type: object
-      properties:
-        errorId:
-          type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        timestamp:
-          type: integer
-          description: The date and time the error happened.
-      required:
-      - errorId
-      - timestamp
-    Location-Update-Physical:
-      title: Location
-      type: object
-      description: Location object represents merchant locations depending on type.
-      oneOf:
-      - $ref: '#/components/schemas/Location-Online'
-      - $ref: '#/components/schemas/Location-Physical'
-      discriminator:
-        propertyName: type
-        mapping:
-          online: '#/components/schemas/Location-Online'
-          physical: '#/components/schemas/Location-Physical'
-    Location:
-      title: Location
-      type: object
-      description: Location object represents merchant locations depending on type.
-      oneOf:
-      - $ref: '#/components/schemas/Location-Online'
-      - $ref: '#/components/schemas/Location-Physical'
-      discriminator:
-        propertyName: type
-        mapping:
-          online: '#/components/schemas/Location-Online'
-          physical: '#/components/schemas/Location-Physical'
     Day-Opening-Hours:
       type: array
       description: "A list of one or more time intervals for a single day. \n\nA day can have multiple intervals (e.g., closing for a lunch break)."
@@ -578,37 +390,210 @@ components:
       - name
       - type
       - details
-    Location-Type:
+    Address-v3:
+      type: object
+      description: Details of a physical address.
+      properties:
+        street_line_1:
+          type: string
+          description: Primary address line.
+          maxLength: 100
+        street_line_2:
+          type: string
+          description: Secondary address line, such as floor and apartment number.
+          maxLength: 100
+        region:
+          type: string
+          description: State or province of the address.
+          maxLength: 100
+        city:
+          type: string
+          description: City of the address.
+          maxLength: 100
+        country_code:
+          type: string
+          pattern: ^[A-Z]{2}$
+          description: ISO 2-letter country code.
+          minLength: 2
+          maxLength: 2
+        postcode:
+          type: string
+          description: Postal code of the address.
+          maxLength: 100
+      required:
+      - street_line_1
+      - city
+      - country_code
+      - postcode
+    Geo-Location:
+      type: object
+      description: Coordinates of the location.
+      properties:
+        lat:
+          type: number
+          format: double
+          description: The latitude of the location, in decimal degrees.
+          minimum: -90
+          maximum: 90
+        lon:
+          type: number
+          format: double
+          description: To longitude of the location, in decimal degrees.
+          minimum: -180
+          maximum: 180
+      required:
+      - lat
+      - lon
+    Location-Physical-Details:
+      type: object
+      description: Additional details of the location.
+      properties:
+        address:
+          $ref: '#/components/schemas/Address-v3'
+        geo_location:
+          $ref: '#/components/schemas/Geo-Location'
+        opening_hours:
+          $ref: '#/components/schemas/Opening-Hours'
+      required:
+      - address
+      - geo_location
+      - opening_hours
+    Error:
+      title: Error
+      type: object
+      properties:
+        errorId:
+          type: string
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        timestamp:
+          type: integer
+          description: The date and time the error happened.
+      required:
+      - errorId
+      - timestamp
+    Location-Online:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Location-Id'
+        name:
+          $ref: '#/components/schemas/Location-Name'
+        type:
+          $ref: '#/components/schemas/Location-Type'
+        details:
+          $ref: '#/components/schemas/Location-Online-Details'
+      required:
+      - id
+      - name
+      - type
+      - details
+    Location-Physical:
+      title: Location
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Location-Id'
+        name:
+          $ref: '#/components/schemas/Location-Name'
+        type:
+          $ref: '#/components/schemas/Location-Type'
+        details:
+          $ref: '#/components/schemas/Location-Physical-Details'
+      required:
+      - id
+      - name
+      - type
+      - details
+    Location-Creation-Online:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Location-Name'
+        type:
+          $ref: '#/components/schemas/Location-Type'
+        details:
+          $ref: '#/components/schemas/Location-Online-Details'
+      required:
+      - name
+      - type
+      - details
+    Location-Update:
+      type: object
+      description: Request body for updating a location. The structure of the `details` object depends on the `type` of the location.
+      oneOf:
+      - $ref: '#/components/schemas/Location-Update-Online'
+      - $ref: '#/components/schemas/Location-Update-Physical'
+      discriminator:
+        propertyName: type
+        mapping:
+          online: '#/components/schemas/Location-Update-Online'
+          physical: '#/components/schemas/Location-Update-Physical'
+    Location:
+      title: Location
+      type: object
+      description: Location object represents merchant locations depending on type.
+      oneOf:
+      - $ref: '#/components/schemas/Location-Online'
+      - $ref: '#/components/schemas/Location-Physical'
+      discriminator:
+        propertyName: type
+        mapping:
+          online: '#/components/schemas/Location-Online'
+          physical: '#/components/schemas/Location-Physical'
+    Location-Name:
       type: string
-      description: 'Type of the location.
+      description: "Name of the location. \n\n:::warning\nThe `name` parameter's value must be unique across all locations.\n:::"
+    Location-Online-Details:
+      type: object
+      description: Additional details of the location.
+      properties:
+        domain:
+          type: string
+          description: 'Domain address of the location. Required for online locations.
 
 
-        | Value | Description |
+            :::warning
 
-        | ----- | ----------- |
+            The `domain` parameter''s value must be unique across all locations.
 
-        | `online` | Represents an online store. |
+            :::'
+      required:
+      - domain
+    Location-Id:
+      type: string
+      format: uuid
+      description: 'Unique ID representing the location where merchants sells products.
 
-        | `physical` | Represents a physical point of sale. |'
-      enum:
-      - online
-      - physical
+
+        :::info
+
+        For more information, see: [Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).
+
+        :::        '
+    Location-Creation:
+      type: object
+      description: Request body for creating a location. The structure of the `details` object depends on the `type` of the location.
+      oneOf:
+      - $ref: '#/components/schemas/Location-Creation-Online'
+      - $ref: '#/components/schemas/Location-Creation-Physical'
+      discriminator:
+        propertyName: type
+        mapping:
+          online: '#/components/schemas/Location-Creation-Online'
+          physical: '#/components/schemas/Location-Creation-Physical'
+    Location-Update-Physical:
+      title: Location
+      type: object
+      description: Location object represents merchant locations depending on type.
+      oneOf:
+      - $ref: '#/components/schemas/Location-Online'
+      - $ref: '#/components/schemas/Location-Physical'
+      discriminator:
+        propertyName: type
+        mapping:
+          online: '#/components/schemas/Location-Online'
+          physical: '#/components/schemas/Location-Physical'
   examples:
-    Res-Location-Online:
-      summary: Online location request example
-      value:
-        id: 8d9a7125-805f-40f3-a405-bc89765db996
-        name: Grocery website
-        type: online
-        details:
-          domain: groceries.example.com
-    Req-Location-Online:
-      summary: Online location request example
-      value:
-        name: Grocery website
-        type: online
-        details:
-          domain: groceries.example.com
     Req-Location-Physical:
       summary: Physical location request example
       value:
@@ -634,6 +619,21 @@ components:
               to: '13:00'
             - from: '16:00'
               to: '18:00'
+    Res-Location-Online:
+      summary: Online location request example
+      value:
+        id: 8d9a7125-805f-40f3-a405-bc89765db996
+        name: Grocery website
+        type: online
+        details:
+          domain: groceries.example.com
+    Req-Location-Online:
+      summary: Online location request example
+      value:
+        name: Grocery website
+        type: online
+        details:
+          domain: groceries.example.com
     Res-Location-Physical:
       summary: Physical location request example
       value:
@@ -661,24 +661,6 @@ components:
             - from: '16:00'
               to: '18:00'
   parameters:
-    Location-Type:
-      name: type
-      in: query
-      schema:
-        type: string
-        enum:
-        - online
-        - physical
-      description: Filter the list by location type.
-    Location-Id:
-      name: location_id
-      schema:
-        type: string
-        format: uuid
-        description: A UUID string, typically used to identify resources.
-      in: path
-      required: true
-      description: The ID of the location.
     Authorization:
       name: Authorization
       in: header
@@ -688,6 +670,24 @@ components:
         example: Bearer sk_1234567890ABCdefGHIjklMNOpqrSTUvwxYZ_1234567890-Ab_cdeFGHijkLMNopq
       required: true
       description: "This parameter accepts the [Merchant API Secret key](https://business.revolut.com/settings/apis?tab=merchant-api) to authorise requests coming from the merchant's backend. \n\nIt ensures that ensures that each request is authenticated and authorised by verifying the secret key. The secret key should be included in all request headers as a `Bearer` token.\n\n:::info\nFor more information, see: [Authentication](https://developer.revolut.com/docs/api/merchant#authentication)\n:::"
+    Location-Id:
+      name: location_id
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      in: path
+      required: true
+      description: The ID of the location.
+    Location-Type:
+      name: type
+      in: query
+      schema:
+        type: string
+        enum:
+        - online
+        - physical
+      description: Filter the list by location type.
   securitySchemes:
     Api-Key:
       type: apiKey

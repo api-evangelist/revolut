@@ -218,238 +218,7 @@ paths:
         5XX:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Forbidden
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    Conflict:
-      description: Conflict
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Request timestamp is in the future
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    ServerError:
-      description: Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Something went wrong!
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: API key can only be used for authentication from whitelisted IP
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: 'No such pair: BTC-BTC'
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-    RateLimitExceeded:
-      description: Rate Limit Exceeded
-      headers:
-        Retry-After:
-          description: The number of milliseconds to wait before making a new request.
-          schema:
-            type: integer
-            example: 5000
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: Rate Limit Exceeded
-            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
-            timestamp: 3318215482991
-  examples:
-    TickersResponseExample:
-      value:
-        data:
-        - symbol: BTC/USD
-          bid: '0.02'
-          ask: '0.02'
-          mid: '0.02'
-          last_price: '0.02'
-        - symbol: ETH/USD
-          bid: '0.02'
-          ask: '0.02'
-          mid: '0.02'
-          last_price: '0.02'
-        metadata:
-          timestamp: 1770201294631
-    OrderBook:
-      value:
-        data:
-          asks:
-          - aid: ETH
-            anm: Ethereum
-            s: SELL
-            p: '4600'
-            pc: USD
-            pn: MONE
-            q: '17'
-            qc: ETH
-            qn: UNIT
-            ve: REVX
-            'no': '3'
-            ts: CLOB
-            pdt: 3318215482991
-          - aid: ETH
-            anm: Ethereum
-            s: SELL
-            p: '4555'
-            pc: USD
-            pn: MONE
-            q: '2.1234'
-            qc: ETH
-            qn: UNIT
-            ve: REVX
-            'no': '2'
-            ts: CLOB
-            pdt: 3318215482991
-          bids:
-          - aid: ETH
-            anm: Ethereum
-            s: BUYI
-            p: '4550'
-            pc: USD
-            pn: MONE
-            q: '0.25'
-            qc: ETH
-            qn: UNIT
-            ve: REVX
-            'no': '1'
-            ts: CLOB
-            pdt: 3318215482991
-          - aid: ETH
-            anm: Ethereum
-            s: BUYI
-            p: '4500'
-            pc: USD
-            pn: MONE
-            q: '24.42'
-            qc: ETH
-            qn: UNIT
-            ve: REVX
-            'no': '5'
-            ts: CLOB
-            pdt: 3318215482991
-        metadata:
-          timestamp: 3318215482991
-    CandlesResponseExample:
-      value:
-        data:
-        - start: 3318215482991
-          open: '92087.81'
-          high: '92133.89'
-          low: '92052.39'
-          close: '92067.31'
-          volume: '0.00067964'
-        - start: 3318215782991
-          open: '90390.46'
-          high: '90395'
-          low: '90358.84'
-          close: '90395'
-          volume: '0.00230816'
-  parameters:
-    XRevxSignature:
-      in: header
-      name: X-Revx-Signature
-      required: true
-      description: "The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::"
-      schema:
-        type: string
-        example: 2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+
-    XRevxTimestamp:
-      in: header
-      name: X-Revx-Timestamp
-      required: true
-      description: "Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers."
-      schema:
-        type: integer
-        example: 1746007718237
   schemas:
-    TickersResponse:
-      type: object
-      description: Response containing ticker information for currency pairs.
-      required:
-      - data
-      - metadata
-      properties:
-        data:
-          type: array
-          description: List of ticker information for currency pairs.
-          items:
-            $ref: '#/components/schemas/Ticker'
-        metadata:
-          type: object
-          description: Metadata about the response.
-          required:
-          - timestamp
-          properties:
-            timestamp:
-              type: integer
-              format: int64
-              description: The time the data was captured in Unix epoch milliseconds.
-              example: 1770201294631
-    Candle:
-      type: object
-      required:
-      - start
-      - open
-      - high
-      - low
-      - close
-      - volume
-      properties:
-        start:
-          type: integer
-          format: int64
-          description: Start timestamp of the candle in Unix epoch milliseconds.
-        open:
-          type: string
-          format: decimal
-          description: Opening price.
-        high:
-          type: string
-          format: decimal
-          description: Highest price during the interval.
-        low:
-          type: string
-          format: decimal
-          description: Lowest price during the interval.
-        close:
-          type: string
-          format: decimal
-          description: Closing price.
-        volume:
-          type: string
-          format: decimal
-          description: Total trading volume during the interval.
     ErrorResponse:
       type: object
       description: Standard error response structure
@@ -501,48 +270,6 @@ components:
       required:
       - data
       - metadata
-    Ticker:
-      type: object
-      description: 'Real-time market data snapshot for a specific trading pair.
-
-        Includes the current best bid/ask prices and the most recent trade price.'
-      required:
-      - symbol
-      - bid
-      - ask
-      - mid
-      - last_price
-      properties:
-        symbol:
-          type: string
-          description: The unique identifier for the currency pair (e.g., `BTC/USD`).
-          example: BTC/USD
-        bid:
-          type: string
-          format: decimal
-          description: 'The current highest price a buyer is willing to pay.
-
-            Represents the top price in the buy order book.'
-          example: '65100.50'
-        ask:
-          type: string
-          format: decimal
-          description: 'The current lowest price a seller is willing to accept.
-
-            Represents the top price in the sell order book.'
-          example: '65101.00'
-        mid:
-          type: string
-          format: decimal
-          description: 'The arithmetic midpoint between the best bid and best ask prices.
-
-            Calculated as `(bid + ask) / 2`.'
-          example: '65100.75'
-        last_price:
-          type: string
-          format: decimal
-          description: The price at which the most recent trade was successfully executed.
-          example: '65101.00'
     OrderBookPriceLevel:
       type: object
       description: A single order book price level.
@@ -617,6 +344,279 @@ components:
       - 'no'
       - ts
       - pdt
+    Ticker:
+      type: object
+      description: 'Real-time market data snapshot for a specific trading pair.
+
+        Includes the current best bid/ask prices and the most recent trade price.'
+      required:
+      - symbol
+      - bid
+      - ask
+      - mid
+      - last_price
+      properties:
+        symbol:
+          type: string
+          description: The unique identifier for the currency pair (e.g., `BTC/USD`).
+          example: BTC/USD
+        bid:
+          type: string
+          format: decimal
+          description: 'The current highest price a buyer is willing to pay.
+
+            Represents the top price in the buy order book.'
+          example: '65100.50'
+        ask:
+          type: string
+          format: decimal
+          description: 'The current lowest price a seller is willing to accept.
+
+            Represents the top price in the sell order book.'
+          example: '65101.00'
+        mid:
+          type: string
+          format: decimal
+          description: 'The arithmetic midpoint between the best bid and best ask prices.
+
+            Calculated as `(bid + ask) / 2`.'
+          example: '65100.75'
+        last_price:
+          type: string
+          format: decimal
+          description: The price at which the most recent trade was successfully executed.
+          example: '65101.00'
+    Candle:
+      type: object
+      required:
+      - start
+      - open
+      - high
+      - low
+      - close
+      - volume
+      properties:
+        start:
+          type: integer
+          format: int64
+          description: Start timestamp of the candle in Unix epoch milliseconds.
+        open:
+          type: string
+          format: decimal
+          description: Opening price.
+        high:
+          type: string
+          format: decimal
+          description: Highest price during the interval.
+        low:
+          type: string
+          format: decimal
+          description: Lowest price during the interval.
+        close:
+          type: string
+          format: decimal
+          description: Closing price.
+        volume:
+          type: string
+          format: decimal
+          description: Total trading volume during the interval.
+    TickersResponse:
+      type: object
+      description: Response containing ticker information for currency pairs.
+      required:
+      - data
+      - metadata
+      properties:
+        data:
+          type: array
+          description: List of ticker information for currency pairs.
+          items:
+            $ref: '#/components/schemas/Ticker'
+        metadata:
+          type: object
+          description: Metadata about the response.
+          required:
+          - timestamp
+          properties:
+            timestamp:
+              type: integer
+              format: int64
+              description: The time the data was captured in Unix epoch milliseconds.
+              example: 1770201294631
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: API key can only be used for authentication from whitelisted IP
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    RateLimitExceeded:
+      description: Rate Limit Exceeded
+      headers:
+        Retry-After:
+          description: The number of milliseconds to wait before making a new request.
+          schema:
+            type: integer
+            example: 5000
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Rate Limit Exceeded
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Forbidden
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: 'No such pair: BTC-BTC'
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Something went wrong!
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Request timestamp is in the future
+            error_id: 7d85b5e7-d0f0-4696-b7b5-a300d0d03a5e
+            timestamp: 3318215482991
+  examples:
+    TickersResponseExample:
+      value:
+        data:
+        - symbol: BTC/USD
+          bid: '0.02'
+          ask: '0.02'
+          mid: '0.02'
+          last_price: '0.02'
+        - symbol: ETH/USD
+          bid: '0.02'
+          ask: '0.02'
+          mid: '0.02'
+          last_price: '0.02'
+        metadata:
+          timestamp: 1770201294631
+    CandlesResponseExample:
+      value:
+        data:
+        - start: 3318215482991
+          open: '92087.81'
+          high: '92133.89'
+          low: '92052.39'
+          close: '92067.31'
+          volume: '0.00067964'
+        - start: 3318215782991
+          open: '90390.46'
+          high: '90395'
+          low: '90358.84'
+          close: '90395'
+          volume: '0.00230816'
+    OrderBook:
+      value:
+        data:
+          asks:
+          - aid: ETH
+            anm: Ethereum
+            s: SELL
+            p: '4600'
+            pc: USD
+            pn: MONE
+            q: '17'
+            qc: ETH
+            qn: UNIT
+            ve: REVX
+            'no': '3'
+            ts: CLOB
+            pdt: 3318215482991
+          - aid: ETH
+            anm: Ethereum
+            s: SELL
+            p: '4555'
+            pc: USD
+            pn: MONE
+            q: '2.1234'
+            qc: ETH
+            qn: UNIT
+            ve: REVX
+            'no': '2'
+            ts: CLOB
+            pdt: 3318215482991
+          bids:
+          - aid: ETH
+            anm: Ethereum
+            s: BUYI
+            p: '4550'
+            pc: USD
+            pn: MONE
+            q: '0.25'
+            qc: ETH
+            qn: UNIT
+            ve: REVX
+            'no': '1'
+            ts: CLOB
+            pdt: 3318215482991
+          - aid: ETH
+            anm: Ethereum
+            s: BUYI
+            p: '4500'
+            pc: USD
+            pn: MONE
+            q: '24.42'
+            qc: ETH
+            qn: UNIT
+            ve: REVX
+            'no': '5'
+            ts: CLOB
+            pdt: 3318215482991
+        metadata:
+          timestamp: 3318215482991
+  parameters:
+    XRevxTimestamp:
+      in: header
+      name: X-Revx-Timestamp
+      required: true
+      description: "Current timestamp in Unix epoch milliseconds. \nUsed to prevent replay attacks and construct the signature.\nProvided with other authentication headers."
+      schema:
+        type: integer
+        example: 1746007718237
+    XRevxSignature:
+      in: header
+      name: X-Revx-Signature
+      required: true
+      description: "The Ed25519 signature of the request. \nProvided with other authentication headers.\n\n:::tip\nSee **Authentication headers: Signing a request** for details on how to generate this.\n:::"
+      schema:
+        type: string
+        example: 2h/t5o8w+l5s+fjyfA0n/e7j4u5b7h4e+g4k4c8h7a2p6k0g7j1f+w0i2j3k9r0l3s8m5t6r+q1s+o3v/t4x8v5y+w1r+m2t/k3w/j4y+
   securitySchemes:
     ApiKey:
       type: apiKey

@@ -463,6 +463,18 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
     Role:
       type: object
       properties:
@@ -485,6 +497,16 @@ components:
       - name
       - created_at
       - updated_at
+    TeamMemberState:
+      description: The state that the team member is in.
+      enum:
+      - created
+      - confirmed
+      - waiting
+      - active
+      - locked
+      - disabled
+      type: string
     TeamMember:
       type: object
       properties:
@@ -522,28 +544,6 @@ components:
       - role_id
       - created_at
       - updated_at
-    Error:
-      type: object
-      properties:
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
-      required:
-      - code
-      - message
-    TeamMemberState:
-      description: The state that the team member is in.
-      enum:
-      - created
-      - confirmed
-      - waiting
-      - active
-      - locked
-      - disabled
-      type: string
   securitySchemes:
     AccessToken:
       type: http

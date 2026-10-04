@@ -1576,14 +1576,36 @@ paths:
       - Counterparties
 components:
   schemas:
-    CounterpartyErrorParams:
+    CounterpartyCard:
       type: object
-      description: Additional parameters related to the error.
+      required:
+      - id
+      - name
+      - last_digits
+      - scheme
+      - country
+      - currency
       properties:
-        counterparty_id:
+        id:
           type: string
           format: uuid
-          description: The ID of the Revolut counterparty (i.e. internal counterparty) that already exists.
+          description: The ID of the counterparty's card.
+        name:
+          type: string
+          description: The name of the counterparty.
+        last_digits:
+          type: string
+          description: The last four digits of the card number.
+        scheme:
+          type: string
+          enum:
+          - visa
+          - mastercard
+          description: The card brand.
+        country:
+          $ref: '#/components/schemas/CountryCodeCard'
+        currency:
+          $ref: '#/components/schemas/Currency'
     CounterpartyRequirementsFieldOption:
       type: object
       description: An allowed value option for the field.
@@ -1596,47 +1618,97 @@ components:
           description: Indicates the default option for the field if there is one.
       required:
       - value
-    CounterpartyRequirementsFieldRegex:
+    CounterpartyRequirementsField:
       type: object
-      description: Regular expression validation rules.
+      description: Represents a contextual field and its rules.
       properties:
-        pattern:
+        name:
           type: string
-          description: The regex pattern the field value must match.
-        description:
-          type: string
-          description: A human-readable description of the regex constraint.
+          description: "The name of the field to be provided in the [Create a counterparty endpoint](https://developer.revolut.com/docs/api/business#add-counterparty) request body. \nMatches the field names in the Create a counterparty endpoint exactly (e.g. `first_name`, `last_name`, `tax_id`, `route`, `account_type`)."
+        required:
+          type: boolean
+          description: Indicates whether this field must be provided when creating the counterparty.
+        regex:
+          $ref: '#/components/schemas/CounterpartyRequirementsFieldRegex'
+        options:
+          type: array
+          description: 'A list of allowed values for the field (enum).
+
+            If provided, the field value must be one of these options.'
+          items:
+            $ref: '#/components/schemas/CounterpartyRequirementsFieldOption'
       required:
-      - pattern
-      - description
+      - name
+      - required
+    CounterpartyRequirementsResponse:
+      type: object
+      description: The response containing applicable counterparty fields and their validation rules.
+      properties:
+        fields:
+          type: array
+          description: A list of applicable and conditionally required fields for the specific counterparty context.
+          items:
+            $ref: '#/components/schemas/CounterpartyRequirementsField'
+      required:
+      - fields
+    BankCountryCode:
+      type: string
+      pattern: ^[A-Z]{2}$
+      description: The country of the bank, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+      example: GB
     CountryCode:
       type: string
       pattern: ^[A-Z]{2}$
       description: The counterparty's bank country, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
-    Currency:
-      type: string
-      pattern: ^[A-Z]{3}$
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
-    CountryCodeCard:
-      type: string
-      pattern: ^[A-Z]{2}$
-      description: The country of the card issuer, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
-    ErrorWithId:
-      required:
-      - code
-      - message
-      - error_id
+    Error:
       type: object
       properties:
-        error_id:
-          type: string
-          description: The ID of the specific error instance. Used for traceability.
         code:
           type: integer
           description: The error code.
         message:
           type: string
           description: The description of the error.
+      required:
+      - code
+      - message
+    CounterpartyCountriesResponse:
+      type: object
+      description: The response containing supported bank countries and their available currencies.
+      properties:
+        countries:
+          type: array
+          description: A list of supported bank countries.
+          items:
+            $ref: '#/components/schemas/CounterpartyCountry'
+      required:
+      - countries
+    CounterpartyError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+        params:
+          $ref: '#/components/schemas/CounterpartyErrorParams'
+      required:
+      - code
+      - message
+    AccountCurrency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    UpdateCounterpartyPaymentMethodRequest:
+      type: object
+      description: The request body for updating a counterparty's payment method address.
+      required:
+      - address
+      properties:
+        address:
+          $ref: '#/components/schemas/UpdateCounterpartyPaymentMethodAddress'
     CounterpartyAddress:
       type: object
       description: The address of the counterparty's account.
@@ -1680,257 +1752,23 @@ components:
         last_name:
           type: string
           description: The last name of the individual counterparty.
-    BankCountryCode:
+    CounterpartyRequirementsFieldRegex:
+      type: object
+      description: Regular expression validation rules.
+      properties:
+        pattern:
+          type: string
+          description: The regex pattern the field value must match.
+        description:
+          type: string
+          description: A human-readable description of the regex constraint.
+      required:
+      - pattern
+      - description
+    CountryCodeCard:
       type: string
       pattern: ^[A-Z]{2}$
-      description: The country of the bank, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
-      example: GB
-    UpdateCounterpartyPaymentMethodAddress:
-      type: object
-      description: The updated address for the counterparty's payment method. All required fields must be provided.
-      properties:
-        street_line1:
-          type: string
-          maxLength: 100
-          description: Street line 1 information.
-          example: 7 Revolut Street
-        street_line2:
-          type: string
-          maxLength: 100
-          description: Street line 2 information.
-          example: Floor 3
-        region:
-          type: string
-          maxLength: 50
-          description: The name of the region (state or province), for example, Ontario for Canada.
-          example: Greater London
-        city:
-          type: string
-          maxLength: 50
-          description: The name of the city.
-          example: London
-        country:
-          type: string
-          pattern: ^[A-Z]{2}$
-          description: The country of the counterparty, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
-          example: GB
-        postcode:
-          type: string
-          maxLength: 15
-          description: The postcode of the counterparty address.
-          example: EC2V 8PH
-      required:
-      - country
-      - street_line1
-      - city
-      - postcode
-    ProfileType:
-      type: string
-      enum:
-      - personal
-      - business
-      description: 'The type of the counterparty.
-
-        Indicates whether the recipient is an individual or a company.'
-    AccountCurrency:
-      type: string
-      pattern: ^[A-Z]{3}$
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
-    UpdateCounterpartyPaymentMethodRequest:
-      type: object
-      description: The request body for updating a counterparty's payment method address.
-      required:
-      - address
-      properties:
-        address:
-          $ref: '#/components/schemas/UpdateCounterpartyPaymentMethodAddress'
-    CounterpartyRequirementsResponse:
-      type: object
-      description: The response containing applicable counterparty fields and their validation rules.
-      properties:
-        fields:
-          type: array
-          description: A list of applicable and conditionally required fields for the specific counterparty context.
-          items:
-            $ref: '#/components/schemas/CounterpartyRequirementsField'
-      required:
-      - fields
-    BeneficiaryAddress:
-      type: object
-      description: The address of the counterparty.
-      properties:
-        street_line1:
-          type: string
-          description: Street line 1 information.
-          example: Revolut LTD
-        street_line2:
-          type: string
-          description: Street line 2 information.
-          example: 1 Canada Square
-        region:
-          type: string
-          description: The name of the region (state or province), for example, Ontario for Canada.
-          example: Ontario
-        city:
-          type: string
-          description: The name of the city.
-          example: London
-        country:
-          type: string
-          pattern: ^[A-Z]{2}$
-          description: The country of the counterparty, as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
-          example: GB
-        postcode:
-          type: string
-          description: The postcode of the counterparty address.
-          example: E14 5AB
-      required:
-      - country
-      - postcode
-    CounterpartyCard:
-      type: object
-      required:
-      - id
-      - name
-      - last_digits
-      - scheme
-      - country
-      - currency
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the counterparty's card.
-        name:
-          type: string
-          description: The name of the counterparty.
-        last_digits:
-          type: string
-          description: The last four digits of the card number.
-        scheme:
-          type: string
-          enum:
-          - visa
-          - mastercard
-          description: The card brand.
-        country:
-          $ref: '#/components/schemas/CountryCodeCard'
-        currency:
-          $ref: '#/components/schemas/Currency'
-    Counterparty:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the counterparty.
-        name:
-          type: string
-          description: The name of the counterparty.
-        revtag:
-          type: string
-          description: The [Revtag](https://help.revolut.com/help/transfers/internal-transfers/username-payments/revtags/) of the counterparty.
-        profile_type:
-          $ref: '#/components/schemas/ProfileType'
-        country:
-          $ref: '#/components/schemas/CountryCode'
-        state:
-          enum:
-          - created
-          - draft
-          - deleted
-          description: Indicates the state of the counterparty.
-          type: string
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time the counterparty was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-        updated_at:
-          type: string
-          format: date-time
-          description: The date and time the counterparty was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-        accounts:
-          type: array
-          description: The list of public accounts associated with this counterparty.
-          items:
-            $ref: '#/components/schemas/CounterpartyAccount'
-        cards:
-          type: array
-          description: The list of cards associated with this counterparty.
-          items:
-            $ref: '#/components/schemas/CounterpartyCard'
-      required:
-      - id
-      - name
-      - state
-      - created_at
-      - updated_at
-    Error:
-      type: object
-      properties:
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
-      required:
-      - code
-      - message
-    CounterpartyRequirementsField:
-      type: object
-      description: Represents a contextual field and its rules.
-      properties:
-        name:
-          type: string
-          description: "The name of the field to be provided in the [Create a counterparty endpoint](https://developer.revolut.com/docs/api/business#add-counterparty) request body. \nMatches the field names in the Create a counterparty endpoint exactly (e.g. `first_name`, `last_name`, `tax_id`, `route`, `account_type`)."
-        required:
-          type: boolean
-          description: Indicates whether this field must be provided when creating the counterparty.
-        regex:
-          $ref: '#/components/schemas/CounterpartyRequirementsFieldRegex'
-        options:
-          type: array
-          description: 'A list of allowed values for the field (enum).
-
-            If provided, the field value must be one of these options.'
-          items:
-            $ref: '#/components/schemas/CounterpartyRequirementsFieldOption'
-      required:
-      - name
-      - required
-    ValidateAccountNameResponse:
-      discriminator:
-        mapping:
-          UK: '#/components/schemas/ValidateAccountNameResponseUK'
-          AU: '#/components/schemas/ValidateAccountNameResponseAU'
-          RO: '#/components/schemas/ValidateAccountNameResponseRO'
-          EUR: '#/components/schemas/ValidateAccountNameResponseEUR'
-    CounterpartyCountriesResponse:
-      type: object
-      description: The response containing supported bank countries and their available currencies.
-      properties:
-        countries:
-          type: array
-          description: A list of supported bank countries.
-          items:
-            $ref: '#/components/schemas/CounterpartyCountry'
-      required:
-      - countries
-    CounterpartyError:
-      type: object
-      properties:
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
-        params:
-          $ref: '#/components/schemas/CounterpartyErrorParams'
-      required:
-      - code
-      - message
+      description: The country of the card issuer, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
     CounterpartyAccount:
       type: object
       properties:
@@ -2048,17 +1886,20 @@ components:
       - id
       - currency
       - type
-    ValidateAccountNameRequest:
-      discriminator:
-        mapping:
-          UK: '#/components/schemas/ValidateAccountNameRequestUK'
-          AU: '#/components/schemas/ValidateAccountNameRequestAU'
-          RO: '#/components/schemas/ValidateAccountNameRequestRO'
-          EUR: '#/components/schemas/ValidateAccountNameRequestEUR'
-    Counterparties:
-      type: array
-      items:
-        $ref: '#/components/schemas/Counterparty'
+    CounterpartyCountry:
+      type: object
+      description: A supported bank country with its available currencies.
+      properties:
+        country:
+          $ref: '#/components/schemas/BankCountryCode'
+        currencies:
+          type: array
+          description: The currencies available for counterparty creation in this country.
+          items:
+            $ref: '#/components/schemas/Currency'
+      required:
+      - country
+      - currencies
     CreateCounterpartyRequest:
       type: object
       properties:
@@ -2197,20 +2038,179 @@ components:
           maxLength: 64
           description: 'Company registration number. Required for business LK counterparties (`profile_type`: `business`).'
           example: PV12345
-    CounterpartyCountry:
+    CounterpartyErrorParams:
       type: object
-      description: A supported bank country with its available currencies.
+      description: Additional parameters related to the error.
       properties:
+        counterparty_id:
+          type: string
+          format: uuid
+          description: The ID of the Revolut counterparty (i.e. internal counterparty) that already exists.
+    Counterparties:
+      type: array
+      items:
+        $ref: '#/components/schemas/Counterparty'
+    BeneficiaryAddress:
+      type: object
+      description: The address of the counterparty.
+      properties:
+        street_line1:
+          type: string
+          description: Street line 1 information.
+          example: Revolut LTD
+        street_line2:
+          type: string
+          description: Street line 2 information.
+          example: 1 Canada Square
+        region:
+          type: string
+          description: The name of the region (state or province), for example, Ontario for Canada.
+          example: Ontario
+        city:
+          type: string
+          description: The name of the city.
+          example: London
         country:
-          $ref: '#/components/schemas/BankCountryCode'
-        currencies:
-          type: array
-          description: The currencies available for counterparty creation in this country.
-          items:
-            $ref: '#/components/schemas/Currency'
+          type: string
+          pattern: ^[A-Z]{2}$
+          description: The country of the counterparty, as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+          example: GB
+        postcode:
+          type: string
+          description: The postcode of the counterparty address.
+          example: E14 5AB
       required:
       - country
-      - currencies
+      - postcode
+    UpdateCounterpartyPaymentMethodAddress:
+      type: object
+      description: The updated address for the counterparty's payment method. All required fields must be provided.
+      properties:
+        street_line1:
+          type: string
+          maxLength: 100
+          description: Street line 1 information.
+          example: 7 Revolut Street
+        street_line2:
+          type: string
+          maxLength: 100
+          description: Street line 2 information.
+          example: Floor 3
+        region:
+          type: string
+          maxLength: 50
+          description: The name of the region (state or province), for example, Ontario for Canada.
+          example: Greater London
+        city:
+          type: string
+          maxLength: 50
+          description: The name of the city.
+          example: London
+        country:
+          type: string
+          pattern: ^[A-Z]{2}$
+          description: The country of the counterparty, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+          example: GB
+        postcode:
+          type: string
+          maxLength: 15
+          description: The postcode of the counterparty address.
+          example: EC2V 8PH
+      required:
+      - country
+      - street_line1
+      - city
+      - postcode
+    ProfileType:
+      type: string
+      enum:
+      - personal
+      - business
+      description: 'The type of the counterparty.
+
+        Indicates whether the recipient is an individual or a company.'
+    Counterparty:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the counterparty.
+        name:
+          type: string
+          description: The name of the counterparty.
+        revtag:
+          type: string
+          description: The [Revtag](https://help.revolut.com/help/transfers/internal-transfers/username-payments/revtags/) of the counterparty.
+        profile_type:
+          $ref: '#/components/schemas/ProfileType'
+        country:
+          $ref: '#/components/schemas/CountryCode'
+        state:
+          enum:
+          - created
+          - draft
+          - deleted
+          description: Indicates the state of the counterparty.
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the counterparty was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the counterparty was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        accounts:
+          type: array
+          description: The list of public accounts associated with this counterparty.
+          items:
+            $ref: '#/components/schemas/CounterpartyAccount'
+        cards:
+          type: array
+          description: The list of cards associated with this counterparty.
+          items:
+            $ref: '#/components/schemas/CounterpartyCard'
+      required:
+      - id
+      - name
+      - state
+      - created_at
+      - updated_at
+    ErrorWithId:
+      required:
+      - code
+      - message
+      - error_id
+      type: object
+      properties:
+        error_id:
+          type: string
+          description: The ID of the specific error instance. Used for traceability.
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+    ValidateAccountNameRequest:
+      discriminator:
+        mapping:
+          UK: '#/components/schemas/ValidateAccountNameRequestUK'
+          AU: '#/components/schemas/ValidateAccountNameRequestAU'
+          RO: '#/components/schemas/ValidateAccountNameRequestRO'
+          EUR: '#/components/schemas/ValidateAccountNameRequestEUR'
+    ValidateAccountNameResponse:
+      discriminator:
+        mapping:
+          UK: '#/components/schemas/ValidateAccountNameResponseUK'
+          AU: '#/components/schemas/ValidateAccountNameResponseAU'
+          RO: '#/components/schemas/ValidateAccountNameResponseRO'
+          EUR: '#/components/schemas/ValidateAccountNameResponseEUR'
+    Currency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
   securitySchemes:
     AccessToken:
       type: http

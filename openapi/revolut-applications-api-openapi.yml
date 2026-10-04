@@ -269,7 +269,63 @@ paths:
                 - ErrorCode: UK.OBIE.Resource.Forbidden
                   Message: Access forbidden
 components:
+  parameters:
+    ClientId:
+      name: ClientId
+      in: path
+      description: The Client ID of the application.
+      required: true
+      schema:
+        type: string
   schemas:
+    GetApplicationResponse:
+      type: object
+      properties:
+        client_id:
+          type: string
+          description: The Client ID used to identify the application.
+        token_endpoint_auth_method:
+          type: string
+          description: 'Specifies the authentication method for the `/token` endpoint.
+
+
+            Currently, only `tls_client_auth` is supported.'
+          enum:
+          - tls_client_auth
+        tls_client_auth_dn:
+          type: string
+          description: Distinguished name (DN) of the transport certificate used by the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        id_token_signed_response_alg:
+          type: string
+          description: The signing algorithm used to sign the `id_token` JWTs. Currently, only `PS256` is supported.
+          enum:
+          - tls_client_auth
+        request_object_signing_alg:
+          type: string
+          description: The signing algorithm used to sign request objects. Currently, only `PS256` is supported.
+          enum:
+          - tls_client_auth
+        redirect_uris:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: List of the registered URIs that the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) will use to interact with the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
+        org_jwks_endpoint:
+          type: string
+          format: uri
+          description: Public URI endpoint where the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) has uploaded their JWKS in JSON format.
+        org_name:
+          type: string
+          description: Legal Entity Identifier or other known organisation name.
+        scope:
+          type: string
+          description: 'List of scopes that the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) has access to, provided as a **space-separated string**.
+
+            For example, `"openid accounts payments"`.
+
+            Possible scopes to list: `openid`, `accounts`, `payments`, `fundsconfirmation`.'
+          example: openid payments
     OBError1:
       required:
       - ErrorCode
@@ -288,36 +344,6 @@ components:
           description: 'The description of the error that occurred.
 
             For example, `A mandatory field isn''t supplied`, `RequestedExecutionDateTime must be in future`, and `OBIE doesn''t standardise this field`.'
-    OBErrorResponse1:
-      required:
-      - Code
-      - Errors
-      - Message
-      type: object
-      properties:
-        Code:
-          maxLength: 40
-          minLength: 1
-          type: string
-          description: The error code in high level that helps categorize the error.
-        Id:
-          maxLength: 40
-          minLength: 1
-          type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        Message:
-          maxLength: 500
-          minLength: 1
-          type: string
-          description: 'The error message.
-
-            For example, `There is something wrong with the request parameters provided`.'
-        Errors:
-          minItems: 1
-          type: array
-          items:
-            $ref: '#/components/schemas/OBError1'
-      description: The detailed information about the error to help troubleshooting.
     RegisterApplicationResponse:
       type: object
       properties:
@@ -389,62 +415,36 @@ components:
         scope:
           type: string
           description: List of scopes that the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) has access to, separated by spaces.
-    GetApplicationResponse:
+    OBErrorResponse1:
+      required:
+      - Code
+      - Errors
+      - Message
       type: object
       properties:
-        client_id:
+        Code:
+          maxLength: 40
+          minLength: 1
           type: string
-          description: The Client ID used to identify the application.
-        token_endpoint_auth_method:
+          description: The error code in high level that helps categorize the error.
+        Id:
+          maxLength: 40
+          minLength: 1
           type: string
-          description: 'Specifies the authentication method for the `/token` endpoint.
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        Message:
+          maxLength: 500
+          minLength: 1
+          type: string
+          description: 'The error message.
 
-
-            Currently, only `tls_client_auth` is supported.'
-          enum:
-          - tls_client_auth
-        tls_client_auth_dn:
-          type: string
-          description: Distinguished name (DN) of the transport certificate used by the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
-        id_token_signed_response_alg:
-          type: string
-          description: The signing algorithm used to sign the `id_token` JWTs. Currently, only `PS256` is supported.
-          enum:
-          - tls_client_auth
-        request_object_signing_alg:
-          type: string
-          description: The signing algorithm used to sign request objects. Currently, only `PS256` is supported.
-          enum:
-          - tls_client_auth
-        redirect_uris:
+            For example, `There is something wrong with the request parameters provided`.'
+        Errors:
+          minItems: 1
           type: array
           items:
-            type: string
-            format: uri
-          description: List of the registered URIs that the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) will use to interact with the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary).
-        org_jwks_endpoint:
-          type: string
-          format: uri
-          description: Public URI endpoint where the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) has uploaded their JWKS in JSON format.
-        org_name:
-          type: string
-          description: Legal Entity Identifier or other known organisation name.
-        scope:
-          type: string
-          description: 'List of scopes that the [TPP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) has access to, provided as a **space-separated string**.
-
-            For example, `"openid accounts payments"`.
-
-            Possible scopes to list: `openid`, `accounts`, `payments`, `fundsconfirmation`.'
-          example: openid payments
-  parameters:
-    ClientId:
-      name: ClientId
-      in: path
-      description: The Client ID of the application.
-      required: true
-      schema:
-        type: string
+            $ref: '#/components/schemas/OBError1'
+      description: The detailed information about the error to help troubleshooting.
   securitySchemes:
     AccessToken:
       type: apiKey

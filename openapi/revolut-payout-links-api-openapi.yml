@@ -447,68 +447,71 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 components:
-  examples:
-    payoutLinkProcessed:
-      id: 8e32b08a-e012-4530-bd15-c4e9ebde953d
-      state: processed
-      created_at: '2024-01-11T14:02:53.472318Z'
-      updated_at: '2024-01-11T14:05:02.962886Z'
-      counterparty_name: Jane Doe
-      request_id: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dMM
-      expiry_date: '2023-07-18T14:02:53.717626Z'
-      payout_methods:
-      - revolut
-      account_id: 85f515e4-588f-4496-a6a5-a7615a193e6b
-      amount: 5.6
-      currency: GBP
-      counterparty_id: 2ef4618a-f258-4ac5-a846-ca6e089214f6
-      transaction_id: 64ad618e-655a-a925-8425-2284c03f6c08
-      reference: Bus ticket
-      transfer_reason_code: travel
-    payoutLinkCancelled:
-      id: 12dcd8c2-6408-458f-98a9-3f4abc180898
-      state: cancelled
-      created_at: '2023-07-11T13:55:54.834963Z'
-      updated_at: '2023-07-11T15:01:20.236508Z'
-      counterparty_name: John Doe
-      request_id: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dd1
-      expiry_date: '2023-07-18T13:55:55.082280Z'
-      payout_methods:
-      - revolut
-      - bank_account
-      account_id: 85f515e4-588f-4496-a6a5-a7615a193e6b
-      amount: 105.6
-      currency: GBP
-      reference: Rent
-      transfer_reason_code: property_rental
-    payoutLinkActive:
-      id: 12dcd8c2-6408-458f-98a9-3f4abc180898
-      state: active
-      created_at: '2023-07-11T13:55:54.834963Z'
-      updated_at: '2023-07-11T13:55:55.082655Z'
-      counterparty_name: John Smith
-      request_id: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dd1
-      expiry_date: '2023-07-18T13:55:55.082280Z'
-      payout_methods:
+  schemas:
+    PayoutLinkReference:
+      type: string
+      description: The reference for the payout transaction, provided by the sender.
+      example: Rent
+    PayoutLinkPayoutMethods:
+      type: array
+      items:
+        $ref: '#/components/schemas/PayoutMethod'
+      explode: true
+      description: "The list of payout methods that the recipient can use to claim the payout, where:\n- `revolut`: Revolut peer-to-peer (P2P) transfer\n- `bank_account`: External bank transfer\n- `card`: Card transfer\n  :::note\n  - This payout method is available in the UK and the EEA.\n  - This payout method is not available in Sandbox.\n  :::"
+      example:
       - revolut
       - bank_account
       - card
-      account_id: 85f515e4-588f-4496-a6a5-a7615a193e6b
-      amount: 105.6
-      currency: GBP
-      url: https://business.revolut.com/p/uSJVAd5SnP1
-      reference: Rent
-      transfer_reason_code: property_rental
-  schemas:
+    TransferReasonCode:
+      type: string
+      description: "The reason code for the transaction. Transactions to certain countries and currencies might require you to provide a transfer reason. \nYou can check available reason codes with the [`GET /transfer-reasons` operation](https://developer.revolut.com/docs/api/business#get-transfer-reasons).\n\nIf a transfer reason is not required for the given currency and country, this field is ignored."
+      example: property_rental
+    CountryCode:
+      type: string
+      pattern: ^[A-Z]{2}$
+      description: The counterparty's bank country, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+    TransferReasons:
+      type: array
+      items:
+        $ref: '#/components/schemas/TransferReason'
+    PayoutLinkExpiryDate:
+      type: string
+      format: date-time
+      description: 'The date and time after which the payout link expires in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
+
+        If the recipient doesn''t claim the money before then, the payout link expires and is no longer available.
+
+
+        The default and maximum value is the date and time of creating the link + 7 days.'
+      default: now + 7 days
+      maximum: now + 7 days
+      minimum: now + 1 day
+      example: 2023‐07‐20T15:09:24Z
     PayoutLinks:
       type: array
       items:
         $ref: '#/components/schemas/PayoutLink'
       description: A list of payout links
-    CountryCode:
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
+    PayoutLinkRequestId:
       type: string
-      pattern: ^[A-Z]{2}$
-      description: The counterparty's bank country, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+      description: The ID of the request, provided by the sender.
+      example: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dd1
+    PayoutLink:
+      allOf:
+      - $ref: '#/components/schemas/PayoutLinkInitialProps'
+      - $ref: '#/components/schemas/PayoutLinkAdditionalProps'
     PayoutLinkInitialProps:
       type: object
       required:
@@ -565,57 +568,6 @@ components:
           $ref: '#/components/schemas/PayoutLinkReference'
         transfer_reason_code:
           $ref: '#/components/schemas/TransferReasonCode'
-    Currency:
-      type: string
-      pattern: ^[A-Z]{3}$
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
-    PayoutLinkCounterpartyName:
-      type: string
-      description: The name of the counterparty provided by the sender.
-      example: John Smith
-    PayoutLinkAccountId:
-      type: string
-      format: uuid
-      description: The ID of the sender's account.
-      example: 85f515e4-588f-4496-a6a5-a7615a193e6b
-    PayoutLinkAdditionalProps:
-      type: object
-      properties:
-        counterparty_id:
-          type: string
-          format: uuid
-          description: "The ID of the counterparty created based on the recipient's details. \n\n:::note\nBy default, the newly created counterparty is hidden from your counterparties list. \n\nTo automatically save it when the link is claimed, pass the `save_counterparty` parameter set to `true`. \n\nAlternatively, you can add the recipient to your counterparties later from the list of transactions in the Business app.\n:::"
-        transaction_id:
-          type: string
-          format: uuid
-          description: The ID of the created transaction. Returned only if the payout has been claimed.
-        cancellation_reason:
-          type: string
-          readOnly: true
-          enum:
-          - too_many_name_check_attempts
-          description: The reason for which the payout link was cancelled.
-    PayoutLink:
-      allOf:
-      - $ref: '#/components/schemas/PayoutLinkInitialProps'
-      - $ref: '#/components/schemas/PayoutLinkAdditionalProps'
-    PayoutLinkExpiryDate:
-      type: string
-      format: date-time
-      description: 'The date and time after which the payout link expires in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).
-
-        If the recipient doesn''t claim the money before then, the payout link expires and is no longer available.
-
-
-        The default and maximum value is the date and time of creating the link + 7 days.'
-      default: now + 7 days
-      maximum: now + 7 days
-      minimum: now + 1 day
-      example: 2023‐07‐20T15:09:24Z
-    TransferReasonCode:
-      type: string
-      description: "The reason code for the transaction. Transactions to certain countries and currencies might require you to provide a transfer reason. \nYou can check available reason codes with the [`GET /transfer-reasons` operation](https://developer.revolut.com/docs/api/business#get-transfer-reasons).\n\nIf a transfer reason is not required for the given currency and country, this field is ignored."
-      example: property_rental
     PayoutLinkExpiryPeriod:
       type: string
       format: duration
@@ -627,17 +579,11 @@ components:
       maximum: P7D
       minimum: P1D
       example: P3D
-    PayoutMethod:
+    PayoutLinkAccountId:
       type: string
-      description: The payout method that the recipient can use to claim the payout.
-      enum:
-      - revolut
-      - bank_account
-      - card
-    PayoutLinkRequestId:
-      type: string
-      description: The ID of the request, provided by the sender.
-      example: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dd1
+      format: uuid
+      description: The ID of the sender's account.
+      example: 85f515e4-588f-4496-a6a5-a7615a193e6b
     TransferReason:
       type: object
       properties:
@@ -686,26 +632,6 @@ components:
       - currency
       - code
       - description
-    Error:
-      type: object
-      properties:
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
-      required:
-      - code
-      - message
-    TransferReasons:
-      type: array
-      items:
-        $ref: '#/components/schemas/TransferReason'
-    PayoutLinkReference:
-      type: string
-      description: The reference for the payout transaction, provided by the sender.
-      example: Rent
     PayoutLinkState:
       enum:
       - created
@@ -734,6 +660,21 @@ components:
         - `processing`: The payout link has been redeemed and is being processed.
 
         - `processed`: The payout link has been redeemed and the money has been transferred to the recipient.'
+    Currency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    PayoutMethod:
+      type: string
+      description: The payout method that the recipient can use to claim the payout.
+      enum:
+      - revolut
+      - bank_account
+      - card
+    PayoutLinkCounterpartyName:
+      type: string
+      description: The name of the counterparty provided by the sender.
+      example: John Smith
     PayoutLinkAmount:
       type: number
       format: double
@@ -746,16 +687,23 @@ components:
 
         :::'
       example: 105.6
-    PayoutLinkPayoutMethods:
-      type: array
-      items:
-        $ref: '#/components/schemas/PayoutMethod'
-      explode: true
-      description: "The list of payout methods that the recipient can use to claim the payout, where:\n- `revolut`: Revolut peer-to-peer (P2P) transfer\n- `bank_account`: External bank transfer\n- `card`: Card transfer\n  :::note\n  - This payout method is available in the UK and the EEA.\n  - This payout method is not available in Sandbox.\n  :::"
-      example:
-      - revolut
-      - bank_account
-      - card
+    PayoutLinkAdditionalProps:
+      type: object
+      properties:
+        counterparty_id:
+          type: string
+          format: uuid
+          description: "The ID of the counterparty created based on the recipient's details. \n\n:::note\nBy default, the newly created counterparty is hidden from your counterparties list. \n\nTo automatically save it when the link is claimed, pass the `save_counterparty` parameter set to `true`. \n\nAlternatively, you can add the recipient to your counterparties later from the list of transactions in the Business app.\n:::"
+        transaction_id:
+          type: string
+          format: uuid
+          description: The ID of the created transaction. Returned only if the payout has been claimed.
+        cancellation_reason:
+          type: string
+          readOnly: true
+          enum:
+          - too_many_name_check_attempts
+          description: The reason for which the payout link was cancelled.
     CreatePayoutLinkRequest:
       type: object
       required:
@@ -811,6 +759,58 @@ components:
           $ref: '#/components/schemas/PayoutLinkExpiryPeriod'
         transfer_reason_code:
           $ref: '#/components/schemas/TransferReasonCode'
+  examples:
+    payoutLinkCancelled:
+      id: 12dcd8c2-6408-458f-98a9-3f4abc180898
+      state: cancelled
+      created_at: '2023-07-11T13:55:54.834963Z'
+      updated_at: '2023-07-11T15:01:20.236508Z'
+      counterparty_name: John Doe
+      request_id: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dd1
+      expiry_date: '2023-07-18T13:55:55.082280Z'
+      payout_methods:
+      - revolut
+      - bank_account
+      account_id: 85f515e4-588f-4496-a6a5-a7615a193e6b
+      amount: 105.6
+      currency: GBP
+      reference: Rent
+      transfer_reason_code: property_rental
+    payoutLinkProcessed:
+      id: 8e32b08a-e012-4530-bd15-c4e9ebde953d
+      state: processed
+      created_at: '2024-01-11T14:02:53.472318Z'
+      updated_at: '2024-01-11T14:05:02.962886Z'
+      counterparty_name: Jane Doe
+      request_id: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dMM
+      expiry_date: '2023-07-18T14:02:53.717626Z'
+      payout_methods:
+      - revolut
+      account_id: 85f515e4-588f-4496-a6a5-a7615a193e6b
+      amount: 5.6
+      currency: GBP
+      counterparty_id: 2ef4618a-f258-4ac5-a846-ca6e089214f6
+      transaction_id: 64ad618e-655a-a925-8425-2284c03f6c08
+      reference: Bus ticket
+      transfer_reason_code: travel
+    payoutLinkActive:
+      id: 12dcd8c2-6408-458f-98a9-3f4abc180898
+      state: active
+      created_at: '2023-07-11T13:55:54.834963Z'
+      updated_at: '2023-07-11T13:55:55.082655Z'
+      counterparty_name: John Smith
+      request_id: 5a7fcb46-4be4-47d4-a56f-27a2e5b78dd1
+      expiry_date: '2023-07-18T13:55:55.082280Z'
+      payout_methods:
+      - revolut
+      - bank_account
+      - card
+      account_id: 85f515e4-588f-4496-a6a5-a7615a193e6b
+      amount: 105.6
+      currency: GBP
+      url: https://business.revolut.com/p/uSJVAd5SnP1
+      reference: Rent
+      transfer_reason_code: property_rental
   securitySchemes:
     AccessToken:
       type: http

@@ -792,6 +792,273 @@ paths:
                 $ref: '#/components/schemas/OBErrorResponse1'
 components:
   schemas:
+    OBExternalConsentStatus1Code:
+      type: string
+      description: The status of the consent.
+      enum:
+      - Authorised
+      - AwaitingAuthorisation
+      - Consumed
+      - Rejected
+    OBExternalAccountIdentification4Code:
+      type: string
+      description: The name of the identification scheme.
+      enum:
+      - UK.OBIE.IBAN
+      - UK.OBIE.SortCodeAccountNumber
+      - US.RoutingNumberAccountNumber
+      - US.BranchCodeAccountNumber
+      example: UK.OBIE.IBAN
+    OBExternalStatus1Code:
+      type: string
+      description: The status of the payment.
+      enum:
+      - InitiationCompleted
+      - InitiationFailed
+      - InitiationPending
+    OBWriteDataInternationalScheduledConsentResponse2:
+      required:
+      - ConsentId
+      - CreationDateTime
+      - Initiation
+      - Permission
+      - Status
+      - StatusUpdateDateTime
+      type: object
+      properties:
+        ConsentId:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
+        CreationDateTime:
+          type: string
+          description: 'The date and time when the resource was created.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Status:
+          $ref: '#/components/schemas/OBExternalConsentStatus1Code'
+        StatusUpdateDateTime:
+          type: string
+          description: 'The date and time when the resource status was updated.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Permission:
+          $ref: '#/components/schemas/OBExternalPermissions2Code'
+        ExchangeRateInformation:
+          $ref: '#/components/schemas/OBExchangeRate2'
+        Initiation:
+          $ref: '#/components/schemas/OBInternationalScheduled2'
+    Meta:
+      title: MetaData
+      type: object
+      properties:
+        TotalPages:
+          type: integer
+          description: Used for pagination. Indicates how many pages of results are available.
+          format: int32
+      description: Meta data relevant to the payload.
+    Links:
+      required:
+      - Self
+      type: object
+      properties:
+        Self:
+          type: string
+          description: The absolute URI to the resource.
+          format: uri
+        Next:
+          type: string
+          description: The absolute URI to the next pagination resource.
+          format: uri
+        Prev:
+          type: string
+          description: The absolute URI to the previous pagination resource.
+          format: uri
+      description: Links relevant to the payload.
+    OBCashAccountDebtor4:
+      required:
+      - Identification
+      - SchemeName
+      type: object
+      description: 'The details to identify the account from which the payment consent can be approved.
+
+
+        If provided in the consent, the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) will only be able to approve the payment consent from an account which matches the provided account identifier.
+
+        '
+      properties:
+        SchemeName:
+          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
+        Identification:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The identifier assigned to the account, which is known by the account owner.
+        Name:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: 'The name or names of the account owner(s) represented at an account level.
+
+
+            The account name is not the product name or the nickname of the account.
+
+
+            :::warning
+
+            The name value is not validated against the actual owner name of the account.
+
+            :::'
+        SecondaryIdentification:
+          maxLength: 34
+          minLength: 1
+          type: string
+          description: 'The secondary account ID that the account servicing institution assigns.
+
+
+            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
+    OBWriteDataInternationalScheduledResponse2:
+      required:
+      - ConsentId
+      - CreationDateTime
+      - Initiation
+      - InternationalScheduledPaymentId
+      - Status
+      - StatusUpdateDateTime
+      type: object
+      properties:
+        InternationalScheduledPaymentId:
+          maxLength: 40
+          minLength: 1
+          type: string
+          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the international scheduled payment resource.
+        ConsentId:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
+        CreationDateTime:
+          type: string
+          description: 'The date and time when the message was created.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        Status:
+          $ref: '#/components/schemas/OBExternalStatus1Code'
+        StatusUpdateDateTime:
+          type: string
+          description: 'The date and time when the resource status was updated.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        ExchangeRateInformation:
+          $ref: '#/components/schemas/OBExchangeRate2'
+        Initiation:
+          $ref: '#/components/schemas/OBInternationalScheduledInitiationResponse'
+        Permission:
+          $ref: '#/components/schemas/OBExternalPermissions2Code'
+    OBInternationalScheduled2:
+      type: object
+      description: The initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds from the debtor account to the creditor for a single scheduled international payment.
+      allOf:
+      - $ref: '#/components/schemas/OBInternationalScheduledBase'
+      - type: object
+        properties:
+          DebtorAccount:
+            $ref: '#/components/schemas/OBCashAccountDebtor4'
+      - type: object
+        required:
+        - CreditorAccount
+        - CurrencyOfTransfer
+        - InstructedAmount
+        - InstructionIdentification
+        - RequestedExecutionDateTime
+    OBWriteDataInternationalScheduledConsent2:
+      required:
+      - Initiation
+      - Permission
+      type: object
+      properties:
+        Permission:
+          $ref: '#/components/schemas/OBExternalPermissions2Code'
+        Initiation:
+          $ref: '#/components/schemas/OBInternationalScheduled2'
+    OBChargeBearerType1Code:
+      type: string
+      description: The party or parties bear the charges associated with the processing of the payment transaction.
+      enum:
+      - BorneByDebtor
+      - FollowingServiceLevel
+    OBWriteInternationalScheduledConsentResponse2:
+      required:
+      - Data
+      - Links
+      - Meta
+      - Risk
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataInternationalScheduledConsentResponse2'
+        Risk:
+          $ref: '#/components/schemas/OBRisk1'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+    OBBranchAndFinancialInstitutionIdentification6:
+      type: object
+      properties:
+        SchemeName:
+          $ref: '#/components/schemas/OBExternalFinancialInstitutionIdentification4Code'
+        Identification:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: The unique ID of the servicing institution.
+        Name:
+          maxLength: 140
+          minLength: 1
+          type: string
+          description: The name of a known agent used to identify the agent.
+        PostalAddress:
+          $ref: '#/components/schemas/OBPostalAddress6'
+      description: 'The party that manages the account on behalf of the account owner by:
+
+        - Managing the registration and booking of entries on the account.
+
+        - Calculating balances on the account.
+
+        - Providing information about the account.
+
+
+        This is the servicer of the beneficiary account.'
     OBExternalFinancialInstitutionIdentification4Code:
       type: array
       items:
@@ -799,6 +1066,24 @@ components:
       description: The name of the identification scheme, which is published in an external list.
       example:
       - UK.OBIE.IBAN
+    OBWriteDataFundsConfirmationResponse1:
+      type: object
+      properties:
+        FundsAvailableResult:
+          $ref: '#/components/schemas/OBFundsAvailableResult1'
+    OBWriteFundsConfirmationResponse1:
+      required:
+      - Data
+      - Links
+      - Meta
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataFundsConfirmationResponse1'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
     OBError1:
       required:
       - ErrorCode
@@ -817,6 +1102,19 @@ components:
           description: 'The description of the error that occurred.
 
             For example, `A mandatory field isn''t supplied`, `RequestedExecutionDateTime must be in future`, and `OBIE doesn''t standardise this field`.'
+    OBWriteInternationalScheduledResponse2:
+      required:
+      - Data
+      - Links
+      - Meta
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OBWriteDataInternationalScheduledResponse2'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
     OBExternalPaymentContext1Code:
       type: string
       description: The payment context.
@@ -826,36 +1124,150 @@ components:
       - EcommerceServices
       - Other
       - PartyToParty
-    OBErrorResponse1:
+    OBExchangeRate2:
       required:
-      - Code
-      - Errors
-      - Message
+      - ExchangeRate
+      - RateType
+      - UnitCurrency
       type: object
       properties:
-        Code:
-          maxLength: 40
-          minLength: 1
+        UnitCurrency:
+          pattern: ^[A-Z]{3,3}$
           type: string
-          description: The error code in high level that helps categorize the error.
-        Id:
-          maxLength: 40
-          minLength: 1
-          type: string
-          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
-        Message:
-          maxLength: 500
-          minLength: 1
-          type: string
-          description: 'The error message.
+          description: 'The currency that the exchange rate is expressed in.
 
-            For example, `There is something wrong with the request parameters provided`.'
-        Errors:
-          minItems: 1
-          type: array
-          items:
-            $ref: '#/components/schemas/OBError1'
-      description: The detailed information about the error to help troubleshooting.
+            For example, for 1 GBP = xxx EUR, the `UnitCurrency` value is GBP.'
+        ExchangeRate:
+          type: string
+          pattern: ^[0-9]+\.[0-9]+$
+          description: 'The exchange rate used to convert an amount from one currency into another.
+
+            This reflects the price that one currency was bought at with another currency.'
+        RateType:
+          $ref: '#/components/schemas/OBExchangeRateType2Code'
+        ContractIdentification:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The unique reference to the foreign exchange contract agreed between the initiating party/creditor and the debtor agent.
+        ExpirationDateTime:
+          type: string
+          description: 'The date and time when the exchange rate agreement expires.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+      description: Further detailed information on the exchange rate that is used in the payment transaction.
+    OBWriteDataInternationalScheduled2:
+      required:
+      - ConsentId
+      - Initiation
+      type: object
+      properties:
+        ConsentId:
+          maxLength: 128
+          minLength: 1
+          type: string
+          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
+        Initiation:
+          $ref: '#/components/schemas/OBInternationalScheduled2'
+    OBExchangeRate1:
+      required:
+      - RateType
+      - UnitCurrency
+      type: object
+      properties:
+        UnitCurrency:
+          pattern: ^[A-Z]{3,3}$
+          type: string
+          description: 'The currency that the exchange rate is expressed in.
+
+            For example, for 1 GBP = xxx EUR, the `UnitCurrency` value is GBP.'
+        ExchangeRate:
+          type: number
+          description: 'The exchange rate used to convert an amount from one currency into another.
+
+            This reflects the price that one currency was bought at with another currency.
+
+            '
+        RateType:
+          $ref: '#/components/schemas/OBExchangeRateType2Code'
+        ContractIdentification:
+          maxLength: 256
+          minLength: 1
+          type: string
+          description: The unique reference to the foreign exchange contract agreed between the initiating party/creditor and the debtor agent.
+      description: The details on the currency exchange rate and contract.
+    OBExternalMerchantCustomerIdentification:
+      type: string
+      description: The merchant customer identification.
+    OBRisk1:
+      type: object
+      properties:
+        PaymentContextCode:
+          $ref: '#/components/schemas/OBExternalPaymentContext1Code'
+        MerchantCategoryCode:
+          $ref: '#/components/schemas/OBExternalMerchantCategoryCode'
+        MerchantCustomerIdentification:
+          $ref: '#/components/schemas/OBExternalMerchantCustomerIdentification'
+        DeliveryAddress:
+          required:
+          - Country
+          - TownName
+          type: object
+          properties:
+            AddressLine:
+              maxItems: 2
+              minItems: 0
+              type: array
+              description: The information that locates and identifies the delivery address, as defined by postal services, that is presented in free format text.
+              items:
+                maxLength: 70
+                minLength: 1
+                type: string
+            StreetName:
+              maxLength: 70
+              minLength: 1
+              type: string
+              description: The name of the street.
+            BuildingNumber:
+              maxLength: 16
+              minLength: 1
+              type: string
+              description: The number of the building.
+            PostCode:
+              maxLength: 16
+              minLength: 1
+              type: string
+              description: The post code of the delivery address.
+            TownName:
+              maxLength: 35
+              minLength: 1
+              type: string
+              description: The name of the town.
+            CountrySubDivision:
+              maxItems: 2
+              minItems: 0
+              type: array
+              description: The subdivision of the country, for example, state, region or county.
+              items:
+                maxLength: 35
+                minLength: 1
+                type: string
+            Country:
+              pattern: ^[A-Z]{2,2}$
+              type: string
+              description: The name of the country.
+          description: The information that locates and identifies the delivery address, as defined by postal services or in free format text.
+      description: The Risk section contains the risk indicators that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which can be used to specify additional details for risk scoring for account information.
+    OBExternalMerchantCategoryCode:
+      type: string
+      description: The merchant category code.
     OBPartyIdentification43:
       type: object
       properties:
@@ -867,6 +1279,91 @@ components:
         PostalAddress:
           $ref: '#/components/schemas/OBPostalAddress6'
       description: The party that an amount of money is due to.
+    OBPostalAddress6:
+      type: object
+      properties:
+        Department:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: The name of the department.
+        SubDepartment:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: The name of the sub-department.
+        StreetName:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: The name of the street.
+        BuildingNumber:
+          maxLength: 16
+          minLength: 1
+          type: string
+          description: The number of the building.
+        PostCode:
+          maxLength: 16
+          minLength: 1
+          type: string
+          description: The post code of the address.
+        TownName:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: The name of the town.
+        CountrySubDivision:
+          maxLength: 35
+          minLength: 1
+          type: string
+          description: The subdivision of the country, such as state, region, or county.
+        Country:
+          pattern: ^[A-Z]{2,2}$
+          type: string
+          description: The name of the country.
+        AddressLine:
+          maxItems: 7
+          minItems: 0
+          type: array
+          description: The information that locates and identifies the address of the creditor, presented in free format text.
+          items:
+            maxLength: 70
+            minLength: 1
+            type: string
+      description: The postal address of the creditor, as defined by postal services.
+    OBExchangeRateType2Code:
+      type: string
+      description: The type used to complete the currency exchange.
+      enum:
+      - Actual
+      - Agreed
+      - Indicative
+    OBFundsAvailableResult1:
+      required:
+      - FundsAvailable
+      - FundsAvailableDateTime
+      type: object
+      properties:
+        FundsAvailableDateTime:
+          type: string
+          description: 'The date and time when the funds availability check was generated.
+
+
+            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
+
+            All date-time fields in responses must include the timezone.
+
+            For example: `2017-04-05T10:43:07+00:00`.'
+          format: date-time
+        FundsAvailable:
+          type: boolean
+          description: Indicates whether there are enough funds to pay for the `Amount` in the consent request.
+      description: The results of the funds availability check.
+    OBExternalPermissions2Code:
+      type: string
+      description: The Open Banking service request type.
+      enum:
+      - Create
     OBCashAccountDebtorResponse:
       required:
       - Identification
@@ -910,36 +1407,37 @@ components:
 
 
             Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
-    OBWriteInternationalScheduledConsentResponse2:
+    OBInternationalScheduledInitiationResponse:
+      type: object
+      description: The initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds from the debtor account to the creditor for a single scheduled international payment.
+      allOf:
+      - $ref: '#/components/schemas/OBInternationalScheduledBase'
+      - type: object
+        properties:
+          DebtorAccount:
+            $ref: '#/components/schemas/OBCashAccountDebtorResponse'
+      - type: object
+        required:
+        - CreditorAccount
+        - CurrencyOfTransfer
+        - InstructedAmount
+        - InstructionIdentification
+        - RequestedExecutionDateTime
+        - DebtorAccount
+    OBActiveCurrencyAndAmount_SimpleType:
+      pattern: ^\d{1,13}\.\d{1,5}$
+      type: string
+      description: The amount of money where the unit of currency is explicit and compliant with [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217).
+    OBWriteInternationalScheduledConsent2:
       required:
       - Data
-      - Links
-      - Meta
       - Risk
       type: object
       properties:
         Data:
-          $ref: '#/components/schemas/OBWriteDataInternationalScheduledConsentResponse2'
+          $ref: '#/components/schemas/OBWriteDataInternationalScheduledConsent2'
         Risk:
           $ref: '#/components/schemas/OBRisk1'
-        Links:
-          $ref: '#/components/schemas/Links'
-        Meta:
-          $ref: '#/components/schemas/Meta'
-    OBExternalMerchantCustomerIdentification:
-      type: string
-      description: The merchant customer identification.
-    OBExternalConsentStatus1Code:
-      type: string
-      description: The status of the consent.
-      enum:
-      - Authorised
-      - AwaitingAuthorisation
-      - Consumed
-      - Rejected
-    OBExternalMerchantCategoryCode:
-      type: string
-      description: The merchant category code.
     OBWriteInternationalScheduled2:
       required:
       - Data
@@ -950,60 +1448,40 @@ components:
           $ref: '#/components/schemas/OBWriteDataInternationalScheduled2'
         Risk:
           $ref: '#/components/schemas/OBRisk1'
-    OBCashAccountCreditor3:
-      required:
-      - Identification
-      - Name
-      - SchemeName
+    OBRemittanceInformation1:
       type: object
       properties:
-        SchemeName:
-          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
-        Identification:
-          maxLength: 256
+        Unstructured:
+          maxLength: 140
           minLength: 1
           type: string
-          description: The account ID that the institution assigns to identify an account, which is known by the account owner.
-        Name:
-          maxLength: 70
+          description: The information used for matching/reconciliation of an entry with the items that the payment is intended to settle, such as commercial invoices in an accounts' receivable system, in an unstructured form.
+        Reference:
+          maxLength: 35
           minLength: 1
           type: string
-          description: 'The account name that the account servicing institution assigns.
+          description: 'The unique reference that the creditor assigns to unambiguously identify the payment transaction.
 
 
-            The account name is the name or names of the account owner(s) represented at an account level.
+            If available, the initiating party should provide this reference in the structured remittance information to enable reconciliation by the creditor upon receipt of the amount of money.
 
 
-            The account name is not the product name or the nickname of the account.
+            If the business context requires the use of a creditor reference or a payment remit identification, and only one identifier can be passed through the end-to-end chain, the creditor''s reference or payment remittance identification should be quoted in the end-to-end transaction identification.
 
 
             :::note
 
-            [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary)s might optionally validate this name to confirm the payee.
+            Faster Payments Scheme can accept only 18 characters for the `Reference` field.
+
+            :::
+
+
+            :::warning
+
+            Only one reference should be provided, if both `Reference` and `Unstructured` parameters are provided, then the `Unstructured` parameter will be ignored.
 
             :::'
-        SecondaryIdentification:
-          maxLength: 34
-          minLength: 1
-          type: string
-          description: 'The secondary account ID that the account servicing institution assigns.
-
-
-            Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
-      description: The details to identify the account.
-    OBWriteFundsConfirmationResponse1:
-      required:
-      - Data
-      - Links
-      - Meta
-      type: object
-      properties:
-        Data:
-          $ref: '#/components/schemas/OBWriteDataFundsConfirmationResponse1'
-        Links:
-          $ref: '#/components/schemas/Links'
-        Meta:
-          $ref: '#/components/schemas/Meta'
+      description: The information used for matching an entry with the items that the transfer is intended to settle, such as commercial invoices in an accounts' receivable system.
     OBInternationalScheduledBase:
       type: object
       properties:
@@ -1081,155 +1559,12 @@ components:
         RemittanceInformation:
           $ref: '#/components/schemas/OBRemittanceInformation1'
       description: The initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds from the debtor account to the creditor for a single scheduled international payment.
-    Meta:
-      title: MetaData
-      type: object
-      properties:
-        TotalPages:
-          type: integer
-          description: Used for pagination. Indicates how many pages of results are available.
-          format: int32
-      description: Meta data relevant to the payload.
-    OBExternalAccountIdentification4Code:
-      type: string
-      description: The name of the identification scheme.
-      enum:
-      - UK.OBIE.IBAN
-      - UK.OBIE.SortCodeAccountNumber
-      - US.RoutingNumberAccountNumber
-      - US.BranchCodeAccountNumber
-      example: UK.OBIE.IBAN
-    OBRemittanceInformation1:
-      type: object
-      properties:
-        Unstructured:
-          maxLength: 140
-          minLength: 1
-          type: string
-          description: The information used for matching/reconciliation of an entry with the items that the payment is intended to settle, such as commercial invoices in an accounts' receivable system, in an unstructured form.
-        Reference:
-          maxLength: 35
-          minLength: 1
-          type: string
-          description: 'The unique reference that the creditor assigns to unambiguously identify the payment transaction.
-
-
-            If available, the initiating party should provide this reference in the structured remittance information to enable reconciliation by the creditor upon receipt of the amount of money.
-
-
-            If the business context requires the use of a creditor reference or a payment remit identification, and only one identifier can be passed through the end-to-end chain, the creditor''s reference or payment remittance identification should be quoted in the end-to-end transaction identification.
-
-
-            :::note
-
-            Faster Payments Scheme can accept only 18 characters for the `Reference` field.
-
-            :::
-
-
-            :::warning
-
-            Only one reference should be provided, if both `Reference` and `Unstructured` parameters are provided, then the `Unstructured` parameter will be ignored.
-
-            :::'
-      description: The information used for matching an entry with the items that the transfer is intended to settle, such as commercial invoices in an accounts' receivable system.
-    OBPostalAddress6:
-      type: object
-      properties:
-        Department:
-          maxLength: 70
-          minLength: 1
-          type: string
-          description: The name of the department.
-        SubDepartment:
-          maxLength: 70
-          minLength: 1
-          type: string
-          description: The name of the sub-department.
-        StreetName:
-          maxLength: 70
-          minLength: 1
-          type: string
-          description: The name of the street.
-        BuildingNumber:
-          maxLength: 16
-          minLength: 1
-          type: string
-          description: The number of the building.
-        PostCode:
-          maxLength: 16
-          minLength: 1
-          type: string
-          description: The post code of the address.
-        TownName:
-          maxLength: 35
-          minLength: 1
-          type: string
-          description: The name of the town.
-        CountrySubDivision:
-          maxLength: 35
-          minLength: 1
-          type: string
-          description: The subdivision of the country, such as state, region, or county.
-        Country:
-          pattern: ^[A-Z]{2,2}$
-          type: string
-          description: The name of the country.
-        AddressLine:
-          maxItems: 7
-          minItems: 0
-          type: array
-          description: The information that locates and identifies the address of the creditor, presented in free format text.
-          items:
-            maxLength: 70
-            minLength: 1
-            type: string
-      description: The postal address of the creditor, as defined by postal services.
-    OBFundsAvailableResult1:
-      required:
-      - FundsAvailable
-      - FundsAvailableDateTime
-      type: object
-      properties:
-        FundsAvailableDateTime:
-          type: string
-          description: 'The date and time when the funds availability check was generated.
-
-
-            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
-
-            All date-time fields in responses must include the timezone.
-
-            For example: `2017-04-05T10:43:07+00:00`.'
-          format: date-time
-        FundsAvailable:
-          type: boolean
-          description: Indicates whether there are enough funds to pay for the `Amount` in the consent request.
-      description: The results of the funds availability check.
-    OBWriteDataInternationalScheduled2:
-      required:
-      - ConsentId
-      - Initiation
-      type: object
-      properties:
-        ConsentId:
-          maxLength: 128
-          minLength: 1
-          type: string
-          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
-        Initiation:
-          $ref: '#/components/schemas/OBInternationalScheduled2'
-    OBCashAccountDebtor4:
+    OBCashAccountCreditor3:
       required:
       - Identification
+      - Name
       - SchemeName
       type: object
-      description: 'The details to identify the account from which the payment consent can be approved.
-
-
-        If provided in the consent, the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) will only be able to approve the payment consent from an account which matches the provided account identifier.
-
-        '
       properties:
         SchemeName:
           $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
@@ -1237,20 +1572,23 @@ components:
           maxLength: 256
           minLength: 1
           type: string
-          description: The identifier assigned to the account, which is known by the account owner.
+          description: The account ID that the institution assigns to identify an account, which is known by the account owner.
         Name:
           maxLength: 70
           minLength: 1
           type: string
-          description: 'The name or names of the account owner(s) represented at an account level.
+          description: 'The account name that the account servicing institution assigns.
+
+
+            The account name is the name or names of the account owner(s) represented at an account level.
 
 
             The account name is not the product name or the nickname of the account.
 
 
-            :::warning
+            :::note
 
-            The name value is not validated against the actual owner name of the account.
+            [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary)s might optionally validate this name to confirm the payee.
 
             :::'
         SecondaryIdentification:
@@ -1261,375 +1599,37 @@ components:
 
 
             Building societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination.'
-    OBExternalStatus1Code:
-      type: string
-      description: The status of the payment.
-      enum:
-      - InitiationCompleted
-      - InitiationFailed
-      - InitiationPending
-    Links:
+      description: The details to identify the account.
+    OBErrorResponse1:
       required:
-      - Self
+      - Code
+      - Errors
+      - Message
       type: object
       properties:
-        Self:
-          type: string
-          description: The absolute URI to the resource.
-          format: uri
-        Next:
-          type: string
-          description: The absolute URI to the next pagination resource.
-          format: uri
-        Prev:
-          type: string
-          description: The absolute URI to the previous pagination resource.
-          format: uri
-      description: Links relevant to the payload.
-    OBExchangeRate2:
-      required:
-      - ExchangeRate
-      - RateType
-      - UnitCurrency
-      type: object
-      properties:
-        UnitCurrency:
-          pattern: ^[A-Z]{3,3}$
-          type: string
-          description: 'The currency that the exchange rate is expressed in.
-
-            For example, for 1 GBP = xxx EUR, the `UnitCurrency` value is GBP.'
-        ExchangeRate:
-          type: string
-          pattern: ^[0-9]+\.[0-9]+$
-          description: 'The exchange rate used to convert an amount from one currency into another.
-
-            This reflects the price that one currency was bought at with another currency.'
-        RateType:
-          $ref: '#/components/schemas/OBExchangeRateType2Code'
-        ContractIdentification:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: The unique reference to the foreign exchange contract agreed between the initiating party/creditor and the debtor agent.
-        ExpirationDateTime:
-          type: string
-          description: 'The date and time when the exchange rate agreement expires.
-
-
-            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
-
-            All date-time fields in responses must include the timezone.
-
-
-            For example: `2017-04-05T10:43:07+00:00`.'
-          format: date-time
-      description: Further detailed information on the exchange rate that is used in the payment transaction.
-    OBWriteInternationalScheduledConsent2:
-      required:
-      - Data
-      - Risk
-      type: object
-      properties:
-        Data:
-          $ref: '#/components/schemas/OBWriteDataInternationalScheduledConsent2'
-        Risk:
-          $ref: '#/components/schemas/OBRisk1'
-    OBChargeBearerType1Code:
-      type: string
-      description: The party or parties bear the charges associated with the processing of the payment transaction.
-      enum:
-      - BorneByDebtor
-      - FollowingServiceLevel
-    OBWriteInternationalScheduledResponse2:
-      required:
-      - Data
-      - Links
-      - Meta
-      type: object
-      properties:
-        Data:
-          $ref: '#/components/schemas/OBWriteDataInternationalScheduledResponse2'
-        Links:
-          $ref: '#/components/schemas/Links'
-        Meta:
-          $ref: '#/components/schemas/Meta'
-    OBBranchAndFinancialInstitutionIdentification6:
-      type: object
-      properties:
-        SchemeName:
-          $ref: '#/components/schemas/OBExternalFinancialInstitutionIdentification4Code'
-        Identification:
-          maxLength: 35
-          minLength: 1
-          type: string
-          description: The unique ID of the servicing institution.
-        Name:
-          maxLength: 140
-          minLength: 1
-          type: string
-          description: The name of a known agent used to identify the agent.
-        PostalAddress:
-          $ref: '#/components/schemas/OBPostalAddress6'
-      description: 'The party that manages the account on behalf of the account owner by:
-
-        - Managing the registration and booking of entries on the account.
-
-        - Calculating balances on the account.
-
-        - Providing information about the account.
-
-
-        This is the servicer of the beneficiary account.'
-    OBWriteDataInternationalScheduledConsentResponse2:
-      required:
-      - ConsentId
-      - CreationDateTime
-      - Initiation
-      - Permission
-      - Status
-      - StatusUpdateDateTime
-      type: object
-      properties:
-        ConsentId:
-          maxLength: 128
-          minLength: 1
-          type: string
-          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
-        CreationDateTime:
-          type: string
-          description: 'The date and time when the resource was created.
-
-
-            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
-
-            All date-time fields in responses must include the timezone.
-
-
-            For example: `2017-04-05T10:43:07+00:00`.'
-          format: date-time
-        Status:
-          $ref: '#/components/schemas/OBExternalConsentStatus1Code'
-        StatusUpdateDateTime:
-          type: string
-          description: 'The date and time when the resource status was updated.
-
-
-            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
-
-            All date-time fields in responses must include the timezone.
-
-
-            For example: `2017-04-05T10:43:07+00:00`.'
-          format: date-time
-        Permission:
-          $ref: '#/components/schemas/OBExternalPermissions2Code'
-        ExchangeRateInformation:
-          $ref: '#/components/schemas/OBExchangeRate2'
-        Initiation:
-          $ref: '#/components/schemas/OBInternationalScheduled2'
-    OBRisk1:
-      type: object
-      properties:
-        PaymentContextCode:
-          $ref: '#/components/schemas/OBExternalPaymentContext1Code'
-        MerchantCategoryCode:
-          $ref: '#/components/schemas/OBExternalMerchantCategoryCode'
-        MerchantCustomerIdentification:
-          $ref: '#/components/schemas/OBExternalMerchantCustomerIdentification'
-        DeliveryAddress:
-          required:
-          - Country
-          - TownName
-          type: object
-          properties:
-            AddressLine:
-              maxItems: 2
-              minItems: 0
-              type: array
-              description: The information that locates and identifies the delivery address, as defined by postal services, that is presented in free format text.
-              items:
-                maxLength: 70
-                minLength: 1
-                type: string
-            StreetName:
-              maxLength: 70
-              minLength: 1
-              type: string
-              description: The name of the street.
-            BuildingNumber:
-              maxLength: 16
-              minLength: 1
-              type: string
-              description: The number of the building.
-            PostCode:
-              maxLength: 16
-              minLength: 1
-              type: string
-              description: The post code of the delivery address.
-            TownName:
-              maxLength: 35
-              minLength: 1
-              type: string
-              description: The name of the town.
-            CountrySubDivision:
-              maxItems: 2
-              minItems: 0
-              type: array
-              description: The subdivision of the country, for example, state, region or county.
-              items:
-                maxLength: 35
-                minLength: 1
-                type: string
-            Country:
-              pattern: ^[A-Z]{2,2}$
-              type: string
-              description: The name of the country.
-          description: The information that locates and identifies the delivery address, as defined by postal services or in free format text.
-      description: The Risk section contains the risk indicators that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which can be used to specify additional details for risk scoring for account information.
-    OBExternalPermissions2Code:
-      type: string
-      description: The Open Banking service request type.
-      enum:
-      - Create
-    OBActiveCurrencyAndAmount_SimpleType:
-      pattern: ^\d{1,13}\.\d{1,5}$
-      type: string
-      description: The amount of money where the unit of currency is explicit and compliant with [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217).
-    OBWriteDataInternationalScheduledResponse2:
-      required:
-      - ConsentId
-      - CreationDateTime
-      - Initiation
-      - InternationalScheduledPaymentId
-      - Status
-      - StatusUpdateDateTime
-      type: object
-      properties:
-        InternationalScheduledPaymentId:
+        Code:
           maxLength: 40
           minLength: 1
           type: string
-          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the international scheduled payment resource.
-        ConsentId:
-          maxLength: 128
+          description: The error code in high level that helps categorize the error.
+        Id:
+          maxLength: 40
           minLength: 1
           type: string
-          description: The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource.
-        CreationDateTime:
-          type: string
-          description: 'The date and time when the message was created.
-
-
-            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
-
-            All date-time fields in responses must include the timezone.
-
-
-            For example: `2017-04-05T10:43:07+00:00`.'
-          format: date-time
-        Status:
-          $ref: '#/components/schemas/OBExternalStatus1Code'
-        StatusUpdateDateTime:
-          type: string
-          description: 'The date and time when the resource status was updated.
-
-
-            All dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.
-
-            All date-time fields in responses must include the timezone.
-
-
-            For example: `2017-04-05T10:43:07+00:00`.'
-          format: date-time
-        ExchangeRateInformation:
-          $ref: '#/components/schemas/OBExchangeRate2'
-        Initiation:
-          $ref: '#/components/schemas/OBInternationalScheduledInitiationResponse'
-        Permission:
-          $ref: '#/components/schemas/OBExternalPermissions2Code'
-    OBExchangeRate1:
-      required:
-      - RateType
-      - UnitCurrency
-      type: object
-      properties:
-        UnitCurrency:
-          pattern: ^[A-Z]{3,3}$
-          type: string
-          description: 'The currency that the exchange rate is expressed in.
-
-            For example, for 1 GBP = xxx EUR, the `UnitCurrency` value is GBP.'
-        ExchangeRate:
-          type: number
-          description: 'The exchange rate used to convert an amount from one currency into another.
-
-            This reflects the price that one currency was bought at with another currency.
-
-            '
-        RateType:
-          $ref: '#/components/schemas/OBExchangeRateType2Code'
-        ContractIdentification:
-          maxLength: 256
+          description: The ID of the error. You can share this ID with Revolut support for troubleshooting.
+        Message:
+          maxLength: 500
           minLength: 1
           type: string
-          description: The unique reference to the foreign exchange contract agreed between the initiating party/creditor and the debtor agent.
-      description: The details on the currency exchange rate and contract.
-    OBInternationalScheduledInitiationResponse:
-      type: object
-      description: The initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds from the debtor account to the creditor for a single scheduled international payment.
-      allOf:
-      - $ref: '#/components/schemas/OBInternationalScheduledBase'
-      - type: object
-        properties:
-          DebtorAccount:
-            $ref: '#/components/schemas/OBCashAccountDebtorResponse'
-      - type: object
-        required:
-        - CreditorAccount
-        - CurrencyOfTransfer
-        - InstructedAmount
-        - InstructionIdentification
-        - RequestedExecutionDateTime
-        - DebtorAccount
-    OBExchangeRateType2Code:
-      type: string
-      description: The type used to complete the currency exchange.
-      enum:
-      - Actual
-      - Agreed
-      - Indicative
-    OBWriteDataInternationalScheduledConsent2:
-      required:
-      - Initiation
-      - Permission
-      type: object
-      properties:
-        Permission:
-          $ref: '#/components/schemas/OBExternalPermissions2Code'
-        Initiation:
-          $ref: '#/components/schemas/OBInternationalScheduled2'
-    OBInternationalScheduled2:
-      type: object
-      description: The initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds from the debtor account to the creditor for a single scheduled international payment.
-      allOf:
-      - $ref: '#/components/schemas/OBInternationalScheduledBase'
-      - type: object
-        properties:
-          DebtorAccount:
-            $ref: '#/components/schemas/OBCashAccountDebtor4'
-      - type: object
-        required:
-        - CreditorAccount
-        - CurrencyOfTransfer
-        - InstructedAmount
-        - InstructionIdentification
-        - RequestedExecutionDateTime
-    OBWriteDataFundsConfirmationResponse1:
-      type: object
-      properties:
-        FundsAvailableResult:
-          $ref: '#/components/schemas/OBFundsAvailableResult1'
+          description: 'The error message.
+
+            For example, `There is something wrong with the request parameters provided`.'
+        Errors:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OBError1'
+      description: The detailed information about the error to help troubleshooting.
   securitySchemes:
     AccessToken:
       type: apiKey

@@ -726,106 +726,35 @@ paths:
                 $ref: '#/components/schemas/ErrorWithId'
 components:
   schemas:
-    CreatePaymentDraftRequest:
+    PaymentOrderInfo:
       type: object
+      description: A list of payments.
       properties:
-        title:
+        id:
           type: string
-          minLength: 1
-          maxLength: 255
-          description: The title of the payment draft.
-        schedule_for:
+          format: uuid
+          description: The ID of the payment draft.
+        scheduled_for:
           type: string
           format: date
           description: The scheduled date of the payment draft in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-        payments:
-          type: array
-          description: The details of the payment(s) to be made.
-          items:
-            $ref: '#/components/schemas/PaymentRequest'
-      required:
-      - payments
-    PaymentDraftsResponse:
-      type: object
-      required:
-      - payment_orders
-      properties:
-        payment_orders:
-          type: array
-          description: The list of payment drafts that haven't been sent for processing.
-          items:
-            $ref: '#/components/schemas/PaymentOrderInfo'
-    UpdateDraftPaymentRequest:
-      type: object
-      description: The updated details of a single payment in a payment draft.
-      minProperties: 1
-      properties:
-        receiver:
-          $ref: '#/components/schemas/PaymentReceiver'
-        amount:
-          type: number
-          format: double
-          description: The amount of the payment.
-          exclusiveMinimum: 0
-        currency:
-          $ref: '#/components/schemas/Currency'
-        reference:
+        title:
           type: string
-          minLength: 1
-          maxLength: 255
-          description: 'The reference for the payment.
-
-            A piece of text or number you provide to help identify what the payment relates to.
-
-            It can be used, for example, for reconciliation or tracking purposes.'
-        charge_bearer:
-          type:
-          - string
-          - 'null'
-          description: 'The party that should bear the transaction fees related to the selected transaction route if applied.
-
-            Possible options are:
-
-            - `shared`: Also known as **SHA**. The transaction route fees are split between the sender and the recipient.
-
-            - `debtor`: Also known as **OUR**. The sender pays all explicit transaction fees.'
-          enum:
-          - shared
-          - debtor
-        transfer_reason_code:
-          $ref: '#/components/schemas/TransferReasonCode'
-    PaymentState:
-      enum:
-      - CREATED
-      - PENDING
-      - COMPLETED
-      - REVERTED
-      - DECLINED
-      - CANCELLED
-      - FAILED
-      - DELETED
-      type: string
-      description: Indicates the state of the transaction.
-    ErrorWithId:
-      required:
-      - code
-      - message
-      - error_id
-      type: object
-      properties:
-        error_id:
-          type: string
-          description: The ID of the specific error instance. Used for traceability.
-        code:
+          description: The title of the payment draft.
+        payments_count:
           type: integer
-          description: The error code.
-        message:
+          description: The number of payments in the payment draft.
+        source:
           type: string
-          description: The description of the error.
-    TransferReasonCode:
-      type: string
-      description: "The reason code for the transaction. Transactions to certain countries and currencies might require you to provide a transfer reason. \nYou can check available reason codes with the [`GET /transfer-reasons` operation](https://developer.revolut.com/docs/api/business#get-transfer-reasons).\n\nIf a transfer reason is not required for the given currency and country, this field is ignored."
-      example: property_rental
+          description: The source from which the payment draft was created.
+          enum:
+          - api
+          - integration
+          - email
+          - business_app
+      required:
+      - id
+      - payments_count
     PaymentRequest:
       type: object
       description: The details of the draft payment.
@@ -868,92 +797,37 @@ components:
       - amount
       - currency
       - reference
-    Currency:
-      type: string
-      pattern: ^[A-Z]{3}$
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
-    PaymentDraftResponse:
+    CreatePaymentDraftRequest:
       type: object
       properties:
-        scheduled_for:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: The title of the payment draft.
+        schedule_for:
           type: string
           format: date
           description: The scheduled date of the payment draft in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-        title:
-          type: string
-          description: The title of the payment draft.
         payments:
           type: array
-          description: The list of payments in the bulk.
+          description: The details of the payment(s) to be made.
           items:
-            $ref: '#/components/schemas/PaymentInfo'
-        source:
-          type: string
-          description: The source from which the payment draft was created.
-          enum:
-          - api
-          - integration
-          - email
-          - business_app
+            $ref: '#/components/schemas/PaymentRequest'
       required:
       - payments
-    CreatePaymentDraftResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          format: number
-          description: The ID of the payment draft created.
-      required:
-      - id
-    PaymentOrderInfo:
-      type: object
-      description: A list of payments.
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the payment draft.
-        scheduled_for:
-          type: string
-          format: date
-          description: The scheduled date of the payment draft in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-        title:
-          type: string
-          description: The title of the payment draft.
-        payments_count:
-          type: integer
-          description: The number of payments in the payment draft.
-        source:
-          type: string
-          description: The source from which the payment draft was created.
-          enum:
-          - api
-          - integration
-          - email
-          - business_app
-      required:
-      - id
-      - payments_count
-    CreatePaymentDraftPaymentResponse:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the payment added to the draft.
-    AmountWithCurrency:
-      type: object
-      description: ''
-      properties:
-        amount:
-          type: number
-          format: double
-          description: The amount of the transaction.
-        currency:
-          $ref: '#/components/schemas/Currency'
+    PaymentState:
+      enum:
+      - CREATED
+      - PENDING
+      - COMPLETED
+      - REVERTED
+      - DECLINED
+      - CANCELLED
+      - FAILED
+      - DELETED
+      type: string
+      description: Indicates the state of the transaction.
     PaymentInfo:
       type: object
       description: The details of the payment draft.
@@ -1010,6 +884,151 @@ components:
       - receiver
       - state
       - current_charge_options
+    TransferReasonCode:
+      type: string
+      description: "The reason code for the transaction. Transactions to certain countries and currencies might require you to provide a transfer reason. \nYou can check available reason codes with the [`GET /transfer-reasons` operation](https://developer.revolut.com/docs/api/business#get-transfer-reasons).\n\nIf a transfer reason is not required for the given currency and country, this field is ignored."
+      example: property_rental
+    Currency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    PaymentDraftsResponse:
+      type: object
+      required:
+      - payment_orders
+      properties:
+        payment_orders:
+          type: array
+          description: The list of payment drafts that haven't been sent for processing.
+          items:
+            $ref: '#/components/schemas/PaymentOrderInfo'
+    UpdatePaymentDraftRequest:
+      type: object
+      description: The updated metadata of a payment draft.
+      minProperties: 1
+      properties:
+        title:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          maxLength: 255
+          description: The title of the payment draft. To clear the title, provide `null`.
+        schedule_for:
+          type:
+          - string
+          - 'null'
+          format: date
+          description: 'The scheduled date of the payment draft in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+
+
+            :::note
+
+            The date must be in the future.
+
+            :::
+
+
+            To clear the scheduled date, provide `null`.'
+    PaymentDraftResponse:
+      type: object
+      properties:
+        scheduled_for:
+          type: string
+          format: date
+          description: The scheduled date of the payment draft in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        title:
+          type: string
+          description: The title of the payment draft.
+        payments:
+          type: array
+          description: The list of payments in the bulk.
+          items:
+            $ref: '#/components/schemas/PaymentInfo'
+        source:
+          type: string
+          description: The source from which the payment draft was created.
+          enum:
+          - api
+          - integration
+          - email
+          - business_app
+      required:
+      - payments
+    CreatePaymentDraftPaymentResponse:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the payment added to the draft.
+    UpdateDraftPaymentRequest:
+      type: object
+      description: The updated details of a single payment in a payment draft.
+      minProperties: 1
+      properties:
+        receiver:
+          $ref: '#/components/schemas/PaymentReceiver'
+        amount:
+          type: number
+          format: double
+          description: The amount of the payment.
+          exclusiveMinimum: 0
+        currency:
+          $ref: '#/components/schemas/Currency'
+        reference:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: 'The reference for the payment.
+
+            A piece of text or number you provide to help identify what the payment relates to.
+
+            It can be used, for example, for reconciliation or tracking purposes.'
+        charge_bearer:
+          type:
+          - string
+          - 'null'
+          description: 'The party that should bear the transaction fees related to the selected transaction route if applied.
+
+            Possible options are:
+
+            - `shared`: Also known as **SHA**. The transaction route fees are split between the sender and the recipient.
+
+            - `debtor`: Also known as **OUR**. The sender pays all explicit transaction fees.'
+          enum:
+          - shared
+          - debtor
+        transfer_reason_code:
+          $ref: '#/components/schemas/TransferReasonCode'
+    AmountWithCurrency:
+      type: object
+      description: ''
+      properties:
+        amount:
+          type: number
+          format: double
+          description: The amount of the transaction.
+        currency:
+          $ref: '#/components/schemas/Currency'
+    ErrorWithId:
+      required:
+      - code
+      - message
+      - error_id
+      type: object
+      properties:
+        error_id:
+          type: string
+          description: The ID of the specific error instance. Used for traceability.
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
     PaymentReceiver:
       type: object
       description: 'The details of the transfer recipient.
@@ -1039,34 +1058,15 @@ components:
             If the counterparty has multiple payment methods available, use it to specify the card to which you want to send the money.'
       required:
       - counterparty_id
-    UpdatePaymentDraftRequest:
+    CreatePaymentDraftResponse:
       type: object
-      description: The updated metadata of a payment draft.
-      minProperties: 1
       properties:
-        title:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          maxLength: 255
-          description: The title of the payment draft. To clear the title, provide `null`.
-        schedule_for:
-          type:
-          - string
-          - 'null'
-          format: date
-          description: 'The scheduled date of the payment draft in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-
-
-            :::note
-
-            The date must be in the future.
-
-            :::
-
-
-            To clear the scheduled date, provide `null`.'
+        id:
+          type: string
+          format: number
+          description: The ID of the payment draft created.
+      required:
+      - id
   securitySchemes:
     AccessToken:
       type: http

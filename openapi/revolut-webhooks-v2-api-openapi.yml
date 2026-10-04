@@ -526,10 +526,22 @@ components:
           maximum: P7D
           example: PT5H30M
           default: P0D
-    WebhookEvents:
+    Webhooks:
       type: array
       items:
-        $ref: '#/components/schemas/WebhookEvent'
+        $ref: '#/components/schemas/Webhook-v2-basic'
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
     WebhookEvent:
       type: object
       required:
@@ -568,21 +580,28 @@ components:
           type: string
           format: date-time
           description: The date and time the last attempt at the event delivery occurred in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-    Webhooks:
-      type: array
-      items:
-        $ref: '#/components/schemas/Webhook-v2-basic'
-    UpdateWebhookRequest:
+    CreateWebhookRequest:
       type: object
+      required:
+      - url
       properties:
         url:
           $ref: '#/components/schemas/Url'
           description: A valid webhook URL to which to send event notifications. The supported protocol is `https`.
         events:
-          description: A list of event types to subscribe to.
+          description: 'A list of event types to subscribe to.
+
+            If you don''t provide it, you''re automatically subscribed to the [default event types](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks#default-event-types).'
           type: array
           items:
             $ref: '#/components/schemas/WebhookEventType'
+          default:
+          - TransactionCreated
+          - TransactionStateChanged
+    Url:
+      description: A valid webhook URL to which to send event notifications. The supported protocol is `https`.
+      type: string
+      format: uri
     Webhook-v2-basic:
       type: object
       required:
@@ -608,10 +627,21 @@ components:
         url: https://www.example.com/
         events:
         - TransactionCreated
-    Url:
-      description: A valid webhook URL to which to send event notifications. The supported protocol is `https`.
-      type: string
-      format: uri
+    WebhookEvents:
+      type: array
+      items:
+        $ref: '#/components/schemas/WebhookEvent'
+    UpdateWebhookRequest:
+      type: object
+      properties:
+        url:
+          $ref: '#/components/schemas/Url'
+          description: A valid webhook URL to which to send event notifications. The supported protocol is `https`.
+        events:
+          description: A list of event types to subscribe to.
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookEventType'
     WebhookEventType:
       enum:
       - TransactionCreated
@@ -619,36 +649,6 @@ components:
       - PayoutLinkCreated
       - PayoutLinkStateChanged
       description: The type of the webhook event to subscribe to.
-    CreateWebhookRequest:
-      type: object
-      required:
-      - url
-      properties:
-        url:
-          $ref: '#/components/schemas/Url'
-          description: A valid webhook URL to which to send event notifications. The supported protocol is `https`.
-        events:
-          description: 'A list of event types to subscribe to.
-
-            If you don''t provide it, you''re automatically subscribed to the [default event types](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks#default-event-types).'
-          type: array
-          items:
-            $ref: '#/components/schemas/WebhookEventType'
-          default:
-          - TransactionCreated
-          - TransactionStateChanged
-    Error:
-      type: object
-      properties:
-        code:
-          type: integer
-          description: The error code.
-        message:
-          type: string
-          description: The description of the error.
-      required:
-      - code
-      - message
     Webhook-v2:
       type: object
       required:
@@ -680,6 +680,12 @@ components:
         - TransactionCreated
         signing_secret: wsk_4jETWMz1g1b37gCONjNp84t2KSSIT7dK
   examples:
+    webhookV2BasicSelectedEvents:
+      id: c6db947e-e9ce-41c2-b445-02e6eb741d21
+      url: https://www.example.com
+      events:
+      - TransactionCreated
+      - PayoutLinkCreated
     webhookV2BasicAllEvents:
       id: 9f9919a2-932d-498f-a088-3a01b9080c4a
       url: https://www.revolut.com
@@ -688,12 +694,6 @@ components:
       - TransactionStateChanged
       - PayoutLinkCreated
       - PayoutLinkStateChanged
-    webhookV2BasicSelectedEvents:
-      id: c6db947e-e9ce-41c2-b445-02e6eb741d21
-      url: https://www.example.com
-      events:
-      - TransactionCreated
-      - PayoutLinkCreated
   securitySchemes:
     AccessToken:
       type: http

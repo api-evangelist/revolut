@@ -262,6 +262,37 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    ExchangeReason:
+      type: object
+      required:
+      - code
+      - name
+      properties:
+        code:
+          type: string
+          enum:
+          - business_expense_and_claims
+          - fees_and_charges
+          - fund_transfer_and_intracompany_payment
+          - gifts_and_donations
+          - government_services_and_tax
+          - insurance
+          - inventory
+          - investment_dividend_and_interest
+          - loan_and_loan_repayment
+          - marketing
+          - payment_for_goods_and_services
+          - payroll
+          - refund
+          - rental_and_property
+          - sales
+          - service_provider_and_software
+          - travel_and_transportation
+          - utilities
+          description: Category code of the reason for the exchange.
+        name:
+          type: string
+          description: Category name of the reason for the exchange.
     Fee:
       type: object
       properties:
@@ -297,111 +328,6 @@ components:
       - rate
       - fee
       - rate_date
-    ExchangeRequest:
-      type: object
-      description: The exchange information.
-      properties:
-        from:
-          $ref: '#/components/schemas/ExchangePartFrom'
-        to:
-          $ref: '#/components/schemas/ExchangePartTo'
-        reference:
-          type: string
-          description: 'The reference for the exchange transaction, provided by you.
-
-            It helps you to identify the transaction if you want to look it up later.'
-        request_id:
-          type: string
-          description: 'The ID of the request, provided by you.
-
-            It helps you identify the transaction in your system.
-
-
-            :::warning
-
-            To ensure that an exchange transaction is not processed multiple times if there are network or system errors,
-
-            the same `request_id` should be used for requests related to the same transaction.
-
-            :::'
-          maxLength: 40
-        exchange_reason_code:
-          $ref: '#/components/schemas/ExchangeReasonCode'
-      required:
-      - from
-      - to
-      - request_id
-    ExchangeResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the created transaction.
-        type:
-          type: string
-          description: The type of the transaction. For money exchange, it is `exchange`.
-        reason_code:
-          type: string
-          description: 'The reason why the transaction was failed or declined.
-
-
-            Present only when the `state` parameter of the transaction is `declined` or `failed`.'
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time the transaction was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-        completed_at:
-          type: string
-          format: date-time
-          description: The date and time the transaction was completed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-        state:
-          $ref: '#/components/schemas/TransactionState'
-    TransactionState:
-      enum:
-      - created
-      - pending
-      - completed
-      - declined
-      - failed
-      - reverted
-      description: "Indicates the transaction state. Possible values:\n  - `created`: The transaction has been created and is either processed asynchronously or scheduled for a later time.\n  - `pending`: The transaction is pending until it's being processed. If the transfer is made between Revolut accounts, this state is skipped and the transaction is executed instantly.\n  - `completed`: The transaction was successful.\n  - `declined`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, insufficient account balance, wrong receiver information, etc.\n  - `failed`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, invalid API calls, blocked payments, etc.\n  - `reverted`: The transaction was reverted. This can happen for a variety of reasons, for example, the receiver being inaccessible."
-      type: string
-    ExchangeReason:
-      type: object
-      required:
-      - code
-      - name
-      properties:
-        code:
-          type: string
-          enum:
-          - business_expense_and_claims
-          - fees_and_charges
-          - fund_transfer_and_intracompany_payment
-          - gifts_and_donations
-          - government_services_and_tax
-          - insurance
-          - inventory
-          - investment_dividend_and_interest
-          - loan_and_loan_repayment
-          - marketing
-          - payment_for_goods_and_services
-          - payroll
-          - refund
-          - rental_and_property
-          - sales
-          - service_provider_and_software
-          - travel_and_transportation
-          - utilities
-          description: Category code of the reason for the exchange.
-        name:
-          type: string
-          description: Category name of the reason for the exchange.
-    Currency:
-      type: string
-      pattern: ^[A-Z]{3}$
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
     ExchangePartTo:
       type: object
       description: The details of the currency to exchange to.
@@ -421,6 +347,18 @@ components:
       required:
       - account_id
       - currency
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The error code.
+        message:
+          type: string
+          description: The description of the error.
+      required:
+      - code
+      - message
     ExchangeReasons:
       type: array
       items:
@@ -463,28 +401,54 @@ components:
         name: Travel and transportation
       - code: utilities
         name: Utilities
-    AmountWithCurrency:
+    ExchangeRequest:
       type: object
-      description: ''
+      description: The exchange information.
       properties:
-        amount:
-          type: number
-          format: double
-          description: The amount of the transaction.
-        currency:
-          $ref: '#/components/schemas/Currency'
-    Error:
-      type: object
-      properties:
-        code:
-          type: integer
-          description: The error code.
-        message:
+        from:
+          $ref: '#/components/schemas/ExchangePartFrom'
+        to:
+          $ref: '#/components/schemas/ExchangePartTo'
+        reference:
           type: string
-          description: The description of the error.
+          description: 'The reference for the exchange transaction, provided by you.
+
+            It helps you to identify the transaction if you want to look it up later.'
+        request_id:
+          type: string
+          description: 'The ID of the request, provided by you.
+
+            It helps you identify the transaction in your system.
+
+
+            :::warning
+
+            To ensure that an exchange transaction is not processed multiple times if there are network or system errors,
+
+            the same `request_id` should be used for requests related to the same transaction.
+
+            :::'
+          maxLength: 40
+        exchange_reason_code:
+          $ref: '#/components/schemas/ExchangeReasonCode'
       required:
-      - code
-      - message
+      - from
+      - to
+      - request_id
+    TransactionState:
+      enum:
+      - created
+      - pending
+      - completed
+      - declined
+      - failed
+      - reverted
+      description: "Indicates the transaction state. Possible values:\n  - `created`: The transaction has been created and is either processed asynchronously or scheduled for a later time.\n  - `pending`: The transaction is pending until it's being processed. If the transfer is made between Revolut accounts, this state is skipped and the transaction is executed instantly.\n  - `completed`: The transaction was successful.\n  - `declined`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, insufficient account balance, wrong receiver information, etc.\n  - `failed`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, invalid API calls, blocked payments, etc.\n  - `reverted`: The transaction was reverted. This can happen for a variety of reasons, for example, the receiver being inaccessible."
+      type: string
+    Currency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
     ExchangePartFrom:
       type: object
       description: The details of the currency to exchange from.
@@ -508,6 +472,42 @@ components:
       type: string
       description: "The reason code for the exchange.\nDepending on the country and the amount of funds to be exchanged, you might be required to provide an exchange reason. \nYou can check available reason codes with the [`GET /exchange-reasons` operation](https://developer.revolut.com/docs/api/business#get-exchange-reasons).\n\nIf an exchange reason is not required, this field is ignored."
       example: fund_transfer_and_intracompany_payment
+    ExchangeResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the created transaction.
+        type:
+          type: string
+          description: The type of the transaction. For money exchange, it is `exchange`.
+        reason_code:
+          type: string
+          description: 'The reason why the transaction was failed or declined.
+
+
+            Present only when the `state` parameter of the transaction is `declined` or `failed`.'
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the transaction was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        completed_at:
+          type: string
+          format: date-time
+          description: The date and time the transaction was completed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        state:
+          $ref: '#/components/schemas/TransactionState'
+    AmountWithCurrency:
+      type: object
+      description: ''
+      properties:
+        amount:
+          type: number
+          format: double
+          description: The amount of the transaction.
+        currency:
+          $ref: '#/components/schemas/Currency'
   securitySchemes:
     AccessToken:
       type: http

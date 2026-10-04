@@ -223,6 +223,10 @@ paths:
       - Payouts
 components:
   schemas:
+    Payout-Id:
+      type: string
+      format: uuid
+      description: Permanent payout ID used for payouts operations.
     Payout:
       type: object
       properties:
@@ -260,23 +264,6 @@ components:
         | `current_pocket` | The funds were moved from the merchant account to the business account within the platform. This indicates an **internal transfer**, allowing the merchant to access the funds within their own business account. |
 
         | `external_beneficiary` | The funds were transferred to an external bank account or beneficiary outside the platform. This indicates a **transfer to an external account**, enabling the merchant to withdraw funds to external financial institutions. |'
-    Payout-Amount:
-      type: integer
-      minimum: 1
-      description: The total amount of the payout in minor currency units. For example, `7034` represents €70.34.
-    Currency:
-      type: string
-      format: ISO 4217
-      minLength: 3
-      maxLength: 3
-      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
-
-
-        :::info
-
-        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
-
-        :::'
     Payout-State:
       type: string
       enum:
@@ -284,10 +271,6 @@ components:
       - completed
       - failed
       description: The state of the payout.
-    Payout-Id:
-      type: string
-      format: uuid
-      description: Permanent payout ID used for payouts operations.
     Error-v2:
       title: Error
       type: object
@@ -304,7 +287,33 @@ components:
         timestamp:
           type: integer
           description: The [UNIX timestamp](https://www.unixtimestamp.com/) of the date and time the error happened.
+    Currency:
+      type: string
+      format: ISO 4217
+      minLength: 3
+      maxLength: 3
+      description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.
+
+
+        :::info
+
+        For more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).
+
+        :::'
+    Payout-Amount:
+      type: integer
+      minimum: 1
+      description: The total amount of the payout in minor currency units. For example, `7034` represents €70.34.
   parameters:
+    Payout-Id:
+      name: payout_id
+      in: path
+      schema:
+        type: string
+        format: uuid
+        description: A UUID string, typically used to identify resources.
+      required: true
+      description: The ID of the `Payout` object.
     Revolut-Api-Version:
       name: Revolut-Api-Version
       in: header
@@ -334,15 +343,6 @@ components:
 
         :::'
       x-config-always-visible-in-example: true
-    Payout-Id:
-      name: payout_id
-      in: path
-      schema:
-        type: string
-        format: uuid
-        description: A UUID string, typically used to identify resources.
-      required: true
-      description: The ID of the `Payout` object.
     Authorization:
       name: Authorization
       in: header
