@@ -1,0 +1,88 @@
+arazzo: 1.0.1
+info:
+  title: Revolut + Apple Pay web checkout
+  summary: Register a merchant domain for Apple Pay on Revolut, validate the merchant with Apple, create a Revolut order and read back its state.
+  version: 1.0.0
+x-integration:
+  partner: apple-pay
+  template: null
+  edge_evidence: https://developer.revolut.com/docs/merchant/merchant-api
+  edge_type: contract
+  method: generated
+  generated: '2026-10-12'
+  generator: pipeline step 25b (payments-integration-arazzo)
+sourceDescriptions:
+- name: revolutApplePay
+  url: https://raw.githubusercontent.com/api-evangelist/revolut/refs/heads/main/openapi/revolut-apple-pay-merchant-registration-api-openapi.yml
+  type: openapi
+- name: revolutOrders
+  url: https://raw.githubusercontent.com/api-evangelist/revolut/refs/heads/main/openapi/revolut-orders-api-openapi.yml
+  type: openapi
+- name: applePayValidation
+  url: https://raw.githubusercontent.com/api-evangelist/apple-pay/refs/heads/main/openapi/apple-pay-merchant-validation-api-openapi.yml
+  type: openapi
+workflows:
+- workflowId: revolutApplePayWebCheckout
+  summary: Accept an Apple Pay on the Web payment through a Revolut merchant order.
+  inputs:
+    type: object
+    required: [domain, merchantIdentifier, displayName, amount, currency]
+    properties:
+      domain: {type: string}
+      merchantIdentifier: {type: string}
+      displayName: {type: string}
+      amount: {type: integer}
+      currency: {type: string}
+  steps:
+  - stepId: registerDomain
+    description: Register the website domain for Apple Pay with Revolut.
+    operationId: $sourceDescriptions.revolutApplePay.registerDomainApplePay
+    requestBody:
+      contentType: application/json
+      payload:
+        domain: $inputs.domain
+    successCriteria:
+    - condition: $statusCode == 204
+  - stepId: validateMerchant
+    description: Request an Apple Pay payment session for the registered domain.
+    operationId: $sourceDescriptions.applePayValidation.requestPaymentSession
+    requestBody:
+      contentType: application/json
+      payload:
+        merchantIdentifier: $inputs.merchantIdentifier
+        displayName: $inputs.displayName
+        initiative: web
+        initiativeContext: $inputs.domain
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      paymentSession: $response.body
+  - stepId: createOrder
+    description: Create the Revolut order the Apple Pay payment settles against.
+    operationId: $sourceDescriptions.revolutOrders.createOrder
+    requestBody:
+      contentType: application/json
+      payload:
+        amount: $inputs.amount
+        currency: $inputs.currency
+    successCriteria:
+    - condition: $statusCode == 201
+    outputs:
+      orderId: $response.body#/id
+      orderToken: $response.body#/token
+  - stepId: retrieveOrder
+    description: Read back the order state after the client completes Apple Pay.
+    operationId: $sourceDescriptions.revolutOrders.retrieveOrder
+    parameters:
+    - name: order_id
+      in: path
+      value: $steps.createOrder.outputs.orderId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      state: $response.body#/state
+  outputs:
+    paymentSession: $steps.validateMerchant.outputs.paymentSession
+    orderId: $steps.createOrder.outputs.orderId
+    orderToken: $steps.createOrder.outputs.orderToken
+    orderState: $steps.retrieveOrder.outputs.state
