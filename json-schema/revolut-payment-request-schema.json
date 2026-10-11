@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-payment-request-schema.json",
+  "title": "PaymentRequest",
+  "description": "The details of the draft payment.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-payment-drafts-api-openapi.yml#/components/schemas/PaymentRequest",
+  "type": "object",
+  "properties": {
+    "account_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the account to pay from. \n\n:::note\nYou can specify only one account ID for multiple payments in the same payment draft.\n:::"
+    },
+    "receiver": {
+      "$ref": "#/$defs/PaymentReceiver"
+    },
+    "amount": {
+      "type": "number",
+      "format": "double",
+      "description": "The amount of the payment.",
+      "exclusiveMinimum": 0
+    },
+    "currency": {
+      "$ref": "#/$defs/Currency"
+    },
+    "reference": {
+      "type": "string",
+      "maxLength": 255,
+      "description": "The reference for the payment.\nA piece of text or number you provide to help identify what the payment relates to.\nIt can be used, for example, for reconciliation or tracking purposes.\n\nYou might include an invoice number, account or transaction ID, or any other reference meaningful to you."
+    },
+    "charge_bearer": {
+      "type": "string",
+      "description": "The party that should bear the transaction fees related to the selected transaction route if applied.\nPossible options are: \n- `shared`: Also known as **SHA**. The transaction route fees are split between the sender and the recipient. \n  The sender pays the fees charged by their bank, while the recipient pays the fees charged by the receiving and any intermediary banks.\n- `debtor`: Also known as **OUR**. The sender pays all explicit transaction fees.\n\n:::note\n- This field is not supported for [bulk payments](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts#use-cases). \n- Some transactions with fees might not support charge bearer selection.\n  If this is the case, the request will return an error.\n  To proceed with the default fee handling, remove this field from your request and try again.\n:::",
+      "enum": [
+        "shared",
+        "debtor"
+      ]
+    },
+    "transfer_reason_code": {
+      "$ref": "#/$defs/TransferReasonCode"
+    }
+  },
+  "required": [
+    "account_id",
+    "receiver",
+    "amount",
+    "currency",
+    "reference"
+  ],
+  "$defs": {
+    "Currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+    },
+    "PaymentReceiver": {
+      "type": "object",
+      "description": "The details of the transfer recipient.\n\nIf the counterparty has multiple payment methods available (e.g. 2 accounts, or 1 account and 1 card), you must specify the account (`account_id`) or card (`card_id`) to which you want to transfer the money.",
+      "properties": {
+        "counterparty_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the receiving counterparty."
+        },
+        "account_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the receiving counterparty's account. Used for bank transfers.\n\nIf the counterparty has multiple payment methods available, use it to specify the account to which you want to send the money."
+        },
+        "card_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the receiving counterparty's card.\nUsed for card transfers.\n\nIf the counterparty has multiple payment methods available, use it to specify the card to which you want to send the money."
+        }
+      },
+      "required": [
+        "counterparty_id"
+      ]
+    },
+    "TransferReasonCode": {
+      "type": "string",
+      "description": "The reason code for the transaction. Transactions to certain countries and currencies might require you to provide a transfer reason. \nYou can check available reason codes with the [`GET /transfer-reasons` operation](https://developer.revolut.com/docs/api/business#get-transfer-reasons).\n\nIf a transfer reason is not required for the given currency and country, this field is ignored."
+    }
+  }
+}

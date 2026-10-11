@@ -1,0 +1,356 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-card-created-response-schema.json",
+  "title": "CardCreatedResponse",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-cards-api-openapi.yml#/components/schemas/CardCreatedResponse",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The ID of the card.",
+      "format": "uuid"
+    },
+    "holder_id": {
+      "type": "string",
+      "description": "The ID of the team member who is the holder of the card.\nIf the card belongs to the business, this will be empty.\n\nFor more information, see the guides: [Manage Cards - Create a virtual card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#create-a-virtual-card).",
+      "format": "uuid"
+    },
+    "contact_ids": {
+      "$ref": "#/$defs/CardContacts"
+    },
+    "created_at": {
+      "type": "string",
+      "description": "The date and time the card was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "description": "The date and time the card was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.",
+      "format": "date-time"
+    },
+    "product": {
+      "$ref": "#/$defs/CardProduct"
+    },
+    "virtual": {
+      "type": "boolean",
+      "description": "Specifies whether the card is virtual (`true`) or physical (`false`)."
+    },
+    "last_digits": {
+      "type": "string",
+      "description": "The last 4 digits of the card's PAN.",
+      "pattern": "^[0-9]{4}$"
+    },
+    "expiry": {
+      "type": "string",
+      "format": "DD/YYYY",
+      "description": "The card expiration date.",
+      "pattern": "^[0-9]{2}/[0-9]{4}$"
+    },
+    "label": {
+      "type": "string",
+      "description": "The label of the card."
+    },
+    "references": {
+      "$ref": "#/$defs/CardReferences"
+    },
+    "state": {
+      "$ref": "#/$defs/CardState",
+      "description": "The state that the card is in."
+    },
+    "can_be_unlocked": {
+      "$ref": "#/$defs/CardCanBeUnlocked"
+    },
+    "spending_limits": {
+      "$ref": "#/$defs/SpendingLimitsSchema"
+    },
+    "spending_period": {
+      "description": "The controls for the card's spending period.\n\nThey specify the dates when the card becomes available or unavailable for spending, and define what happens after the end date.",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/SpendingPeriodSchema"
+        }
+      ]
+    },
+    "categories": {
+      "type": "array",
+      "description": "The list of merchant categories that are available for card spending.             \nIf this parameter is not specified, categories are not restricted.",
+      "items": {
+        "$ref": "#/$defs/BusinessMerchantCategory"
+      }
+    },
+    "merchant_controls": {
+      "description": "The merchant-level controls for card spending.\n\nThey block or allow the card to only transact with specific merchants: \n- `allow`: permits only the specified merchants (cannot be used if the `categories` parameter is set)\n- `block`: blocks the specified merchants (can be used with or without `categories`)",
+      "type": "object",
+      "$ref": "#/$defs/MerchantControlsSchema"
+    },
+    "countries": {
+      "description": "The list of countries where the card can be used, specified as 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) codes.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]{2}$"
+      }
+    },
+    "accounts": {
+      "type": "array",
+      "description": "The list of linked accounts.",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      }
+    }
+  },
+  "required": [
+    "id",
+    "created_at",
+    "updated_at",
+    "virtual",
+    "last_digits",
+    "expiry",
+    "state",
+    "accounts"
+  ],
+  "$defs": {
+    "BusinessMerchantCategory": {
+      "enum": [
+        "health",
+        "general",
+        "services",
+        "airlines",
+        "transport",
+        "accommodation",
+        "utilities",
+        "shopping",
+        "financial",
+        "furniture",
+        "hardware",
+        "groceries",
+        "fuel",
+        "entertainment",
+        "software",
+        "restaurants",
+        "advertising",
+        "cash",
+        "education",
+        "government"
+      ],
+      "type": "string"
+    },
+    "CardCanBeUnlocked": {
+      "type": "boolean",
+      "description": "Returned for locked cards (`state=locked`).\nIndicates whether the card can be [unlocked](https://developer.revolut.com/docs/api/business#unlock-card) manually (via API or in-app).\nIf `true`, you'll still need the [necessary scope or permission](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#lock-or-unlock-cards) to unlock the card.\n\n:::info\nCards can be locked for various reasons.\nFor example, a card can be locked by the user, due to spending period settings, or automatically by the system.\nOnly certain types of lock can be lifted manually.\n:::"
+    },
+    "CardContact": {
+      "description": "One of the card's contacts.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "CardContacts": {
+      "description": "The list of contacts for a [company card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards).",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/CardContact"
+      }
+    },
+    "CardProduct": {
+      "description": "The card product offered by the card provider for this card.\nIn other words, the program that the card was issued under.\n\n:::note\nThis property is only available to travel intermediaries using our travel solution.\nTo use it, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::",
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The code of the card product."
+        }
+      },
+      "required": [
+        "code"
+      ]
+    },
+    "CardReference": {
+      "description": "Reference for the card.\nOne of the name-value pairs assigned to the card for tracking.\n\n:::info\nEach time the card is used, the references are recorded in the [transaction details](https://developer.revolut.com/docs/api/business#get-transaction#response) (`card.references`), helping track transactions made with this card.\n:::\n\nThe names must be unique.\nThe references can be [amended](https://developer.revolut.com/docs/api/business#update-card-references) up to 10 times.\nReferences are only supported for cards owned by the business (i.e. [company](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) or [auto-issued cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards)).\nThey are **not** supported for [team member cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) (i.e. with `holder_id` present). \n\n:::note\nThe references recorded on a transaction are those assigned to the card at the time the transaction took place.\nIf the references are amended, the new references are only applied to future transactions.\nExisting transaction are not affected.\n:::",
+      "type": "object",
+      "required": [
+        "name",
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "description": "The name of the card reference.\nMust be unique.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "value": {
+          "description": "The value for this reference.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        }
+      }
+    },
+    "CardReferences": {
+      "description": "References for the card.\nUp to 5 name-value pairs assigned to the card for tracking.\n\n:::info\nEach time the card is used, the references are recorded in the [transaction details](https://developer.revolut.com/docs/api/business#get-transaction#response) (`card.references`), helping track transactions made with this card.\n:::\n\nThe names must be unique.\nThe references can be [amended](https://developer.revolut.com/docs/api/business#update-card-references) up to 10 times.\n\nReferences are only supported for cards owned by the business (i.e. [company](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) or [auto-issued cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards)).\nThey are **not** supported for [team member cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) (i.e. with `holder_id` present).\n\n:::note\nThe references recorded on a transaction are those assigned to the card at the time the transaction took place.\nIf the references are amended, they will only be applied to future transactions.\nExisting transaction are not affected.\n:::",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/CardReference"
+      }
+    },
+    "CardState": {
+      "enum": [
+        "created",
+        "pending",
+        "active",
+        "frozen",
+        "locked"
+      ],
+      "description": "The state that the card is in.\n\nPossible values:\n- `active`: The card is available for spending. \n  Newly created cards typically go into `active` unless subject to certain conditions, for example, spending period starting in the future.\n- `frozen`: The card has been frozen and is temporarily unavailable for spending. \n- `locked`: The card is locked, typically due to an [admin lock](https://developer.revolut.com/docs/api/business#lock-card) or spending period settings, i.e. when its `spending_period.start_date` is in the future or `spending_period.end_date` is in the past.\n  A locked card is unavailable for spending until it's [unlocked](https://developer.revolut.com/docs/api/business#unlock-card) and active.\n  :::tip\n  To see if the card can be unlocked, check the `can_be_unlocked` parameter.\n  Note that you'll still need the [necessary scope or permission](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#lock-or-unlock-cards) to unlock it.\n  :::\n- `created`: The card has been created but is not yet active.\n  Used only for a specific type of cards.\n- `pending`: This status is currently not in use.",
+      "type": "string"
+    },
+    "MerchantControlsSchema": {
+      "type": "object",
+      "required": [
+        "control_type",
+        "merchant_ids"
+      ],
+      "properties": {
+        "control_type": {
+          "type": "string",
+          "enum": [
+            "block",
+            "allow"
+          ],
+          "description": "The type of control to apply."
+        },
+        "merchant_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "description": "The list of IDs of merchants to which the control applies.\n\n:::tip\nTo find merchant IDs, check transaction details (→ `merchant.id`).\nYou can fetch transaction details for a [specific transaction](https://developer.revolut.com/docs/api/business#get-transaction#response) or for [all transactions](https://developer.revolut.com/docs/api/business#get-transactions#response).\n:::",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    "SpendingLimitPeriodic": {
+      "type": "object",
+      "description": "The limit for transactions within a given period.",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "The value of the spending limit."
+        },
+        "currency": {
+          "$ref": "#/$defs/TransactionLimitCurrency"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ]
+    },
+    "SpendingLimitSingleTransaction": {
+      "type": "object",
+      "description": "The limit for a single transaction.",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "The value of the spending limit."
+        },
+        "currency": {
+          "$ref": "#/$defs/TransactionLimitCurrency"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ]
+    },
+    "SpendingLimitsSchema": {
+      "type": "object",
+      "properties": {
+        "single": {
+          "description": "The limit for a single transaction.",
+          "$ref": "#/$defs/SpendingLimitSingleTransaction"
+        },
+        "day": {
+          "description": "The daily limit for transactions.",
+          "$ref": "#/$defs/SpendingLimitPeriodic"
+        },
+        "week": {
+          "description": "The weekly limit for transactions.",
+          "$ref": "#/$defs/SpendingLimitPeriodic"
+        },
+        "month": {
+          "description": "The monthly limit for transactions.",
+          "$ref": "#/$defs/SpendingLimitPeriodic"
+        },
+        "quarter": {
+          "description": "The quarterly limit for transactions.",
+          "$ref": "#/$defs/SpendingLimitPeriodic"
+        },
+        "year": {
+          "description": "The yearly limit for transactions.",
+          "$ref": "#/$defs/SpendingLimitPeriodic"
+        },
+        "all_time": {
+          "description": "The all-time limit for transactions.",
+          "$ref": "#/$defs/SpendingLimitPeriodic"
+        }
+      }
+    },
+    "SpendingPeriodSchema": {
+      "type": "object",
+      "properties": {
+        "start_date": {
+          "type": "string",
+          "format": "date",
+          "description": "The start date (inclusive) of the spending period, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format (`YYYY-MM-DD`).\nUses the [timezone set by the business](https://business.revolut.com/settings/appearance), or defaults to `Europe/London`."
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date",
+          "description": "The end date (inclusive) of the spending period, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format (`YYYY-MM-DD`).\nUses the [timezone set by the business](https://business.revolut.com/settings/appearance), or defaults to `Europe/London`."
+        },
+        "end_date_action": {
+          "type": "string",
+          "enum": [
+            "lock",
+            "terminate"
+          ],
+          "description": "The action to take after the end date of the spending period."
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "start_date"
+          ]
+        },
+        {
+          "required": [
+            "end_date",
+            "end_date_action"
+          ]
+        }
+      ]
+    },
+    "TransactionLimitCurrency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "The currency of the spending limit, provided as [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code in upper case."
+    }
+  }
+}

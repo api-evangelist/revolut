@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-create-counterparty-request-schema.json",
+  "title": "CreateCounterpartyRequest",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-counterparties-api-openapi.yml#/components/schemas/CreateCounterpartyRequest",
+  "type": "object",
+  "properties": {
+    "profile_type": {
+      "type": "string",
+      "enum": [
+        "personal",
+        "business"
+      ],
+      "description": "The type of the Revolut profile.\nIndicates whether the counterparty is a personal or business account.\nProvide it when adding a Revolut counterparty via Revtag."
+    },
+    "revtag": {
+      "type": "string",
+      "description": "The [Revtag](https://help.revolut.com/help/transfers/internal-transfers/username-payments/revtags/) of the counterparty to add."
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the counterparty, provided when the counterparty is being added via **Revtag**.\n\nIf specified, `individual_name` and `company_name` must be empty.\n\n:::note\nThe name that you provide must match or closely match the actual name associated with the account that you're trying to add.\nOtherwise, the creation fails and a `404` error is returned.\n:::\n"
+    },
+    "company_name": {
+      "type": "string",
+      "description": "The name of the counterparty, provided when the counterparty is a **company** (business account type) and is **not** being added via Revtag.\n\nIf specified, `individual_name` and `name` must be empty.\n\n:::warning\nThe `company_name` must contain at least 2 letters (not just characters).\nFor example, names like `12` will fail validation because they are two characters but not two letters.\n:::"
+    },
+    "individual_name": {
+      "$ref": "#/$defs/IndividualName"
+    },
+    "bank_country": {
+      "$ref": "#/$defs/BankCountryCode"
+    },
+    "currency": {
+      "$ref": "#/$defs/Currency"
+    },
+    "account_no": {
+      "type": "string",
+      "description": "The bank account number of the counterparty."
+    },
+    "iban": {
+      "type": "string",
+      "description": "The IBAN number of the counterparty's account. This field is displayed for IBAN countries."
+    },
+    "sort_code": {
+      "type": "string",
+      "description": "The sort code of the counterparty's account. This field is required for GBP accounts."
+    },
+    "routing_number": {
+      "type": "string",
+      "description": "The routing number of the counterparty's account. This field is required for USD accounts."
+    },
+    "bic": {
+      "type": "string",
+      "description": "The BIC number of the counterparty's account. This field is required for non-SEPA IBAN/SWIFT."
+    },
+    "clabe": {
+      "type": "string",
+      "description": "The CLABE number of the counterparty's account. This field is required for SWIFT MX."
+    },
+    "ifsc": {
+      "type": "string",
+      "description": "The IFSC number of the counterparty's account. This field is required for INR accounts."
+    },
+    "bsb_code": {
+      "type": "string",
+      "description": "The BSB number of the counterparty's account. This field is required for AUD accounts."
+    },
+    "address": {
+      "$ref": "#/$defs/BeneficiaryAddress"
+    },
+    "route": {
+      "type": "string",
+      "enum": [
+        "ach",
+        "fedwire",
+        "swift"
+      ],
+      "description": "Routing method for US USD transfers. When omitted, defaults to `ach` for US-registered businesses and `fedwire` for non-US businesses. \n\nRequired when `bank_country` is `US` and the desired routing method differs from the default."
+    },
+    "bank_number": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 3,
+      "description": "Brazilian bank identification code (COMPE). Required for BR counterparties."
+    },
+    "branch_code": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 4,
+      "description": "Brazilian branch (agência) code. Required for BR counterparties."
+    },
+    "account_type": {
+      "type": "string",
+      "enum": [
+        "checking",
+        "savings"
+      ],
+      "description": "Bank account type. Defaults to `checking` for US ACH transfers when omitted. \n\nRequired for BR, CO, and CL counterparties."
+    },
+    "tax_id": {
+      "type": "string",
+      "maxLength": 20,
+      "description": "Tax identification number.\n\nRequired and routed based on `bank_country` and recipient type:\n- **BR**:\n  - **Individual**: CPF (Cadastro de Pessoas Físicas). Accepted formats: `^\\d{11}$` or `^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$`.\n  - **Company**: CNPJ (Cadastro Nacional da Pessoa Jurídica). Accepted formats: `^\\d{14}$` or `^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}$`.\n- **CO (company)**: NIT (Número de Identificación Tributaria). Accepted format: `^\\d{10}$`.\n- **CL (individual, company)**: RUT (Rol Único Tributario)."
+    },
+    "national_id": {
+      "type": "string",
+      "description": "National identification number. Required  when `bank_country` is `CO` and `profile_type` is `personal`, must specify Colombian Cédula de Ciudadanía."
+    },
+    "phone": {
+      "type": "string",
+      "maxLength": 20,
+      "description": "The phone number of the counterparty in [E.164](https://en.wikipedia.org/wiki/E.164) format.\n\n- For internal (Revolut) counterparties: the recipient's Revolut phone number used to look them up.\n- For external counterparties in CO, KR, and LK: the bank account phone number. Required when `bank_country` is `CO`, `KR`, or `LK`.\n\nCountry-specific formats:\n- **CO**: `+57` followed by 10 digits (`^\\+?57\\d{10}$`)\n- **KR**: `+82` followed by 10 digits (`^\\+?82\\d{10}$`)\n- **LK**: `+94` followed by 10 digits (`^\\+?94\\d{10}$`)"
+    },
+    "business_registration_id": {
+      "type": "string",
+      "maxLength": 64,
+      "description": "Company registration number. Required for business LK counterparties (`profile_type`: `business`)."
+    }
+  },
+  "$defs": {
+    "BankCountryCode": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$",
+      "description": "The country of the bank, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code."
+    },
+    "BeneficiaryAddress": {
+      "type": "object",
+      "description": "The address of the counterparty.",
+      "properties": {
+        "street_line1": {
+          "type": "string",
+          "description": "Street line 1 information."
+        },
+        "street_line2": {
+          "type": "string",
+          "description": "Street line 2 information."
+        },
+        "region": {
+          "type": "string",
+          "description": "The name of the region (state or province), for example, Ontario for Canada."
+        },
+        "city": {
+          "type": "string",
+          "description": "The name of the city."
+        },
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "The country of the counterparty, as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code."
+        },
+        "postcode": {
+          "type": "string",
+          "description": "The postcode of the counterparty address."
+        }
+      },
+      "required": [
+        "country",
+        "postcode"
+      ]
+    },
+    "Currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+    },
+    "IndividualName": {
+      "type": "object",
+      "description": "The name of the counterparty, provided when the counterparty is an **individual** (personal account type) and is **not** being added via Revtag.\n\nIf specified, `company_name` and `name` must be empty.",
+      "properties": {
+        "first_name": {
+          "type": "string",
+          "description": "The first name of the individual counterparty."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "The last name of the individual counterparty."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1535 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-pass-update-envelope-schema.json",
+  "title": "PassUpdateEnvelope",
+  "description": "The updatable state of a pass, in any supported format. The `format` field selects the encoding.\nUsed both when you push an update and when Revolut polls you for the latest state. Excludes\n`template_id`, which is fixed at creation. This multi-format envelope is available from API version\n`2026-07-01`. The set of formats is closed within this API version; new pass formats are published\nunder a new dated API version, not added to `2026-07-01`. New `rev_pass.type` values may be added\nover time and are available in all supported API versions. Requests with an unrecognised `format`\nvalue are rejected with `422` (`unsupported_format`). The pass `format` itself is fixed at\ncreation: on `PUT /passes/{id}`, an envelope whose `format` differs from the stored pass is\nrejected with `422` (`format_mismatch`). The\n`walletobjects_json` variant requires the resource family plus both the class and object under\n`walletobjects`, including on updates.\n",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-wallet-partner-api-openapi.yml#/components/schemas/PassUpdateEnvelope",
+  "required": [
+    "format"
+  ],
+  "oneOf": [
+    {
+      "$ref": "#/$defs/RevPassUpdateEnvelope"
+    },
+    {
+      "$ref": "#/$defs/PkPassBase64Update"
+    },
+    {
+      "$ref": "#/$defs/PkPassUrlUpdate"
+    },
+    {
+      "$ref": "#/$defs/WalletObjectsPassUpdate"
+    }
+  ],
+  "$defs": {
+    "Action": {
+      "type": "object",
+      "description": "A button rendered on the pass (e.g. \"Open website\", \"Get directions\").",
+      "required": [
+        "id",
+        "type",
+        "label",
+        "url"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the action within this pass."
+        },
+        "type": {
+          "type": "string",
+          "description": "Documented values: `open_external_url`. External URL domain needs to be registered at onboarding."
+        },
+        "label": {
+          "description": "Display label for the button, with optional localisation.",
+          "$ref": "#/$defs/LocalisedText"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Target URL for `open_external_url` actions."
+        },
+        "importance": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Relative prominence of this action (5 = primary, 1 = least prominent)."
+        }
+      }
+    },
+    "Airport": {
+      "type": "object",
+      "description": "Airport details for a flight.",
+      "required": [
+        "iata"
+      ],
+      "properties": {
+        "iata": {
+          "type": "string",
+          "description": "IATA airport code (3 uppercase letters).",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the airport (e.g. London Luton Airport)."
+        },
+        "city": {
+          "type": "string",
+          "description": "City where the airport is located."
+        },
+        "country_code": {
+          "type": "string",
+          "description": "ISO 3166-1 alpha-2 country code.",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "terminal": {
+          "type": "string",
+          "description": "Terminal identifier at the airport."
+        }
+      }
+    },
+    "Barcode": {
+      "type": "object",
+      "description": "A machine-readable barcode displayed on a Revolut native pass.",
+      "required": [
+        "format",
+        "encoding",
+        "type",
+        "static_payload"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "qr",
+            "pdf417",
+            "aztec",
+            "code128"
+          ],
+          "description": "Symbology used to render the barcode."
+        },
+        "encoding": {
+          "type": "string",
+          "enum": [
+            "ISO-8859-1"
+          ],
+          "description": "Character encoding used for `static_payload`."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "static"
+          ],
+          "description": "Payload type. Only static barcode payloads are supported."
+        },
+        "static_payload": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Static value encoded in the barcode."
+        }
+      }
+    },
+    "Boarding": {
+      "type": "object",
+      "description": "Boarding details for a flight — gate, seat, and boarding time.",
+      "properties": {
+        "gate": {
+          "type": "string",
+          "description": "Boarding gate at the departure airport."
+        },
+        "boarding_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Scheduled boarding time, UTC, ISO 8601."
+        },
+        "boarding_group": {
+          "type": "string",
+          "description": "Boarding group or zone (airline-specific, e.g. A, B, 1, 2)."
+        },
+        "sequence_number": {
+          "type": "string",
+          "description": "Boarding sequence number assigned to the passenger."
+        },
+        "seat": {
+          "type": "string",
+          "description": "Assigned seat number (e.g. 14C, 22A)."
+        },
+        "seat_class": {
+          "type": "string",
+          "description": "Seat class label (e.g. Economy, Premium Economy, Business)."
+        }
+      }
+    },
+    "BoardingPassSemantics": {
+      "type": "object",
+      "description": "Semantic tags for a boarding pass.",
+      "required": [
+        "passenger",
+        "flight",
+        "booking"
+      ],
+      "properties": {
+        "passenger": {
+          "description": "Passenger details.",
+          "$ref": "#/$defs/Passenger"
+        },
+        "flight": {
+          "description": "Flight details.",
+          "$ref": "#/$defs/Flight"
+        },
+        "boarding": {
+          "description": "Boarding details (gate, seat, boarding time).",
+          "$ref": "#/$defs/Boarding"
+        },
+        "booking": {
+          "description": "Booking details (PNR, ticket number).",
+          "$ref": "#/$defs/Booking"
+        },
+        "validity": {
+          "description": "Optional validity window for the pass.",
+          "$ref": "#/$defs/Validity"
+        }
+      }
+    },
+    "Booking": {
+      "type": "object",
+      "description": "Booking details for a boarding pass.",
+      "required": [
+        "pnr"
+      ],
+      "properties": {
+        "pnr": {
+          "type": "string",
+          "description": "Passenger Name Record — the booking reference from the airline's reservation system."
+        },
+        "ticket_number": {
+          "type": "string",
+          "description": "13-digit IATA ticket number.",
+          "pattern": "^[0-9]{13}$"
+        },
+        "booking_reference": {
+          "type": "string",
+          "description": "Alternative booking reference (e.g. agency or GDS reference), if different from the PNR."
+        }
+      }
+    },
+    "Branding": {
+      "type": "object",
+      "description": "Optional visual branding for a pass.",
+      "required": [
+        "brand_name",
+        "logo",
+        "background_image"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "predefined_style"
+          ]
+        },
+        {
+          "required": [
+            "colours"
+          ]
+        }
+      ],
+      "properties": {
+        "brand_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 25,
+          "description": "Brand name displayed on the pass."
+        },
+        "logo": {
+          "description": "Logo image used by the pass.",
+          "$ref": "#/$defs/Image"
+        },
+        "background_image": {
+          "description": "Background or hero image used by the pass.",
+          "$ref": "#/$defs/Image"
+        },
+        "predefined_style": {
+          "type": "string",
+          "enum": [
+            "material",
+            "flat",
+            "glass"
+          ],
+          "description": "Predefined visual style for the pass."
+        },
+        "colours": {
+          "description": "Explicit colour scheme for the pass.",
+          "$ref": "#/$defs/ColourScheme"
+        }
+      }
+    },
+    "ColourScheme": {
+      "type": "object",
+      "description": "Explicit colours used to render a branded pass.",
+      "required": [
+        "primary",
+        "secondary",
+        "background",
+        "text_primary",
+        "text_secondary",
+        "label_primary",
+        "label_secondary"
+      ],
+      "properties": {
+        "primary": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "secondary": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "background": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "text_primary": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "text_secondary": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "label_primary": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "label_secondary": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        }
+      }
+    },
+    "Coordinates": {
+      "type": "object",
+      "description": "Geographic coordinates (WGS 84).",
+      "required": [
+        "lat",
+        "lng"
+      ],
+      "properties": {
+        "lat": {
+          "type": "number",
+          "format": "double",
+          "description": "Latitude in decimal degrees."
+        },
+        "lng": {
+          "type": "number",
+          "format": "double",
+          "description": "Longitude in decimal degrees."
+        }
+      }
+    },
+    "DataCategory": {
+      "type": "string",
+      "enum": [
+        "identity",
+        "status",
+        "time",
+        "location",
+        "verification",
+        "attribute",
+        "governance"
+      ],
+      "description": "Data category for the field. The category describes the type of information carried by\nthe field.\n\n| Value | Description |\n|-------|-------------|\n| `identity` | Primary subjects, holder names, pass titles, or card names. |\n| `status` | State metrics, membership tiers, or operational updates such as Delayed, Gold Tier, or Active. |\n| `time` | Temporal coordinates such as Start Time 19:00, boarding times, or expiry times. |\n| `location` | Spatial coordinates or places such as Seat 14C, Gate A7, venues, or addresses. |\n| `verification` | Human-readable fallback codes, member IDs, or order references. |\n| `attribute` | Domain properties such as Meal: Vegan, Class: Business, or Points: 1,400. |\n| `governance` | Contractual, legal, or reference information such as terms, disclaimers, or support phone numbers. |\n"
+    },
+    "Event": {
+      "type": "object",
+      "description": "Event details for an event pass.",
+      "required": [
+        "name",
+        "held_on",
+        "starts_at"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the event."
+        },
+        "category": {
+          "type": "string",
+          "description": "Documented values: `concert`, `sport`, `conference`, `theatre`, `festival`, `race`, `other`."
+        },
+        "edition": {
+          "type": "string",
+          "description": "Edition or iteration of a recurring event (e.g. 2026, Season 5)."
+        },
+        "held_on": {
+          "type": "string",
+          "format": "date",
+          "description": "Calendar day of the event (use `starts_at` for the precise start time)."
+        },
+        "starts_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start time of the event, UTC, ISO 8601."
+        },
+        "ends_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End time of the event, UTC, ISO 8601."
+        },
+        "doors_open_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Time the venue doors open, UTC, ISO 8601."
+        }
+      }
+    },
+    "EventPassSemantics": {
+      "type": "object",
+      "description": "Semantic tags for an event pass.",
+      "required": [
+        "event",
+        "venue"
+      ],
+      "properties": {
+        "event": {
+          "description": "Event details (name, category, dates).",
+          "$ref": "#/$defs/Event"
+        },
+        "venue": {
+          "description": "Venue details (name, address, seat).",
+          "$ref": "#/$defs/Venue"
+        },
+        "ticket": {
+          "description": "Ticket details (number, type, booking reference).",
+          "$ref": "#/$defs/Ticket"
+        },
+        "participant": {
+          "description": "Participant details (name, company, role).",
+          "$ref": "#/$defs/Participant"
+        },
+        "organiser": {
+          "description": "Organiser details.",
+          "$ref": "#/$defs/Organiser"
+        },
+        "validity": {
+          "description": "Optional validity window for the pass.",
+          "$ref": "#/$defs/Validity"
+        }
+      }
+    },
+    "FieldData": {
+      "type": "object",
+      "description": "Shared content, semantic metadata, and optional formatting hints for a generic-pass custom field.\nThe field `id` is referenced from the pass `presentation` configuration. When neither the pass\nnor its template provides a presentation, every field must provide `data_category` and\n`semantic_type`; `importance` remains optional.\n",
+      "required": [
+        "id",
+        "label",
+        "value"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/FieldId"
+        },
+        "label": {
+          "description": "Display label for the field, with optional localisation.",
+          "$ref": "#/$defs/LocalisedText"
+        },
+        "value": {
+          "description": "Display value for the field, with optional localisation.",
+          "$ref": "#/$defs/LocalisedText"
+        },
+        "data_type": {
+          "type": "string",
+          "description": "Interpretation of the field value. The `value` is always carried as a string (or a\nlocalised string map); `data_type` defines how Revolut parses and renders it:\n\n| Value | Wire representation |\n|-------|---------------------|\n| `text` | Any string. |\n| `number` | Plain decimal number as a string, e.g. `1400` or `1400.50` (no thousands separators; rendered per `number_style`). |\n| `currency` | Plain decimal amount as a string, e.g. `1400.50`, with `currency_code` (ISO 4217) alongside. |\n| `date_time` | RFC 3339 UTC timestamp, e.g. `2026-09-15T19:00:00.000Z`. |\n| `uri` | Absolute HTTPS URI string, e.g. `https://example.com/offer`. |\n\nConditional rules: `currency` requires `currency_code`; `number_style` applies only to\n`number`; `date_style`, `time_style`, `is_relative`, and `ignores_time_zone` apply only\nto `date_time`.\n",
+          "enum": [
+            "text",
+            "number",
+            "currency",
+            "date_time",
+            "uri"
+          ],
+          "default": "text"
+        },
+        "data_category": {
+          "description": "Category describing the information carried by the field. Required on every field when\nrendering falls back to semantic metadata; otherwise optional.\n",
+          "$ref": "#/$defs/DataCategory"
+        },
+        "semantic_type": {
+          "description": "Semantic identifier associated with the field. Required on every field when rendering falls\nback to semantic metadata; otherwise optional.\n",
+          "$ref": "#/$defs/FieldSemanticType"
+        },
+        "importance": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Optional relative prominence of the field (5 = highest, 1 = lowest), used for semantic\nrendering.\n"
+        },
+        "text_alignment": {
+          "type": "string",
+          "description": "Preferred text alignment when the renderer supports it.",
+          "enum": [
+            "left",
+            "center",
+            "right",
+            "natural"
+          ]
+        },
+        "date_style": {
+          "type": "string",
+          "description": "Preferred date display style for a `date_time` value.",
+          "enum": [
+            "none",
+            "short",
+            "medium",
+            "long",
+            "full"
+          ]
+        },
+        "time_style": {
+          "type": "string",
+          "description": "Preferred time display style for a `date_time` value.",
+          "enum": [
+            "none",
+            "short",
+            "medium",
+            "long",
+            "full"
+          ]
+        },
+        "is_relative": {
+          "type": "boolean",
+          "description": "Whether a date and time value should be presented relative to the current time."
+        },
+        "ignores_time_zone": {
+          "type": "boolean",
+          "description": "Whether a date and time value should be shown without time-zone conversion."
+        },
+        "number_style": {
+          "type": "string",
+          "description": "Preferred display style for a numeric value.",
+          "enum": [
+            "decimal",
+            "percent",
+            "scientific",
+            "spell_out"
+          ]
+        },
+        "currency_code": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "ISO 4217 currency code for a `currency` value. Required when `data_type` is `currency`."
+        }
+      }
+    },
+    "FieldId": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "description": "Unique identifier for a custom field within a generic pass."
+    },
+    "FieldSemanticType": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional semantic tag associated with the field. \n\nThe following values are currently exposed by the typed pass schemas in current API version.\nUse the public snake_case path names.\n\n**Boarding passes**\n\n`passenger.full_name`, `passenger.fare_class`, `passenger.fare_class_code`,\n`passenger.frequent_flyer_program`, `passenger.frequent_flyer_number`, `flight.flight_number`,\n`flight.carrier_code`, `flight.carrier_name`, `flight.operating_carrier_code`,\n`flight.departure_airport.iata`, `flight.departure_airport.name`, `flight.departure_airport.city`,\n`flight.departure_airport.country_code`, `flight.departure_airport.terminal`,\n`flight.arrival_airport.iata`, `flight.arrival_airport.name`, `flight.arrival_airport.city`,\n`flight.arrival_airport.country_code`, `flight.arrival_airport.terminal`,\n`flight.scheduled_departure_at`, `flight.scheduled_arrival_at`, `flight.aircraft_type`,\n`boarding.gate`, `boarding.boarding_at`, `boarding.boarding_group`, `boarding.sequence_number`,\n`boarding.seat`, `boarding.seat_class`, `booking.pnr`, `booking.ticket_number`,\n`booking.booking_reference`, `validity.valid_from`, `validity.valid_until`.\n\n**Event passes**\n\n`event.name`, `event.category`, `event.edition`, `event.held_on`, `event.starts_at`,\n`event.ends_at`, `event.doors_open_at`, `venue.name`, `venue.address`, `venue.city`,\n`venue.country_code`, `venue.coordinates.lat`, `venue.coordinates.lng`, `venue.gate`,\n`venue.section`, `venue.row`, `venue.seat`, `ticket.number`, `ticket.booking_reference`,\n`ticket.type`, `participant.full_name`, `participant.company`, `participant.role`,\n`organiser.name`, `validity.valid_from`, `validity.valid_until`.\n\n**Loyalty passes**\n\n`member.full_name`, `member.member_id`, `member.member_since_on`, `loyalty.program_name`,\n`loyalty.tier`, `loyalty.tier_progress.current`, `loyalty.tier_progress.target`,\n`loyalty.tier_progress.unit`, `loyalty.points_balance.value`, `loyalty.points_balance.unit`,\n`loyalty.points_balance.monetary_value.amount`, `loyalty.points_balance.monetary_value.currency`,\n`loyalty.next_reward.description`, `loyalty.next_reward.points_required`,\n`validity.valid_from`, `validity.valid_until`.\n"
+    },
+    "Flight": {
+      "type": "object",
+      "description": "Flight details for a boarding pass.",
+      "required": [
+        "flight_number",
+        "carrier_code",
+        "departure_airport",
+        "arrival_airport",
+        "scheduled_departure_at",
+        "scheduled_arrival_at"
+      ],
+      "properties": {
+        "flight_number": {
+          "type": "string",
+          "description": "Flight number without the carrier code (e.g. 2241, not SJ2241)."
+        },
+        "carrier_code": {
+          "type": "string",
+          "description": "IATA (2-character) or ICAO (3-character) carrier code.",
+          "pattern": "^[A-Z0-9]{2,3}$"
+        },
+        "carrier_name": {
+          "type": "string",
+          "description": "Display name of the operating carrier."
+        },
+        "operating_carrier_code": {
+          "type": "string",
+          "description": "IATA (2-character) or ICAO (3-character) carrier code of the actual operating carrier (for codeshare flights, this may differ from `carrier_code`).",
+          "pattern": "^[A-Z0-9]{2,3}$"
+        },
+        "departure_airport": {
+          "description": "Departure airport.",
+          "$ref": "#/$defs/Airport"
+        },
+        "arrival_airport": {
+          "description": "Arrival airport.",
+          "$ref": "#/$defs/Airport"
+        },
+        "scheduled_departure_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Scheduled departure time, UTC, ISO 8601."
+        },
+        "scheduled_arrival_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Scheduled arrival time, UTC, ISO 8601."
+        },
+        "aircraft_type": {
+          "type": "string",
+          "description": "IATA aircraft type code (e.g. A320, B738)."
+        }
+      }
+    },
+    "Image": {
+      "type": "object",
+      "description": "An image used by pass branding.",
+      "oneOf": [
+        {
+          "required": [
+            "asset_ref"
+          ],
+          "not": {
+            "required": [
+              "data"
+            ]
+          }
+        },
+        {
+          "required": [
+            "data",
+            "format"
+          ],
+          "not": {
+            "required": [
+              "asset_ref"
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "asset_ref": {
+          "type": "string",
+          "pattern": "^revasset://(public|private)/[0-9a-fA-F-]{36}$",
+          "description": "Reference to an image asset managed by Revolut."
+        },
+        "data": {
+          "type": "string",
+          "contentEncoding": "base64",
+          "minLength": 1,
+          "description": "Base64-encoded image bytes."
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+          ],
+          "description": "Image MIME type."
+        },
+        "description": {
+          "type": "string",
+          "description": "Accessible description of the image."
+        }
+      }
+    },
+    "Issuer": {
+      "type": "object",
+      "description": "Issuer information displayed on a pass.",
+      "required": [
+        "issuer_id",
+        "issuer_full_name",
+        "issuer_display_name"
+      ],
+      "properties": {
+        "issuer_id": {
+          "type": "string",
+          "format": "uuid",
+          "readOnly": true,
+          "description": "Revolut-managed identifier of the issuer. Revolut derives this value from the authenticated\npartner and returns the partner's Revolut-assigned UUID; do not send it in request bodies.\n"
+        },
+        "issuer_full_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50,
+          "description": "Full legal name of the issuer."
+        },
+        "issuer_display_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 25,
+          "description": "Display name of the issuer."
+        }
+      }
+    },
+    "LocalisedText": {
+      "type": "object",
+      "description": "Text with optional localisation support.",
+      "required": [
+        "default"
+      ],
+      "properties": {
+        "default": {
+          "type": "string",
+          "description": "Fallback text when no localisation matches."
+        },
+        "localisation_key": {
+          "type": "string",
+          "description": "Key resolved at render time against the template's localisation map, then Revolut's\nlocalisation catalogue (Revolut-curated translations for standard pass strings), falling\nback to the `default` text.\n"
+        }
+      }
+    },
+    "Loyalty": {
+      "type": "object",
+      "description": "Loyalty program details for a pass.",
+      "required": [
+        "program_name"
+      ],
+      "properties": {
+        "program_name": {
+          "type": "string",
+          "description": "Display name of the loyalty program."
+        },
+        "tier": {
+          "type": "string",
+          "description": "Current tier level of the member (e.g. Gold, Silver, Bronze)."
+        },
+        "tier_progress": {
+          "description": "Progress towards the next tier.",
+          "$ref": "#/$defs/TierProgress"
+        },
+        "points_balance": {
+          "description": "Current points balance.",
+          "$ref": "#/$defs/PointsBalance"
+        },
+        "next_reward": {
+          "description": "Next reward the member can unlock.",
+          "$ref": "#/$defs/NextReward"
+        }
+      }
+    },
+    "LoyaltyPassSemantics": {
+      "type": "object",
+      "description": "Semantic tags for a loyalty pass.",
+      "required": [
+        "member",
+        "loyalty"
+      ],
+      "properties": {
+        "member": {
+          "description": "Member details (name, ID, join date).",
+          "$ref": "#/$defs/Member"
+        },
+        "loyalty": {
+          "description": "Loyalty program details (tier, balance, next reward).",
+          "$ref": "#/$defs/Loyalty"
+        },
+        "validity": {
+          "description": "Optional validity window for the pass.",
+          "$ref": "#/$defs/Validity"
+        }
+      }
+    },
+    "Member": {
+      "type": "object",
+      "description": "Member details for a loyalty pass.",
+      "required": [
+        "full_name",
+        "member_id"
+      ],
+      "properties": {
+        "full_name": {
+          "type": "string",
+          "description": "Full name of the loyalty program member."
+        },
+        "member_id": {
+          "type": "string",
+          "description": "Membership number or ID within the loyalty program."
+        },
+        "member_since_on": {
+          "type": "string",
+          "format": "date",
+          "description": "Date the member joined the programme."
+        }
+      }
+    },
+    "Money": {
+      "type": "object",
+      "description": "ISO 4217 monetary amount, represented as strings to preserve decimal precision. Amounts are non-negative.",
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "properties": {
+        "amount": {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d+)?$",
+          "description": "Non-negative decimal amount as a string (e.g. \"72.40\")."
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "ISO 4217 currency code (e.g. GBP, EUR, USD)."
+        }
+      }
+    },
+    "NextReward": {
+      "type": "object",
+      "description": "Next reward the member can unlock with their points.",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of the reward (e.g. \"Free coffee voucher\")."
+        },
+        "points_required": {
+          "type": "string",
+          "description": "Points required to unlock the reward, as a string."
+        }
+      }
+    },
+    "Organiser": {
+      "type": "object",
+      "description": "Organiser of the event.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the organising company or individual."
+        }
+      }
+    },
+    "Participant": {
+      "type": "object",
+      "description": "Participant details for an event pass (e.g. conference attendee).",
+      "properties": {
+        "full_name": {
+          "type": "string",
+          "description": "Full name of the participant."
+        },
+        "company": {
+          "type": "string",
+          "description": "Company or organisation the participant represents."
+        },
+        "role": {
+          "type": "string",
+          "description": "Role or title at the event (e.g. Speaker, Attendee, Volunteer)."
+        }
+      }
+    },
+    "PartnerPassRevision": {
+      "type": "object",
+      "description": "Fields that identify a partner's pass and the revision being submitted.",
+      "required": [
+        "partner_reference",
+        "version"
+      ],
+      "properties": {
+        "partner_reference": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Your own reference for the pass; use it to match the pass in your system. Immutable after\ncreation. On `PUT /passes/{id}`, it must match the pass addressed in the path; a mismatch\nis rejected with `422`.\n"
+        },
+        "version": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1,
+          "description": "Your pass revision. Must be `1` on create. On update, must equal the currently stored\nversion exactly plus one: reusing an already-stored version, replaying an older one, or\nskipping ahead are all rejected with `409` (`stale_version`).\n"
+        }
+      }
+    },
+    "Passenger": {
+      "type": "object",
+      "description": "Passenger details for a boarding pass.",
+      "required": [
+        "full_name"
+      ],
+      "properties": {
+        "full_name": {
+          "type": "string",
+          "description": "Full name of the passenger as it appears on the boarding pass."
+        },
+        "fare_class": {
+          "type": "string",
+          "description": "Human-readable fare class (e.g. Economy, Business, First)."
+        },
+        "fare_class_code": {
+          "type": "string",
+          "description": "IATA fare class code (single letter, e.g. Y for Economy, J for Business)."
+        },
+        "frequent_flyer_program": {
+          "type": "string",
+          "description": "Name of the frequent flyer program the passenger belongs to."
+        },
+        "frequent_flyer_number": {
+          "type": "string",
+          "description": "Membership number within the frequent flyer program."
+        }
+      }
+    },
+    "PkPassBase64Format": {
+      "type": "object",
+      "description": "Format-specific fields for a `.pkpass` file supplied as a base64-encoded string.",
+      "required": [
+        "format",
+        "pkpass"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "pkpass_base64"
+          ],
+          "description": "Pass format discriminator."
+        },
+        "pkpass": {
+          "type": "string",
+          "contentEncoding": "base64",
+          "contentMediaType": "application/vnd.apple.pkpass",
+          "description": "The raw `.pkpass` file (a signed ZIP archive), base64-encoded as a string. Must decode to\nat most 10 MB.\n"
+        }
+      }
+    },
+    "PkPassBase64Update": {
+      "description": "The updatable state of a pass in a `.pkpass` format, provided as a base64-encoded string.\nExcludes `template_id`, which is fixed at creation.\n",
+      "allOf": [
+        {
+          "$ref": "#/$defs/PartnerPassRevision"
+        },
+        {
+          "$ref": "#/$defs/PkPassBase64Format"
+        }
+      ]
+    },
+    "PkPassUrlFormat": {
+      "type": "object",
+      "description": "Format-specific fields for a `.pkpass` file supplied through a download URL.",
+      "required": [
+        "format",
+        "pkpass_url"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "pkpass_url"
+          ],
+          "description": "Pass format discriminator."
+        },
+        "pkpass_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "description": "Public HTTPS URL from which Revolut downloads the `.pkpass` file. Must return a valid\n`.pkpass` (signed ZIP archive).\n\nRevolut fetches the URL server-side under these rules:\n\n- HTTPS only; the host must resolve to a publicly reachable address (private, loopback,\n  and link-local IP ranges are not fetched).\n- At most 3 redirects, each to an HTTPS URL.\n- The response must be `200` with a valid `pkpass` body of at most 10 MB, fully received\n  within 10 seconds.\n- The URL must remain valid for at least 24 hours after submission so Revolut can download\n  and re-download it, including across retries.\n\nIf the download fails any of these rules, the request is rejected with `422`\n(`pkpass_url_download_failed`).\n"
+        }
+      }
+    },
+    "PkPassUrlUpdate": {
+      "description": "The updatable state of a pass in `.pkpass` format, provided via a download URL. Excludes\n`template_id`, which is fixed at creation.\n",
+      "allOf": [
+        {
+          "$ref": "#/$defs/PartnerPassRevision"
+        },
+        {
+          "$ref": "#/$defs/PkPassUrlFormat"
+        }
+      ]
+    },
+    "PointsBalance": {
+      "type": "object",
+      "description": "Points balance for a loyalty pass.",
+      "required": [
+        "value",
+        "unit"
+      ],
+      "properties": {
+        "value": {
+          "type": "string",
+          "pattern": "^(0|[1-9]\\d*)(\\.\\d{1,6})?$",
+          "description": "Current points balance as a non-negative decimal string with up to six fractional digits.\nDo not use a sign, exponent notation, or redundant leading zeros. Compare values as decimals,\nso `\"1500\"` and `\"1500.00\"` are equivalent.\n"
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unit label for the balance (e.g. points, miles)."
+        },
+        "monetary_value": {
+          "description": "Optional monetary equivalent of the points balance.",
+          "$ref": "#/$defs/Money"
+        }
+      }
+    },
+    "PositionalPresentation": {
+      "type": "object",
+      "description": "Maps field IDs into header, primary, secondary, and footer sections. This layout may be supplied on the\npass or by its template. Every referenced ID must match a field in the pass, and every field ID\nmust appear at least once as a `field_id` or `join_field_id` when this layout is used.\n",
+      "required": [
+        "primary"
+      ],
+      "properties": {
+        "header": {
+          "description": "Optional header section row, displayed before the primary section.",
+          "$ref": "#/$defs/PresentationRow"
+        },
+        "primary": {
+          "description": "Primary section row, displayed after the header when provided.",
+          "$ref": "#/$defs/PresentationRow"
+        },
+        "secondary": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "description": "Optional secondary section rows, in display order.",
+          "items": {
+            "$ref": "#/$defs/PresentationRow"
+          }
+        },
+        "footer": {
+          "description": "Footer section row, displayed last.",
+          "$ref": "#/$defs/PresentationRow"
+        }
+      }
+    },
+    "PositionalPresentationWrapper": {
+      "type": "object",
+      "description": "Wrapper for a positional presentation.",
+      "required": [
+        "positional"
+      ],
+      "properties": {
+        "positional": {
+          "$ref": "#/$defs/PositionalPresentation"
+        }
+      }
+    },
+    "Presentation": {
+      "type": "object",
+      "description": "How a trigger is presented to the customer.",
+      "required": [
+        "presentation_type",
+        "title",
+        "description"
+      ],
+      "properties": {
+        "presentation_type": {
+          "type": "string",
+          "description": "Documented values: `notification`, `tile`."
+        },
+        "title": {
+          "description": "Title text for the notification or tile, with optional localisation.",
+          "$ref": "#/$defs/LocalisedText"
+        },
+        "description": {
+          "description": "Body text for the notification or tile, with optional localisation.",
+          "$ref": "#/$defs/LocalisedText"
+        }
+      }
+    },
+    "PresentationConfig": {
+      "type": "object",
+      "description": "Optional explicit positional layout for a generic pass. When omitted, the template presentation\nis used. When neither provides a presentation, the pass is rendered from semantic metadata on\nevery field.\n",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/PositionalPresentationWrapper"
+        }
+      ]
+    },
+    "PresentationRow": {
+      "type": "object",
+      "description": "A row in a positional generic-pass presentation.",
+      "required": [
+        "items"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/RowItem"
+          }
+        }
+      }
+    },
+    "RevPassBaseContent": {
+      "type": "object",
+      "description": "Fields common to every Revolut native pass content type.",
+      "properties": {
+        "relevant_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the pass becomes time-relevant (departure, event start); drives Revolut's polling\ncadence. Derived from semantic content if omitted.\n"
+        },
+        "branding": {
+          "description": "Optional visual branding for the pass.",
+          "$ref": "#/$defs/Branding"
+        },
+        "issuer": {
+          "description": "Optional issuer information displayed on the pass.",
+          "$ref": "#/$defs/Issuer"
+        },
+        "barcodes": {
+          "type": "array",
+          "description": "Barcodes displayed on the pass. If the pass uses a template, omit this field to inherit the\ntemplate barcodes, send a non-empty array to replace the complete template array, or send an\nempty array to suppress all template barcodes. If the pass doesn't use a template, omitting\nthis field means that the pass has no barcodes.\n",
+          "items": {
+            "$ref": "#/$defs/Barcode"
+          }
+        },
+        "actions": {
+          "type": "array",
+          "description": "Buttons rendered on the pass.",
+          "items": {
+            "$ref": "#/$defs/Action"
+          }
+        },
+        "triggers": {
+          "type": "array",
+          "description": "Context-aware notifications that nudge the customer.",
+          "items": {
+            "$ref": "#/$defs/Trigger"
+          }
+        }
+      }
+    },
+    "RevPassBoardingContent": {
+      "description": "The native content of a boarding pass.",
+      "allOf": [
+        {
+          "$ref": "#/$defs/RevPassBaseContent"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "semantics"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "boarding_pass"
+              ],
+              "description": "Pass type discriminator."
+            },
+            "semantics": {
+              "$ref": "#/$defs/BoardingPassSemantics"
+            }
+          }
+        }
+      ]
+    },
+    "RevPassContent": {
+      "description": "The content of a Revolut native pass, excluding the root-level `template_id` (which is set at\ncreation only).\nThe root-level `type` discriminator selects the pass type and its content structure: typed\npasses carry `semantics`; generic passes carry `fields` and an optional `presentation`.\n",
+      "required": [
+        "type"
+      ],
+      "oneOf": [
+        {
+          "$ref": "#/$defs/RevPassBoardingContent"
+        },
+        {
+          "$ref": "#/$defs/RevPassEventContent"
+        },
+        {
+          "$ref": "#/$defs/RevPassLoyaltyContent"
+        },
+        {
+          "$ref": "#/$defs/RevPassGenericContent"
+        }
+      ]
+    },
+    "RevPassEventContent": {
+      "description": "The native content of an event pass.",
+      "allOf": [
+        {
+          "$ref": "#/$defs/RevPassBaseContent"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "semantics"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "event_pass"
+              ],
+              "description": "Pass type discriminator."
+            },
+            "semantics": {
+              "$ref": "#/$defs/EventPassSemantics"
+            }
+          }
+        }
+      ]
+    },
+    "RevPassFormat": {
+      "type": "object",
+      "description": "Format discriminator for a Revolut native pass.",
+      "required": [
+        "format"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "revpass"
+          ],
+          "description": "Pass format discriminator."
+        }
+      }
+    },
+    "RevPassGenericContent": {
+      "description": "A fields-driven generic pass. The `fields` array defines reusable field data and an optional\n`presentation` selects a positional layout. When `presentation` is omitted, the template\npresentation is used. When neither provides a presentation, the pass is rendered from semantic\nmetadata: every field must provide `data_category` and `semantic_type`; `importance` is optional.\n",
+      "allOf": [
+        {
+          "$ref": "#/$defs/RevPassBaseContent"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "fields"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "generic_pass"
+              ],
+              "description": "Pass type discriminator."
+            },
+            "fields": {
+              "type": "array",
+              "minItems": 1,
+              "description": "Custom fields available to the selected presentation layout.",
+              "items": {
+                "$ref": "#/$defs/FieldData"
+              }
+            },
+            "presentation": {
+              "description": "Optional explicit layout. When omitted, the template presentation is used. When neither\nprovides a presentation, rendering falls back to semantic metadata on every field.\n",
+              "$ref": "#/$defs/PresentationConfig"
+            }
+          }
+        }
+      ]
+    },
+    "RevPassLoyaltyContent": {
+      "description": "The native content of a loyalty pass.",
+      "allOf": [
+        {
+          "$ref": "#/$defs/RevPassBaseContent"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "semantics"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "loyalty_pass"
+              ],
+              "description": "Pass type discriminator."
+            },
+            "semantics": {
+              "$ref": "#/$defs/LoyaltyPassSemantics"
+            }
+          }
+        }
+      ]
+    },
+    "RevPassUpdateEnvelope": {
+      "description": "A pass using Revolut's native semantic model, on update. The `rev_pass` object carries the pass\ntype, semantic content, and relevant-at timestamp. The root-level `template_id` is immutable and\nis not accepted on updates.\n",
+      "allOf": [
+        {
+          "$ref": "#/$defs/PartnerPassRevision"
+        },
+        {
+          "$ref": "#/$defs/RevPassFormat"
+        },
+        {
+          "type": "object",
+          "required": [
+            "rev_pass"
+          ],
+          "properties": {
+            "rev_pass": {
+              "$ref": "#/$defs/RevPassContent"
+            }
+          }
+        }
+      ]
+    },
+    "RowItem": {
+      "type": "object",
+      "description": "A field placed in a positional presentation row.",
+      "required": [
+        "field_id"
+      ],
+      "properties": {
+        "field_id": {
+          "description": "ID of the primary field displayed in this slot.",
+          "$ref": "#/$defs/FieldId"
+        },
+        "join_field_id": {
+          "description": "Optional ID of a field joined to the primary field in the same slot.",
+          "$ref": "#/$defs/FieldId"
+        },
+        "alignment": {
+          "type": "string",
+          "description": "Horizontal placement of the slot within its row.",
+          "enum": [
+            "full",
+            "start",
+            "middle",
+            "end"
+          ]
+        }
+      }
+    },
+    "Ticket": {
+      "type": "object",
+      "description": "Ticket details for an event pass.",
+      "properties": {
+        "number": {
+          "type": "string",
+          "description": "Ticket number or barcode value."
+        },
+        "booking_reference": {
+          "type": "string",
+          "description": "Booking or order reference for the ticket purchase."
+        },
+        "type": {
+          "type": "string",
+          "description": "Documented values: `general_admission`, `seated`, `vip`, `backstage`, `staff`."
+        }
+      }
+    },
+    "TierProgress": {
+      "type": "object",
+      "description": "Progress towards the next loyalty tier.",
+      "properties": {
+        "current": {
+          "type": "string",
+          "description": "Current progress value as a string (e.g. points earned this period)."
+        },
+        "target": {
+          "type": "string",
+          "description": "Target value required to reach the next tier, as a string."
+        },
+        "unit": {
+          "type": "string",
+          "description": "Unit of measurement for the progress values (e.g. points, stays, flights)."
+        }
+      }
+    },
+    "Trigger": {
+      "type": "object",
+      "description": "A context-aware notification that nudges the customer (e.g. proximity alert, time before event).",
+      "required": [
+        "id",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the trigger within this pass."
+        },
+        "type": {
+          "type": "string",
+          "description": "Documented values: `proximity_time`, `proximity_geo_location`, `field_change`."
+        },
+        "importance": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Relative prominence of this trigger (5 = high, 1 = low)."
+        },
+        "time_target": {
+          "type": "string",
+          "description": "Reference to a datetime field (e.g. `flight.scheduled_departure_at`)."
+        },
+        "time_offset": {
+          "type": "string",
+          "description": "ISO 8601 duration before the target (e.g. `PT1H` for 1 hour before departure)."
+        },
+        "location_targets": {
+          "type": "array",
+          "description": "Geographic coordinates for proximity-based triggers.",
+          "items": {
+            "$ref": "#/$defs/Coordinates"
+          }
+        },
+        "radius_meters": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Radius in meters around the `location_targets` coordinates for the proximity alert."
+        },
+        "field_target": {
+          "type": "string",
+          "description": "Name of the semantic field to watch for changes (e.g. `boarding.gate`)."
+        },
+        "presentation": {
+          "description": "How the trigger is presented to the customer (notification, tile).",
+          "$ref": "#/$defs/Presentation"
+        }
+      }
+    },
+    "Validity": {
+      "type": "object",
+      "description": "Validity window for a pass — when it becomes active and when it expires.",
+      "properties": {
+        "valid_from": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start of the pass validity period, UTC, ISO 8601."
+        },
+        "valid_until": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End of the pass validity period, UTC, ISO 8601."
+        }
+      }
+    },
+    "Venue": {
+      "type": "object",
+      "description": "Venue details for an event.",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the venue."
+        },
+        "address": {
+          "type": "string",
+          "description": "Street address of the venue."
+        },
+        "city": {
+          "type": "string",
+          "description": "City where the venue is located."
+        },
+        "country_code": {
+          "type": "string",
+          "description": "ISO 3166-1 alpha-2 country code.",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "coordinates": {
+          "description": "Geographic coordinates of the venue.",
+          "$ref": "#/$defs/Coordinates"
+        },
+        "gate": {
+          "type": "string",
+          "description": "Entrance gate at the venue."
+        },
+        "section": {
+          "type": "string",
+          "description": "Section or block within the venue (e.g. Block 112, Section C)."
+        },
+        "row": {
+          "type": "string",
+          "description": "Row identifier within the section."
+        },
+        "seat": {
+          "type": "string",
+          "description": "Seat number within the row."
+        }
+      }
+    },
+    "WalletObjectsJsonFormat": {
+      "type": "object",
+      "description": "Format-specific fields for a Wallet Objects JSON pass.",
+      "required": [
+        "format",
+        "walletobjects"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "walletobjects_json"
+          ],
+          "description": "Pass format discriminator."
+        },
+        "walletobjects": {
+          "type": "object",
+          "required": [
+            "type",
+            "class",
+            "object"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "event_ticket",
+                "flight",
+                "generic",
+                "gift_card",
+                "loyalty",
+                "offer",
+                "transit"
+              ],
+              "description": "The Wallet Objects resource family used to validate and render both resources.\n\n| Value | Description |\n| ----- | ----------- |\n| `event_ticket` | An `EventTicketClass` and `EventTicketObject` pair. |\n| `flight` | A `FlightClass` and `FlightObject` pair. |\n| `generic` | A `GenericClass` and `GenericObject` pair. |\n| `gift_card` | A `GiftCardClass` and `GiftCardObject` pair. |\n| `loyalty` | A `LoyaltyClass` and `LoyaltyObject` pair. |\n| `offer` | An `OfferClass` and `OfferObject` pair. |\n| `transit` | A `TransitClass` and `TransitObject` pair. |"
+            },
+            "class": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Identifier of the supplied Wallet Objects class resource."
+                }
+              },
+              "additionalProperties": true,
+              "description": "The Wallet Objects class resource for the selected `type`. Its `id` must match the\nsupplied object's `classId`; a mismatch is rejected with `422`\n(`walletobjects_class_mismatch`).\n"
+            },
+            "object": {
+              "type": "object",
+              "required": [
+                "id",
+                "classId"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Identifier of the supplied Wallet Objects object resource."
+                },
+                "classId": {
+                  "type": "string",
+                  "description": "Identifier of the supplied class resource; must match `class.id`."
+                }
+              },
+              "additionalProperties": true,
+              "description": "The Wallet Objects object resource for the selected `type`."
+            }
+          },
+          "description": "The Wallet Objects resource family and its class/object pair. Send the format-specific fields\nas defined by the Wallet Objects contract. Revolut validates both resources against `type`,\nparses them, and renders the pass natively.\n"
+        }
+      }
+    },
+    "WalletObjectsPassUpdate": {
+      "description": "The updatable state of a pass in Wallet Objects JSON format. Provide the resource family plus both\nthe class and object under `walletobjects`; the object's `classId` must reference the supplied class\nresource. Excludes `template_id`, which is fixed at creation.\n",
+      "allOf": [
+        {
+          "$ref": "#/$defs/PartnerPassRevision"
+        },
+        {
+          "$ref": "#/$defs/WalletObjectsJsonFormat"
+        }
+      ]
+    }
+  }
+}

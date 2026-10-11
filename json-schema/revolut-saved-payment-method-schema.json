@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-saved-payment-method-schema.json",
+  "title": "Saved-Payment-Method",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-payments-api-openapi.yml#/components/schemas/Saved-Payment-Method",
+  "type": "object",
+  "properties": {
+    "saved_payment_method": {
+      "type": "object",
+      "description": "Object containing information about the saved payment method used to pay for the order.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "card",
+            "revolut_pay"
+          ],
+          "description": "Type of saved payment method."
+        },
+        "id": {
+          "type": "string",
+          "description": "Saved payment method ID."
+        },
+        "initiator": {
+          "type": "string",
+          "description": "Indicates who is allowed to initiate the payment. \n\n:::note\nUsing this endpoint, only merchant initiated payments are supported with Revolut Pay.\n:::",
+          "enum": [
+            "customer",
+            "merchant"
+          ]
+        },
+        "environment": {
+          "$ref": "#/$defs/Environment"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "initiator",
+        "environment"
+      ]
+    }
+  },
+  "required": [
+    "saved_payment_method"
+  ],
+  "$defs": {
+    "Browser-Environment": {
+      "type": "object",
+      "description": "Browser environment",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "browser"
+          ],
+          "description": "Type of environment where the payment was made."
+        },
+        "time_zone_utc_offset": {
+          "type": "integer",
+          "description": "Defines the offset to UTC in minutes."
+        },
+        "color_depth": {
+          "type": "integer",
+          "description": "The browser's available colour depth."
+        },
+        "screen_width": {
+          "type": "integer",
+          "description": "The browser's screen width in pixels."
+        },
+        "screen_height": {
+          "type": "integer",
+          "description": "The browser's screen height in pixels."
+        },
+        "java_enabled": {
+          "type": "boolean",
+          "description": "Indicates if the browser has Java enabled."
+        },
+        "challenge_window_width": {
+          "type": "integer",
+          "description": "Defines the width of the pop-up window where the authentication challenge appears."
+        },
+        "browser_url": {
+          "type": "string",
+          "format": "url",
+          "description": "The URL of the page where the payment was initiated."
+        }
+      },
+      "required": [
+        "type",
+        "time_zone_utc_offset",
+        "color_depth",
+        "screen_width",
+        "screen_height",
+        "java_enabled"
+      ]
+    },
+    "Environment": {
+      "description": "Environment object, indicating in which environment the payment was made.\n\n:::warning\nOnly required if `initiator: customer`.\n:::\n\n:::note\nOnly `browser` is available at the moment.\n:::",
+      "type": "object",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Browser-Environment"
+        }
+      ]
+    }
+  }
+}

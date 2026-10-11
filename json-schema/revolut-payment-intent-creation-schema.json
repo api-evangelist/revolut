@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-payment-intent-creation-schema.json",
+  "title": "Payment Intent creation",
+  "description": "Request body for creating a payment intent to push to a terminal.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-payment-intents-api-openapi.yml#/components/schemas/Payment-Intent-Creation",
+  "type": "object",
+  "properties": {
+    "amount": {
+      "$ref": "#/$defs/Payment-Intent-Amount"
+    },
+    "terminal_id": {
+      "$ref": "#/$defs/Terminal-Id"
+    }
+  },
+  "required": [
+    "amount",
+    "terminal_id"
+  ],
+  "$defs": {
+    "Payment-Intent-Amount": {
+      "title": "Payment Intent amount",
+      "type": "integer",
+      "description": "The payment amount expressed in minor currency units, according to the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217). For example, `7034` in `EUR` corresponds to €70.34.\n\n:::info\nConversion between major and minor units varies by currency. For instance, `100` minor units equal £1.00 in `GBP`, whereas in `ISK` they represent 100 units. For more details, see the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217).\n:::"
+    },
+    "Terminal-Id": {
+      "title": "Terminal ID",
+      "type": "string",
+      "format": "uuid",
+      "description": "The unique identifier of the terminal."
+    }
+  }
+}

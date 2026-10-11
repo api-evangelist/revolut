@@ -1,0 +1,314 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-report-run-csv-custom-schema.json",
+  "title": "Custom report CSV",
+  "description": "CSV output for `custom_report` report type. Contains settled and processing transactions with a configurable set of columns.\n\nThe first row is a header row with column names. Subsequent rows contain transaction data, one row per transaction.\n\nThe columns included in the response depend on the `options.columns` list specified in the request. If no columns list was provided, all available columns are included.\n\nCustom metadata columns can also be requested using the `metadata.` prefix, for example `metadata.custom_attribute`.\n\n:::note\nThe actual response is a raw `text/csv` string. The object schema below is a documentation convention only: OpenAPI's schema language (JSON Schema) describes JSON data shapes and has no native construct for typed CSV columns, so each property here corresponds to a CSV column header rather than a JSON field.\n:::",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-report-runs-api-openapi.yml#/components/schemas/Report-Run-Csv-Custom",
+  "type": "object",
+  "properties": {
+    "transaction_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the ledger transaction in the core settlement system. Matches `transaction_id` in the settlement and payout reports for the same event. Not the same as `payment_id` in the payments report — a payment and its resulting ledger transaction have different UUIDs. Use `order_id` to cross-reference with the payments report."
+    },
+    "related_transaction_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "For refund and chargeback transactions, the ledger transaction ID of the original payment that this transaction reverses. Corresponds to `original_transaction_id` in the payout statement report."
+    },
+    "transaction_description": {
+      "type": "string",
+      "description": "Description of the transaction."
+    },
+    "order_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the order. An order is the top-level entity that groups one or more payment attempts against it. `order_id` is consistent across all report types and can be used to cross-reference between the payments report and the settlement or payout reports."
+    },
+    "original_order_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "For refunds and chargebacks, the order ID of the original payment that this transaction reverses. Refunds and chargebacks create their own order in the system, so `order_id` refers to the refund or chargeback order while `original_order_id` points back to the original payment's order. For settlement transactions, matches `order_id`."
+    },
+    "original_order_ext_ref": {
+      "type": "string",
+      "description": "Merchant's order identifier of the original order for external reference."
+    },
+    "order_description": {
+      "type": "string",
+      "description": "Description of the order."
+    },
+    "order_channel": {
+      "type": "string",
+      "description": "Channel through which the order was created.\n\nThe value depends on the order source and integration. It may reflect platform-specific or externally provided values, so the set of returned values should not be treated as a fixed enum."
+    },
+    "order_customer_note": {
+      "type": "string",
+      "description": "Note added by the customer at the time of the order."
+    },
+    "order_tip_amount": {
+      "type": "number",
+      "description": "Tip amount set at the order level."
+    },
+    "order_created_by": {
+      "type": "string",
+      "description": "Identifier of the user who created the order."
+    },
+    "payment_initiated_by": {
+      "type": "string",
+      "description": "Identifier of who initiated the payment."
+    },
+    "order_line_items": {
+      "type": "string",
+      "description": "Line items included in the order, if any."
+    },
+    "payout_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the payout that this transaction contributed to. Use to cross-reference with the payout statement report."
+    },
+    "payout_reference": {
+      "type": "string",
+      "description": "Reference of the payout transfer associated with the transaction."
+    },
+    "invoice_reference": {
+      "type": "string",
+      "description": "Invoice reference associated with the order, if any."
+    },
+    "dispute_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the dispute, if applicable."
+    },
+    "account_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the merchant account."
+    },
+    "account_balance": {
+      "type": "number",
+      "description": "Account balance at the time of the transaction."
+    },
+    "started_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time the row's source record was started. For payment rows, this is the payment start timestamp. For non-payment rows such as refunds and chargebacks, this is the transaction start timestamp. This displayed value is separate from the report filter timeframe."
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time the order was created."
+    },
+    "updated_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time the row's source record was last updated. For payment rows, this is the payment update timestamp. For non-payment rows such as refunds and chargebacks, this is the transaction update timestamp. This displayed value is separate from the report filter timeframe."
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time the row's source record was completed. For payment rows, this is the payment completion timestamp. For non-payment rows such as refunds and chargebacks, this is the transaction completion timestamp. This displayed value is separate from the report filter timeframe."
+    },
+    "payment_created_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Payment authorisation or creation timestamp for rows linked to a payment, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) UTC date-time format. Empty for refunds and non-payment-related rows where no payment timestamp applies. This displayed value is separate from the report filter timeframe."
+    },
+    "payment_captured_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Payment capture timestamp for rows linked to a captured payment, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) UTC date-time format. Empty for refunds, non-payment-related rows, or payments not captured. This displayed value is separate from the report filter timeframe."
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of the transaction.\n\n| Value | Description |\n| ----- | ----------- |\n| `SETTLEMENT` | Settlement of a payment into the merchant balance. |\n| `RESERVE` | Reserve entry holding funds on the merchant balance. |\n| `REFUND` | Refund entry reducing the merchant balance. |\n| `TOPUP` | Balance top-up entry. |\n| `TOPUP_RETURN` | Reversal of a top-up entry. |\n| `CHARGEBACK` | Dispute withdrawal from the merchant balance. |\n| `CHARGEBACK_REVERSAL` | Reversal of a previous chargeback. |\n| `CREDIT_REIMBURSEMENT` | Credit reimbursement entry. |\n| `FEE` | Fee charged against the merchant balance. |\n| `PAYOUT` | Payout-related ledger entry. |\n| `TRANSFER` | Balance transfer entry. |\n| `REVOLUT_REFUND` | Refund-related entry specific to Revolut internal flows. |\n| `REVOLUT_FEE` | Fee-related entry specific to Revolut internal flows. |\n| `WRITE_OFF` | Write-off entry. |\n| `CHARGE` | Charge entry posted to the merchant balance. |",
+      "enum": [
+        "SETTLEMENT",
+        "RESERVE",
+        "REFUND",
+        "TOPUP",
+        "TOPUP_RETURN",
+        "CHARGEBACK",
+        "CHARGEBACK_REVERSAL",
+        "CREDIT_REIMBURSEMENT",
+        "FEE",
+        "PAYOUT",
+        "TRANSFER",
+        "REVOLUT_REFUND",
+        "REVOLUT_FEE",
+        "WRITE_OFF",
+        "CHARGE"
+      ]
+    },
+    "legacy_type": {
+      "type": "string",
+      "description": "Legacy type value for backwards compatibility."
+    },
+    "state": {
+      "type": "string",
+      "description": "State of the transaction."
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the transaction."
+    },
+    "merchant_order_ext_ref": {
+      "type": "string",
+      "description": "Merchant's order reference. The value of the `merchant_order_data.reference` field set when the order was created."
+    },
+    "customer_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the customer related to the order."
+    },
+    "amount": {
+      "type": "number",
+      "description": "Total amount of the order."
+    },
+    "currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the order."
+    },
+    "settlement_amount": {
+      "type": "number",
+      "description": "Total amount settled on the merchant's account."
+    },
+    "settlement_currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the settled amount."
+    },
+    "exchange_rate": {
+      "type": "number",
+      "description": "Exchange rate applied if currency conversion occurred."
+    },
+    "refunded_amount": {
+      "type": "number",
+      "description": "Amount refunded for the order."
+    },
+    "statement_descriptor": {
+      "type": "string",
+      "description": "Statement descriptor shown on the customer's bank statement."
+    },
+    "tip_amount": {
+      "type": "number",
+      "description": "Tip amount included in the transaction."
+    },
+    "surcharge_amount": {
+      "type": "number",
+      "description": "Surcharge amount applied to the transaction. Omitted when no surcharge applies."
+    },
+    "order_surcharge_amount": {
+      "type": "number",
+      "description": "Surcharge amount set at the order level."
+    },
+    "terminal_hardware_id": {
+      "type": "string",
+      "description": "Identifier of the card reader hardware used, for in-person payments."
+    },
+    "customer_name": {
+      "type": "string",
+      "description": "Name of the customer."
+    },
+    "customer_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email address of the customer."
+    },
+    "customer_card_number": {
+      "type": "string",
+      "description": "Masked card number used for the payment."
+    },
+    "customer_card_brand": {
+      "type": "string",
+      "description": "Card brand used for the payment. Derived from BIN data. Example values include `VISA`, `MASTERCARD`, `MASTERCARD_DEBIT`, `MAESTRO`, `AMEX`, `DINERS`, `DISCOVER`, `JCB`."
+    },
+    "customer_card_type": {
+      "type": "string",
+      "description": "Card funding type.\n\n| Value | Description |\n| ----- | ----------- |\n| `DEBIT` | Debit card. |\n| `CREDIT` | Credit card. |\n| `PREPAID` | Prepaid card. |\n| `DEFERRED_DEBIT` | Deferred debit card. |\n| `CHARGE` | Charge card. |",
+      "enum": [
+        "DEBIT",
+        "CREDIT",
+        "PREPAID",
+        "DEFERRED_DEBIT",
+        "CHARGE"
+      ]
+    },
+    "customer_card_category": {
+      "type": "string",
+      "description": "Card commercial category.\n\n| Value | Description |\n| ----- | ----------- |\n| `consumer` | Personal card. |\n| `commercial` | Business or corporate card. |",
+      "enum": [
+        "consumer",
+        "commercial"
+      ]
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "Payment method the customer used to pay for the order."
+    },
+    "fee_amount": {
+      "type": "number",
+      "description": "Total fee amount applied to the order, aggregated across all fee components (acquiring markup + interchange + scheme fees)."
+    },
+    "fee_currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the total fee."
+    },
+    "processing_fee_amount": {
+      "type": "number",
+      "description": "Acquiring markup fee only — a subset of `fee_amount`. Represents Revolut's service fee, excluding interchange and scheme fees."
+    },
+    "processing_fee_currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the acquiring markup fee."
+    },
+    "fx_fee_amount": {
+      "type": "number",
+      "description": "Foreign exchange fee amount, if applicable."
+    },
+    "fx_fee_currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the FX fee."
+    },
+    "browser_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "The URL where the customer initiated the payment."
+    },
+    "beneficiary_name": {
+      "type": "string",
+      "description": "Name of the beneficiary, for bank transfer payments."
+    },
+    "beneficiary_account_number": {
+      "type": "string",
+      "description": "Account number of the beneficiary, for bank transfer payments."
+    },
+    "location_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the location related to the transaction."
+    },
+    "location_name": {
+      "type": "string",
+      "description": "Name of the location related to the transaction."
+    },
+    "order_custom_field_name": {
+      "type": "string",
+      "description": "Name of a custom field set on the order."
+    },
+    "order_custom_field_value": {
+      "type": "string",
+      "description": "Value of a custom field set on the order."
+    },
+    "offline_payment_state": {
+      "type": "string",
+      "description": "State of an offline payment, if applicable."
+    },
+    "order_authorisation_type": {
+      "type": "string",
+      "description": "Authorisation type of the order, for example `FULL` or `PRE_AUTH`."
+    }
+  }
+}

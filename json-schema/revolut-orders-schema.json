@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-orders-schema.json",
+  "title": "Orders",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-partners-api-openapi.yml#/components/schemas/Orders",
+  "type": "array",
+  "items": {
+    "$ref": "#/$defs/Order"
+  },
+  "$defs": {
+    "CurrencyCryptoId": {
+      "type": "string",
+      "description": "The ID of the currency, obtained from the [`/config`](https://developer.revolut.com/docs/api/crypto-ramp#retrieve-configuration) endpoint."
+    },
+    "CurrencyFiat": {
+      "type": "string",
+      "format": "ISO 4217",
+      "description": "The fiat currency [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code."
+    },
+    "MoneyCryptoId": {
+      "type": "object",
+      "required": [
+        "amount",
+        "currencyId"
+      ],
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "float",
+          "description": "The amount."
+        },
+        "currencyId": {
+          "$ref": "#/$defs/CurrencyCryptoId"
+        }
+      }
+    },
+    "MoneyFiat": {
+      "type": "object",
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "float",
+          "description": "The amount."
+        },
+        "currency": {
+          "$ref": "#/$defs/CurrencyFiat"
+        }
+      }
+    },
+    "Order": {
+      "type": "object",
+      "description": "Fiat to crypto exchange order",
+      "required": [
+        "id",
+        "fiat",
+        "crypto",
+        "fees",
+        "exchange_rate",
+        "payment",
+        "created_at",
+        "updated_at",
+        "status",
+        "wallet",
+        "fees_partner_currency"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The external UUID of the order."
+        },
+        "fiat": {
+          "$ref": "#/$defs/MoneyFiat",
+          "description": "The fiat amount that the customer paid for the crypto (excluding fees)."
+        },
+        "crypto": {
+          "$ref": "#/$defs/MoneyCryptoId",
+          "description": "The crypto amount that the customer received."
+        },
+        "fees": {
+          "type": "object",
+          "description": "The fees for the order.",
+          "required": [
+            "ramp_fee",
+            "partner_fee",
+            "network_fee"
+          ],
+          "properties": {
+            "ramp_fee": {
+              "$ref": "#/$defs/MoneyFiat",
+              "description": "Revolut Ramp fee."
+            },
+            "partner_fee": {
+              "$ref": "#/$defs/MoneyFiat",
+              "description": "Partner fee."
+            },
+            "network_fee": {
+              "$ref": "#/$defs/MoneyFiat",
+              "description": "Crypto network fee."
+            }
+          }
+        },
+        "exchange_rate": {
+          "type": "number",
+          "format": "float",
+          "description": "The exchange rate for the order."
+        },
+        "payment": {
+          "type": "string",
+          "enum": [
+            "card",
+            "revolut",
+            "apple-pay",
+            "google-pay"
+          ],
+          "description": "The [payment method](https://developer.revolut.com/docs/guides/crypto-ramp/introduction-to-revolut-ramp/coverage-and-other-details/payment-options) used for the purchase."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The UTC date and time of order creation in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The UTC date and time of order update in the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "AWAITING_PAYMENT",
+            "PROCESSING",
+            "COMPLETED",
+            "FAILED"
+          ],
+          "description": "The state of order processing."
+        },
+        "fail_reason": {
+          "type": "string",
+          "enum": [
+            "PAYMENT_NOT_RECEIVED",
+            "PAYMENT_DECLINED",
+            "CRYPTO_WITHDRAWAL_FAILED",
+            "OTHER"
+          ],
+          "description": "The reason why the order failed."
+        },
+        "wallet": {
+          "type": "string",
+          "description": "The address of the crypto wallet into which the crypto transfer was ordered."
+        },
+        "transaction_hash": {
+          "type": "string",
+          "description": "The blockchain transaction hash.\nAbsent if no crypto transaction has been created yet.\nAlways present if order is in the `COMPLETED` state."
+        },
+        "additionalProperties": {
+          "type": "object",
+          "description": "The additional properties passed in the call to the [`/buy`](https://developer.revolut.com/docs/api/crypto-ramp#retrieve-a-redirect-url) endpoint under the `additionalProperties.*` query parameter(s), if such properties were provided.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "fees_partner_currency": {
+          "type": "object",
+          "description": "The fees converted to the partner's currency.",
+          "required": [
+            "ramp_fee",
+            "partner_fee",
+            "network_fee"
+          ],
+          "properties": {
+            "ramp_fee": {
+              "$ref": "#/$defs/MoneyFiat",
+              "description": "Revolut Ramp fee."
+            },
+            "partner_fee": {
+              "$ref": "#/$defs/MoneyFiat",
+              "description": "Partner fee."
+            },
+            "network_fee": {
+              "$ref": "#/$defs/MoneyFiat",
+              "description": "Crypto network fee."
+            }
+          }
+        }
+      }
+    }
+  }
+}

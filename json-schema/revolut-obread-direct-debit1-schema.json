@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-obread-direct-debit1-schema.json",
+  "title": "OBReadDirectDebit1",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-transactions-api-openapi.yml#/components/schemas/OBReadDirectDebit1",
+  "required": [
+    "Data",
+    "Links",
+    "Meta"
+  ],
+  "type": "object",
+  "properties": {
+    "Data": {
+      "type": "object",
+      "properties": {
+        "DirectDebit": {
+          "type": "array",
+          "description": "The account that a cash entry is made to or from.",
+          "items": {
+            "$ref": "#/$defs/OBDirectDebit1"
+          }
+        }
+      },
+      "description": "A list of direct debits."
+    },
+    "Links": {
+      "$ref": "#/$defs/Links"
+    },
+    "Meta": {
+      "$ref": "#/$defs/Meta"
+    }
+  },
+  "$defs": {
+    "AccountId": {
+      "maxLength": 40,
+      "minLength": 1,
+      "type": "string",
+      "description": "The unique and immutable ID to identify the account resource.\nThis ID has no meaning to the account owner."
+    },
+    "Links": {
+      "required": [
+        "Self"
+      ],
+      "type": "object",
+      "properties": {
+        "Self": {
+          "type": "string",
+          "description": "The absolute URI to the resource.",
+          "format": "uri"
+        },
+        "Next": {
+          "type": "string",
+          "description": "The absolute URI to the next pagination resource.",
+          "format": "uri"
+        },
+        "Prev": {
+          "type": "string",
+          "description": "The absolute URI to the previous pagination resource.",
+          "format": "uri"
+        }
+      },
+      "description": "Links relevant to the payload."
+    },
+    "Meta": {
+      "title": "MetaData",
+      "type": "object",
+      "properties": {
+        "TotalPages": {
+          "type": "integer",
+          "description": "Used for pagination. Indicates how many pages of results are available.",
+          "format": "int32"
+        }
+      },
+      "description": "Meta data relevant to the payload."
+    },
+    "OBActiveCurrencyAndAmount_SimpleType": {
+      "pattern": "^\\d{1,13}\\.\\d{1,5}$",
+      "type": "string",
+      "description": "The amount of money where the unit of currency is explicit and compliant with [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)."
+    },
+    "OBActiveOrHistoricCurrencyAndAmount": {
+      "required": [
+        "Amount",
+        "Currency"
+      ],
+      "type": "object",
+      "properties": {
+        "Amount": {
+          "$ref": "#/$defs/OBActiveCurrencyAndAmount_SimpleType"
+        },
+        "Currency": {
+          "pattern": "^[A-Z]{3,3}$",
+          "type": "string",
+          "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+        }
+      },
+      "description": "The amount of the cash balance after a transaction entry is applied to the account."
+    },
+    "OBDirectDebit1": {
+      "required": [
+        "AccountId",
+        "MandateIdentification",
+        "Name"
+      ],
+      "type": "object",
+      "properties": {
+        "AccountId": {
+          "$ref": "#/$defs/AccountId"
+        },
+        "DirectDebitId": {
+          "maxLength": 40,
+          "minLength": 1,
+          "type": "string",
+          "description": "The unique and immutable ID to identify the direct debit resource.\nThis ID has no meaning to the account owner."
+        },
+        "MandateIdentification": {
+          "maxLength": 35,
+          "minLength": 1,
+          "type": "string",
+          "description": "The direct debit reference.\n\n- For AUDDIS (Automated Direct Debit Instruction Service), users provide core reference.\n- For non AUDDIS, users provide core reference if possible, or last used reference."
+        },
+        "DirectDebitStatusCode": {
+          "$ref": "#/$defs/OBExternalDirectDebitStatus1Code"
+        },
+        "Name": {
+          "maxLength": 70,
+          "minLength": 1,
+          "type": "string",
+          "description": "The name of service user."
+        },
+        "PreviousPaymentAmount": {
+          "$ref": "#/$defs/OBActiveOrHistoricCurrencyAndAmount"
+        }
+      },
+      "description": "The account that a cash entry is made to or from."
+    },
+    "OBExternalDirectDebitStatus1Code": {
+      "type": "string",
+      "description": "The status of the direct debit.",
+      "enum": [
+        "Active",
+        "Inactive"
+      ]
+    }
+  }
+}

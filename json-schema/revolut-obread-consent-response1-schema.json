@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-obread-consent-response1-schema.json",
+  "title": "OBReadConsentResponse1",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-accounts-api-openapi.yml#/components/schemas/OBReadConsentResponse1",
+  "required": [
+    "Data",
+    "Links",
+    "Meta",
+    "Risk"
+  ],
+  "type": "object",
+  "properties": {
+    "Data": {
+      "required": [
+        "ConsentId",
+        "CreationDateTime",
+        "Permissions",
+        "Status",
+        "StatusUpdateDateTime"
+      ],
+      "type": "object",
+      "properties": {
+        "ConsentId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string",
+          "description": "The unique ID that is assigned to identify the account access consent resource."
+        },
+        "CreationDateTime": {
+          "type": "string",
+          "description": "The date and time when the account access consent was created.\n\nAll dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.\nAll date-time fields in responses must include the timezone.\n\nFor example: `2017-04-05T10:43:07+00:00`.",
+          "format": "date-time"
+        },
+        "Status": {
+          "$ref": "#/$defs/OBExternalRequestStatus1Code"
+        },
+        "StatusUpdateDateTime": {
+          "type": "string",
+          "description": "The date and time when the account access consent was created.\n\nAll dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.\nAll date-time fields in responses must include the timezone.\n\nFor example: `2017-04-05T10:43:07+00:00`.",
+          "format": "date-time"
+        },
+        "Permissions": {
+          "minItems": 1,
+          "type": "array",
+          "description": "The type of data access to the account.",
+          "items": {
+            "$ref": "#/$defs/OBExternalPermissions1Code"
+          }
+        },
+        "ExpirationDateTime": {
+          "type": "string",
+          "description": "The date and time when the permission expires.\nIf this is not specified, the permission is open ended.\n\nAll dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.\nAll date-time fields in responses must include the timezone.\n\nFor example: `2017-04-05T10:43:07+00:00`.",
+          "format": "date-time"
+        },
+        "TransactionFromDateTime": {
+          "type": "string",
+          "description": "The start date and time for the transaction query period.\nIf this is not specified, the start date is open ended, and data is returned from the earliest available transaction.\n\nAll dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.\nAll date-time fields in responses must include the timezone.\n\nFor example: `2017-04-05T10:43:07+00:00`.",
+          "format": "date-time"
+        },
+        "TransactionToDateTime": {
+          "type": "string",
+          "description": "The end date and time for the transaction query period.\nIf this is not specified, the end date is open ended, and data is returned to the latest available transaction.\n\nAll dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.\nAll date-time fields in responses must include the timezone.\n\nFor example: `2017-04-05T10:43:07+00:00`.",
+          "format": "date-time"
+        }
+      }
+    },
+    "Risk": {
+      "$ref": "#/$defs/OBRisk2"
+    },
+    "Links": {
+      "$ref": "#/$defs/Links"
+    },
+    "Meta": {
+      "$ref": "#/$defs/Meta"
+    }
+  },
+  "$defs": {
+    "Links": {
+      "required": [
+        "Self"
+      ],
+      "type": "object",
+      "properties": {
+        "Self": {
+          "type": "string",
+          "description": "The absolute URI to the resource.",
+          "format": "uri"
+        },
+        "Next": {
+          "type": "string",
+          "description": "The absolute URI to the next pagination resource.",
+          "format": "uri"
+        },
+        "Prev": {
+          "type": "string",
+          "description": "The absolute URI to the previous pagination resource.",
+          "format": "uri"
+        }
+      },
+      "description": "Links relevant to the payload."
+    },
+    "Meta": {
+      "title": "MetaData",
+      "type": "object",
+      "properties": {
+        "TotalPages": {
+          "type": "integer",
+          "description": "Used for pagination. Indicates how many pages of results are available.",
+          "format": "int32"
+        }
+      },
+      "description": "Meta data relevant to the payload."
+    },
+    "OBExternalPermissions1Code": {
+      "type": "string",
+      "description": "The type of data access to the account.",
+      "enum": [
+        "ReadAccountsBasic",
+        "ReadAccountsDetail",
+        "ReadBalances",
+        "ReadBeneficiariesBasic",
+        "ReadBeneficiariesDetail",
+        "ReadDirectDebits",
+        "ReadOffers",
+        "ReadPAN",
+        "ReadParty",
+        "ReadPartyPSU",
+        "ReadProducts",
+        "ReadScheduledPaymentsBasic",
+        "ReadScheduledPaymentsDetail",
+        "ReadStandingOrdersBasic",
+        "ReadStandingOrdersDetail",
+        "ReadStatementsBasic",
+        "ReadStatementsDetail",
+        "ReadTransactionsBasic",
+        "ReadTransactionsCredits",
+        "ReadTransactionsDebits",
+        "ReadTransactionsDetail"
+      ]
+    },
+    "OBExternalRequestStatus1Code": {
+      "type": "string",
+      "description": "The status of the account access consent.",
+      "enum": [
+        "Authorised",
+        "AwaitingAuthorisation",
+        "Rejected",
+        "Revoked"
+      ]
+    },
+    "OBRisk2": {
+      "type": "object",
+      "description": "The Risk section contains the risk indicators that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which can be used to specify additional details for risk scoring for account information."
+    }
+  }
+}

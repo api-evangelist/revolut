@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-spending-period-schema-schema.json",
+  "title": "SpendingPeriodSchema",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-card-invitations-api-openapi.yml#/components/schemas/SpendingPeriodSchema",
+  "type": "object",
+  "properties": {
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "The start date (inclusive) of the spending period, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format (`YYYY-MM-DD`).\nUses the [timezone set by the business](https://business.revolut.com/settings/appearance), or defaults to `Europe/London`."
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "The end date (inclusive) of the spending period, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format (`YYYY-MM-DD`).\nUses the [timezone set by the business](https://business.revolut.com/settings/appearance), or defaults to `Europe/London`."
+    },
+    "end_date_action": {
+      "type": "string",
+      "enum": [
+        "lock",
+        "terminate"
+      ],
+      "description": "The action to take after the end date of the spending period."
+    }
+  },
+  "anyOf": [
+    {
+      "required": [
+        "start_date"
+      ]
+    },
+    {
+      "required": [
+        "end_date",
+        "end_date_action"
+      ]
+    }
+  ]
+}

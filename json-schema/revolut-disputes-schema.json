@@ -1,0 +1,331 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-disputes-schema.json",
+  "title": "Disputes",
+  "description": "An array containing a list of disputes.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-disputes-api-openapi.yml#/components/schemas/Disputes",
+  "type": "array",
+  "items": {
+    "$ref": "#/$defs/Dispute"
+  },
+  "$defs": {
+    "Card-Brand-v2": {
+      "type": "string",
+      "description": "The brand of the payment card.",
+      "enum": [
+        "visa",
+        "mastercard",
+        "american_express"
+      ]
+    },
+    "Card-Last-Four": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 4,
+      "description": "The last four digits of the payment card number."
+    },
+    "Currency": {
+      "type": "string",
+      "format": "ISO 4217",
+      "minLength": 3,
+      "maxLength": 3,
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.\n\n:::info\nFor more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).\n:::"
+    },
+    "Dispute": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier of the dispute."
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "needs_response",
+            "under_review",
+            "won",
+            "lost"
+          ],
+          "description": "Represents the state of the dispute.\n\nIt indicates either the final outcome of the dispute or if further action is required.\n\n| Parameter value | Description |\n| --------------- | ----------- |\n| `needs_response` | Indicates that the dispute requires a response or action from the merchant. |\n| `under_review` | Indicates that the dispute is currently under review, and the outcome is pending. |\n| `won` | Indicates that the dispute has been resolved in favor of the merchant. |\n| `lost` | Indicates that the dispute has been resolved against the merchant. |"
+        },
+        "substate": {
+          "type": "string",
+          "enum": [
+            "arbitration",
+            "lost_accepted",
+            "lost_arbitration",
+            "lost_expired",
+            "lost_pre_arbitration",
+            "lost_representment",
+            "new",
+            "pre_arbitration",
+            "representment",
+            "won_arbitration",
+            "won_pre_arbitration",
+            "won_representment",
+            "won_reversal"
+          ],
+          "description": "Provides additional granularity about the dispute state.\n\nIt details the progression of the dispute process, showing the current stage or phase.\n\n| Parameter value | Description |\n| --------------- | ----------- |\n| `new` | The dispute has been recently created and is in the initial phase, awaiting further processing. |\n| `lost_expired` | The dispute has been lost due to expiration, likely because the merchant did not respond within the required timeframe. |\n| `pre_arbitration` | The dispute is in the pre-arbitration phase, where preliminary evidence is being gathered before a formal arbitration process. |\n| `won_pre_arbitration`| The merchant secured a win during the pre-arbitration phase based on the evidence provided. |\n| `lost_pre_arbitration` | The dispute was lost during the pre-arbitration phase, indicating that the preliminary review did not favor the merchant. |\n| `lost_accepted` | The loss has been accepted as final, implying that no further contestation is likely or needed. |\n| `arbitration` | The dispute has escalated to the arbitration stage, where a neutral third party is reviewing the evidence. |\n| `won_arbitration` | The merchant won the dispute during the arbitration process. |\n| `lost_arbitration` | The merchant lost the dispute during the arbitration process. |"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date and time when the dispute was created."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date and time when the dispute was last updated."
+        },
+        "response_due_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date and time until when the merchant needs to respond to the dispute.\n\nThe response time by default is 15 days after the dispute is created. If no response is provided by this date, the dispute transitions to:\n  - `state: lost`\n  - `substate: lost_expired` "
+        },
+        "reason_code": {
+          "type": "string",
+          "description": "Dispute reason code from the payment scheme, following standard formats defined by individual providers.\n\n:::info\nFor complete, official lists of dispute codes, see:  \n- **Visa**: [Visa Core Rules and Visa Product and Service Rules](https://corporate.visa.com/content/dam/VCOM/download/about-visa/visa-rules-public.pdf) \n- **Mastercard**: [Chargeback Guide - Merchant Edition](https://www.mastercard.com/content/dam/public/mastercardcom/na/global-site/documents/chargeback-guide.pdf)\n- **American Express**: [Chargeback Codes](https://www.americanexpress.com/content/dam/amex/au/en/merchant/static/chargebackcodeguide.pdf)\n:::"
+        },
+        "reason_description": {
+          "type": "string",
+          "description": "Provides a human-readable explanation for the dispute reason codes."
+        },
+        "amount": {
+          "type": "integer",
+          "description": "Disputed amount expressed in minor currency units, according to the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217). For example, `7034` in `EUR` corresponds to €70.34.\n\n:::info\nConversion between major and minor units varies by currency. For instance, `100` minor units equal £1.00 in `GBP`, whereas in `ISK` they represent 100 units. For more details, see the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217).\n:::"
+        },
+        "currency": {
+          "$ref": "#/$defs/Currency"
+        },
+        "payment": {
+          "$ref": "#/$defs/Dispute-Payment"
+        }
+      }
+    },
+    "Dispute-Payment": {
+      "type": "object",
+      "description": "Object containing the details of the original payment associated with the dispute.",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Dispute-Payment-Id"
+        },
+        "order_id": {
+          "$ref": "#/$defs/Dispute-Payment-Order-Id"
+        },
+        "created_at": {
+          "$ref": "#/$defs/Dispute-Payment-Created-At"
+        },
+        "arn": {
+          "$ref": "#/$defs/Dispute-Payment-Arn"
+        },
+        "amount": {
+          "$ref": "#/$defs/Dispute-Payment-Amount"
+        },
+        "currency": {
+          "$ref": "#/$defs/Currency"
+        },
+        "payment_method": {
+          "$ref": "#/$defs/Dispute-Payment-Method"
+        }
+      }
+    },
+    "Dispute-Payment-Amount": {
+      "type": "integer",
+      "description": "Amount of the original payment expressed in minor currency units, according to the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217). For example, `7034` in `EUR` corresponds to €70.34.\n\n:::info\nConversion between major and minor units varies by currency. For instance, `100` minor units equal £1.00 in `GBP`, whereas in `ISK` they represent 100 units. For more details, see the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217).\n:::"
+    },
+    "Dispute-Payment-Arn": {
+      "type": "string",
+      "description": "Acquirer Reference Number (ARN) of the original payment.\n\n:::note\nOnly returned for payments made by a card.\n:::"
+    },
+    "Dispute-Payment-Created-At": {
+      "type": "string",
+      "format": "date-time",
+      "description": "[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date and time when the original disputed payment was created."
+    },
+    "Dispute-Payment-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the original payment that was disputed."
+    },
+    "Dispute-Payment-Method": {
+      "type": "object",
+      "description": "Payment method used for the original payment.\n\nUse the `type` field to determine the specific payment method variant.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Dispute-Payment-Method-Apple-Pay"
+        },
+        {
+          "$ref": "#/$defs/Dispute-Payment-Method-Apple-Tap-To-Pay"
+        },
+        {
+          "$ref": "#/$defs/Dispute-Payment-Method-Card"
+        },
+        {
+          "$ref": "#/$defs/Dispute-Payment-Method-Google-Pay"
+        },
+        {
+          "$ref": "#/$defs/Dispute-Payment-Method-Revolut-Pay-Account"
+        },
+        {
+          "$ref": "#/$defs/Dispute-Payment-Method-Revolut-Pay-Card"
+        },
+        {
+          "$ref": "#/$defs/Dispute-Payment-Method-Sepa-Direct-Debit"
+        }
+      ]
+    },
+    "Dispute-Payment-Method-Apple-Pay": {
+      "type": "object",
+      "description": "Object containing details of a card used via Apple Pay.",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/Dispute-Payment-Method-Type"
+        },
+        "card_brand": {
+          "$ref": "#/$defs/Card-Brand-v2"
+        },
+        "card_last_four": {
+          "$ref": "#/$defs/Card-Last-Four"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "Dispute-Payment-Method-Apple-Tap-To-Pay": {
+      "type": "object",
+      "description": "Object containing details of a payment made via Apple Tap to Pay.",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/Dispute-Payment-Method-Type"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "Dispute-Payment-Method-Card": {
+      "type": "object",
+      "description": "Object containing details of the card used for the payment.",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/Dispute-Payment-Method-Type"
+        },
+        "card_brand": {
+          "$ref": "#/$defs/Card-Brand-v2"
+        },
+        "card_last_four": {
+          "$ref": "#/$defs/Card-Last-Four"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "Dispute-Payment-Method-Google-Pay": {
+      "type": "object",
+      "description": "Object containing details of a card used via Google Pay.",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/Dispute-Payment-Method-Type"
+        },
+        "card_brand": {
+          "$ref": "#/$defs/Card-Brand-v2"
+        },
+        "card_last_four": {
+          "$ref": "#/$defs/Card-Last-Four"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "Dispute-Payment-Method-Revolut-Pay-Account": {
+      "type": "object",
+      "description": "Object containing details of a payment made via Revolut Pay account.",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/Dispute-Payment-Method-Type"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "Dispute-Payment-Method-Revolut-Pay-Card": {
+      "type": "object",
+      "description": "Object containing details of a card used via Revolut Pay.",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/Dispute-Payment-Method-Type"
+        },
+        "card_brand": {
+          "$ref": "#/$defs/Card-Brand-v2"
+        },
+        "card_last_four": {
+          "$ref": "#/$defs/Card-Last-Four"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "Dispute-Payment-Method-Sepa-Direct-Debit": {
+      "type": "object",
+      "description": "Object containing details of a SEPA Direct Debit payment.",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/Dispute-Payment-Method-Type"
+        },
+        "debtor_iban_last_four": {
+          "$ref": "#/$defs/Sepa-Direct-Debit-Debtor-Iban-Last-Four"
+        },
+        "debtor_name": {
+          "$ref": "#/$defs/Sepa-Direct-Debit-Debtor-Name"
+        },
+        "mandate_reference": {
+          "$ref": "#/$defs/Sepa-Direct-Debit-Mandate-Reference"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "Dispute-Payment-Method-Type": {
+      "type": "string",
+      "enum": [
+        "apple_pay",
+        "apple_tap_to_pay",
+        "card",
+        "google_pay",
+        "revolut_pay_account",
+        "revolut_pay_card",
+        "sepa_direct_debit"
+      ],
+      "description": "Type of the payment method used for the original payment.\n\nAvailable values:\n\n| Payment method `type` | Description |\n| --------------------- | ----------- |\n| `apple_pay` | The customer paid the order using Apple Pay. |\n| `apple_tap_to_pay` | The customer paid the order using Apple Tap to Pay. |\n| `card` | The customer paid the order using their credit or debit card. |\n| `google_pay` | The customer paid the order using Google Pay. |\n| `revolut_pay_card` | The customer paid the order via Revolut Pay using their credit or debit card. |\n| `revolut_pay_account` | The customer paid the order via Revolut Pay using their Revolut account. |\n| `sepa_direct_debit` | The customer paid the order via SEPA Direct Debit. |"
+    },
+    "Dispute-Payment-Order-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the order linked to the original disputed payment."
+    },
+    "Sepa-Direct-Debit-Debtor-Iban-Last-Four": {
+      "type": "string",
+      "description": "The last four digits of the debtor's IBAN.",
+      "minLength": 4,
+      "maxLength": 4
+    },
+    "Sepa-Direct-Debit-Debtor-Name": {
+      "type": "string",
+      "description": "The full name of the debtor as provided in the mandate."
+    },
+    "Sepa-Direct-Debit-Mandate-Reference": {
+      "type": "string",
+      "description": "The unique mandate reference generated by Revolut. Include this in pre-debit notifications sent to your customers."
+    }
+  }
+}

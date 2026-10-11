@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-team-member-schema.json",
+  "title": "TeamMember",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-team-members-api-openapi.yml#/components/schemas/TeamMember",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The ID of the team member.",
+      "format": "uuid"
+    },
+    "email": {
+      "type": "string",
+      "description": "The email of the team member.",
+      "format": "email"
+    },
+    "first_name": {
+      "type": "string",
+      "description": "The team member's first name."
+    },
+    "last_name": {
+      "type": "string",
+      "description": "The team member's last name."
+    },
+    "state": {
+      "$ref": "#/$defs/TeamMemberState"
+    },
+    "role_id": {
+      "type": "string",
+      "description": "The ID of the team member's [role](https://developer.revolut.com/docs/api/business#get-roles). This can be a UUID or other default role such as `Owner`."
+    },
+    "created_at": {
+      "type": "string",
+      "description": "The date and time the team member was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "description": "The date and time the team member was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "email",
+    "state",
+    "role_id",
+    "created_at",
+    "updated_at"
+  ],
+  "$defs": {
+    "TeamMemberState": {
+      "description": "The state that the team member is in.",
+      "enum": [
+        "created",
+        "confirmed",
+        "waiting",
+        "active",
+        "locked",
+        "disabled"
+      ],
+      "type": "string"
+    }
+  }
+}

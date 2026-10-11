@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-exchange-request-schema.json",
+  "title": "ExchangeRequest",
+  "description": "The exchange information.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-foreign-exchange-api-openapi.yml#/components/schemas/ExchangeRequest",
+  "type": "object",
+  "properties": {
+    "from": {
+      "$ref": "#/$defs/ExchangePartFrom"
+    },
+    "to": {
+      "$ref": "#/$defs/ExchangePartTo"
+    },
+    "reference": {
+      "type": "string",
+      "description": "The reference for the exchange transaction, provided by you.\nIt helps you to identify the transaction if you want to look it up later."
+    },
+    "request_id": {
+      "type": "string",
+      "description": "The ID of the request, provided by you.\nIt helps you identify the transaction in your system.\n\n:::warning\nTo ensure that an exchange transaction is not processed multiple times if there are network or system errors,\nthe same `request_id` should be used for requests related to the same transaction.\n:::",
+      "maxLength": 40
+    },
+    "exchange_reason_code": {
+      "$ref": "#/$defs/ExchangeReasonCode"
+    }
+  },
+  "required": [
+    "from",
+    "to",
+    "request_id"
+  ],
+  "$defs": {
+    "Currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+    },
+    "ExchangePartFrom": {
+      "type": "object",
+      "description": "The details of the currency to exchange from.",
+      "properties": {
+        "account_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the account to sell currency from."
+        },
+        "currency": {
+          "$ref": "#/$defs/Currency"
+        },
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "The amount of currency.\nSpecify **only** if you want to sell currency."
+        }
+      },
+      "required": [
+        "account_id",
+        "currency"
+      ]
+    },
+    "ExchangePartTo": {
+      "type": "object",
+      "description": "The details of the currency to exchange to.",
+      "properties": {
+        "account_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the account to receive exchanged currency into."
+        },
+        "currency": {
+          "$ref": "#/$defs/Currency"
+        },
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "The amount of currency.\nSpecify **only** if you want to buy currency."
+        }
+      },
+      "required": [
+        "account_id",
+        "currency"
+      ]
+    },
+    "ExchangeReasonCode": {
+      "type": "string",
+      "description": "The reason code for the exchange.\nDepending on the country and the amount of funds to be exchanged, you might be required to provide an exchange reason. \nYou can check available reason codes with the [`GET /exchange-reasons` operation](https://developer.revolut.com/docs/api/business#get-exchange-reasons).\n\nIf an exchange reason is not required, this field is ignored."
+    }
+  }
+}

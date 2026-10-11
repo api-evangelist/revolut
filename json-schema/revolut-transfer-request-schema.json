@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-transfer-request-schema.json",
+  "title": "TransferRequest",
+  "description": "Transfer the funds between accounts of the business in the same currency.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-transfers-api-openapi.yml#/components/schemas/TransferRequest",
+  "type": "object",
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "description": "The ID of the request, provided by you.\nIt helps you identify the transaction in your system.\n\n:::warning\nTo ensure that a transfer is not processed multiple times if there are network or system errors,\nthe same `request_id` should be used for requests related to the same transfer.\n:::",
+      "maxLength": 40
+    },
+    "source_account_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the source account that you transfer the funds from."
+    },
+    "target_account_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the target account that you transfer the funds to."
+    },
+    "amount": {
+      "type": "number",
+      "format": "double",
+      "description": "The amount of the funds to be transferred."
+    },
+    "currency": {
+      "$ref": "#/$defs/Currency"
+    },
+    "reference": {
+      "type": "string",
+      "description": "The reference for the funds transfer."
+    }
+  },
+  "required": [
+    "request_id",
+    "source_account_id",
+    "target_account_id",
+    "amount",
+    "currency"
+  ],
+  "$defs": {
+    "Currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+    }
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-payment-drafts-response-schema.json",
+  "title": "PaymentDraftsResponse",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-payment-drafts-api-openapi.yml#/components/schemas/PaymentDraftsResponse",
+  "type": "object",
+  "required": [
+    "payment_orders"
+  ],
+  "properties": {
+    "payment_orders": {
+      "type": "array",
+      "description": "The list of payment drafts that haven't been sent for processing.",
+      "items": {
+        "$ref": "#/$defs/PaymentOrderInfo"
+      }
+    }
+  },
+  "$defs": {
+    "PaymentOrderInfo": {
+      "type": "object",
+      "description": "A list of payments.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the payment draft."
+        },
+        "scheduled_for": {
+          "type": "string",
+          "format": "date",
+          "description": "The scheduled date of the payment draft in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the payment draft."
+        },
+        "payments_count": {
+          "type": "integer",
+          "description": "The number of payments in the payment draft."
+        },
+        "source": {
+          "type": "string",
+          "description": "The source from which the payment draft was created.",
+          "enum": [
+            "api",
+            "integration",
+            "email",
+            "business_app"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "payments_count"
+      ]
+    }
+  }
+}

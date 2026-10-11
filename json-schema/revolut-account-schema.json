@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-account-schema.json",
+  "title": "Account",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-accounts-api-openapi.yml#/components/schemas/Account",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The account ID."
+    },
+    "name": {
+      "type": "string",
+      "description": "The account name."
+    },
+    "balance": {
+      "type": "number",
+      "format": "double",
+      "description": "The current balance on the account."
+    },
+    "currency": {
+      "$ref": "#/$defs/AccountCurrency"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "description": "Indicates the state of the account."
+    },
+    "public": {
+      "type": "boolean",
+      "description": "Indicates whether the account is visible to other businesses on Revolut."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the account was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the account was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    }
+  },
+  "required": [
+    "id",
+    "balance",
+    "currency",
+    "state",
+    "public",
+    "created_at",
+    "updated_at"
+  ],
+  "$defs": {
+    "AccountCurrency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+    }
+  }
+}

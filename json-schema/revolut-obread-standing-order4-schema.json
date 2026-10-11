@@ -1,0 +1,211 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-obread-standing-order4-schema.json",
+  "title": "OBReadStandingOrder4",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-transactions-api-openapi.yml#/components/schemas/OBReadStandingOrder4",
+  "required": [
+    "Data",
+    "Links",
+    "Meta"
+  ],
+  "type": "object",
+  "properties": {
+    "Data": {
+      "type": "object",
+      "properties": {
+        "StandingOrder": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OBStandingOrder4"
+          }
+        }
+      }
+    },
+    "Links": {
+      "$ref": "#/$defs/Links"
+    },
+    "Meta": {
+      "$ref": "#/$defs/Meta"
+    }
+  },
+  "$defs": {
+    "AccountId": {
+      "maxLength": 40,
+      "minLength": 1,
+      "type": "string",
+      "description": "The unique and immutable ID to identify the account resource.\nThis ID has no meaning to the account owner."
+    },
+    "Links": {
+      "required": [
+        "Self"
+      ],
+      "type": "object",
+      "properties": {
+        "Self": {
+          "type": "string",
+          "description": "The absolute URI to the resource.",
+          "format": "uri"
+        },
+        "Next": {
+          "type": "string",
+          "description": "The absolute URI to the next pagination resource.",
+          "format": "uri"
+        },
+        "Prev": {
+          "type": "string",
+          "description": "The absolute URI to the previous pagination resource.",
+          "format": "uri"
+        }
+      },
+      "description": "Links relevant to the payload."
+    },
+    "Meta": {
+      "title": "MetaData",
+      "type": "object",
+      "properties": {
+        "TotalPages": {
+          "type": "integer",
+          "description": "Used for pagination. Indicates how many pages of results are available.",
+          "format": "int32"
+        }
+      },
+      "description": "Meta data relevant to the payload."
+    },
+    "OBActiveCurrencyAndAmount_SimpleType": {
+      "pattern": "^\\d{1,13}\\.\\d{1,5}$",
+      "type": "string",
+      "description": "The amount of money where the unit of currency is explicit and compliant with [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)."
+    },
+    "OBCashAccount5": {
+      "required": [
+        "Identification",
+        "SchemeName"
+      ],
+      "type": "object",
+      "properties": {
+        "SchemeName": {
+          "$ref": "#/$defs/OBRevolutAccountIdentificationCode"
+        },
+        "Identification": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string",
+          "description": "The identification of the account.\n\n:::warning[Unique account identifier]\nThis field will typically contain an account number or an IBAN which must not be considered as a unique identifier for the account. Several currency subacounts can share this same identifier.\n\nIf you need a unique identifier for each account, ensure you use the `Data.Account.AccountId` instead.\n:::\n"
+        },
+        "Name": {
+          "maxLength": 70,
+          "minLength": 1,
+          "type": "string",
+          "description": "The account name that the account servicing institution assigns.\n\nThe account name is the name or names of the account owner(s) represented at an account level.\n\nThe account name is not the product name or the nickname of the account."
+        },
+        "SecondaryIdentification": {
+          "maxLength": 34,
+          "minLength": 1,
+          "type": "string",
+          "description": "The secondary account ID that the account servicing institution assigns.\n\nBuilding societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination."
+        }
+      },
+      "description": "The details to identify the account."
+    },
+    "OBExternalStandingOrderStatus1Code": {
+      "type": "string",
+      "description": "The status of the standing order.",
+      "enum": [
+        "Active",
+        "Inactive"
+      ]
+    },
+    "OBRevolutAccountIdentificationCode": {
+      "type": "string",
+      "description": "The name of the identification scheme.\n\nNote the scheme `UK.Revolut.InternalAccountId` is an internal account identifier for those accounts which don't have externally available identifiers.\nIt cannot be used to send or receive funds.\n",
+      "enum": [
+        "UK.OBIE.IBAN",
+        "UK.OBIE.SortCodeAccountNumber",
+        "US.RoutingNumberAccountNumber",
+        "US.BranchCodeAccountNumber",
+        "UK.Revolut.InternalAccountId"
+      ]
+    },
+    "OBStandingOrder4": {
+      "required": [
+        "AccountId",
+        "Frequency"
+      ],
+      "type": "object",
+      "properties": {
+        "AccountId": {
+          "$ref": "#/$defs/AccountId"
+        },
+        "StandingOrderId": {
+          "maxLength": 40,
+          "minLength": 1,
+          "type": "string",
+          "description": "The unique and immutable ID to identify the standing order resource.\nThis ID has no meaning to the account owner."
+        },
+        "Frequency": {
+          "maxLength": 35,
+          "minLength": 1,
+          "type": "string",
+          "description": "The frequency of the standing order:\n- `EvryDay`: Every day\n- `IntrvlWkDay`: Only one week interval is supported (01) and any day within the week (01 to 07)\n- `IntrvlMnthDay`: Only one month interval is supported (01) and any day within the month (1 to 31)\n\nExample values:\n- `EvryDay`\n- `IntrvlWkDay:01:0[1-7]`\n- `IntrvlMnthDay:01:(0[1-9]|[12][0-9]|3[01])`"
+        },
+        "Reference": {
+          "maxLength": 35,
+          "minLength": 1,
+          "type": "string",
+          "description": "The unique reference that the creditor assigns to refer to the payment transaction.\n\nIf available, the initiating party should provide this reference in the structured remittance information to enable reconciliation by the creditor upon receipt of the amount of money.\n\nIf the business context requires the use of a creditor reference or a payment remit identification, and only one identifier can be passed through the end-to-end chain, the creditor's reference or payment remittance identification should be quoted in the end-to-end transaction identification."
+        },
+        "FirstPaymentAmount": {
+          "required": [
+            "Amount",
+            "Currency"
+          ],
+          "type": "object",
+          "properties": {
+            "Amount": {
+              "$ref": "#/$defs/OBActiveCurrencyAndAmount_SimpleType"
+            },
+            "Currency": {
+              "pattern": "^[A-Z]{3,3}$",
+              "type": "string",
+              "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+            }
+          },
+          "description": "The amount of the first standing order payment."
+        },
+        "FirstPaymentDateTime": {
+          "type": "string",
+          "description": "The date the first payment for a standing order schedule is made.\n\nAll dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.\nAll date-time fields in responses must include the timezone.\n\nFor example: `2017-04-05T10:43:07+00:00`.",
+          "format": "date-time"
+        },
+        "NextPaymentAmount": {
+          "required": [
+            "Amount",
+            "Currency"
+          ],
+          "type": "object",
+          "properties": {
+            "Amount": {
+              "$ref": "#/$defs/OBActiveCurrencyAndAmount_SimpleType"
+            },
+            "Currency": {
+              "pattern": "^[A-Z]{3,3}$",
+              "type": "string",
+              "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+            }
+          },
+          "description": "The amount of the next standing order payment."
+        },
+        "StandingOrderStatusCode": {
+          "$ref": "#/$defs/OBExternalStandingOrderStatus1Code"
+        },
+        "CreditorAccount": {
+          "$ref": "#/$defs/OBCashAccount5"
+        }
+      },
+      "description": "A list of standing orders."
+    }
+  }
+}

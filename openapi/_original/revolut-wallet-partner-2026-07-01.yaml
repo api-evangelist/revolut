@@ -1,0 +1,3998 @@
+openapi: 3.1.0
+info:
+  title: '[PREVIEW] Revolut Wallet Partner API'
+  version: '2026-07-01'
+  description: |
+    :::warning [Pre-release preview]
+    This is a pre-release preview of upcoming documentation.
+    The features, workflows, and UI described here are subject to change before the final release.
+    :::
+
+    Endpoints hosted by Revolut that partners call to put passes into Revolut Wallet and keep
+    them current.
+
+    - **Create a pass**: `POST /passes` registers a pass and returns its Revolut `id`.
+    - **Push a pass update**: `PUT /passes/{id}` replaces the pass with its latest state and fans
+      it out to every holder.
+    - **Create a template**: `POST /templates` registers a reusable pass template and returns its
+      Revolut-assigned `template_id`.
+    - **Update a template**: `PUT /templates/{template_id}` replaces the template with its latest
+      state. Templates move through a `draft` → `active` → `terminated` lifecycle.
+
+    You give each pass a **`partner_reference`**, which is your own key to match it in your system, and the
+    value Revolut uses when it calls the endpoints you host (see the companion Wallet Partner Callbacks API,
+    `/docs/api/revolut-wallet-callbacks`). Revolut assigns its own pass `id`, returned when you create a
+    pass; use that `id` to address the pass on `PUT /passes/{id}`.
+
+    Passes can be created in multiple formats: `revpass` (Revolut's native semantic model, including
+    typed semantics and generic field dictionaries), `pkpass_base64`, `pkpass_url` (URL to download a .pkpass file),
+    and `walletobjects_json` (Wallet Objects resource family and class/object pair).
+    The `format` field on each request selects the encoding.
+
+    :::info
+    Start with the [Revolut Wallet guide](https://developer.revolut.com/docs/guides/revolut-wallet/introduction) and [Get started](https://developer.revolut.com/docs/guides/revolut-wallet/get-started) to onboard your business.
+    :::
+  contact:
+    name: Revolut Wallet partner onboarding
+    email: revwallet-partner-onboarding@revolut.com
+    url: https://developer.revolut.com
+servers:
+  - url: https://partner.wallet.revolut.com
+    description: Production
+  - url: https://sandbox-partner.wallet.revolut.com
+    description: Sandbox
+security:
+  - oauth2:
+      - passes.write
+  - oauth2:
+      - passes.write
+    mtls: []
+  - jws: []
+  - jws: []
+    mtls: []
+  - mtls: []
+tags:
+  - name: '[PREVIEW] Passes'
+    description: |
+      Create passes and push updates into Revolut Wallet.
+
+      :::warning [Pre-release preview]
+      This is a pre-release preview of upcoming documentation.
+      The features, workflows, and UI described here are subject to change before the final release.
+      :::
+  - name: '[PREVIEW] Templates'
+    description: |
+      Create, update, and manage the pass templates that give passes their branding, barcodes,
+      layout, and default behaviour.
+
+      :::warning [Pre-release preview]
+      This is a pre-release preview of upcoming documentation.
+      The full template lifecycle is not yet available end to end. Confirm sandbox availability
+      with Revolut Wallet partner onboarding before you integrate.
+      :::
+paths:
+  /passes:
+    post:
+      tags:
+        - '[PREVIEW] Passes'
+      operationId: createPass
+      summary: '[PREVIEW] Create a pass'
+      description: |
+        :::warning [Pre-release preview]
+        This is a pre-release preview of upcoming documentation.
+        The features, workflows, and UI described here are subject to change before the final release.
+        :::
+
+        Create a pass in Revolut Wallet in any supported format — `revpass` (Revolut's native
+        semantic model: typed semantics, or a generic field dictionary with an optional
+        presentation layout), `pkpass_base64`, `pkpass_url`, or
+        `walletobjects_json`. Returns the Revolut-assigned pass `id`.
+
+        Set `partner_reference` to your own key for the pass. Revolut uses it when it polls you for
+        updates. Use the returned `id` to push updates (`PUT /passes/{id}`). Re-using a
+        `partner_reference` that already exists returns `409`.
+
+        Set `template_id` to an active template to base the pass on its design. A `template_id`
+        that doesn't exist under your Partner ID returns `404` (`template_not_found`); a `draft`
+        or `terminated` template returns `422` (`template_not_active`).
+
+        :::info
+        See [Create a pass](https://developer.revolut.com/docs/guides/revolut-wallet/operations/create-pass) for a step-by-step walkthrough.
+        :::
+      parameters:
+        - $ref: '#/components/parameters/ApiVersion'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PassCreateEnvelope'
+            examples:
+              boarding_pass_revolut:
+                summary: A boarding pass (Revolut native format)
+                value:
+                  format: revpass
+                  partner_reference: skyjet-2241-R7K92M
+                  version: 1
+                  template_id: 1d2f72d8-80c1-4f50-852f-10aa5de47f0b
+                  rev_pass:
+                    type: boarding_pass
+                    relevant_at: '2026-08-02T06:15:00.000Z'
+                    barcodes:
+                      - format: pdf417
+                        encoding: ISO-8859-1
+                        type: static
+                        static_payload: SKYJET-2241-R7K92M-14C
+                    semantics:
+                      passenger:
+                        full_name: Ada Shannon
+                      flight:
+                        flight_number: '2241'
+                        carrier_code: SJ
+                        departure_airport:
+                          iata: LTN
+                          terminal: '1'
+                        arrival_airport:
+                          iata: OTP
+                        scheduled_departure_at: '2026-08-02T06:15:00.000Z'
+                        scheduled_arrival_at: '2026-08-02T09:40:00.000Z'
+                      boarding:
+                        gate: B22
+                        seat: 14C
+                        boarding_at: '2026-08-02T05:30:00.000Z'
+                      booking:
+                        pnr: R7K92M
+              event_pass_revolut:
+                summary: An event pass (Revolut native format)
+                value:
+                  format: revpass
+                  partner_reference: acmeconcerts-bluelights-0001
+                  version: 1
+                  template_id: 2c8b6ef1-723e-49a5-98c5-f8d1b329a704
+                  rev_pass:
+                    type: event_pass
+                    relevant_at: '2026-09-15T19:00:00.000Z'
+                    semantics:
+                      event:
+                        name: 'The Blue Lights: Live'
+                        category: concert
+                        held_on: '2026-09-15'
+                        starts_at: '2026-09-15T19:00:00.000Z'
+                        ends_at: '2026-09-15T22:00:00.000Z'
+                        doors_open_at: '2026-09-15T18:00:00.000Z'
+                      venue:
+                        name: Grand Arena
+                        city: London
+                        country_code: GB
+                        coordinates:
+                          lat: 51.556
+                          lng: -0.2796
+                        section: Block 112
+                        row: J
+                        seat: '23'
+                      ticket:
+                        number: AM2026-0001
+                        booking_reference: LM-8842
+                        type: seated
+                      participant:
+                        full_name: Grace Turing
+                      organiser:
+                        name: Acme Concerts
+                      validity:
+                        valid_from: '2026-09-15T18:00:00.000Z'
+                        valid_until: '2026-09-15T22:00:00.000Z'
+              loyalty_pass_revolut:
+                summary: A loyalty pass (Revolut native format)
+                value:
+                  format: revpass
+                  partner_reference: brightpoints-9988776655
+                  version: 1
+                  template_id: 7a45f931-8d2c-4f10-b5e8-2b1cd9a78463
+                  rev_pass:
+                    type: loyalty_pass
+                    semantics:
+                      member:
+                        full_name: Alan Maxwell
+                        member_id: '9988776655'
+                        member_since_on: '2024-04-12'
+                      loyalty:
+                        program_name: BrightPoints
+                        tier: Gold
+                        tier_progress:
+                          current: '3200'
+                          target: '5000'
+                          unit: points
+                        points_balance:
+                          value: '4820'
+                          unit: points
+                        next_reward:
+                          description: Free coffee voucher
+                          points_required: '5000'
+                      validity:
+                        valid_from: '2024-04-12T00:00:00.000Z'
+              generic_pass:
+                summary: A generic pass with a positional presentation
+                value:
+                  format: revpass
+                  partner_reference: acme-events-badge-0001
+                  version: 1
+                  template_id: 8e91b5a2-6c4f-43d8-a7e1-9f20c5b67314
+                  rev_pass:
+                    type: generic_pass
+                    fields:
+                      - id: attendee_name
+                        label:
+                          default: Attendee
+                        value:
+                          default: James Hamming
+                        data_category: identity
+                        semantic_type: participant.full_name
+                        importance: 5
+                      - id: access_status
+                        label:
+                          default: Access
+                        value:
+                          default: VIP access
+                        data_category: status
+                        importance: 4
+                      - id: ticket_number
+                        label:
+                          default: Ticket number
+                        value:
+                          default: AM2026-0001
+                        data_category: verification
+                        importance: 4
+                      - id: event_starts_at
+                        label:
+                          default: Starts at
+                        value:
+                          default: '2026-09-15T19:00:00.000Z'
+                        data_type: date_time
+                        data_category: time
+                        date_style: medium
+                        time_style: short
+                        importance: 3
+                      - id: terms_conditions
+                        label:
+                          default: Terms and conditions
+                        value:
+                          default: Entry is subject to the event terms and conditions.
+                        data_category: governance
+                        importance: 1
+                    presentation:
+                      positional:
+                        primary:
+                          items:
+                            - field_id: attendee_name
+                              alignment: full
+                        secondary:
+                          - items:
+                              - field_id: access_status
+                                alignment: start
+                              - field_id: ticket_number
+                                alignment: end
+                        footer:
+                          items:
+                            - field_id: event_starts_at
+                              alignment: start
+                            - field_id: terms_conditions
+                              alignment: end
+                    branding:
+                      brand_name: Acme Events
+                      logo:
+                        data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                        format: image/png
+                      background_image:
+                        data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                        format: image/png
+                      predefined_style: material
+                    issuer:
+                      issuer_full_name: Acme Events Ltd
+                      issuer_display_name: Acme Events
+              generic_pass_semantic_fallback:
+                summary: A generic pass using semantic fallback
+                value:
+                  format: revpass
+                  partner_reference: acme-events-semantic-0001
+                  version: 1
+                  template_id: 5b3d8f20-a1e7-46c9-92f4-d6a8713b5e09
+                  rev_pass:
+                    type: generic_pass
+                    fields:
+                      - id: attendee_name
+                        label:
+                          default: Attendee
+                        value:
+                          default: Leonhard Nyquist
+                        data_category: identity
+                        semantic_type: participant.full_name
+                        importance: 5
+                      - id: ticket_number
+                        label:
+                          default: Ticket number
+                        value:
+                          default: AM2026-0001
+                        data_category: verification
+                        semantic_type: ticket.number
+                        importance: 4
+                      - id: event_starts_at
+                        label:
+                          default: Starts at
+                        value:
+                          default: '2026-09-15T19:00:00.000Z'
+                        data_type: date_time
+                        data_category: time
+                        semantic_type: event.starts_at
+              generic_pass_header:
+                summary: A generic pass with a header row
+                value:
+                  format: revpass
+                  partner_reference: acme-events-header-0001
+                  version: 1
+                  template_id: 8e91b5a2-6c4f-43d8-a7e1-9f20c5b67314
+                  rev_pass:
+                    type: generic_pass
+                    fields:
+                      - id: event_title
+                        label:
+                          default: Event
+                        value:
+                          default: Acme Future Festival
+                        data_category: identity
+                        semantic_type: event.name
+                        importance: 5
+                      - id: attendee_name
+                        label:
+                          default: Attendee
+                        value:
+                          default: Marie Ritchie
+                        data_category: identity
+                        semantic_type: participant.full_name
+                      - id: ticket_number
+                        label:
+                          default: Ticket number
+                        value:
+                          default: AM2026-0001
+                        data_category: verification
+                        semantic_type: ticket.number
+                      - id: event_starts_at
+                        label:
+                          default: Starts at
+                        value:
+                          default: '2026-09-15T19:00:00.000Z'
+                        data_type: date_time
+                        data_category: time
+                        semantic_type: event.starts_at
+                    presentation:
+                      positional:
+                        header:
+                          items:
+                            - field_id: event_title
+                              alignment: full
+                        primary:
+                          items:
+                            - field_id: attendee_name
+                              alignment: full
+                        secondary:
+                          - items:
+                              - field_id: ticket_number
+                                alignment: full
+                        footer:
+                          items:
+                            - field_id: event_starts_at
+                              alignment: full
+              boarding_pass_pkpass_base64:
+                summary: A boarding pass imported from a pkpass file (base64)
+                value:
+                  format: pkpass_base64
+                  partner_reference: skyjet-2241-R7K92M
+                  version: 1
+                  pkpass: UEsDBAoAAAAAAGhVmVQAAAAAAAAAAAAAAAAJAAAA...
+              boarding_pass_pkpass_url:
+                summary: A boarding pass imported from a pkpass file (URL)
+                value:
+                  format: pkpass_url
+                  partner_reference: skyjet-2241-R7K92M
+                  version: 1
+                  pkpass_url: https://partner.example/passes/skyjet-2241.pkpass
+              loyalty_pass_walletobjects_json:
+                summary: A loyalty pass imported from Wallet Objects JSON
+                value:
+                  format: walletobjects_json
+                  partner_reference: brightpoints-9988776655
+                  version: 1
+                  template_id: 7a45f931-8d2c-4f10-b5e8-2b1cd9a78463
+                  walletobjects:
+                    type: loyalty
+                    class:
+                      id: 1234567890123456789.brightpoints_loyalty
+                      issuerName: BrightPoints
+                      programName: BrightPoints Rewards
+                      programLogo:
+                        sourceUri:
+                          uri: https://example.com/brightpoints-logo.png
+                      reviewStatus: APPROVED
+                    object:
+                      id: 1234567890123456789.member_9988776655
+                      classId: 1234567890123456789.brightpoints_loyalty
+                      state: ACTIVE
+                      barcode:
+                        type: QR_CODE
+                        value: '9988776655'
+                      accountName: Alan Maxwell
+                      accountId: '9988776655'
+      responses:
+        '201':
+          description: Pass created.
+          headers:
+            Request-Id:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePassResult'
+              examples:
+                created:
+                  value:
+                    id: 3f9a1c2e-8b7d-4e6a-9f10-2c3b4d5e6f70
+                    partner_reference: skyjet-2241-R7K92M
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/TemplateNotFound'
+        '409':
+          $ref: '#/components/responses/ConflictCreate'
+        '413':
+          $ref: '#/components/responses/ContentTooLarge'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - oauth2:
+            - passes.write
+        - oauth2:
+            - passes.write
+          mtls: []
+        - jws: []
+        - jws: []
+          mtls: []
+        - mtls: []
+  /passes/{id}:
+    put:
+      tags:
+        - '[PREVIEW] Passes'
+      operationId: pushPassUpdate
+      summary: '[PREVIEW] Update a pass'
+      description: |
+        :::warning [Pre-release preview]
+        This is a pre-release preview of upcoming documentation.
+        The features, workflows, and UI described here are subject to change before the final release.
+        :::
+
+        Replace the stored pass with the latest version from your system. Send the **complete**
+        pass. This is a full replacement, not a partial update.
+
+        Address the pass by **either** the Revolut pass `id` (from the create response) **or** your
+        own `partner_reference` prefixed with `ref:`. Addressing by `partner_reference` is the only
+        option for passes created by auto-provisioning, where Revolut's `id` was never returned to
+        you.
+
+        **Update rules:**
+
+        - `version` must equal the stored version exactly plus one. Reusing a stored version,
+          replaying an older one, or skipping ahead returns `409` (`stale_version`).
+        - `partner_reference` in the body must match the pass addressed in the path; it is
+          immutable after creation. A mismatch returns `422`.
+        - `format` is fixed at creation. An update envelope whose `format` differs from the stored
+          pass returns `422` (`format_mismatch`).
+
+        :::info
+        See [Update a pass](https://developer.revolut.com/docs/guides/revolut-wallet/operations/update-pass) for push vs poll and implementation details.
+        :::
+      parameters:
+        - $ref: '#/components/parameters/ApiVersion'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/RequestId'
+        - name: id
+          in: path
+          required: true
+          description: |
+            The pass to update. Accepts **either**:
+            - the Revolut pass id (UUID), e.g. `3f9a1c2e-8b7d-4e6a-9f10-2c3b4d5e6f70`; or
+            - your `partner_reference`, prefixed with `ref:`, e.g. `ref:skyjet-2241-R7K92M`.
+
+            Always use the `ref:` prefix when addressing by your own reference. A bare value is
+            interpreted as the Revolut id.
+          schema:
+            type: string
+            maxLength: 132
+          examples:
+            revolut_id:
+              value: 3f9a1c2e-8b7d-4e6a-9f10-2c3b4d5e6f70
+            partner_reference:
+              value: ref:skyjet-2241-R7K92M
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PassUpdateEnvelope'
+            examples:
+              boarding_pass_revolut_update:
+                summary: Boarding pass with gate change (Revolut native format)
+                value:
+                  format: revpass
+                  partner_reference: skyjet-2241-R7K92M
+                  version: 2
+                  rev_pass:
+                    type: boarding_pass
+                    relevant_at: '2026-08-02T06:15:00.000Z'
+                    barcodes:
+                      - format: pdf417
+                        encoding: ISO-8859-1
+                        type: static
+                        static_payload: SKYJET-2241-R7K92M-14C
+                    semantics:
+                      passenger:
+                        full_name: Ada Shannon
+                      flight:
+                        flight_number: '2241'
+                        carrier_code: SJ
+                        departure_airport:
+                          iata: LTN
+                        arrival_airport:
+                          iata: OTP
+                        scheduled_departure_at: '2026-08-02T06:15:00.000Z'
+                        scheduled_arrival_at: '2026-08-02T09:40:00.000Z'
+                      boarding:
+                        gate: C14
+                        seat: 14C
+                      booking:
+                        pnr: R7K92M
+              generic_pass_update:
+                summary: A generic pass with a positional presentation
+                value:
+                  format: revpass
+                  partner_reference: acme-events-badge-0001
+                  version: 2
+                  rev_pass:
+                    type: generic_pass
+                    fields:
+                      - id: attendee_name
+                        label:
+                          default: Attendee
+                        value:
+                          default: Srinivasa Hopper
+                        data_category: identity
+                        semantic_type: participant.full_name
+                        importance: 5
+                      - id: access_level
+                        label:
+                          default: Access level
+                        value:
+                          default: VIP
+                        data_category: status
+                        importance: 4
+                      - id: ticket_number
+                        label:
+                          default: Ticket number
+                        value:
+                          default: AM2026-0001
+                        data_category: verification
+                        importance: 3
+                      - id: start_time
+                        label:
+                          default: Start time
+                        value:
+                          default: '2026-09-15T19:00:00.000Z'
+                        data_type: date_time
+                        data_category: time
+                        time_style: short
+                        importance: 4
+                      - id: gate
+                        label:
+                          default: Gate
+                        value:
+                          default: B22
+                        data_category: location
+                        importance: 4
+                      - id: terminal
+                        label:
+                          default: Terminal
+                        value:
+                          default: '1'
+                        data_category: location
+                        importance: 4
+                    presentation:
+                      positional:
+                        primary:
+                          items:
+                            - field_id: attendee_name
+                              alignment: full
+                        secondary:
+                          - items:
+                              - field_id: access_level
+                                alignment: start
+                              - field_id: ticket_number
+                                alignment: end
+                        footer:
+                          items:
+                            - field_id: gate
+                              join_field_id: terminal
+                              alignment: start
+                            - field_id: start_time
+                              alignment: end
+              boarding_pass_pkpass_base64_update:
+                summary: Boarding pass updated via a new pkpass file (base64)
+                value:
+                  format: pkpass_base64
+                  partner_reference: skyjet-2241-R7K92M
+                  version: 2
+                  pkpass: UEsDBAoAAAAAAGhVmVQAAAAAAAAAAAAAAAAJAAAA...
+              loyalty_pass_walletobjects_json_update:
+                summary: Loyalty pass updated via a new Wallet Objects JSON
+                value:
+                  format: walletobjects_json
+                  partner_reference: brightpoints-9988776655
+                  version: 2
+                  walletobjects:
+                    type: loyalty
+                    class:
+                      id: 1234567890123456789.brightpoints_loyalty
+                      issuerName: BrightPoints
+                      programName: BrightPoints Rewards
+                      programLogo:
+                        sourceUri:
+                          uri: https://example.com/brightpoints-logo.png
+                      reviewStatus: APPROVED
+                    object:
+                      id: 1234567890123456789.member_9988776655
+                      classId: 1234567890123456789.brightpoints_loyalty
+                      state: ACTIVE
+                      barcode:
+                        type: QR_CODE
+                        value: '9988776655'
+                      accountName: Alan Maxwell
+                      accountId: '9988776655'
+      responses:
+        '204':
+          description: Pass replaced.
+          headers:
+            Request-Id:
+              $ref: '#/components/headers/RequestId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/ConflictUpdate'
+        '413':
+          $ref: '#/components/responses/ContentTooLarge'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - oauth2:
+            - passes.write
+        - oauth2:
+            - passes.write
+          mtls: []
+        - jws: []
+        - jws: []
+          mtls: []
+        - mtls: []
+  /templates:
+    post:
+      tags:
+        - '[PREVIEW] Templates'
+      operationId: createTemplate
+      summary: Create a template
+      description: |
+        :::warning [Pre-release preview]
+        This is a pre-release preview of upcoming documentation.
+        The full template lifecycle is not yet available end to end. Confirm sandbox availability
+        with Revolut Wallet partner onboarding before you integrate.
+        :::
+
+        Create a pass template: the blueprint that gives passes of one type their issuer,
+        branding, refresh behaviour, barcodes, default actions and triggers, localisation, and
+        (for generic passes) the presentation layout. Revolut assigns the `template_id` and
+        returns the created template in `draft` state.
+
+        Activate the template with `POST /templates/{template_id}/activate` before creating
+        passes against it.
+
+        Reusing an `Idempotency-Key` with a different body returns `409`. Providing `presentation`
+        when `type` is not `generic_pass` returns `422` (`presentation_not_allowed`).
+      parameters:
+        - $ref: '#/components/parameters/ApiVersion'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateCreate'
+            examples:
+              generic_pass_template:
+                summary: A generic pass template with a positional presentation
+                value:
+                  type: generic_pass
+                  name: Acme Future Festival badge
+                  description: Badge layout for Acme Future Festival passes.
+                  issuer:
+                    issuer_full_name: Acme Events Ltd
+                    issuer_display_name: Acme Events
+                  branding:
+                    brand_name: Acme Events
+                    logo:
+                      data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                      format: image/png
+                    background_image:
+                      data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                      format: image/png
+                    predefined_style: material
+                  refresh_policy:
+                    condition: on_open
+                    cooldown_period: PT1H
+                  barcodes:
+                    - format: qr
+                      encoding: ISO-8859-1
+                      type: static
+                      static_payload: ACME-FUTURE-FESTIVAL-0001
+                  default_actions:
+                    - id: view_event
+                      type: open_external_url
+                      url: https://acme.example.com/festival
+                      label:
+                        default: View event
+                        localisation_key: view_event_label
+                      importance: 5
+                  default_triggers: []
+                  localisation:
+                    en:
+                      view_event_label: View event
+                  presentation:
+                    positional:
+                      primary:
+                        items:
+                          - field_id: attendee_name
+                            alignment: full
+                      footer:
+                        items:
+                          - field_id: event_starts_at
+                            alignment: start
+      responses:
+        '201':
+          description: Template created.
+          headers:
+            Request-Id:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+              examples:
+                created:
+                  value:
+                    schema_version: '1.0'
+                    identifiers:
+                      template_id: 3f9a1c2e-8b7d-4e6a-9f10-2c3b4d5e6f70
+                      template_version: 1
+                    type: generic_pass
+                    name: Acme Future Festival badge
+                    description: Badge layout for Acme Future Festival passes.
+                    state: draft
+                    issuer:
+                      issuer_id: 6cb8d90c-61d2-4e1c-a6ad-8a5f62418411
+                      issuer_full_name: Acme Events Ltd
+                      issuer_display_name: Acme Events
+                    branding:
+                      brand_name: Acme Events
+                      logo:
+                        data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                        format: image/png
+                      background_image:
+                        data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                        format: image/png
+                      predefined_style: material
+                    refresh_policy:
+                      condition: on_open
+                      cooldown_period: PT1H
+                    barcodes:
+                      - format: qr
+                        encoding: ISO-8859-1
+                        type: static
+                        static_payload: ACME-FUTURE-FESTIVAL-0001
+                    default_actions:
+                      - id: view_event
+                        type: open_external_url
+                        url: https://acme.example.com/festival
+                        label:
+                          default: View event
+                          localisation_key: view_event_label
+                        importance: 5
+                    default_triggers: []
+                    localisation:
+                      en:
+                        view_event_label: View event
+                    presentation:
+                      positional:
+                        primary:
+                          items:
+                            - field_id: attendee_name
+                              alignment: full
+                        footer:
+                          items:
+                            - field_id: event_starts_at
+                              alignment: start
+                    created_date: '2026-08-02T06:15:00.000Z'
+                    updated_date: '2026-08-02T06:15:00.000Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/IdempotencyConflict'
+        '413':
+          $ref: '#/components/responses/ContentTooLarge'
+        '422':
+          $ref: '#/components/responses/TemplateUnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - oauth2:
+            - templates.write
+        - oauth2:
+            - templates.write
+          mtls: []
+        - jws: []
+        - jws: []
+          mtls: []
+        - mtls: []
+    get:
+      tags:
+        - '[PREVIEW] Templates'
+      operationId: listTemplates
+      summary: List templates
+      description: |
+        :::warning [Pre-release preview]
+        This is a pre-release preview of upcoming documentation.
+        The full template lifecycle is not yet available end to end. Confirm sandbox availability
+        with Revolut Wallet partner onboarding before you integrate.
+        :::
+
+        List your templates ordered by `updated_date` descending, with `template_id` ascending as
+        the tie-breaker. Filter by `state` or `type` as needed.
+
+        Without filters, all your templates are returned. Repeated values of one filter are
+        combined with OR (`?state=draft&state=active` returns templates in either state);
+        `state` and `type` are combined with AND. `limit` sets the page size. When more results are
+        available, the response includes `next_page_token`; pass that value as `page_token` with
+        the same filters to retrieve the next page. The final page omits `next_page_token`.
+      parameters:
+        - $ref: '#/components/parameters/ApiVersion'
+        - $ref: '#/components/parameters/RequestId'
+        - name: state
+          in: query
+          required: false
+          description: |
+            Return only templates in these states. Repeat the parameter to filter by several
+            states, e.g. `?state=draft&state=active`.
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - draft
+                - active
+                - terminated
+        - name: type
+          in: query
+          required: false
+          description: |
+            Return only templates of these pass types. Repeat the parameter to filter by several
+            types, e.g. `?type=generic_pass&type=event_pass`.
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - boarding_pass
+                - event_pass
+                - loyalty_pass
+                - generic_pass
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of templates to return.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 25
+          example: 25
+        - $ref: '#/components/parameters/PageToken'
+      responses:
+        '200':
+          description: Templates matching the filters, most-recently-updated first.
+          headers:
+            Request-Id:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateListResult'
+              examples:
+                list:
+                  value:
+                    templates:
+                      - schema_version: '1.0'
+                        identifiers:
+                          template_id: 3f9a1c2e-8b7d-4e6a-9f10-2c3b4d5e6f70
+                          template_version: 2
+                        type: generic_pass
+                        name: Acme Future Festival badge
+                        description: Badge layout for Acme Future Festival weekend passes.
+                        state: active
+                        issuer:
+                          issuer_id: 6cb8d90c-61d2-4e1c-a6ad-8a5f62418411
+                          issuer_full_name: Acme Events Ltd
+                          issuer_display_name: Acme Events
+                        branding:
+                          brand_name: Acme Events
+                          logo:
+                            data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                            format: image/png
+                          background_image:
+                            data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                            format: image/png
+                          predefined_style: material
+                        refresh_policy:
+                          condition: on_open
+                          cooldown_period: PT1H
+                        barcodes:
+                          - format: qr
+                            encoding: ISO-8859-1
+                            type: static
+                            static_payload: ACME-FUTURE-FESTIVAL-0001
+                        default_actions:
+                          - id: view_event
+                            type: open_external_url
+                            url: https://acme.example.com/festival
+                            label:
+                              default: View event
+                              localisation_key: view_event_label
+                            importance: 5
+                        default_triggers: []
+                        localisation:
+                          en:
+                            view_event_label: View event
+                        presentation:
+                          positional:
+                            primary:
+                              items:
+                                - field_id: attendee_name
+                                  alignment: full
+                            footer:
+                              items:
+                                - field_id: event_starts_at
+                                  alignment: start
+                        created_date: '2026-08-02T06:15:00.000Z'
+                        updated_date: '2026-08-05T09:30:00.000Z'
+                    next_page_token: MjAyNi0wOC0wNVQwOTozMDowMC4wMDBaOjNmOWExYzJlLThiN2QtNGU2YS05ZjEwLTJjM2I0ZDVlNmY3MA
+        '400':
+          $ref: '#/components/responses/TemplateListBadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - oauth2:
+            - templates.read
+        - oauth2:
+            - templates.read
+          mtls: []
+        - jws: []
+        - jws: []
+          mtls: []
+        - mtls: []
+  /templates/{template_id}:
+    put:
+      tags:
+        - '[PREVIEW] Templates'
+      operationId: updateTemplate
+      summary: Update a template
+      description: |
+        :::warning [Pre-release preview]
+        This is a pre-release preview of upcoming documentation.
+        The full template lifecycle is not yet available end to end. Confirm sandbox availability
+        with Revolut Wallet partner onboarding before you integrate.
+        :::
+
+        Replace the stored template with its latest state. Send the **complete** template
+        content: this is a full replacement, not a partial update. Omitting the optional
+        `description`, `barcodes`, `default_actions`, `default_triggers`, or `presentation`
+        clears them.
+
+        Send the current `template_version` as the concurrency token; if it doesn't match the
+        stored version, the update is rejected with `409` (`stale_template_version`). On success
+        the `template_version` is incremented and the updated template is returned. Updates to an
+        `active` template reach passes created from it on their next content refresh; the refresh
+        policy's `cooldown_period` throttles refresh events, not template propagation.
+
+        `type` is immutable after creation and is not part of the request body. Terminated
+        templates are immutable — updating one returns `422` (`terminated_immutable`). Providing
+        `presentation` when the template `type` is not `generic_pass` returns `422`
+        (`presentation_not_allowed`).
+      parameters:
+        - $ref: '#/components/parameters/ApiVersion'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/RequestId'
+        - $ref: '#/components/parameters/TemplateId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateUpdate'
+            examples:
+              generic_pass_template_update:
+                summary: A full replacement of a generic pass template
+                value:
+                  template_version: 1
+                  name: Acme Future Festival badge
+                  description: Badge layout for Acme Future Festival weekend passes.
+                  issuer:
+                    issuer_full_name: Acme Events Ltd
+                    issuer_display_name: Acme Events
+                  branding:
+                    brand_name: Acme Events
+                    logo:
+                      data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                      format: image/png
+                    background_image:
+                      data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                      format: image/png
+                    predefined_style: material
+                  refresh_policy:
+                    condition: on_open
+                    cooldown_period: PT1H
+                  barcodes:
+                    - format: qr
+                      encoding: ISO-8859-1
+                      type: static
+                      static_payload: ACME-FUTURE-FESTIVAL-0001
+                  default_actions:
+                    - id: view_event
+                      type: open_external_url
+                      url: https://acme.example.com/festival
+                      label:
+                        default: View event
+                        localisation_key: view_event_label
+                      importance: 5
+                  default_triggers: []
+                  localisation:
+                    en:
+                      view_event_label: View event
+                  presentation:
+                    positional:
+                      primary:
+                        items:
+                          - field_id: attendee_name
+                            alignment: full
+                      footer:
+                        items:
+                          - field_id: event_starts_at
+                            alignment: start
+      responses:
+        '200':
+          description: Template updated. Returns the stored template with the incremented `template_version`.
+          headers:
+            Request-Id:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+              examples:
+                updated:
+                  value:
+                    schema_version: '1.0'
+                    identifiers:
+                      template_id: 3f9a1c2e-8b7d-4e6a-9f10-2c3b4d5e6f70
+                      template_version: 2
+                    type: generic_pass
+                    name: Acme Future Festival badge
+                    description: Badge layout for Acme Future Festival weekend passes.
+                    state: draft
+                    issuer:
+                      issuer_id: 6cb8d90c-61d2-4e1c-a6ad-8a5f62418411
+                      issuer_full_name: Acme Events Ltd
+                      issuer_display_name: Acme Events
+                    branding:
+                      brand_name: Acme Events
+                      logo:
+                        data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                        format: image/png
+                      background_image:
+                        data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                        format: image/png
+                      predefined_style: material
+                    refresh_policy:
+                      condition: on_open
+                      cooldown_period: PT1H
+                    barcodes:
+                      - format: qr
+                        encoding: ISO-8859-1
+                        type: static
+                        static_payload: ACME-FUTURE-FESTIVAL-0001
+                    default_actions:
+                      - id: view_event
+                        type: open_external_url
+                        url: https://acme.example.com/festival
+                        label:
+                          default: View event
+                          localisation_key: view_event_label
+                        importance: 5
+                    default_triggers: []
+                    localisation:
+                      en:
+                        view_event_label: View event
+                    presentation:
+                      positional:
+                        primary:
+                          items:
+                            - field_id: attendee_name
+                              alignment: full
+                        footer:
+                          items:
+                            - field_id: event_starts_at
+                              alignment: start
+                    created_date: '2026-08-02T06:15:00.000Z'
+                    updated_date: '2026-08-05T09:30:00.000Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/TemplateNotFound'
+        '409':
+          $ref: '#/components/responses/TemplateUpdateConflict'
+        '413':
+          $ref: '#/components/responses/ContentTooLarge'
+        '422':
+          $ref: '#/components/responses/TemplateUnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - oauth2:
+            - templates.write
+        - oauth2:
+            - templates.write
+          mtls: []
+        - jws: []
+        - jws: []
+          mtls: []
+        - mtls: []
+    get:
+      tags:
+        - '[PREVIEW] Templates'
+      operationId: getTemplate
+      summary: Retrieve a template
+      description: |
+        :::warning [Pre-release preview]
+        This is a pre-release preview of upcoming documentation.
+        The full template lifecycle is not yet available end to end. Confirm sandbox availability
+        with Revolut Wallet partner onboarding before you integrate.
+        :::
+
+        Return the current state of a template: its identifiers, lifecycle state, and full
+        content. Use it to read the current `template_version` before pushing an update with
+        `PUT /templates/{template_id}`.
+      parameters:
+        - $ref: '#/components/parameters/ApiVersion'
+        - $ref: '#/components/parameters/RequestId'
+        - $ref: '#/components/parameters/TemplateId'
+      responses:
+        '200':
+          description: The requested template.
+          headers:
+            Request-Id:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+              examples:
+                template:
+                  value:
+                    schema_version: '1.0'
+                    identifiers:
+                      template_id: 3f9a1c2e-8b7d-4e6a-9f10-2c3b4d5e6f70
+                      template_version: 2
+                    type: generic_pass
+                    name: Acme Future Festival badge
+                    description: Badge layout for Acme Future Festival weekend passes.
+                    state: active
+                    issuer:
+                      issuer_id: 6cb8d90c-61d2-4e1c-a6ad-8a5f62418411
+                      issuer_full_name: Acme Events Ltd
+                      issuer_display_name: Acme Events
+                    branding:
+                      brand_name: Acme Events
+                      logo:
+                        data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                        format: image/png
+                      background_image:
+                        data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                        format: image/png
+                      predefined_style: material
+                    refresh_policy:
+                      condition: on_open
+                      cooldown_period: PT1H
+                    barcodes:
+                      - format: qr
+                        encoding: ISO-8859-1
+                        type: static
+                        static_payload: ACME-FUTURE-FESTIVAL-0001
+                    default_actions:
+                      - id: view_event
+                        type: open_external_url
+                        url: https://acme.example.com/festival
+                        label:
+                          default: View event
+                          localisation_key: view_event_label
+                        importance: 5
+                    default_triggers: []
+                    localisation:
+                      en:
+                        view_event_label: View event
+                    presentation:
+                      positional:
+                        primary:
+                          items:
+                            - field_id: attendee_name
+                              alignment: full
+                        footer:
+                          items:
+                            - field_id: event_starts_at
+                              alignment: start
+                    created_date: '2026-08-02T06:15:00.000Z'
+                    updated_date: '2026-08-05T09:30:00.000Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/TemplateNotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - oauth2:
+            - templates.read
+        - oauth2:
+            - templates.read
+          mtls: []
+        - jws: []
+        - jws: []
+          mtls: []
+        - mtls: []
+  /templates/{template_id}/activate:
+    post:
+      tags:
+        - '[PREVIEW] Templates'
+      operationId: activateTemplate
+      summary: Activate a template
+      description: |
+        :::warning [Pre-release preview]
+        This is a pre-release preview of upcoming documentation.
+        The full template lifecycle is not yet available end to end. Confirm sandbox availability
+        with Revolut Wallet partner onboarding before you integrate.
+        :::
+
+        Move a `draft` template into `active` state. Active templates are ready to create passes
+        against. Activation updates `state` and `updated_date` without changing `template_version`.
+
+        Only `draft` templates can be activated: activating an already-active template returns
+        `422` (`invalid_template_state`), and activating a terminated template returns `422`
+        (`terminated_immutable`).
+      parameters:
+        - $ref: '#/components/parameters/ApiVersion'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/RequestId'
+        - $ref: '#/components/parameters/TemplateId'
+      responses:
+        '200':
+          description: Template activated. Returns the template in `active` state.
+          headers:
+            Request-Id:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+              examples:
+                activated:
+                  value:
+                    schema_version: '1.0'
+                    identifiers:
+                      template_id: 3f9a1c2e-8b7d-4e6a-9f10-2c3b4d5e6f70
+                      template_version: 2
+                    type: generic_pass
+                    name: Acme Future Festival badge
+                    description: Badge layout for Acme Future Festival weekend passes.
+                    state: active
+                    issuer:
+                      issuer_id: 6cb8d90c-61d2-4e1c-a6ad-8a5f62418411
+                      issuer_full_name: Acme Events Ltd
+                      issuer_display_name: Acme Events
+                    branding:
+                      brand_name: Acme Events
+                      logo:
+                        data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                        format: image/png
+                      background_image:
+                        data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                        format: image/png
+                      predefined_style: material
+                    refresh_policy:
+                      condition: on_open
+                      cooldown_period: PT1H
+                    barcodes:
+                      - format: qr
+                        encoding: ISO-8859-1
+                        type: static
+                        static_payload: ACME-FUTURE-FESTIVAL-0001
+                    default_actions:
+                      - id: view_event
+                        type: open_external_url
+                        url: https://acme.example.com/festival
+                        label:
+                          default: View event
+                          localisation_key: view_event_label
+                        importance: 5
+                    default_triggers: []
+                    localisation:
+                      en:
+                        view_event_label: View event
+                    presentation:
+                      positional:
+                        primary:
+                          items:
+                            - field_id: attendee_name
+                              alignment: full
+                        footer:
+                          items:
+                            - field_id: event_starts_at
+                              alignment: start
+                    created_date: '2026-08-02T06:15:00.000Z'
+                    updated_date: '2026-08-05T09:30:00.000Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/TemplateNotFound'
+        '409':
+          $ref: '#/components/responses/IdempotencyConflict'
+        '422':
+          $ref: '#/components/responses/InvalidTemplateState'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - oauth2:
+            - templates.write
+        - oauth2:
+            - templates.write
+          mtls: []
+        - jws: []
+        - jws: []
+          mtls: []
+        - mtls: []
+  /templates/{template_id}/terminate:
+    post:
+      tags:
+        - '[PREVIEW] Templates'
+      operationId: terminateTemplate
+      summary: Terminate a template
+      description: |
+        :::warning [Pre-release preview]
+        This is a pre-release preview of upcoming documentation.
+        The full template lifecycle is not yet available end to end. Confirm sandbox availability
+        with Revolut Wallet partner onboarding before you integrate.
+        :::
+
+        Move an `active` template into `terminated` state. Terminated templates are immutable:
+        they cannot be updated, activated again, or terminated again. Termination updates `state`
+        and `updated_date` without changing `template_version`.
+
+        Only `active` templates can be terminated: terminating a `draft` template returns `422`
+        (`invalid_template_state`), and terminating an already-terminated template returns `422`
+        (`terminated_immutable`).
+      parameters:
+        - $ref: '#/components/parameters/ApiVersion'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/RequestId'
+        - $ref: '#/components/parameters/TemplateId'
+      responses:
+        '200':
+          description: Template terminated. Returns the template in `terminated` state.
+          headers:
+            Request-Id:
+              $ref: '#/components/headers/RequestId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+              examples:
+                terminated:
+                  value:
+                    schema_version: '1.0'
+                    identifiers:
+                      template_id: 3f9a1c2e-8b7d-4e6a-9f10-2c3b4d5e6f70
+                      template_version: 2
+                    type: generic_pass
+                    name: Acme Future Festival badge
+                    description: Badge layout for Acme Future Festival weekend passes.
+                    state: terminated
+                    issuer:
+                      issuer_id: 6cb8d90c-61d2-4e1c-a6ad-8a5f62418411
+                      issuer_full_name: Acme Events Ltd
+                      issuer_display_name: Acme Events
+                    branding:
+                      brand_name: Acme Events
+                      logo:
+                        data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                        format: image/png
+                      background_image:
+                        data: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+                        format: image/png
+                      predefined_style: material
+                    refresh_policy:
+                      condition: on_open
+                      cooldown_period: PT1H
+                    barcodes:
+                      - format: qr
+                        encoding: ISO-8859-1
+                        type: static
+                        static_payload: ACME-FUTURE-FESTIVAL-0001
+                    default_actions:
+                      - id: view_event
+                        type: open_external_url
+                        url: https://acme.example.com/festival
+                        label:
+                          default: View event
+                          localisation_key: view_event_label
+                        importance: 5
+                    default_triggers: []
+                    localisation:
+                      en:
+                        view_event_label: View event
+                    presentation:
+                      positional:
+                        primary:
+                          items:
+                            - field_id: attendee_name
+                              alignment: full
+                        footer:
+                          items:
+                            - field_id: event_starts_at
+                              alignment: start
+                    created_date: '2026-08-02T06:15:00.000Z'
+                    updated_date: '2026-09-20T18:00:00.000Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/TemplateNotFound'
+        '409':
+          $ref: '#/components/responses/IdempotencyConflict'
+        '422':
+          $ref: '#/components/responses/InvalidTemplateState'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - oauth2:
+            - templates.write
+        - oauth2:
+            - templates.write
+          mtls: []
+        - jws: []
+        - jws: []
+          mtls: []
+        - mtls: []
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: |
+        OAuth 2.0 **client credentials**. Request a short-lived access token from the token endpoint
+        (authenticating with your onboarding credential: `client_secret`, `private_key_jwt`, or your
+        mTLS certificate) and send it as `Authorization: Bearer <token>`. Request `passes.write`
+        for pass operations, `templates.read` for template retrieval, and `templates.write` for
+        template mutations. May be used on its own or together with mTLS.
+      flows:
+        clientCredentials:
+          tokenUrl: https://partner.wallet.revolut.com/oauth/token
+          scopes:
+            passes.write: Create and update passes.
+            templates.read: Retrieve and list templates.
+            templates.write: Create, update, activate, and terminate templates.
+    jws:
+      type: apiKey
+      in: header
+      name: Jws-Signature
+      description: |
+        **Message signing (JWS).** Sign every request with a detached JWS using the private key
+        whose certificate you registered during onboarding. Revolut verifies the signature against
+        your registered certificate. May be used on its own or together with mTLS.
+
+        **Signing profile:**
+
+        1. Send the request creation time as Unix epoch seconds (integer) in the
+           `Revolut-Timestamp` request header, and set the JWS `iat` protected header to the
+           same value. This binds the timestamp into the signature and prevents replay.
+        2. Compute the JWS (RFC 7515, `RS256` or `ES256`) with the raw request body bytes as the
+           payload. For requests without a body, the payload is the empty byte sequence.
+        3. Protected headers: `alg`, `kid` (the key identifier assigned at onboarding), and
+           `iat` (equal to `Revolut-Timestamp`). All headers must be protected.
+        4. Send the compact serialization in the `Jws-Signature` header with a detached (empty)
+           payload segment: `BASE64URL(protected header) + "." + "." + BASE64URL(signature)`.
+
+        **Verification:** Revolut recomputes the signature over the received body bytes and
+        rejects the request with `401` if the signature is invalid, the `kid` is unknown, or the
+        timestamp is outside a ±5-minute window of the current time.
+    mtls:
+      type: mutualTLS
+      description: |
+        **Mutual TLS.** Present a client certificate signed by the Revolut Partner CA from
+        onboarding; your Partner ID is bound to it. Can be used on its own, or layered on top of
+        OAuth 2.0 or JWS for defence in depth.
+  parameters:
+    ApiVersion:
+      name: Revolut-Api-Version
+      in: header
+      required: true
+      description: |
+        Dated API version. The only supported value in this contract is `2026-07-01`. Sent on every request.
+        :::note
+        If you receive a version you do not implement, respond with `400`.
+        :::
+      schema:
+        type: string
+        enum:
+          - '2026-07-01'
+      example: '2026-07-01'
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: |
+        UUID scoped to your Partner ID. Replaying a request with the same key and body returns the
+        original outcome; the same key with a different request returns `409`. The fingerprint
+        covers the HTTP method, path, and body. Retained ≥ 7 days.
+      schema:
+        type: string
+        format: uuid
+      example: 550e8400-e29b-41d4-a716-446655440000
+    TemplateId:
+      name: template_id
+      in: path
+      required: true
+      description: Revolut-assigned UUID of the template to manage.
+      schema:
+        $ref: '#/components/schemas/TemplateId'
+      example: 3f9a1c2e-8b7d-4e6a-9f10-2c3b4d5e6f70
+    PageToken:
+      name: page_token
+      in: query
+      required: false
+      description: |
+        Opaque cursor returned as `next_page_token` by the previous list response. Keep the `state`
+        and `type` filters unchanged when you use it. Omit this parameter to retrieve the first page.
+      schema:
+        $ref: '#/components/schemas/PageToken'
+      example: MjAyNi0wOC0wNVQwOTozMDowMC4wMDBaOjNmOWExYzJlLThiN2QtNGU2YS05ZjEwLTJjM2I0ZDVlNmY3MA
+    RequestId:
+      name: Request-Id
+      in: header
+      required: false
+      description: Your correlation id for this request. Revolut echoes it back in the response.
+      schema:
+        type: string
+      example: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+  headers:
+    RequestId:
+      description: Unique id for this request; quote it in support requests.
+      schema:
+        type: string
+    RetryAfter:
+      description: Seconds to wait before retrying.
+      schema:
+        type: integer
+        minimum: 0
+      required: true
+  schemas:
+    CreatePassResult:
+      type: object
+      description: |
+        Response body for `POST /passes`. Contains the Revolut-assigned pass `id` and your
+        `partner_reference` echoed back.
+      required:
+        - id
+        - partner_reference
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Revolut-assigned pass id (UUID). Use it to address the pass on `PUT /passes/{id}`.
+          examples:
+            - 3f9a1c2e-8b7d-4e6a-9f10-2c3b4d5e6f70
+        partner_reference:
+          type: string
+          description: Your reference, echoed back.
+          examples:
+            - skyjet-2241-R7K92M
+    TemplateListResult:
+      type: object
+      description: |
+        Response body for `GET /templates`. Templates are returned most-recently-updated first.
+      required:
+        - templates
+      properties:
+        templates:
+          type: array
+          description: Templates matching the filters in the documented stable order.
+          items:
+            $ref: '#/components/schemas/Template'
+        next_page_token:
+          description: Opaque cursor for the next page. Omitted when there are no more results.
+          $ref: '#/components/schemas/PageToken'
+    PageToken:
+      type: string
+      minLength: 1
+      description: Opaque cursor used to continue a paginated list request.
+      examples:
+        - MjAyNi0wOC0wNVQwOTozMDowMC4wMDBaOjNmOWExYzJlLThiN2QtNGU2YS05ZjEwLTJjM2I0ZDVlNmY3MA
+    Error:
+      type: object
+      description: |
+        Standard error body for 4xx/5xx responses. `violations` is present on `422` validation
+        errors.
+      required:
+        - code
+        - message
+        - error_id
+      properties:
+        code:
+          type: string
+          description: Machine-readable snake_case error code.
+        message:
+          type: string
+          description: Human-readable explanation for the developer.
+        error_id:
+          type: string
+          description: Time-ordered UUID for traceability.
+        violations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Violation'
+    Violation:
+      type: object
+      description: A single validation failure within an `Error.violations` array.
+      required:
+        - message
+      properties:
+        message:
+          type: string
+        source:
+          type: object
+          properties:
+            location:
+              type: string
+              description: 'One of: `body`, `path`, `query`, `header`.'
+            pointer:
+              type: string
+              description: JSON Pointer to the field when location is `body`.
+            parameter:
+              type: string
+              description: Parameter name when location is `path`/`query`/`header`.
+    PartnerPassRevision:
+      type: object
+      description: Fields that identify a partner's pass and the revision being submitted.
+      required:
+        - partner_reference
+        - version
+      properties:
+        partner_reference:
+          type: string
+          maxLength: 128
+          description: |
+            Your own reference for the pass; use it to match the pass in your system. Immutable after
+            creation. On `PUT /passes/{id}`, it must match the pass addressed in the path; a mismatch
+            is rejected with `422`.
+          examples:
+            - skyjet-2241-R7K92M
+        version:
+          type: integer
+          format: int64
+          minimum: 1
+          description: |
+            Your pass revision. Must be `1` on create. On update, must equal the currently stored
+            version exactly plus one: reusing an already-stored version, replaying an older one, or
+            skipping ahead are all rejected with `409` (`stale_version`).
+          examples:
+            - 1
+    RevPassFormat:
+      type: object
+      description: Format discriminator for a Revolut native pass.
+      required:
+        - format
+      properties:
+        format:
+          type: string
+          enum:
+            - revpass
+          description: Pass format discriminator.
+          examples:
+            - revpass
+    TemplateId:
+      type: string
+      format: uuid
+      description: Revolut-assigned UUID that identifies a pass template.
+      examples:
+        - 3f9a1c2e-8b7d-4e6a-9f10-2c3b4d5e6f70
+    RevPassCreateTemplate:
+      type: object
+      description: Optional Revolut template selection for a native pass at creation.
+      properties:
+        template_id:
+          description: |
+            UUID of an active template created through the template management endpoints of the
+            Partner API. If omitted, Revolut uses the default template for your partner account,
+            which may not match your brand. Set at creation and immutable; not accepted when
+            updating a pass. A `template_id` that doesn't exist under your Partner ID returns `404`
+            (`template_not_found`); a `draft` or `terminated` template returns `422`
+            (`template_not_active`).
+          $ref: '#/components/schemas/TemplateId'
+    Image:
+      type: object
+      description: An image used by pass branding.
+      oneOf:
+        - required:
+            - asset_ref
+          not:
+            required:
+              - data
+        - required:
+            - data
+            - format
+          not:
+            required:
+              - asset_ref
+      properties:
+        asset_ref:
+          type: string
+          pattern: ^revasset://(public|private)/[0-9a-fA-F-]{36}$
+          description: Reference to an image asset managed by Revolut.
+          examples:
+            - revasset://public/3f9a1c2e-8b7d-4e6a-9f10-2c3b4d5e6f70
+        data:
+          type: string
+          contentEncoding: base64
+          minLength: 1
+          description: Base64-encoded image bytes.
+          examples:
+            - iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+        format:
+          type: string
+          enum:
+            - image/png
+            - image/jpeg
+            - image/webp
+          description: Image MIME type.
+          examples:
+            - image/png
+        description:
+          type: string
+          description: Accessible description of the image.
+    ColourScheme:
+      type: object
+      description: Explicit colours used to render a branded pass.
+      required:
+        - primary
+        - secondary
+        - background
+        - text_primary
+        - text_secondary
+        - label_primary
+        - label_secondary
+      properties:
+        primary:
+          type: string
+          pattern: ^#[0-9A-Fa-f]{6}$
+        secondary:
+          type: string
+          pattern: ^#[0-9A-Fa-f]{6}$
+        background:
+          type: string
+          pattern: ^#[0-9A-Fa-f]{6}$
+        text_primary:
+          type: string
+          pattern: ^#[0-9A-Fa-f]{6}$
+        text_secondary:
+          type: string
+          pattern: ^#[0-9A-Fa-f]{6}$
+        label_primary:
+          type: string
+          pattern: ^#[0-9A-Fa-f]{6}$
+        label_secondary:
+          type: string
+          pattern: ^#[0-9A-Fa-f]{6}$
+    Branding:
+      type: object
+      description: Optional visual branding for a pass.
+      required:
+        - brand_name
+        - logo
+        - background_image
+      oneOf:
+        - required:
+            - predefined_style
+        - required:
+            - colours
+      properties:
+        brand_name:
+          type: string
+          minLength: 1
+          maxLength: 25
+          description: Brand name displayed on the pass.
+          examples:
+            - Acme Events
+        logo:
+          description: Logo image used by the pass.
+          $ref: '#/components/schemas/Image'
+        background_image:
+          description: Background or hero image used by the pass.
+          $ref: '#/components/schemas/Image'
+        predefined_style:
+          type: string
+          enum:
+            - material
+            - flat
+            - glass
+          description: Predefined visual style for the pass.
+          examples:
+            - material
+        colours:
+          description: Explicit colour scheme for the pass.
+          $ref: '#/components/schemas/ColourScheme'
+    Issuer:
+      type: object
+      description: Issuer information displayed on a pass.
+      required:
+        - issuer_id
+        - issuer_full_name
+        - issuer_display_name
+      properties:
+        issuer_id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: |
+            Revolut-managed identifier of the issuer. Revolut derives this value from the authenticated
+            partner and returns the partner's Revolut-assigned UUID; do not send it in request bodies.
+          examples:
+            - 6cb8d90c-61d2-4e1c-a6ad-8a5f62418411
+        issuer_full_name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          description: Full legal name of the issuer.
+          examples:
+            - Acme Events Ltd
+        issuer_display_name:
+          type: string
+          minLength: 1
+          maxLength: 25
+          description: Display name of the issuer.
+          examples:
+            - Acme Events
+    Barcode:
+      type: object
+      description: A machine-readable barcode displayed on a Revolut native pass.
+      required:
+        - format
+        - encoding
+        - type
+        - static_payload
+      properties:
+        format:
+          type: string
+          enum:
+            - qr
+            - pdf417
+            - aztec
+            - code128
+          description: Symbology used to render the barcode.
+          examples:
+            - qr
+        encoding:
+          type: string
+          enum:
+            - ISO-8859-1
+          description: Character encoding used for `static_payload`.
+          examples:
+            - ISO-8859-1
+        type:
+          type: string
+          enum:
+            - static
+          description: Payload type. Only static barcode payloads are supported.
+          examples:
+            - static
+        static_payload:
+          type: string
+          minLength: 1
+          description: Static value encoded in the barcode.
+          examples:
+            - ACME-FUTURE-FESTIVAL-0001
+    LocalisedText:
+      type: object
+      description: Text with optional localisation support.
+      required:
+        - default
+      properties:
+        default:
+          type: string
+          description: Fallback text when no localisation matches.
+        localisation_key:
+          type: string
+          description: |
+            Key resolved at render time against the template's localisation map, then Revolut's
+            localisation catalogue (Revolut-curated translations for standard pass strings), falling
+            back to the `default` text.
+    Action:
+      type: object
+      description: A button rendered on the pass (e.g. "Open website", "Get directions").
+      required:
+        - id
+        - type
+        - label
+        - url
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the action within this pass.
+        type:
+          type: string
+          description: 'Documented values: `open_external_url`. External URL domain needs to be registered at onboarding.'
+        label:
+          description: Display label for the button, with optional localisation.
+          $ref: '#/components/schemas/LocalisedText'
+        url:
+          type: string
+          format: uri
+          description: Target URL for `open_external_url` actions.
+        importance:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: Relative prominence of this action (5 = primary, 1 = least prominent).
+    Coordinates:
+      type: object
+      description: Geographic coordinates (WGS 84).
+      required:
+        - lat
+        - lng
+      properties:
+        lat:
+          type: number
+          format: double
+          description: Latitude in decimal degrees.
+        lng:
+          type: number
+          format: double
+          description: Longitude in decimal degrees.
+    Presentation:
+      type: object
+      description: How a trigger is presented to the customer.
+      required:
+        - presentation_type
+        - title
+        - description
+      properties:
+        presentation_type:
+          type: string
+          description: 'Documented values: `notification`, `tile`.'
+        title:
+          description: Title text for the notification or tile, with optional localisation.
+          $ref: '#/components/schemas/LocalisedText'
+        description:
+          description: Body text for the notification or tile, with optional localisation.
+          $ref: '#/components/schemas/LocalisedText'
+    Trigger:
+      type: object
+      description: A context-aware notification that nudges the customer (e.g. proximity alert, time before event).
+      required:
+        - id
+        - type
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the trigger within this pass.
+        type:
+          type: string
+          description: 'Documented values: `proximity_time`, `proximity_geo_location`, `field_change`.'
+        importance:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: Relative prominence of this trigger (5 = high, 1 = low).
+        time_target:
+          type: string
+          description: Reference to a datetime field (e.g. `flight.scheduled_departure_at`).
+        time_offset:
+          type: string
+          description: ISO 8601 duration before the target (e.g. `PT1H` for 1 hour before departure).
+        location_targets:
+          type: array
+          description: Geographic coordinates for proximity-based triggers.
+          items:
+            $ref: '#/components/schemas/Coordinates'
+        radius_meters:
+          type: integer
+          minimum: 0
+          description: Radius in meters around the `location_targets` coordinates for the proximity alert.
+        field_target:
+          type: string
+          description: Name of the semantic field to watch for changes (e.g. `boarding.gate`).
+        presentation:
+          description: How the trigger is presented to the customer (notification, tile).
+          $ref: '#/components/schemas/Presentation'
+    RevPassBaseContent:
+      type: object
+      description: Fields common to every Revolut native pass content type.
+      properties:
+        relevant_at:
+          type: string
+          format: date-time
+          description: |
+            When the pass becomes time-relevant (departure, event start); drives Revolut's polling
+            cadence. Derived from semantic content if omitted.
+        branding:
+          description: Optional visual branding for the pass.
+          $ref: '#/components/schemas/Branding'
+        issuer:
+          description: Optional issuer information displayed on the pass.
+          $ref: '#/components/schemas/Issuer'
+        barcodes:
+          type: array
+          description: |
+            Barcodes displayed on the pass. If the pass uses a template, omit this field to inherit the
+            template barcodes, send a non-empty array to replace the complete template array, or send an
+            empty array to suppress all template barcodes. If the pass doesn't use a template, omitting
+            this field means that the pass has no barcodes.
+          items:
+            $ref: '#/components/schemas/Barcode'
+        actions:
+          type: array
+          description: Buttons rendered on the pass.
+          items:
+            $ref: '#/components/schemas/Action'
+        triggers:
+          type: array
+          description: Context-aware notifications that nudge the customer.
+          items:
+            $ref: '#/components/schemas/Trigger'
+    Passenger:
+      type: object
+      description: Passenger details for a boarding pass.
+      required:
+        - full_name
+      properties:
+        full_name:
+          type: string
+          description: Full name of the passenger as it appears on the boarding pass.
+          examples:
+            - Leonhard Nyquist
+        fare_class:
+          type: string
+          description: Human-readable fare class (e.g. Economy, Business, First).
+          examples:
+            - Economy
+        fare_class_code:
+          type: string
+          description: IATA fare class code (single letter, e.g. Y for Economy, J for Business).
+          examples:
+            - 'Y'
+        frequent_flyer_program:
+          type: string
+          description: Name of the frequent flyer program the passenger belongs to.
+        frequent_flyer_number:
+          type: string
+          description: Membership number within the frequent flyer program.
+    Airport:
+      type: object
+      description: Airport details for a flight.
+      required:
+        - iata
+      properties:
+        iata:
+          type: string
+          description: IATA airport code (3 uppercase letters).
+          pattern: ^[A-Z]{3}$
+          examples:
+            - LTN
+        name:
+          type: string
+          description: Full name of the airport (e.g. London Luton Airport).
+        city:
+          type: string
+          description: City where the airport is located.
+        country_code:
+          type: string
+          description: ISO 3166-1 alpha-2 country code.
+          pattern: ^[A-Z]{2}$
+        terminal:
+          type: string
+          description: Terminal identifier at the airport.
+          examples:
+            - '1'
+    Flight:
+      type: object
+      description: Flight details for a boarding pass.
+      required:
+        - flight_number
+        - carrier_code
+        - departure_airport
+        - arrival_airport
+        - scheduled_departure_at
+        - scheduled_arrival_at
+      properties:
+        flight_number:
+          type: string
+          description: Flight number without the carrier code (e.g. 2241, not SJ2241).
+          examples:
+            - '2241'
+        carrier_code:
+          type: string
+          description: IATA (2-character) or ICAO (3-character) carrier code.
+          pattern: ^[A-Z0-9]{2,3}$
+          examples:
+            - W6
+            - WZZ
+        carrier_name:
+          type: string
+          description: Display name of the operating carrier.
+          examples:
+            - SkyJet Airlines
+        operating_carrier_code:
+          type: string
+          description: IATA (2-character) or ICAO (3-character) carrier code of the actual operating carrier (for codeshare flights, this may differ from `carrier_code`).
+          pattern: ^[A-Z0-9]{2,3}$
+        departure_airport:
+          description: Departure airport.
+          $ref: '#/components/schemas/Airport'
+        arrival_airport:
+          description: Arrival airport.
+          $ref: '#/components/schemas/Airport'
+        scheduled_departure_at:
+          type: string
+          format: date-time
+          description: Scheduled departure time, UTC, ISO 8601.
+        scheduled_arrival_at:
+          type: string
+          format: date-time
+          description: Scheduled arrival time, UTC, ISO 8601.
+        aircraft_type:
+          type: string
+          description: IATA aircraft type code (e.g. A320, B738).
+          examples:
+            - A320
+    Boarding:
+      type: object
+      description: Boarding details for a flight — gate, seat, and boarding time.
+      properties:
+        gate:
+          type: string
+          description: Boarding gate at the departure airport.
+          examples:
+            - B22
+        boarding_at:
+          type: string
+          format: date-time
+          description: Scheduled boarding time, UTC, ISO 8601.
+        boarding_group:
+          type: string
+          description: Boarding group or zone (airline-specific, e.g. A, B, 1, 2).
+        sequence_number:
+          type: string
+          description: Boarding sequence number assigned to the passenger.
+        seat:
+          type: string
+          description: Assigned seat number (e.g. 14C, 22A).
+          examples:
+            - 14C
+        seat_class:
+          type: string
+          description: Seat class label (e.g. Economy, Premium Economy, Business).
+          examples:
+            - Economy
+    Booking:
+      type: object
+      description: Booking details for a boarding pass.
+      required:
+        - pnr
+      properties:
+        pnr:
+          type: string
+          description: Passenger Name Record — the booking reference from the airline's reservation system.
+          examples:
+            - R7K92M
+        ticket_number:
+          type: string
+          description: 13-digit IATA ticket number.
+          pattern: ^[0-9]{13}$
+        booking_reference:
+          type: string
+          description: Alternative booking reference (e.g. agency or GDS reference), if different from the PNR.
+    Validity:
+      type: object
+      description: Validity window for a pass — when it becomes active and when it expires.
+      properties:
+        valid_from:
+          type: string
+          format: date-time
+          description: Start of the pass validity period, UTC, ISO 8601.
+        valid_until:
+          type: string
+          format: date-time
+          description: End of the pass validity period, UTC, ISO 8601.
+    BoardingPassSemantics:
+      type: object
+      description: Semantic tags for a boarding pass.
+      required:
+        - passenger
+        - flight
+        - booking
+      properties:
+        passenger:
+          description: Passenger details.
+          $ref: '#/components/schemas/Passenger'
+        flight:
+          description: Flight details.
+          $ref: '#/components/schemas/Flight'
+        boarding:
+          description: Boarding details (gate, seat, boarding time).
+          $ref: '#/components/schemas/Boarding'
+        booking:
+          description: Booking details (PNR, ticket number).
+          $ref: '#/components/schemas/Booking'
+        validity:
+          description: Optional validity window for the pass.
+          $ref: '#/components/schemas/Validity'
+    RevPassBoardingContent:
+      description: The native content of a boarding pass.
+      allOf:
+        - $ref: '#/components/schemas/RevPassBaseContent'
+        - type: object
+          required:
+            - type
+            - semantics
+          properties:
+            type:
+              type: string
+              enum:
+                - boarding_pass
+              description: Pass type discriminator.
+              examples:
+                - boarding_pass
+            semantics:
+              $ref: '#/components/schemas/BoardingPassSemantics'
+    RevPassCreateBoardingContent:
+      description: The native content of a boarding pass at creation.
+      allOf:
+        - $ref: '#/components/schemas/RevPassBoardingContent'
+    Event:
+      type: object
+      description: Event details for an event pass.
+      required:
+        - name
+        - held_on
+        - starts_at
+      properties:
+        name:
+          type: string
+          description: Name of the event.
+          examples:
+            - 'The Blue Lights: Live'
+        category:
+          type: string
+          description: 'Documented values: `concert`, `sport`, `conference`, `theatre`, `festival`, `race`, `other`.'
+        edition:
+          type: string
+          description: Edition or iteration of a recurring event (e.g. 2026, Season 5).
+        held_on:
+          type: string
+          format: date
+          description: Calendar day of the event (use `starts_at` for the precise start time).
+        starts_at:
+          type: string
+          format: date-time
+          description: Start time of the event, UTC, ISO 8601.
+        ends_at:
+          type: string
+          format: date-time
+          description: End time of the event, UTC, ISO 8601.
+        doors_open_at:
+          type: string
+          format: date-time
+          description: Time the venue doors open, UTC, ISO 8601.
+    Venue:
+      type: object
+      description: Venue details for an event.
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Name of the venue.
+          examples:
+            - Grand Arena
+        address:
+          type: string
+          description: Street address of the venue.
+        city:
+          type: string
+          description: City where the venue is located.
+        country_code:
+          type: string
+          description: ISO 3166-1 alpha-2 country code.
+          pattern: ^[A-Z]{2}$
+        coordinates:
+          description: Geographic coordinates of the venue.
+          $ref: '#/components/schemas/Coordinates'
+        gate:
+          type: string
+          description: Entrance gate at the venue.
+        section:
+          type: string
+          description: Section or block within the venue (e.g. Block 112, Section C).
+        row:
+          type: string
+          description: Row identifier within the section.
+        seat:
+          type: string
+          description: Seat number within the row.
+    Ticket:
+      type: object
+      description: Ticket details for an event pass.
+      properties:
+        number:
+          type: string
+          description: Ticket number or barcode value.
+        booking_reference:
+          type: string
+          description: Booking or order reference for the ticket purchase.
+        type:
+          type: string
+          description: 'Documented values: `general_admission`, `seated`, `vip`, `backstage`, `staff`.'
+    Participant:
+      type: object
+      description: Participant details for an event pass (e.g. conference attendee).
+      properties:
+        full_name:
+          type: string
+          description: Full name of the participant.
+        company:
+          type: string
+          description: Company or organisation the participant represents.
+        role:
+          type: string
+          description: Role or title at the event (e.g. Speaker, Attendee, Volunteer).
+    Organiser:
+      type: object
+      description: Organiser of the event.
+      properties:
+        name:
+          type: string
+          description: Name of the organising company or individual.
+    EventPassSemantics:
+      type: object
+      description: Semantic tags for an event pass.
+      required:
+        - event
+        - venue
+      properties:
+        event:
+          description: Event details (name, category, dates).
+          $ref: '#/components/schemas/Event'
+        venue:
+          description: Venue details (name, address, seat).
+          $ref: '#/components/schemas/Venue'
+        ticket:
+          description: Ticket details (number, type, booking reference).
+          $ref: '#/components/schemas/Ticket'
+        participant:
+          description: Participant details (name, company, role).
+          $ref: '#/components/schemas/Participant'
+        organiser:
+          description: Organiser details.
+          $ref: '#/components/schemas/Organiser'
+        validity:
+          description: Optional validity window for the pass.
+          $ref: '#/components/schemas/Validity'
+    RevPassEventContent:
+      description: The native content of an event pass.
+      allOf:
+        - $ref: '#/components/schemas/RevPassBaseContent'
+        - type: object
+          required:
+            - type
+            - semantics
+          properties:
+            type:
+              type: string
+              enum:
+                - event_pass
+              description: Pass type discriminator.
+              examples:
+                - event_pass
+            semantics:
+              $ref: '#/components/schemas/EventPassSemantics'
+    RevPassCreateEventContent:
+      description: The native content of an event pass at creation.
+      allOf:
+        - $ref: '#/components/schemas/RevPassEventContent'
+    Member:
+      type: object
+      description: Member details for a loyalty pass.
+      required:
+        - full_name
+        - member_id
+      properties:
+        full_name:
+          type: string
+          description: Full name of the loyalty program member.
+          examples:
+            - James Hamming
+        member_id:
+          type: string
+          description: Membership number or ID within the loyalty program.
+          examples:
+            - '9988776655'
+        member_since_on:
+          type: string
+          format: date
+          description: Date the member joined the programme.
+    TierProgress:
+      type: object
+      description: Progress towards the next loyalty tier.
+      properties:
+        current:
+          type: string
+          description: Current progress value as a string (e.g. points earned this period).
+        target:
+          type: string
+          description: Target value required to reach the next tier, as a string.
+        unit:
+          type: string
+          description: Unit of measurement for the progress values (e.g. points, stays, flights).
+          examples:
+            - points
+    Money:
+      type: object
+      description: ISO 4217 monetary amount, represented as strings to preserve decimal precision. Amounts are non-negative.
+      required:
+        - amount
+        - currency
+      properties:
+        amount:
+          type: string
+          pattern: ^\d+(\.\d+)?$
+          description: Non-negative decimal amount as a string (e.g. "72.40").
+          examples:
+            - '72.40'
+        currency:
+          type: string
+          pattern: ^[A-Z]{3}$
+          description: ISO 4217 currency code (e.g. GBP, EUR, USD).
+          examples:
+            - GBP
+    PointsBalance:
+      type: object
+      description: Points balance for a loyalty pass.
+      required:
+        - value
+        - unit
+      properties:
+        value:
+          type: string
+          pattern: ^(0|[1-9]\d*)(\.\d{1,6})?$
+          description: |
+            Current points balance as a non-negative decimal string with up to six fractional digits.
+            Do not use a sign, exponent notation, or redundant leading zeros. Compare values as decimals,
+            so `"1500"` and `"1500.00"` are equivalent.
+          examples:
+            - '1500'
+        unit:
+          type: string
+          minLength: 1
+          description: Unit label for the balance (e.g. points, miles).
+          examples:
+            - points
+        monetary_value:
+          description: Optional monetary equivalent of the points balance.
+          $ref: '#/components/schemas/Money'
+    NextReward:
+      type: object
+      description: Next reward the member can unlock with their points.
+      properties:
+        description:
+          type: string
+          description: Human-readable description of the reward (e.g. "Free coffee voucher").
+        points_required:
+          type: string
+          description: Points required to unlock the reward, as a string.
+          examples:
+            - '5000'
+    Loyalty:
+      type: object
+      description: Loyalty program details for a pass.
+      required:
+        - program_name
+      properties:
+        program_name:
+          type: string
+          description: Display name of the loyalty program.
+          examples:
+            - BrightPoints
+        tier:
+          type: string
+          description: Current tier level of the member (e.g. Gold, Silver, Bronze).
+          examples:
+            - Gold
+        tier_progress:
+          description: Progress towards the next tier.
+          $ref: '#/components/schemas/TierProgress'
+        points_balance:
+          description: Current points balance.
+          $ref: '#/components/schemas/PointsBalance'
+        next_reward:
+          description: Next reward the member can unlock.
+          $ref: '#/components/schemas/NextReward'
+    LoyaltyPassSemantics:
+      type: object
+      description: Semantic tags for a loyalty pass.
+      required:
+        - member
+        - loyalty
+      properties:
+        member:
+          description: Member details (name, ID, join date).
+          $ref: '#/components/schemas/Member'
+        loyalty:
+          description: Loyalty program details (tier, balance, next reward).
+          $ref: '#/components/schemas/Loyalty'
+        validity:
+          description: Optional validity window for the pass.
+          $ref: '#/components/schemas/Validity'
+    RevPassLoyaltyContent:
+      description: The native content of a loyalty pass.
+      allOf:
+        - $ref: '#/components/schemas/RevPassBaseContent'
+        - type: object
+          required:
+            - type
+            - semantics
+          properties:
+            type:
+              type: string
+              enum:
+                - loyalty_pass
+              description: Pass type discriminator.
+              examples:
+                - loyalty_pass
+            semantics:
+              $ref: '#/components/schemas/LoyaltyPassSemantics'
+    RevPassCreateLoyaltyContent:
+      description: The native content of a loyalty pass at creation.
+      allOf:
+        - $ref: '#/components/schemas/RevPassLoyaltyContent'
+    FieldId:
+      type: string
+      pattern: ^[a-zA-Z0-9_-]+$
+      description: Unique identifier for a custom field within a generic pass.
+      examples:
+        - departure_gate
+    DataCategory:
+      type: string
+      enum:
+        - identity
+        - status
+        - time
+        - location
+        - verification
+        - attribute
+        - governance
+      description: |
+        Data category for the field. The category describes the type of information carried by
+        the field.
+
+        | Value | Description |
+        |-------|-------------|
+        | `identity` | Primary subjects, holder names, pass titles, or card names. |
+        | `status` | State metrics, membership tiers, or operational updates such as Delayed, Gold Tier, or Active. |
+        | `time` | Temporal coordinates such as Start Time 19:00, boarding times, or expiry times. |
+        | `location` | Spatial coordinates or places such as Seat 14C, Gate A7, venues, or addresses. |
+        | `verification` | Human-readable fallback codes, member IDs, or order references. |
+        | `attribute` | Domain properties such as Meal: Vegan, Class: Business, or Points: 1,400. |
+        | `governance` | Contractual, legal, or reference information such as terms, disclaimers, or support phone numbers. |
+      examples:
+        - identity
+        - status
+        - time
+        - location
+        - verification
+        - attribute
+        - governance
+    FieldSemanticType:
+      type: string
+      minLength: 1
+      description: |
+        Optional semantic tag associated with the field. 
+
+        The following values are currently exposed by the typed pass schemas in current API version.
+        Use the public snake_case path names.
+
+        **Boarding passes**
+
+        `passenger.full_name`, `passenger.fare_class`, `passenger.fare_class_code`,
+        `passenger.frequent_flyer_program`, `passenger.frequent_flyer_number`, `flight.flight_number`,
+        `flight.carrier_code`, `flight.carrier_name`, `flight.operating_carrier_code`,
+        `flight.departure_airport.iata`, `flight.departure_airport.name`, `flight.departure_airport.city`,
+        `flight.departure_airport.country_code`, `flight.departure_airport.terminal`,
+        `flight.arrival_airport.iata`, `flight.arrival_airport.name`, `flight.arrival_airport.city`,
+        `flight.arrival_airport.country_code`, `flight.arrival_airport.terminal`,
+        `flight.scheduled_departure_at`, `flight.scheduled_arrival_at`, `flight.aircraft_type`,
+        `boarding.gate`, `boarding.boarding_at`, `boarding.boarding_group`, `boarding.sequence_number`,
+        `boarding.seat`, `boarding.seat_class`, `booking.pnr`, `booking.ticket_number`,
+        `booking.booking_reference`, `validity.valid_from`, `validity.valid_until`.
+
+        **Event passes**
+
+        `event.name`, `event.category`, `event.edition`, `event.held_on`, `event.starts_at`,
+        `event.ends_at`, `event.doors_open_at`, `venue.name`, `venue.address`, `venue.city`,
+        `venue.country_code`, `venue.coordinates.lat`, `venue.coordinates.lng`, `venue.gate`,
+        `venue.section`, `venue.row`, `venue.seat`, `ticket.number`, `ticket.booking_reference`,
+        `ticket.type`, `participant.full_name`, `participant.company`, `participant.role`,
+        `organiser.name`, `validity.valid_from`, `validity.valid_until`.
+
+        **Loyalty passes**
+
+        `member.full_name`, `member.member_id`, `member.member_since_on`, `loyalty.program_name`,
+        `loyalty.tier`, `loyalty.tier_progress.current`, `loyalty.tier_progress.target`,
+        `loyalty.tier_progress.unit`, `loyalty.points_balance.value`, `loyalty.points_balance.unit`,
+        `loyalty.points_balance.monetary_value.amount`, `loyalty.points_balance.monetary_value.currency`,
+        `loyalty.next_reward.description`, `loyalty.next_reward.points_required`,
+        `validity.valid_from`, `validity.valid_until`.
+      examples:
+        - passenger.full_name
+        - event.name
+        - participant.full_name
+        - venue.coordinates.lat
+        - loyalty.points_balance.value
+    FieldData:
+      type: object
+      description: |
+        Shared content, semantic metadata, and optional formatting hints for a generic-pass custom field.
+        The field `id` is referenced from the pass `presentation` configuration. When neither the pass
+        nor its template provides a presentation, every field must provide `data_category` and
+        `semantic_type`; `importance` remains optional.
+      required:
+        - id
+        - label
+        - value
+      properties:
+        id:
+          $ref: '#/components/schemas/FieldId'
+        label:
+          description: Display label for the field, with optional localisation.
+          $ref: '#/components/schemas/LocalisedText'
+        value:
+          description: Display value for the field, with optional localisation.
+          $ref: '#/components/schemas/LocalisedText'
+        data_type:
+          type: string
+          description: |
+            Interpretation of the field value. The `value` is always carried as a string (or a
+            localised string map); `data_type` defines how Revolut parses and renders it:
+
+            | Value | Wire representation |
+            |-------|---------------------|
+            | `text` | Any string. |
+            | `number` | Plain decimal number as a string, e.g. `1400` or `1400.50` (no thousands separators; rendered per `number_style`). |
+            | `currency` | Plain decimal amount as a string, e.g. `1400.50`, with `currency_code` (ISO 4217) alongside. |
+            | `date_time` | RFC 3339 UTC timestamp, e.g. `2026-09-15T19:00:00.000Z`. |
+            | `uri` | Absolute HTTPS URI string, e.g. `https://example.com/offer`. |
+
+            Conditional rules: `currency` requires `currency_code`; `number_style` applies only to
+            `number`; `date_style`, `time_style`, `is_relative`, and `ignores_time_zone` apply only
+            to `date_time`.
+          enum:
+            - text
+            - number
+            - currency
+            - date_time
+            - uri
+          default: text
+          examples:
+            - text
+        data_category:
+          description: |
+            Category describing the information carried by the field. Required on every field when
+            rendering falls back to semantic metadata; otherwise optional.
+          $ref: '#/components/schemas/DataCategory'
+        semantic_type:
+          description: |
+            Semantic identifier associated with the field. Required on every field when rendering falls
+            back to semantic metadata; otherwise optional.
+          $ref: '#/components/schemas/FieldSemanticType'
+        importance:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: |
+            Optional relative prominence of the field (5 = highest, 1 = lowest), used for semantic
+            rendering.
+          examples:
+            - 5
+        text_alignment:
+          type: string
+          description: Preferred text alignment when the renderer supports it.
+          enum:
+            - left
+            - center
+            - right
+            - natural
+          examples:
+            - natural
+        date_style:
+          type: string
+          description: Preferred date display style for a `date_time` value.
+          enum:
+            - none
+            - short
+            - medium
+            - long
+            - full
+          examples:
+            - medium
+        time_style:
+          type: string
+          description: Preferred time display style for a `date_time` value.
+          enum:
+            - none
+            - short
+            - medium
+            - long
+            - full
+          examples:
+            - short
+        is_relative:
+          type: boolean
+          description: Whether a date and time value should be presented relative to the current time.
+        ignores_time_zone:
+          type: boolean
+          description: Whether a date and time value should be shown without time-zone conversion.
+        number_style:
+          type: string
+          description: Preferred display style for a numeric value.
+          enum:
+            - decimal
+            - percent
+            - scientific
+            - spell_out
+          examples:
+            - decimal
+        currency_code:
+          type: string
+          pattern: ^[A-Z]{3}$
+          description: ISO 4217 currency code for a `currency` value. Required when `data_type` is `currency`.
+          examples:
+            - EUR
+    RowItem:
+      type: object
+      description: A field placed in a positional presentation row.
+      required:
+        - field_id
+      properties:
+        field_id:
+          description: ID of the primary field displayed in this slot.
+          $ref: '#/components/schemas/FieldId'
+        join_field_id:
+          description: Optional ID of a field joined to the primary field in the same slot.
+          $ref: '#/components/schemas/FieldId'
+        alignment:
+          type: string
+          description: Horizontal placement of the slot within its row.
+          enum:
+            - full
+            - start
+            - middle
+            - end
+          examples:
+            - start
+    PresentationRow:
+      type: object
+      description: A row in a positional generic-pass presentation.
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          minItems: 1
+          maxItems: 3
+          items:
+            $ref: '#/components/schemas/RowItem'
+    PositionalPresentation:
+      type: object
+      description: |
+        Maps field IDs into header, primary, secondary, and footer sections. This layout may be supplied on the
+        pass or by its template. Every referenced ID must match a field in the pass, and every field ID
+        must appear at least once as a `field_id` or `join_field_id` when this layout is used.
+      required:
+        - primary
+      properties:
+        header:
+          description: Optional header section row, displayed before the primary section.
+          $ref: '#/components/schemas/PresentationRow'
+        primary:
+          description: Primary section row, displayed after the header when provided.
+          $ref: '#/components/schemas/PresentationRow'
+        secondary:
+          type: array
+          minItems: 1
+          maxItems: 3
+          description: Optional secondary section rows, in display order.
+          items:
+            $ref: '#/components/schemas/PresentationRow'
+        footer:
+          description: Footer section row, displayed last.
+          $ref: '#/components/schemas/PresentationRow'
+    PositionalPresentationWrapper:
+      type: object
+      description: Wrapper for a positional presentation.
+      required:
+        - positional
+      properties:
+        positional:
+          $ref: '#/components/schemas/PositionalPresentation'
+    PresentationConfig:
+      type: object
+      description: |
+        Optional explicit positional layout for a generic pass. When omitted, the template presentation
+        is used. When neither provides a presentation, the pass is rendered from semantic metadata on
+        every field.
+      oneOf:
+        - $ref: '#/components/schemas/PositionalPresentationWrapper'
+    RevPassGenericContent:
+      description: |
+        A fields-driven generic pass. The `fields` array defines reusable field data and an optional
+        `presentation` selects a positional layout. When `presentation` is omitted, the template
+        presentation is used. When neither provides a presentation, the pass is rendered from semantic
+        metadata: every field must provide `data_category` and `semantic_type`; `importance` is optional.
+      allOf:
+        - $ref: '#/components/schemas/RevPassBaseContent'
+        - type: object
+          required:
+            - type
+            - fields
+          properties:
+            type:
+              type: string
+              enum:
+                - generic_pass
+              description: Pass type discriminator.
+              examples:
+                - generic_pass
+            fields:
+              type: array
+              minItems: 1
+              description: Custom fields available to the selected presentation layout.
+              items:
+                $ref: '#/components/schemas/FieldData'
+            presentation:
+              description: |
+                Optional explicit layout. When omitted, the template presentation is used. When neither
+                provides a presentation, rendering falls back to semantic metadata on every field.
+              $ref: '#/components/schemas/PresentationConfig'
+    RevPassCreateGenericContent:
+      description: The native content of a generic pass at creation.
+      allOf:
+        - $ref: '#/components/schemas/RevPassGenericContent'
+    RevPassCreateContent:
+      description: |
+        The content of a Revolut native pass at creation. The root-level `type` discriminator selects
+        the content structure — `semantics` for typed passes, `fields` with an optional `presentation`
+        for generic passes. The immutable `template_id`, when used, is set on the containing pass envelope.
+      required:
+        - type
+      oneOf:
+        - $ref: '#/components/schemas/RevPassCreateBoardingContent'
+        - $ref: '#/components/schemas/RevPassCreateEventContent'
+        - $ref: '#/components/schemas/RevPassCreateLoyaltyContent'
+        - $ref: '#/components/schemas/RevPassCreateGenericContent'
+      discriminator:
+        propertyName: type
+        mapping:
+          boarding_pass: '#/components/schemas/RevPassCreateBoardingContent'
+          event_pass: '#/components/schemas/RevPassCreateEventContent'
+          loyalty_pass: '#/components/schemas/RevPassCreateLoyaltyContent'
+          generic_pass: '#/components/schemas/RevPassCreateGenericContent'
+    RevPassCreateEnvelope:
+      description: |
+        A pass using Revolut's native semantic model, at creation. The root-level `template_id` selects
+        the render template, while the `rev_pass` object carries the pass type, semantic content, and
+        relevant-at timestamp.
+      allOf:
+        - $ref: '#/components/schemas/PartnerPassRevision'
+        - $ref: '#/components/schemas/RevPassFormat'
+        - $ref: '#/components/schemas/RevPassCreateTemplate'
+        - type: object
+          required:
+            - rev_pass
+          properties:
+            rev_pass:
+              $ref: '#/components/schemas/RevPassCreateContent'
+    PkPassBase64Format:
+      type: object
+      description: Format-specific fields for a `.pkpass` file supplied as a base64-encoded string.
+      required:
+        - format
+        - pkpass
+      properties:
+        format:
+          type: string
+          enum:
+            - pkpass_base64
+          description: Pass format discriminator.
+          examples:
+            - pkpass_base64
+        pkpass:
+          type: string
+          contentEncoding: base64
+          contentMediaType: application/vnd.apple.pkpass
+          description: |
+            The raw `.pkpass` file (a signed ZIP archive), base64-encoded as a string. Must decode to
+            at most 10 MB.
+          examples:
+            - UEsDBAoAAAAAAGhVmVQAAAAAAAAAAAAAAAAJAAAA...
+    TemplateOverride:
+      type: object
+      description: Optional template override for an imported pass at creation.
+      properties:
+        template_id:
+          description: |
+            UUID of an active template created through the template management endpoints of the
+            Partner API. It overrides the source pass's visual design. If omitted, Revolut uses the
+            branding from the imported source. Set at creation and immutable. A `template_id` that
+            doesn't exist under your Partner ID returns `404` (`template_not_found`); a `draft` or
+            `terminated` template returns `422` (`template_not_active`).
+          $ref: '#/components/schemas/TemplateId'
+    PkPassBase64:
+      description: |
+        A pass created from a `.pkpass` file, provided as a base64-encoded string.
+        Revolut parses the `pass.json` inside, extracts the semantic content, and renders the pass
+        natively. Images and translations inside the `.pkpass` are used where possible.
+      allOf:
+        - $ref: '#/components/schemas/PartnerPassRevision'
+        - $ref: '#/components/schemas/PkPassBase64Format'
+        - $ref: '#/components/schemas/TemplateOverride'
+    PkPassUrlFormat:
+      type: object
+      description: Format-specific fields for a `.pkpass` file supplied through a download URL.
+      required:
+        - format
+        - pkpass_url
+      properties:
+        format:
+          type: string
+          enum:
+            - pkpass_url
+          description: Pass format discriminator.
+          examples:
+            - pkpass_url
+        pkpass_url:
+          type: string
+          format: uri
+          pattern: ^https://
+          description: |
+            Public HTTPS URL from which Revolut downloads the `.pkpass` file. Must return a valid
+            `.pkpass` (signed ZIP archive).
+
+            Revolut fetches the URL server-side under these rules:
+
+            - HTTPS only; the host must resolve to a publicly reachable address (private, loopback,
+              and link-local IP ranges are not fetched).
+            - At most 3 redirects, each to an HTTPS URL.
+            - The response must be `200` with a valid `pkpass` body of at most 10 MB, fully received
+              within 10 seconds.
+            - The URL must remain valid for at least 24 hours after submission so Revolut can download
+              and re-download it, including across retries.
+
+            If the download fails any of these rules, the request is rejected with `422`
+            (`pkpass_url_download_failed`).
+          examples:
+            - https://partner.example/passes/skyjet-2241.pkpass
+    PkPassUrl:
+      description: |
+        A pass created from a `.pkpass` file, provided via a download URL. Revolut fetches
+        the `.pkpass` file from the URL, parses the `pass.json` inside, extracts the semantic content, and
+        renders the pass natively. The URL must be publicly accessible and return a valid `.pkpass` file.
+      allOf:
+        - $ref: '#/components/schemas/PartnerPassRevision'
+        - $ref: '#/components/schemas/PkPassUrlFormat'
+        - $ref: '#/components/schemas/TemplateOverride'
+    WalletObjectsJsonFormat:
+      type: object
+      description: Format-specific fields for a Wallet Objects JSON pass.
+      required:
+        - format
+        - walletobjects
+      properties:
+        format:
+          type: string
+          enum:
+            - walletobjects_json
+          description: Pass format discriminator.
+          examples:
+            - walletobjects_json
+        walletobjects:
+          type: object
+          required:
+            - type
+            - class
+            - object
+          properties:
+            type:
+              type: string
+              enum:
+                - event_ticket
+                - flight
+                - generic
+                - gift_card
+                - loyalty
+                - offer
+                - transit
+              description: |-
+                The Wallet Objects resource family used to validate and render both resources.
+
+                | Value | Description |
+                | ----- | ----------- |
+                | `event_ticket` | An `EventTicketClass` and `EventTicketObject` pair. |
+                | `flight` | A `FlightClass` and `FlightObject` pair. |
+                | `generic` | A `GenericClass` and `GenericObject` pair. |
+                | `gift_card` | A `GiftCardClass` and `GiftCardObject` pair. |
+                | `loyalty` | A `LoyaltyClass` and `LoyaltyObject` pair. |
+                | `offer` | An `OfferClass` and `OfferObject` pair. |
+                | `transit` | A `TransitClass` and `TransitObject` pair. |
+              examples:
+                - loyalty
+            class:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  type: string
+                  description: Identifier of the supplied Wallet Objects class resource.
+              additionalProperties: true
+              description: |
+                The Wallet Objects class resource for the selected `type`. Its `id` must match the
+                supplied object's `classId`; a mismatch is rejected with `422`
+                (`walletobjects_class_mismatch`).
+            object:
+              type: object
+              required:
+                - id
+                - classId
+              properties:
+                id:
+                  type: string
+                  description: Identifier of the supplied Wallet Objects object resource.
+                classId:
+                  type: string
+                  description: Identifier of the supplied class resource; must match `class.id`.
+              additionalProperties: true
+              description: The Wallet Objects object resource for the selected `type`.
+          description: |
+            The Wallet Objects resource family and its class/object pair. Send the format-specific fields
+            as defined by the Wallet Objects contract. Revolut validates both resources against `type`,
+            parses them, and renders the pass natively.
+          examples:
+            - type: loyalty
+              class:
+                id: 1234567890123456789.brightpoints_loyalty
+                issuerName: BrightPoints
+                programName: BrightPoints Rewards
+                programLogo:
+                  sourceUri:
+                    uri: https://example.com/brightpoints-logo.png
+                reviewStatus: APPROVED
+              object:
+                id: 1234567890123456789.member_9988776655
+                classId: 1234567890123456789.brightpoints_loyalty
+                state: ACTIVE
+                barcode:
+                  type: QR_CODE
+                  value: '9988776655'
+                accountName: Alan Maxwell
+                accountId: '9988776655'
+    WalletObjectsPass:
+      description: |
+        A pass in Wallet Objects JSON format, containing an explicit resource family and the corresponding
+        class/object pair. Revolut parses both resources and renders the pass natively. The object's
+        `classId` must reference the supplied class resource.
+      allOf:
+        - $ref: '#/components/schemas/PartnerPassRevision'
+        - $ref: '#/components/schemas/WalletObjectsJsonFormat'
+        - $ref: '#/components/schemas/TemplateOverride'
+    PassCreateEnvelope:
+      description: |
+        A pass being created or provisioned, in any supported format. The `format` field selects the
+        encoding; see the individual schemas for each variant. The optional `template_id` is always a
+        root-level creation setting, regardless of format.
+
+        - `revpass`: Revolut's native semantic model. The `rev_pass.type` discriminator further selects the
+          content structure — typed passes (`boarding_pass`, `event_pass`, `loyalty_pass`) carry `semantics`;
+          generic passes (`generic_pass`) carry `fields` and an optional `presentation` layout.
+        - `pkpass_base64`: A `.pkpass` file, base64-encoded as a string.
+        - `pkpass_url`: A URL pointing to a `.pkpass` file for Revolut to download.
+        - `walletobjects_json`: A Wallet Objects resource family and its class/object pair under `walletobjects`.
+
+        This multi-format envelope is available from API version `2026-07-01`. The set of formats is
+        closed within this API version; new pass formats are published under a new dated API version,
+        not added to `2026-07-01`. New `rev_pass.type` values may be added over time and are available
+        in all supported API versions. Requests with an unrecognised `format` value are rejected with `422`
+        (`unsupported_format`).
+      required:
+        - format
+      oneOf:
+        - $ref: '#/components/schemas/RevPassCreateEnvelope'
+        - $ref: '#/components/schemas/PkPassBase64'
+        - $ref: '#/components/schemas/PkPassUrl'
+        - $ref: '#/components/schemas/WalletObjectsPass'
+      discriminator:
+        propertyName: format
+        mapping:
+          revpass: '#/components/schemas/RevPassCreateEnvelope'
+          pkpass_base64: '#/components/schemas/PkPassBase64'
+          pkpass_url: '#/components/schemas/PkPassUrl'
+          walletobjects_json: '#/components/schemas/WalletObjectsPass'
+    RevPassContent:
+      description: |
+        The content of a Revolut native pass, excluding the root-level `template_id` (which is set at
+        creation only).
+        The root-level `type` discriminator selects the pass type and its content structure: typed
+        passes carry `semantics`; generic passes carry `fields` and an optional `presentation`.
+      required:
+        - type
+      oneOf:
+        - $ref: '#/components/schemas/RevPassBoardingContent'
+        - $ref: '#/components/schemas/RevPassEventContent'
+        - $ref: '#/components/schemas/RevPassLoyaltyContent'
+        - $ref: '#/components/schemas/RevPassGenericContent'
+      discriminator:
+        propertyName: type
+        mapping:
+          boarding_pass: '#/components/schemas/RevPassBoardingContent'
+          event_pass: '#/components/schemas/RevPassEventContent'
+          loyalty_pass: '#/components/schemas/RevPassLoyaltyContent'
+          generic_pass: '#/components/schemas/RevPassGenericContent'
+    RevPassUpdateEnvelope:
+      description: |
+        A pass using Revolut's native semantic model, on update. The `rev_pass` object carries the pass
+        type, semantic content, and relevant-at timestamp. The root-level `template_id` is immutable and
+        is not accepted on updates.
+      allOf:
+        - $ref: '#/components/schemas/PartnerPassRevision'
+        - $ref: '#/components/schemas/RevPassFormat'
+        - type: object
+          required:
+            - rev_pass
+          properties:
+            rev_pass:
+              $ref: '#/components/schemas/RevPassContent'
+    PkPassBase64Update:
+      description: |
+        The updatable state of a pass in a `.pkpass` format, provided as a base64-encoded string.
+        Excludes `template_id`, which is fixed at creation.
+      allOf:
+        - $ref: '#/components/schemas/PartnerPassRevision'
+        - $ref: '#/components/schemas/PkPassBase64Format'
+    PkPassUrlUpdate:
+      description: |
+        The updatable state of a pass in `.pkpass` format, provided via a download URL. Excludes
+        `template_id`, which is fixed at creation.
+      allOf:
+        - $ref: '#/components/schemas/PartnerPassRevision'
+        - $ref: '#/components/schemas/PkPassUrlFormat'
+    WalletObjectsPassUpdate:
+      description: |
+        The updatable state of a pass in Wallet Objects JSON format. Provide the resource family plus both
+        the class and object under `walletobjects`; the object's `classId` must reference the supplied class
+        resource. Excludes `template_id`, which is fixed at creation.
+      allOf:
+        - $ref: '#/components/schemas/PartnerPassRevision'
+        - $ref: '#/components/schemas/WalletObjectsJsonFormat'
+    PassUpdateEnvelope:
+      description: |
+        The updatable state of a pass, in any supported format. The `format` field selects the encoding.
+        Used both when you push an update and when Revolut polls you for the latest state. Excludes
+        `template_id`, which is fixed at creation. This multi-format envelope is available from API version
+        `2026-07-01`. The set of formats is closed within this API version; new pass formats are published
+        under a new dated API version, not added to `2026-07-01`. New `rev_pass.type` values may be added
+        over time and are available in all supported API versions. Requests with an unrecognised `format`
+        value are rejected with `422` (`unsupported_format`). The pass `format` itself is fixed at
+        creation: on `PUT /passes/{id}`, an envelope whose `format` differs from the stored pass is
+        rejected with `422` (`format_mismatch`). The
+        `walletobjects_json` variant requires the resource family plus both the class and object under
+        `walletobjects`, including on updates.
+      required:
+        - format
+      oneOf:
+        - $ref: '#/components/schemas/RevPassUpdateEnvelope'
+        - $ref: '#/components/schemas/PkPassBase64Update'
+        - $ref: '#/components/schemas/PkPassUrlUpdate'
+        - $ref: '#/components/schemas/WalletObjectsPassUpdate'
+      discriminator:
+        propertyName: format
+        mapping:
+          revpass: '#/components/schemas/RevPassUpdateEnvelope'
+          pkpass_base64: '#/components/schemas/PkPassBase64Update'
+          pkpass_url: '#/components/schemas/PkPassUrlUpdate'
+          walletobjects_json: '#/components/schemas/WalletObjectsPassUpdate'
+    TemplateIdentifiers:
+      type: object
+      description: |
+        Revolut-assigned identifiers for a template. Response-only: assigned when the template is
+        created and returned in every template response; never accepted in request bodies. To address
+        the template on `PUT`, `GET`, activate, and terminate, use `template_id` in the path. Send
+        `template_version` back on `PUT /templates/{template_id}` as the concurrency token.
+      required:
+        - template_id
+        - template_version
+      properties:
+        template_id:
+          description: Use this identifier in template operation paths and pass creation payloads.
+          readOnly: true
+          $ref: '#/components/schemas/TemplateId'
+        template_version:
+          type: integer
+          format: int64
+          minimum: 1
+          readOnly: true
+          description: |
+            Server-managed content version, incremented only after a successful full replacement with
+            `PUT /templates/{template_id}`. Activation and termination do not change it. Send the current
+            version on `PUT`; a mismatch returns `409`.
+          examples:
+            - 1
+    RefreshPolicy:
+      type: object
+      description: When passes created from a template refresh their content, and how often refreshes are allowed.
+      required:
+        - condition
+        - cooldown_period
+      properties:
+        condition:
+          type: string
+          enum:
+            - on_open
+            - on_shown
+            - on_manual_refresh
+          description: |
+            The event that triggers a content refresh:
+
+            | Value | Description |
+            | ----- | ----------- |
+            | `on_open` | The customer opens the pass. |
+            | `on_shown` | The pass is shown on the customer's screen. |
+            | `on_manual_refresh` | The customer explicitly refreshes the pass. |
+          examples:
+            - on_open
+        cooldown_period:
+          type: string
+          description: |
+            Minimum interval between content refreshes, as an ISO 8601 duration (e.g. `PT5M` for
+            5 minutes, `PT1H` for 1 hour). Refresh events that arrive within the cooldown period are
+            skipped. `PT0S` disables the cooldown: every triggering event refreshes content.
+          pattern: ^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d)(\d+H)?(\d+M)?(\d+(\.\d+)?S)?)?$
+          examples:
+            - PT5M
+            - PT1H
+    Localisation:
+      type: object
+      description: |
+        Translations for a pass or template. The outer keys are lowercase ISO 639-1 language codes
+        (e.g. `en`); the inner keys are localisation keys mapped to the translated string. Keys are
+        resolved by the `localisation_key` on `LocalisedText` fields (field labels, action labels,
+        trigger presentation) at render time, in this order: the template's localisation map first,
+        then Revolut's localisation catalogue (Revolut-curated translations for standard pass
+        strings), then the field's `default` text.
+      propertyNames:
+        type: string
+        pattern: ^[a-z]{2}$
+        description: Lowercase ISO 639-1 language code, such as `en` or `fr`.
+      additionalProperties:
+        type: object
+        description: Translations for one language, keyed by localisation key.
+        additionalProperties:
+          type: string
+          minLength: 1
+          description: The translated string for this localisation key.
+      examples:
+        - en:
+            view_event_label: View event
+            attendee_name_label: Attendee
+    Template:
+      type: object
+      description: |
+        A pass template as served by Revolut: the reusable blueprint for passes of one type, holding
+        the issuer, branding, refresh policy, barcodes, default actions and triggers, localisation, and
+        (for generic passes) the presentation layout. Templates start in `draft` state, are moved to
+        `active` with `POST /templates/{template_id}/activate`, and to `terminated` with
+        `POST /templates/{template_id}/terminate`. Updates to an `active` template reach passes created
+        from it on their next content refresh; the refresh policy's `cooldown_period` throttles refresh
+        events, not template propagation. Passes created from a template that is later terminated keep
+        using its final content.
+      required:
+        - schema_version
+        - identifiers
+        - type
+        - name
+        - state
+        - issuer
+        - branding
+        - refresh_policy
+        - barcodes
+        - default_actions
+        - default_triggers
+        - localisation
+        - created_date
+        - updated_date
+      properties:
+        schema_version:
+          type: string
+          enum:
+            - '1.0'
+          readOnly: true
+          description: Version of the template payload schema. Served only; the current version is `1.0`.
+          examples:
+            - '1.0'
+        identifiers:
+          description: Revolut-assigned identifiers for this template.
+          readOnly: true
+          $ref: '#/components/schemas/TemplateIdentifiers'
+        type:
+          type: string
+          enum:
+            - boarding_pass
+            - event_pass
+            - loyalty_pass
+            - generic_pass
+          description: The pass type this template renders. Immutable after creation.
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Your name for the template.
+          examples:
+            - Acme Future Festival badge
+        description:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Optional free-form description of the template.
+        state:
+          type: string
+          enum:
+            - draft
+            - active
+            - terminated
+          readOnly: true
+          description: |
+            Lifecycle state of the template, managed with the activate and terminate endpoints:
+
+            | State | Description |
+            | ----- | ----------- |
+            | `draft` | Created, but passes cannot be created against it yet. |
+            | `active` | Ready to create passes against. |
+            | `terminated` | Retired. Terminated templates are immutable. Passes created from it keep the final content. |
+        issuer:
+          description: Issuer information displayed on passes created from this template.
+          $ref: '#/components/schemas/Issuer'
+        branding:
+          description: Visual branding applied to passes created from this template.
+          $ref: '#/components/schemas/Branding'
+        refresh_policy:
+          description: When passes created from this template refresh their content.
+          $ref: '#/components/schemas/RefreshPolicy'
+        barcodes:
+          type: array
+          description: |
+            Barcodes inherited by passes that use this template. May be empty. The pass-level
+            `barcodes` field on `RevPassBaseContent` defines the inherit, replace, and suppress rules.
+          items:
+            $ref: '#/components/schemas/Barcode'
+        default_actions:
+          type: array
+          description: Buttons rendered on passes created from this template. May be empty.
+          items:
+            $ref: '#/components/schemas/Action'
+        default_triggers:
+          type: array
+          description: Context-aware notifications attached to passes created from this template. May be empty.
+          items:
+            $ref: '#/components/schemas/Trigger'
+        localisation:
+          description: Translations resolved by `localisation_key` at render time.
+          $ref: '#/components/schemas/Localisation'
+        presentation:
+          description: |
+            Optional explicit layout applied to generic passes created from this template. A
+            presentation defined on the pass itself takes precedence over the template layout.
+            Provide it only when the template `type` is `generic_pass`.
+          $ref: '#/components/schemas/PresentationConfig'
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+          description: When Revolut created the template, UTC, ISO 8601.
+          examples:
+            - '2026-08-02T06:15:00.000Z'
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+          description: When the template was last updated, UTC, ISO 8601. Set by Revolut on every write.
+          examples:
+            - '2026-08-02T06:15:00.000Z'
+    TemplateCreate:
+      type: object
+      description: |
+        A template as created with `POST /templates`. Revolut assigns the `identifiers` (template id
+        and version), fixes `schema_version` at `1.0`, and returns the created template in `draft`
+        state.
+      required:
+        - type
+        - name
+        - issuer
+        - branding
+        - refresh_policy
+        - localisation
+      properties:
+        type:
+          type: string
+          enum:
+            - boarding_pass
+            - event_pass
+            - loyalty_pass
+            - generic_pass
+          description: The pass type this template renders. Immutable after creation.
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Your name for the template.
+          examples:
+            - Acme Future Festival badge
+        description:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Optional free-form description of the template.
+        issuer:
+          description: Issuer information displayed on passes created from this template.
+          $ref: '#/components/schemas/Issuer'
+        branding:
+          description: Visual branding applied to passes created from this template.
+          $ref: '#/components/schemas/Branding'
+        refresh_policy:
+          description: When passes created from this template refresh their content.
+          $ref: '#/components/schemas/RefreshPolicy'
+        barcodes:
+          type: array
+          description: |
+            Barcodes inherited by passes that use this template. Defaults to empty. The pass-level
+            `barcodes` field on `RevPassBaseContent` defines the inherit, replace, and suppress rules.
+          items:
+            $ref: '#/components/schemas/Barcode'
+        default_actions:
+          type: array
+          description: Buttons rendered on passes created from this template. Defaults to empty.
+          items:
+            $ref: '#/components/schemas/Action'
+        default_triggers:
+          type: array
+          description: Context-aware notifications attached to passes created from this template. Defaults to empty.
+          items:
+            $ref: '#/components/schemas/Trigger'
+        localisation:
+          description: Translations resolved by `localisation_key` at render time.
+          $ref: '#/components/schemas/Localisation'
+        presentation:
+          description: |
+            Optional explicit layout applied to generic passes created from this template. A
+            presentation defined on the pass itself takes precedence over the template layout.
+            Provide it only when the template `type` is `generic_pass`. Providing it for any other
+            `type` returns `422` (`presentation_not_allowed`).
+          $ref: '#/components/schemas/PresentationConfig'
+    TemplateUpdate:
+      type: object
+      description: |
+        The complete replacement state for a template, sent to `PUT /templates/{template_id}`. This is
+        a full replacement, not a partial update: send every field you want the template to have.
+        Omitting the optional `description`, `barcodes`, `default_actions`, `default_triggers`, or
+        `presentation` clears them.
+
+        `type` is immutable after creation and is not part of the update body: the template keeps the
+        pass type it was created with. Send the current `template_version` as the concurrency token; if
+        it doesn't match the stored version, the update is rejected with `409` (`stale_template_version`).
+      required:
+        - template_version
+        - name
+        - issuer
+        - branding
+        - refresh_policy
+        - localisation
+      properties:
+        template_version:
+          type: integer
+          format: int64
+          minimum: 1
+          description: The version of the template being replaced, taken from your last read or write response. On success the stored version is incremented; on mismatch the update returns `409`.
+          examples:
+            - 1
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Your name for the template.
+          examples:
+            - Acme Future Festival badge
+        description:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Optional free-form description of the template. Omitting it clears the description.
+        issuer:
+          description: Issuer information displayed on passes created from this template.
+          $ref: '#/components/schemas/Issuer'
+        branding:
+          description: Visual branding applied to passes created from this template.
+          $ref: '#/components/schemas/Branding'
+        refresh_policy:
+          description: When passes created from this template refresh their content.
+          $ref: '#/components/schemas/RefreshPolicy'
+        barcodes:
+          type: array
+          description: |
+            Barcodes inherited by passes that use this template. Omitting this field clears the template
+            barcodes. The pass-level `barcodes` field on `RevPassBaseContent` defines the inherit,
+            replace, and suppress rules.
+          items:
+            $ref: '#/components/schemas/Barcode'
+        default_actions:
+          type: array
+          description: Buttons rendered on passes created from this template. Omitting it clears the default actions.
+          items:
+            $ref: '#/components/schemas/Action'
+        default_triggers:
+          type: array
+          description: Context-aware notifications attached to passes created from this template. Omitting it clears the default triggers.
+          items:
+            $ref: '#/components/schemas/Trigger'
+        localisation:
+          description: Translations resolved by `localisation_key` at render time.
+          $ref: '#/components/schemas/Localisation'
+        presentation:
+          description: |
+            Optional explicit layout applied to generic passes created from this template. A
+            presentation defined on the pass itself takes precedence over the template layout.
+            Provide it only when the template `type` is `generic_pass`. Providing it when the template
+            `type` is not `generic_pass` returns `422` (`presentation_not_allowed`). Omitting it clears
+            the template layout.
+          $ref: '#/components/schemas/PresentationConfig'
+  responses:
+    BadRequest:
+      description: Malformed syntax or failed validation.
+      headers:
+        Request-Id:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            validation_error:
+              value:
+                code: validation_error
+                message: Request validation failed.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+                violations:
+                  - message: rev_pass.type is required
+                    source:
+                      location: body
+                      pointer: /rev_pass/type
+    Unauthorized:
+      description: |
+        Missing or invalid credentials: no or failed OAuth token, an invalid JWS signature, or a
+        missing/invalid client certificate.
+      headers:
+        Request-Id:
+          $ref: '#/components/headers/RequestId'
+        WWW-Authenticate:
+          description: Authentication challenge, e.g. `Bearer error="invalid_token"`.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            invalid_token:
+              value:
+                code: invalid_token
+                message: The access token is expired or invalid.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+    Forbidden:
+      description: |
+        Authenticated, but the credential lacks the scope or permission required by the operation.
+        For OAuth, accompanied by `WWW-Authenticate: Bearer error="insufficient_scope"`.
+      headers:
+        Request-Id:
+          $ref: '#/components/headers/RequestId'
+        WWW-Authenticate:
+          description: Authentication challenge that names the scope required by the operation.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            insufficient_scope:
+              value:
+                code: insufficient_scope
+                message: The access token does not have the scope required by this operation.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+    NotFound:
+      description: |
+        No pass with this `id` exists under your Partner ID. A pass owned by another partner is
+        also reported as `404`. Existence of passes you don't own is never disclosed.
+      headers:
+        Request-Id:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            pass_not_found:
+              value:
+                code: pass_not_found
+                message: No pass with this id exists under your Partner ID.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+    ConflictCreate:
+      description: |
+        A pass with this `partner_reference` already exists under your Partner ID, or an
+        `Idempotency-Key` was reused with a different request body.
+      headers:
+        Request-Id:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            duplicate_partner_reference:
+              value:
+                code: duplicate_partner_reference
+                message: A pass with this partner_reference already exists under your Partner ID.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+            idempotency_key_reuse:
+              value:
+                code: idempotency_key_reuse
+                message: This Idempotency-Key was already used with a different request body.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+    ConflictUpdate:
+      description: |
+        The `version` is stale — it must equal the stored version exactly plus one — or an
+        `Idempotency-Key` was reused with a different request body.
+      headers:
+        Request-Id:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            stale_version:
+              value:
+                code: stale_version
+                message: The version does not match the stored version +1.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+            idempotency_key_reuse:
+              value:
+                code: idempotency_key_reuse
+                message: This Idempotency-Key was already used with a different request body.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+    ContentTooLarge:
+      description: |
+        The request payload exceeds the size limit: request bodies must be at most 16 MiB, and a
+        base64 `pkpass` must decode to at most 10 MB. A `pkpass_url` download that breaks its fetch
+        rules (including the 10 MB limit) is instead rejected with `422`.
+      headers:
+        Request-Id:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            payload_too_large:
+              value:
+                code: payload_too_large
+                message: The request body exceeds 16 MiB; the decoded .pkpass limit is 10 MB.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+    UnprocessableEntity:
+      description: Well-formed, but the pass cannot be created/updated in its current state.
+      headers:
+        Request-Id:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            unprocessable_pass:
+              value:
+                code: unprocessable_pass
+                message: The pass cannot be created in its current state.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+            unsupported_format:
+              value:
+                code: unsupported_format
+                message: The format value is not supported by this API version.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+                violations:
+                  - message: 'format must be one of: revpass, pkpass_base64, pkpass_url, walletobjects_json'
+                    source:
+                      location: body
+                      pointer: /format
+            format_mismatch:
+              value:
+                code: format_mismatch
+                message: The format differs from the stored pass; format is fixed at creation.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+                violations:
+                  - message: format must match the format of the stored pass
+                    source:
+                      location: body
+                      pointer: /format
+            walletobjects_class_mismatch:
+              value:
+                code: walletobjects_class_mismatch
+                message: The Wallet Objects class and object do not form a valid resource pair.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+                violations:
+                  - message: classId must match the supplied class.id
+                    source:
+                      location: body
+                      pointer: /walletobjects/object/classId
+            pkpass_url_download_failed:
+              value:
+                code: pkpass_url_download_failed
+                message: 'The pkpass download failed the fetch rules: HTTPS only, at most 3 redirects, 200 OK with a valid pkpass body, at most 10 MB, fully received within 10 seconds.'
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+                violations:
+                  - message: pkpass_url must return a valid .pkpass file under the fetch rules
+                    source:
+                      location: body
+                      pointer: /pkpass_url
+            template_not_active:
+              value:
+                code: template_not_active
+                message: The template is not active. Passes can only be created from an active template.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+                violations:
+                  - message: template_id must reference an active template
+                    source:
+                      location: body
+                      pointer: /template_id
+    TooManyRequests:
+      description: Rate limit exceeded.
+      headers:
+        Request-Id:
+          $ref: '#/components/headers/RequestId'
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            rate_limited:
+              value:
+                code: rate_limited
+                message: Rate limit exceeded. Retry after the specified delay.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+    TemplateNotFound:
+      description: |
+        No template with this `template_id` exists under your Partner ID. A template owned by
+        another partner is also reported as `404`. Existence of templates you don't own is never
+        disclosed.
+      headers:
+        Request-Id:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            template_not_found:
+              value:
+                code: template_not_found
+                message: No template with this id exists under your Partner ID.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+    TemplateListBadRequest:
+      description: A template list filter, page size, or page token is invalid.
+      headers:
+        Request-Id:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            invalid_page_token:
+              value:
+                code: invalid_page_token
+                message: The page_token is invalid or does not match the supplied filters.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+                violations:
+                  - message: Use next_page_token from the previous response with unchanged filters.
+                    source:
+                      location: query
+                      parameter: page_token
+            invalid_limit:
+              value:
+                code: validation_error
+                message: Request validation failed.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+                violations:
+                  - message: limit must be between 1 and 100
+                    source:
+                      location: query
+                      parameter: limit
+    IdempotencyConflict:
+      description: The `Idempotency-Key` was previously used for a different request.
+      headers:
+        Request-Id:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            idempotency_key_reuse:
+              value:
+                code: idempotency_key_reuse
+                message: This Idempotency-Key was already used for a different request.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+    TemplateUpdateConflict:
+      description: |
+        The `template_version` sent on `PUT /templates/{template_id}` does not match the stored
+        version, or the `Idempotency-Key` was previously used for a different request.
+      headers:
+        Request-Id:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            stale_template_version:
+              value:
+                code: stale_template_version
+                message: The template_version does not match the stored version.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+            idempotency_key_reuse:
+              value:
+                code: idempotency_key_reuse
+                message: This Idempotency-Key was already used for a different request.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+    InvalidTemplateState:
+      description: |
+        The template cannot make the requested lifecycle transition. Only `draft` templates can be
+        activated and only `active` templates can be terminated. Terminated templates are immutable.
+      headers:
+        Request-Id:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            invalid_template_state:
+              value:
+                code: invalid_template_state
+                message: The template cannot make the requested transition from its current state.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+            terminated_immutable:
+              value:
+                code: terminated_immutable
+                message: The template is terminated and can no longer be modified.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+    TemplateUnprocessableEntity:
+      description: |
+        Well-formed, but the template cannot be created or updated in its current state:
+        terminated templates are immutable, and `presentation` is accepted only when the template
+        `type` is `generic_pass`.
+      headers:
+        Request-Id:
+          $ref: '#/components/headers/RequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            terminated_immutable:
+              value:
+                code: terminated_immutable
+                message: The template is terminated and can no longer be modified.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+            presentation_not_allowed:
+              value:
+                code: presentation_not_allowed
+                message: The presentation is accepted only when the template type is generic_pass.
+                error_id: 01970c4c-5790-7fb5-8331-84dfa075bbe9
+                violations:
+                  - message: Provide presentation only when the template type is generic_pass
+                    source:
+                      location: body
+                      pointer: /presentation

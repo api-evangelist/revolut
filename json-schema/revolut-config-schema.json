@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-config-schema.json",
+  "title": "Config",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-partners-api-openapi.yml#/components/schemas/Config",
+  "type": "object",
+  "required": [
+    "version",
+    "countries",
+    "fiat",
+    "crypto",
+    "payment_methods"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "The Revolut Ramp configuration version."
+    },
+    "countries": {
+      "type": "array",
+      "description": "The list of client countries supported by Ramp – for your customer to be able to use Revolut Ramp, they must be resident in one of those countries.",
+      "items": {
+        "$ref": "#/$defs/CountryCode"
+      }
+    },
+    "fiat": {
+      "description": "The supported fiat currencies and limits.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "The supported fiat currency and limits.",
+        "required": [
+          "currency",
+          "min_limit",
+          "max_limit"
+        ],
+        "properties": {
+          "currency": {
+            "$ref": "#/$defs/CurrencyFiat",
+            "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code of the supported currency."
+          },
+          "min_limit": {
+            "type": "number",
+            "format": "float",
+            "description": "The minimum allowed amount."
+          },
+          "max_limit": {
+            "type": "number",
+            "format": "float",
+            "description": "The maximum allowed amount."
+          }
+        }
+      }
+    },
+    "crypto": {
+      "type": "array",
+      "description": "The list of cryptocurrencies supported by Revolut Ramp.",
+      "items": {
+        "type": "object",
+        "description": "Supported crypto currency.",
+        "required": [
+          "id",
+          "currency",
+          "blockchain"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the crypto currency-blockchain pair.\nShould be used throughout the API to reference the specific crypto."
+          },
+          "currency": {
+            "$ref": "#/$defs/CurrencyCryptoCode"
+          },
+          "blockchain": {
+            "$ref": "#/$defs/Blockchain"
+          },
+          "smartContractAddress": {
+            "type": "string",
+            "description": "The smart contract address. Returned only for tokens."
+          }
+        }
+      }
+    },
+    "feePercentages": {
+      "description": "The list of fee percentages that can be applied for the order as partner fee.",
+      "type": "array",
+      "items": {
+        "type": "number",
+        "format": "float"
+      }
+    },
+    "payment_methods": {
+      "description": "The list of available payment methods.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "card",
+          "revolut",
+          "apple-pay",
+          "google-pay"
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "Blockchain": {
+      "type": "string",
+      "description": "The cryptocurrency blockchain/network.",
+      "enum": [
+        "BITCOIN",
+        "RIPPLE",
+        "BITCOINCASH",
+        "LITECOIN",
+        "ETHEREUM",
+        "DOGECOIN",
+        "CARDANO",
+        "STELLAR",
+        "POLKADOT",
+        "SOLANA",
+        "AVALANCHE",
+        "EOS",
+        "TEZOS",
+        "DASH",
+        "ALGORAND",
+        "CELO",
+        "SMARTCHAIN",
+        "POLYGON",
+        "FANTOM",
+        "OPTIMISM",
+        "COSMOS",
+        "KUSAMA",
+        "ETHEREUMCLASSIC",
+        "ETHEREUMPOW",
+        "HEDERAHASHGRAPH",
+        "TRON",
+        "KAVA",
+        "NEAR",
+        "SONGBIRD",
+        "FLARE",
+        "CELESTIA",
+        "BASE"
+      ]
+    },
+    "CountryCode": {
+      "type": "string",
+      "description": "The [ISO 3166 Alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code of the country."
+    },
+    "CurrencyCryptoCode": {
+      "type": "string",
+      "description": "The [cryptocurrency code](https://en.wikipedia.org/wiki/List_of_cryptocurrencies)."
+    },
+    "CurrencyFiat": {
+      "type": "string",
+      "format": "ISO 4217",
+      "description": "The fiat currency [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code."
+    }
+  }
+}

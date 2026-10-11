@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-payout-link-initial-props-schema.json",
+  "title": "PayoutLinkInitialProps",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-payout-links-api-openapi.yml#/components/schemas/PayoutLinkInitialProps",
+  "type": "object",
+  "required": [
+    "id",
+    "state",
+    "created_at",
+    "updated_at",
+    "counterparty_name",
+    "request_id",
+    "payout_methods",
+    "account_id",
+    "amount",
+    "currency",
+    "reference",
+    "save_counterparty"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the payout link."
+    },
+    "state": {
+      "$ref": "#/$defs/PayoutLinkState"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the payout link was created in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601)."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the payout link was last updated in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601)."
+    },
+    "counterparty_name": {
+      "$ref": "#/$defs/PayoutLinkCounterpartyName"
+    },
+    "save_counterparty": {
+      "type": "boolean",
+      "default": false,
+      "description": "Indicates whether you chose to save the recipient as your counterparty upon link claim. \nIf `false` then the counterparty will not show up on your counterparties list, for example, when you [retrieve your counterparties](https://developer.revolut.com/docs/api/business#get-counterparties). \nHowever, you can still [retrieve this counterparty by its ID](https://developer.revolut.com/docs/api/business#get-counterparty).\n\nIf you didn't choose to save the counterparty on link creation, you can still do it from your transactions list in the Business app."
+    },
+    "request_id": {
+      "$ref": "#/$defs/PayoutLinkRequestId"
+    },
+    "expiry_date": {
+      "$ref": "#/$defs/PayoutLinkExpiryDate"
+    },
+    "payout_methods": {
+      "$ref": "#/$defs/PayoutLinkPayoutMethods"
+    },
+    "account_id": {
+      "$ref": "#/$defs/PayoutLinkAccountId"
+    },
+    "amount": {
+      "$ref": "#/$defs/PayoutLinkAmount"
+    },
+    "currency": {
+      "$ref": "#/$defs/Currency"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "The URL of the payout link. Returned only for active payout links."
+    },
+    "reference": {
+      "$ref": "#/$defs/PayoutLinkReference"
+    },
+    "transfer_reason_code": {
+      "$ref": "#/$defs/TransferReasonCode"
+    }
+  },
+  "$defs": {
+    "Currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+    },
+    "PayoutLinkAccountId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the sender's account."
+    },
+    "PayoutLinkAmount": {
+      "type": "number",
+      "format": "double",
+      "description": "The amount of money to be transferred.\n\n:::note\nThe amount must be between £1 and £2,500, or equivalent in the selected currency.\n:::"
+    },
+    "PayoutLinkCounterpartyName": {
+      "type": "string",
+      "description": "The name of the counterparty provided by the sender."
+    },
+    "PayoutLinkExpiryDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time after which the payout link expires in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601).\nIf the recipient doesn't claim the money before then, the payout link expires and is no longer available.\n\nThe default and maximum value is the date and time of creating the link + 7 days.",
+      "default": "now + 7 days",
+      "maximum": "now + 7 days",
+      "minimum": "now + 1 day"
+    },
+    "PayoutLinkPayoutMethods": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/PayoutMethod"
+      },
+      "explode": true,
+      "description": "The list of payout methods that the recipient can use to claim the payout, where:\n- `revolut`: Revolut peer-to-peer (P2P) transfer\n- `bank_account`: External bank transfer\n- `card`: Card transfer\n  :::note\n  - This payout method is available in the UK and the EEA.\n  - This payout method is not available in Sandbox.\n  :::"
+    },
+    "PayoutLinkReference": {
+      "type": "string",
+      "description": "The reference for the payout transaction, provided by the sender."
+    },
+    "PayoutLinkRequestId": {
+      "type": "string",
+      "description": "The ID of the request, provided by the sender."
+    },
+    "PayoutLinkState": {
+      "enum": [
+        "created",
+        "failed",
+        "awaiting",
+        "active",
+        "expired",
+        "cancelled",
+        "processing",
+        "processed"
+      ],
+      "type": "string",
+      "description": "The state that the payout link is in. Possible states are:\n- `created`: The payout link has been created, but the amount has not yet been [blocked](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links#sender-link-generation).\n- `failed`: The payout link couldn't be generated due to a failure during transaction booking.\n- `awaiting`: The payout link is awaiting approval.\n- `active`: The payout link can be redeemed.\n- `expired`: The payout link cannot be redeemed because it wasn't claimed before its expiry date.\n- `cancelled`: The payout link cannot be redeemed because it was cancelled.\n- `processing`: The payout link has been redeemed and is being processed.\n- `processed`: The payout link has been redeemed and the money has been transferred to the recipient."
+    },
+    "PayoutMethod": {
+      "type": "string",
+      "description": "The payout method that the recipient can use to claim the payout.",
+      "enum": [
+        "revolut",
+        "bank_account",
+        "card"
+      ]
+    },
+    "TransferReasonCode": {
+      "type": "string",
+      "description": "The reason code for the transaction. Transactions to certain countries and currencies might require you to provide a transfer reason. \nYou can check available reason codes with the [`GET /transfer-reasons` operation](https://developer.revolut.com/docs/api/business#get-transfer-reasons).\n\nIf a transfer reason is not required for the given currency and country, this field is ignored."
+    }
+  }
+}

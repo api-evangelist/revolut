@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-tickers-response-schema.json",
+  "title": "TickersResponse",
+  "description": "Response containing ticker information for currency pairs.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-market-data-api-openapi.yml#/components/schemas/TickersResponse",
+  "type": "object",
+  "required": [
+    "data",
+    "metadata"
+  ],
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "List of ticker information for currency pairs.",
+      "items": {
+        "$ref": "#/$defs/Ticker"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Metadata about the response.",
+      "required": [
+        "timestamp"
+      ],
+      "properties": {
+        "timestamp": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The time the data was captured in Unix epoch milliseconds."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "Ticker": {
+      "type": "object",
+      "description": "Real-time market data snapshot for a specific trading pair.\nIncludes the current best bid/ask prices and the most recent trade price.",
+      "required": [
+        "symbol",
+        "bid",
+        "ask",
+        "mid",
+        "last_price"
+      ],
+      "properties": {
+        "symbol": {
+          "type": "string",
+          "description": "The unique identifier for the currency pair (e.g., `BTC/USD`)."
+        },
+        "bid": {
+          "type": "string",
+          "format": "decimal",
+          "description": "The current highest price a buyer is willing to pay.\nRepresents the top price in the buy order book."
+        },
+        "ask": {
+          "type": "string",
+          "format": "decimal",
+          "description": "The current lowest price a seller is willing to accept.\nRepresents the top price in the sell order book."
+        },
+        "mid": {
+          "type": "string",
+          "format": "decimal",
+          "description": "The arithmetic midpoint between the best bid and best ask prices.\nCalculated as `(bid + ask) / 2`."
+        },
+        "last_price": {
+          "type": "string",
+          "format": "decimal",
+          "description": "The price at which the most recent trade was successfully executed."
+        }
+      }
+    }
+  }
+}

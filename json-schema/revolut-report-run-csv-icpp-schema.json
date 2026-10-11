@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-report-run-csv-icpp-schema.json",
+  "title": "IC++ fee breakdown report CSV",
+  "description": "CSV output for `icpp_fee_breakdown_report` report type. Contains IC++ fee components broken down per transaction for a specific IC++ charge.\n\nThe first row is a header row with column names. Subsequent rows contain one row per transaction.\n\n`card_interchange_fee_amount` and `card_scheme_fee_amount` are omitted for Revolut Pay transactions.\n\n:::note\nThe actual response is a raw `text/csv` string. The object schema below is a documentation convention only: OpenAPI's schema language (JSON Schema) describes JSON data shapes and has no native construct for typed CSV columns, so each property here corresponds to a CSV column header rather than a JSON field.\n\n`payment_method` in this report returns `REVOLUT_PAY` for Revolut Pay transactions. Other reports use `PAY_WITH_REVOLUT` for the same payment method.\n:::",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-report-runs-api-openapi.yml#/components/schemas/Report-Run-Csv-Icpp",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the payment in the acquiring system. Corresponds to `payment_id` in the payments report for the same payment."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time the payment was created."
+    },
+    "operation": {
+      "type": "string",
+      "description": "Type of the IC++ transaction.\n\n| Value | Description |\n| ----- | ----------- |\n| `SALE` | Fee breakdown for a payment sale. |\n| `REFUND` | Fee breakdown for a refund. |\n| `DISPUTE` | Fee breakdown for a dispute-related transaction. |",
+      "enum": [
+        "SALE",
+        "REFUND",
+        "DISPUTE"
+      ]
+    },
+    "amount": {
+      "type": "number",
+      "description": "Transaction amount."
+    },
+    "currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the transaction."
+    },
+    "settlement_amount": {
+      "type": "number",
+      "description": "Amount settled on the merchant's account."
+    },
+    "settlement_currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the settled amount."
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "Payment method used. Returns `REVOLUT_PAY` for Revolut Pay, or the card scheme name for card payments."
+    },
+    "card_scheme": {
+      "type": "string",
+      "description": "Card BIN scheme."
+    },
+    "card_funding": {
+      "type": "string",
+      "description": "Card funding type."
+    },
+    "order_description": {
+      "type": "string",
+      "description": "Description of the order."
+    },
+    "order_merchant_external_ref": {
+      "type": "string",
+      "description": "Merchant's order reference. The value of the `merchant_order_data.reference` field set when the order was created."
+    },
+    "original_operation_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "For refunds and disputes, the acquiring ID of the original payment. Corresponds to `original_payment_id` in the payments report."
+    },
+    "acquiring_fee_amount": {
+      "type": "number",
+      "description": "IC++ acquiring markup fee component."
+    },
+    "card_interchange_fee_amount": {
+      "type": "number",
+      "description": "Interchange fee component. Omitted for Revolut Pay transactions."
+    },
+    "card_scheme_fee_amount": {
+      "type": "number",
+      "description": "Card scheme fee component. Omitted for Revolut Pay transactions."
+    },
+    "card_type": {
+      "type": "string",
+      "description": "Card commercial category.\n\n| Value | Description |\n| ----- | ----------- |\n| `COMMERCIAL` | Business or corporate card. |\n| `CONSUMER` | Personal card. |",
+      "enum": [
+        "COMMERCIAL",
+        "CONSUMER"
+      ]
+    },
+    "order_channel": {
+      "type": "string",
+      "description": "Channel through which the order was created."
+    },
+    "card_country": {
+      "type": "string",
+      "description": "Country of the card, as an [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code."
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-payout-schema.json",
+  "title": "Payout",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-payouts-api-openapi.yml#/components/schemas/Payout",
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/Payout-Id"
+    },
+    "state": {
+      "$ref": "#/$defs/Payout-State"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the payout was created."
+    },
+    "destination_type": {
+      "$ref": "#/$defs/Payout-Destination-Type"
+    },
+    "amount": {
+      "$ref": "#/$defs/Payout-Amount"
+    },
+    "currency": {
+      "$ref": "#/$defs/Currency"
+    }
+  },
+  "required": [
+    "id",
+    "state",
+    "created_at",
+    "destination_type"
+  ],
+  "$defs": {
+    "Currency": {
+      "type": "string",
+      "format": "ISO 4217",
+      "minLength": 3,
+      "maxLength": 3,
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.\n\n:::info\nFor more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).\n:::"
+    },
+    "Payout-Amount": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "The total amount of the payout in minor currency units. For example, `7034` represents €70.34."
+    },
+    "Payout-Destination-Type": {
+      "type": "string",
+      "enum": [
+        "current_pocket",
+        "external_beneficiary"
+      ],
+      "description": "The destination of the payout funds when a merchant initiates a withdrawal from their merchant account.\n\n| Destination type | Description |\n| ---------------- | ----------- |\n| `current_pocket` | The funds were moved from the merchant account to the business account within the platform. This indicates an **internal transfer**, allowing the merchant to access the funds within their own business account. |\n| `external_beneficiary` | The funds were transferred to an external bank account or beneficiary outside the platform. This indicates a **transfer to an external account**, enabling the merchant to withdraw funds to external financial institutions. |"
+    },
+    "Payout-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Permanent payout ID used for payouts operations."
+    },
+    "Payout-State": {
+      "type": "string",
+      "enum": [
+        "processing",
+        "completed",
+        "failed"
+      ],
+      "description": "The state of the payout."
+    }
+  }
+}

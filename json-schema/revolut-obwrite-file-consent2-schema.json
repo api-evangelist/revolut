@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-obwrite-file-consent2-schema.json",
+  "title": "OBWriteFileConsent2",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-file-payment-api-openapi.yml#/components/schemas/OBWriteFileConsent2",
+  "required": [
+    "Data"
+  ],
+  "type": "object",
+  "properties": {
+    "Data": {
+      "$ref": "#/$defs/OBWriteDataFileConsent2"
+    }
+  },
+  "$defs": {
+    "OBCashAccountDebtor4": {
+      "required": [
+        "Identification",
+        "SchemeName"
+      ],
+      "type": "object",
+      "description": "The details to identify the account from which the payment consent can be approved.\n\nIf provided in the consent, the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) will only be able to approve the payment consent from an account which matches the provided account identifier.\n",
+      "properties": {
+        "SchemeName": {
+          "$ref": "#/$defs/OBExternalAccountIdentification4Code"
+        },
+        "Identification": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string",
+          "description": "The identifier assigned to the account, which is known by the account owner."
+        },
+        "Name": {
+          "maxLength": 70,
+          "minLength": 1,
+          "type": "string",
+          "description": "The name or names of the account owner(s) represented at an account level.\n\nThe account name is not the product name or the nickname of the account.\n\n:::warning\nThe name value is not validated against the actual owner name of the account.\n:::"
+        },
+        "SecondaryIdentification": {
+          "maxLength": 34,
+          "minLength": 1,
+          "type": "string",
+          "description": "The secondary account ID that the account servicing institution assigns.\n\nBuilding societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination."
+        }
+      }
+    },
+    "OBExternalAccountIdentification4Code": {
+      "type": "string",
+      "description": "The name of the identification scheme.",
+      "enum": [
+        "UK.OBIE.IBAN",
+        "UK.OBIE.SortCodeAccountNumber",
+        "US.RoutingNumberAccountNumber",
+        "US.BranchCodeAccountNumber"
+      ]
+    },
+    "OBExternalFileType1Code": {
+      "type": "string",
+      "description": "The payment file type."
+    },
+    "OBExternalLocalInstrument1Code": {
+      "maxLength": 50,
+      "minLength": 1,
+      "type": "string",
+      "description": "User community specific instrument.\n\nUse this element to specify a local instrument, local clearing option and/or further qualify the service or service level."
+    },
+    "OBFile2": {
+      "type": "object",
+      "description": "The initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds using a payment file.",
+      "allOf": [
+        {
+          "$ref": "#/$defs/OBFileBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "DebtorAccount": {
+              "$ref": "#/$defs/OBCashAccountDebtor4"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "FileHash",
+            "FileType"
+          ]
+        }
+      ]
+    },
+    "OBFileBase": {
+      "type": "object",
+      "properties": {
+        "FileType": {
+          "$ref": "#/$defs/OBExternalFileType1Code"
+        },
+        "FileHash": {
+          "maxLength": 44,
+          "minLength": 1,
+          "type": "string",
+          "description": "A base64 encoding of a SHA256 hash of the file to be uploaded."
+        },
+        "FileReference": {
+          "maxLength": 40,
+          "minLength": 1,
+          "type": "string",
+          "description": "Reference for the file."
+        },
+        "RequestedExecutionDateTime": {
+          "type": "string",
+          "description": "The date and time when the initiating party requests the clearing agent to process the payment.\nThis is the date the debtor's account is to be debited.\n\nAll dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.\nAll date-time fields in responses must include the timezone.\n\nFor example: `2017-04-05T10:43:07+00:00`.",
+          "format": "date-time"
+        },
+        "LocalInstrument": {
+          "$ref": "#/$defs/OBExternalLocalInstrument1Code"
+        },
+        "RemittanceInformation": {
+          "$ref": "#/$defs/OBRemittanceInformation1"
+        }
+      },
+      "description": "The initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds using a payment file."
+    },
+    "OBRemittanceInformation1": {
+      "type": "object",
+      "properties": {
+        "Unstructured": {
+          "maxLength": 140,
+          "minLength": 1,
+          "type": "string",
+          "description": "The information used for matching/reconciliation of an entry with the items that the payment is intended to settle, such as commercial invoices in an accounts' receivable system, in an unstructured form."
+        },
+        "Reference": {
+          "maxLength": 35,
+          "minLength": 1,
+          "type": "string",
+          "description": "The unique reference that the creditor assigns to unambiguously identify the payment transaction.\n\nIf available, the initiating party should provide this reference in the structured remittance information to enable reconciliation by the creditor upon receipt of the amount of money.\n\nIf the business context requires the use of a creditor reference or a payment remit identification, and only one identifier can be passed through the end-to-end chain, the creditor's reference or payment remittance identification should be quoted in the end-to-end transaction identification.\n\n:::note\nFaster Payments Scheme can accept only 18 characters for the `Reference` field.\n:::\n\n:::warning\nOnly one reference should be provided, if both `Reference` and `Unstructured` parameters are provided, then the `Unstructured` parameter will be ignored.\n:::"
+        }
+      },
+      "description": "The information used for matching an entry with the items that the transfer is intended to settle, such as commercial invoices in an accounts' receivable system."
+    },
+    "OBWriteDataFileConsent2": {
+      "required": [
+        "Initiation"
+      ],
+      "type": "object",
+      "properties": {
+        "Initiation": {
+          "$ref": "#/$defs/OBFile2"
+        }
+      }
+    }
+  }
+}

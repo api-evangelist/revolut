@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-obwrite-funds-confirmation-response1-schema.json",
+  "title": "OBWriteFundsConfirmationResponse1",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-domestic-payment-api-openapi.yml#/components/schemas/OBWriteFundsConfirmationResponse1",
+  "required": [
+    "Data",
+    "Links",
+    "Meta"
+  ],
+  "type": "object",
+  "properties": {
+    "Data": {
+      "$ref": "#/$defs/OBWriteDataFundsConfirmationResponse1"
+    },
+    "Links": {
+      "$ref": "#/$defs/Links"
+    },
+    "Meta": {
+      "$ref": "#/$defs/Meta"
+    }
+  },
+  "$defs": {
+    "Links": {
+      "required": [
+        "Self"
+      ],
+      "type": "object",
+      "properties": {
+        "Self": {
+          "type": "string",
+          "description": "The absolute URI to the resource.",
+          "format": "uri"
+        },
+        "Next": {
+          "type": "string",
+          "description": "The absolute URI to the next pagination resource.",
+          "format": "uri"
+        },
+        "Prev": {
+          "type": "string",
+          "description": "The absolute URI to the previous pagination resource.",
+          "format": "uri"
+        }
+      },
+      "description": "Links relevant to the payload."
+    },
+    "Meta": {
+      "title": "MetaData",
+      "type": "object",
+      "properties": {
+        "TotalPages": {
+          "type": "integer",
+          "description": "Used for pagination. Indicates how many pages of results are available.",
+          "format": "int32"
+        }
+      },
+      "description": "Meta data relevant to the payload."
+    },
+    "OBFundsAvailableResult1": {
+      "required": [
+        "FundsAvailable",
+        "FundsAvailableDateTime"
+      ],
+      "type": "object",
+      "properties": {
+        "FundsAvailableDateTime": {
+          "type": "string",
+          "description": "The date and time when the funds availability check was generated.\n\nAll dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.\nAll date-time fields in responses must include the timezone.\nFor example: `2017-04-05T10:43:07+00:00`.",
+          "format": "date-time"
+        },
+        "FundsAvailable": {
+          "type": "boolean",
+          "description": "Indicates whether there are enough funds to pay for the `Amount` in the consent request."
+        }
+      },
+      "description": "The results of the funds availability check."
+    },
+    "OBWriteDataFundsConfirmationResponse1": {
+      "type": "object",
+      "properties": {
+        "FundsAvailableResult": {
+          "$ref": "#/$defs/OBFundsAvailableResult1"
+        }
+      }
+    }
+  }
+}

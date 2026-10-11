@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-spending-limits-schema-schema.json",
+  "title": "SpendingLimitsSchema",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-card-invitations-api-openapi.yml#/components/schemas/SpendingLimitsSchema",
+  "type": "object",
+  "properties": {
+    "single": {
+      "description": "The limit for a single transaction.",
+      "$ref": "#/$defs/SpendingLimitSingleTransaction"
+    },
+    "day": {
+      "description": "The daily limit for transactions.",
+      "$ref": "#/$defs/SpendingLimitPeriodic"
+    },
+    "week": {
+      "description": "The weekly limit for transactions.",
+      "$ref": "#/$defs/SpendingLimitPeriodic"
+    },
+    "month": {
+      "description": "The monthly limit for transactions.",
+      "$ref": "#/$defs/SpendingLimitPeriodic"
+    },
+    "quarter": {
+      "description": "The quarterly limit for transactions.",
+      "$ref": "#/$defs/SpendingLimitPeriodic"
+    },
+    "year": {
+      "description": "The yearly limit for transactions.",
+      "$ref": "#/$defs/SpendingLimitPeriodic"
+    },
+    "all_time": {
+      "description": "The all-time limit for transactions.",
+      "$ref": "#/$defs/SpendingLimitPeriodic"
+    }
+  },
+  "$defs": {
+    "SpendingLimitPeriodic": {
+      "type": "object",
+      "description": "The limit for transactions within a given period.",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "The value of the spending limit."
+        },
+        "currency": {
+          "$ref": "#/$defs/TransactionLimitCurrency"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ]
+    },
+    "SpendingLimitSingleTransaction": {
+      "type": "object",
+      "description": "The limit for a single transaction.",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "The value of the spending limit."
+        },
+        "currency": {
+          "$ref": "#/$defs/TransactionLimitCurrency"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ]
+    },
+    "TransactionLimitCurrency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "The currency of the spending limit, provided as [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code in upper case."
+    }
+  }
+}

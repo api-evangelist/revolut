@@ -1,0 +1,1283 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-order-update-v7-schema.json",
+  "title": "Order-Update-v7",
+  "description": "Object schema containing information about order update body request parameters.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-orders-api-openapi.yml#/components/schemas/Order-Update-v7",
+  "type": "object",
+  "properties": {
+    "amount": {
+      "$ref": "#/$defs/Order-Amount-v2"
+    },
+    "currency": {
+      "$ref": "#/$defs/Currency"
+    },
+    "settlement_currency": {
+      "$ref": "#/$defs/Settlement-Currency"
+    },
+    "description": {
+      "$ref": "#/$defs/Order-Description"
+    },
+    "customer": {
+      "$ref": "#/$defs/Customer-v2"
+    },
+    "enforce_challenge": {
+      "$ref": "#/$defs/Enforce-Challenge-v2"
+    },
+    "line_items": {
+      "$ref": "#/$defs/Line-Items"
+    },
+    "shipping": {
+      "$ref": "#/$defs/Shipping"
+    },
+    "capture_mode": {
+      "$ref": "#/$defs/Capture-Mode-v2"
+    },
+    "cancel_authorised_after": {
+      "$ref": "#/$defs/Cancel-Authorised-After-v2"
+    },
+    "expire_pending_after": {
+      "$ref": "#/$defs/Expire-Pending-After"
+    },
+    "metadata": {
+      "$ref": "#/$defs/Metadata"
+    },
+    "industry_data": {
+      "$ref": "#/$defs/Industry-Data-v3"
+    },
+    "merchant_order_data": {
+      "$ref": "#/$defs/Merchant-Order-Data"
+    },
+    "upcoming_payment_data": {
+      "$ref": "#/$defs/Upcoming-Payment"
+    },
+    "redirect_url": {
+      "$ref": "#/$defs/Redirect-Url"
+    },
+    "statement_descriptor_suffix": {
+      "$ref": "#/$defs/Statement-Descriptor-Suffix"
+    }
+  },
+  "$defs": {
+    "Address-v2": {
+      "type": "object",
+      "description": "Object containing address details.",
+      "properties": {
+        "street_line_1": {
+          "type": "string",
+          "description": "Street line 1 information.",
+          "maxLength": 100
+        },
+        "street_line_2": {
+          "type": "string",
+          "description": "Street line 2 information.",
+          "maxLength": 100
+        },
+        "region": {
+          "type": "string",
+          "description": "The region associated with the address.",
+          "maxLength": 100
+        },
+        "city": {
+          "type": "string",
+          "description": "The city associated with the address.",
+          "maxLength": 100
+        },
+        "country_code": {
+          "type": "string",
+          "description": "The 2-letter country code of the country associated with the address.",
+          "maxLength": 2
+        },
+        "postcode": {
+          "type": "string",
+          "description": "The postcode associated with the address.",
+          "maxLength": 100
+        }
+      },
+      "required": [
+        "country_code",
+        "postcode"
+      ]
+    },
+    "Address-v3": {
+      "type": "object",
+      "description": "Details of a physical address.",
+      "properties": {
+        "street_line_1": {
+          "type": "string",
+          "description": "Primary address line.",
+          "maxLength": 100
+        },
+        "street_line_2": {
+          "type": "string",
+          "description": "Secondary address line, such as floor and apartment number.",
+          "maxLength": 100
+        },
+        "region": {
+          "type": "string",
+          "description": "State or province of the address.",
+          "maxLength": 100
+        },
+        "city": {
+          "type": "string",
+          "description": "City of the address.",
+          "maxLength": 100
+        },
+        "country_code": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "ISO 2-letter country code.",
+          "minLength": 2,
+          "maxLength": 2
+        },
+        "postcode": {
+          "type": "string",
+          "description": "Postal code of the address.",
+          "maxLength": 100
+        }
+      },
+      "required": [
+        "street_line_1",
+        "city",
+        "country_code",
+        "postcode"
+      ]
+    },
+    "Address-v4": {
+      "type": "object",
+      "description": "Details of a physical address.",
+      "properties": {
+        "street_line_1": {
+          "type": "string",
+          "description": "Primary address line.",
+          "maxLength": 100
+        },
+        "street_line_2": {
+          "type": "string",
+          "description": "Secondary address line, such as floor and apartment number.",
+          "maxLength": 100
+        },
+        "region": {
+          "type": "string",
+          "description": "State or province of the address.",
+          "maxLength": 100
+        },
+        "city": {
+          "type": "string",
+          "description": "City of the address.",
+          "maxLength": 100
+        },
+        "country_code": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "ISO 2-letter country code.",
+          "minLength": 2,
+          "maxLength": 2
+        },
+        "country_subdivision_code": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}-[A-Z0-9]{1,3}$",
+          "description": "The subdivision code represents the state, province, or region within the country, following the [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) standard. This code uniquely identifies subdivisions within a country. \n\nFor example, for London in the United Kingdom, use `GB-LND`.\n\n:::warning\nThe parameter is required for countries listed on the [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) page.\n:::",
+          "minLength": 5,
+          "maxLength": 6
+        },
+        "postcode": {
+          "type": "string",
+          "description": "Postal code of the address.",
+          "maxLength": 100
+        }
+      },
+      "required": [
+        "street_line_1",
+        "city",
+        "country_code",
+        "postcode"
+      ]
+    },
+    "Airline-Data-v2": {
+      "type": "object",
+      "description": "Object containing additional information about an airline booking associated with the order.\n\nUse this object to provide required data to enable **Revolut Flight Alerts**. This feature allows users to receive real-time flight updates such as check-in reminders, boarding alerts, and notifications for cancellations or delays in the Revolut app.\n\nTo enable **Revolut Flight Alerts** functionalities in the Revolut app, the following fields are **required** on order creation or update, before capturing the order:\n  ```\n  tickets_purchase,\n  journey_legs,\n  booking_url\n  ```\n\n:::note\nThese are the specific data field requirements for merchants who must provide airline data. Note that these requirements can be extended on a case by case basis as decided by Revolut.\n\n| Required for airline/charter merchants | Required for OTA merchants |\n| -------------------------------------- | -------------------------- |\n| <ul><li>`booking_id`</li><li>`fulfillment_date`</li><li>`passengers[].first_name`</li><li>`passengers[].last_name`</li><li>`journey_legs[].pnr`</li><li>`journey_legs[].sequence`</li><li>`journey_legs[].flight_number`</li><li>`journey_legs[].travel_date`</li><li>`journey_legs[].airline_code`</li><li>`journey_legs[].departure_airport_code`</li><li>`journey_legs[].arrival_airport_code`</li></ul> | <ul><li>`booking_id`</li><li>`fulfillment_date`</li><li>`passengers[].first_name`</li><li>`passengers[].last_name`</li><li>`journey_legs[].pnr`</li><li>`journey_legs[].arrival_airport_code`</li></ul> |\n:::",
+      "properties": {
+        "booking_id": {
+          "$ref": "#/$defs/Booking-Id"
+        },
+        "fulfillment_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The UTC date and time of the final journey leg.\n\n:::warning\nThe following limitations apply:\n  - When creating or updating an order, `fulfillment_date` cannot be set to a date in the past.\n  - When updating an order, if the current `fulfillment_date` value is already in the past, it cannot be modified. The date must remain as is to maintain data integrity for completed transactions.\n:::"
+        },
+        "tickets_purchase": {
+          "type": "boolean",
+          "description": "Flag indicating whether the order includes actual ticket purchases. Set to `true` if the order contains ticket purchases, and `false` if it does not (e.g., it **only** contains seat reservations, or baggage upgrades).\n\n:::info\nThis field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app.\n\nProvide the info on order creation or update, before capturing the order.\n:::"
+        },
+        "ticket_type": {
+          "type": "string",
+          "enum": [
+            "fixed",
+            "flexible"
+          ],
+          "description": "The type of the ticket.\n\n| Parameter value | Description |\n| --------------- | ----------- |\n| `fixed`         | Non-modifiable once confirmed. |\n| `flexible`      | Allows modifications or cancellations under specified conditions. |"
+        },
+        "crs_code": {
+          "type": "string",
+          "maxLength": 4,
+          "description": "The code of the Computer Reservation System (CRS) used to make the booking and purchase the ticket."
+        },
+        "ticket_change_indicator": {
+          "type": "string",
+          "enum": [
+            "new",
+            "modification"
+          ],
+          "description": "Parameter indicating whether this order is related to a new ticket reservation or a modification of an existing one."
+        },
+        "refundability": {
+          "$ref": "#/$defs/Refundability"
+        },
+        "passengers": {
+          "$ref": "#/$defs/Passengers"
+        },
+        "journey_legs": {
+          "$ref": "#/$defs/Journey-Legs"
+        },
+        "booking_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https?:\\/{2}.+/gi",
+          "maxLength": 2000,
+          "description": "URL to the online portal for managing the airline booking, which includes check-in functionality. This URL may be a personalised, pre-populated check-in link specific to the user or a generic link, and it is essential for enabling direct access to booking details within the Revolut app.\n\n:::info\nThis field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app.\n\nProvide the info on order creation or update, before capturing the order.\n:::\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::"
+        }
+      },
+      "required": [
+        "booking_id"
+      ]
+    },
+    "Booking-Id": {
+      "type": "string",
+      "description": "A unique identifier provided by the merchant associated with the order. \n\nThis `booking_id` is used to reference and correlate booking information with the Merchant API and the merchant's internal system."
+    },
+    "Cancel-Authorised-After-v2": {
+      "type": "string",
+      "format": "duration",
+      "description": "Automatic cancellation period for uncaptured orders, specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n\nAfter this period, the authorised payment is automatically cancelled and the order is cancelled.\n\nMaximum period depends on the order's `authorisation_type`:\n- `pre_authorisation`: 30 days = `P30D`\n- `final`: 7 days = `P7D`\n\n:::note\nThe following limitations apply:\n  - Cannot be a negative value.\n  - Cannot be updated if the new value is less than or equal to the elapsed time since authorisation.\n\n    **Failing scenario:**\n      - Original value: 7 days\n      - Time since authorisation: 3 days\n      - Update value: 2 days\n\n    In this scenario, an error is returned.\n\n    **Successful scenario:**\n      - Original value: 7 days\n      - Time since authorisation: 3 days\n      - Update value: 4 days\n\n    In this scenario, the parameter can be updated.\n\n  - Cannot be updated if cancellation is ≤ 30 minutes away.\n\n    **Failing scenario:**\n      - Original value: 12 hours\n      - Time since authorisation: 11 hours 40 minutes\n\n    In this scenario, an error is returned.\n\n    **Successful scenario:**\n      - Original value: 12 hours\n      - Time since authorisation: 11 hours 20 minutes\n\n    In this scenario, the parameter can be updated.\n:::"
+    },
+    "Capture-Mode-v2": {
+      "type": "string",
+      "description": "The capture mode of the order. `automatic` is used by default.\n\n| Parameter value | Description |\n| --------------- | ----------- |\n| `automatic` | The order is captured automatically after payment authorisation. |\n| `manual` | The order is not captured automatically. You must manually capture the order later. |\n\n:::info\nFor more information, see [Capture an order](https://developer.revolut.com/docs/api/merchant#capture-order).\n:::",
+      "default": "automatic",
+      "enum": [
+        "automatic",
+        "manual"
+      ]
+    },
+    "Car-Rental-v2": {
+      "type": "object",
+      "description": "Object containing additional information about a car rental booking associated with the order.\n\n:::info\nThese are the specific data field requirements for merchants offering car rental. Note that these requirements can be extended on a case by case basis as decided by Revolut.\n\n```\nbooking_id\ndrop_off_date\nrefundability\n```\n:::",
+      "properties": {
+        "booking_id": {
+          "$ref": "#/$defs/Booking-Id"
+        },
+        "pick_up_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The UTC date and time of the pick-up."
+        },
+        "pick_up_location": {
+          "$ref": "#/$defs/Address-v2"
+        },
+        "drop_off_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The UTC date and time of the drop-off."
+        },
+        "drop_off_location": {
+          "$ref": "#/$defs/Address-v2"
+        },
+        "refundability": {
+          "$ref": "#/$defs/Refundability"
+        },
+        "distance_limit": {
+          "type": "object",
+          "description": "Object containing distance limit information.",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "description": "The maximum distance allowed."
+            },
+            "unit": {
+              "type": "string",
+              "description": "The unit of distance.",
+              "enum": [
+                "miles",
+                "km"
+              ]
+            },
+            "additional_distance_cost": {
+              "type": "object",
+              "description": "Cost for exceeding the distance limit.",
+              "properties": {
+                "amount": {
+                  "type": "integer",
+                  "description": "The amount of the cost in minor currency units. For example, enter `7034` for €70.34."
+                },
+                "currency": {
+                  "$ref": "#/$defs/Currency"
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "booking_id",
+        "drop_off_date"
+      ]
+    },
+    "Contact": {
+      "type": "object",
+      "description": "Contact details for someone responsible for the shipment.\n\n:::warning\nAt least `email` or `phone` is required.\n:::",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the contact person.",
+          "maxLength": 250
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address of the contact person."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number of the contact person."
+        }
+      }
+    },
+    "Crypto-Transaction": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 255,
+          "description": "The public transaction hash of the crypto transaction."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "failed",
+            "cancelled",
+            "completed"
+          ],
+          "description": "The status of the crypto transaction."
+        },
+        "recipient_wallet_id": {
+          "type": "string",
+          "maxLength": 255,
+          "description": "The wallet ID of the recipient.\n\n:::note\nAt least one of the parameters: `recipient_user_id` or `recipient_wallet_id` is required.\n::: "
+        },
+        "recipient_user_id": {
+          "type": "string",
+          "maxLength": 255,
+          "description": "The user ID of the recipient.\n\n:::note\nAt least one of the parameters: `recipient_user_id` or `recipient_wallet_id` is required.\n:::              "
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "recipient"
+      ]
+    },
+    "Crypto-Transactions-v3": {
+      "type": "object",
+      "description": "Object containing information about crypto transactions associated with the order.\n\n:::info\nProcessing crypto on-ramp transactions with Revolut has additional compliance requirements. Please reach out to your account executive for additional details.\n\n**Required data fields for crypto services:**\n\n```\ntransactions[].id\ntransactions[].status\ntransactions[].recipient_wallet_id\nseller.id\nseller.name\nseller.website\nseller.phone\nseller.address\nseller.mcc\ncustomer.full_name\ncustomer.date_of_birth\n```\n\nNote that these requirements can be extended on a case by case basis as decided by Revolut.\n:::",
+      "properties": {
+        "transactions": {
+          "type": "array",
+          "description": "Array of crypto transaction data associated with the order.",
+          "items": {
+            "$ref": "#/$defs/Crypto-Transaction"
+          },
+          "minItems": 1
+        },
+        "seller": {
+          "type": "object",
+          "description": "Information about the crypto conversion affiliate.\n\nThis should be provided when a customer completes a payment on a subseller's website rather than directly on the merchant's website, providing insight into the type of business conducted by the subseller.\n\n:::note\nThis needs to be provided only by crypto on-ramp providers for payments they are processing for conversion affiliates.\n\nFor their own payments, `seller` can be omitted.\n:::",
+          "properties": {
+            "mcc": {
+              "type": "string",
+              "description": "A string representing the four-digit [Merchant Category Code (MCC)](https://en.wikipedia.org/wiki/Merchant_category_code) of the conversion affiliate.",
+              "maxLength": 4,
+              "minLength": 4,
+              "pattern": "^\\d{4}$"
+            },
+            "id": {
+              "type": "string",
+              "description": "The ID of the seller in the merchant's internal system.",
+              "minLength": 1,
+              "maxLength": 15
+            },
+            "name": {
+              "type": "string",
+              "description": "The business or legal name of the seller.",
+              "minLength": 1,
+              "maxLength": 50
+            },
+            "website": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https?:\\/{2}.+/gi",
+              "maxLength": 255,
+              "description": "The URL of the website of the seller.\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `255`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::"
+            },
+            "phone": {
+              "type": "string",
+              "description": "The phone number of the seller."
+            },
+            "address": {
+              "$ref": "#/$defs/Address-v4"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "website",
+            "phone",
+            "address",
+            "mcc"
+          ]
+        }
+      },
+      "required": [
+        "transactions"
+      ]
+    },
+    "Currency": {
+      "type": "string",
+      "format": "ISO 4217",
+      "minLength": 3,
+      "maxLength": 3,
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.\n\n:::info\nFor more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).\n:::"
+    },
+    "Customer-v2": {
+      "type": "object",
+      "description": "Object containing information about a customer.\n\nIf you have it, we strongly advise providing at least either `id`, `phone`, or `email`.\n\nUsing the [Customers operations](https://developer.revolut.com/docs/api/merchant#tag-customers), you can manage customer instances.\n\nThe following behaviours apply to different use cases:\n\n  | Use case | API behavior |\n  | -------- | ------------ |\n  | Existing customer | If `id` was provided, we ignore other customer details and associate the customer with the order.<br/><br/>If either `email`, `phone`, or `full_name` was provided (without an existing customer's `id`), we always create a new customer, irrespective of another, existing customer object having the same details. |\n  | New customer | If either `email`, `phone`, or `full_name` was provided, we create a new customer, irrespective of another customer object having the same details. <br/><br/>If `id` of a non-existent customer was provided, we return a `404` error, irrespective of other details provided. |\n\n:::note\nTo avoid unintentional duplication of customer records, search for an existing customer by email or phone using the [List customers](https://developer.revolut.com/docs/api/merchant#retrieve-customer-list) endpoint first, then provide `customer.id` in the order.\n:::",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Permanent ID of a customer used to retrieve, update, delete a customer. This ID can also be used to link customer to an order.\n\n:::note\nIf you provide the customer's ID during order creation, no other customer data is required, they will be parsed automatically from the referenced customer object.\n:::"
+        },
+        "full_name": {
+          "$ref": "#/$defs/Full-Name"
+        },
+        "phone": {
+          "$ref": "#/$defs/Phone"
+        },
+        "email": {
+          "$ref": "#/$defs/Email"
+        },
+        "date_of_birth": {
+          "$ref": "#/$defs/Date-Of-Birth"
+        }
+      }
+    },
+    "Date-Of-Birth": {
+      "type": "string",
+      "format": "date",
+      "description": "The birth date of the customer."
+    },
+    "Discount": {
+      "type": "object",
+      "description": "Details of a discount applied to the line item, including its name and monetary value.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "The specific name or label of the discount applied to the line item."
+        },
+        "amount": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "description": "The monetary value of the discount. "
+        }
+      },
+      "required": [
+        "name",
+        "amount"
+      ]
+    },
+    "Email": {
+      "type": "string",
+      "format": "email",
+      "description": "The email address of the customer."
+    },
+    "Enforce-Challenge-v2": {
+      "type": "string",
+      "description": "The enforce challenge mode. `automatic` is used by default.\n\n| Parameter value | Description |\n| --------------- | ----------- |\n| `automatic` | The payments created for an order will have challenge requirement calculated by our fraud mechanisms. Not all payments will trigger a 3DS challenge. |\n| `forced` | The payments created for an order will always require a 3DS challenge. Currently only supported for card payments. |",
+      "default": "automatic",
+      "enum": [
+        "automatic",
+        "forced"
+      ]
+    },
+    "Event": {
+      "type": "object",
+      "description": "Object containing booking information about a specific event. ",
+      "properties": {
+        "start_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date and time when the event starts."
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date and time when the event ends."
+        },
+        "supplier": {
+          "type": "string",
+          "description": "Legal name of the ticket vendor/event organiser."
+        },
+        "supplier_payment_date": {
+          "$ref": "#/$defs/Supplier-Payment-Date"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the event."
+        },
+        "location": {
+          "type": "object",
+          "description": "The address of the event location.",
+          "properties": {
+            "street_line_1": {
+              "type": "string",
+              "description": "Primary address line.",
+              "maxLength": 100
+            },
+            "street_line_2": {
+              "type": "string",
+              "description": "Secondary address line, such as floor and apartment number.",
+              "maxLength": 100
+            },
+            "region": {
+              "type": "string",
+              "description": "State or province of the address.",
+              "maxLength": 100
+            },
+            "city": {
+              "type": "string",
+              "description": "City of the address.",
+              "maxLength": 100
+            },
+            "country_code": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$",
+              "description": "ISO 2-letter country code.",
+              "minLength": 2,
+              "maxLength": 2
+            },
+            "postcode": {
+              "type": "string",
+              "description": "Postal code of the address.",
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "street_line_1",
+            "city",
+            "country_code",
+            "postcode"
+          ]
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "concert",
+            "conference",
+            "convention",
+            "exhibition",
+            "festival",
+            "party",
+            "performance",
+            "other"
+          ],
+          "description": "The type of the event."
+        },
+        "market": {
+          "type": "string",
+          "enum": [
+            "primary",
+            "secondary"
+          ],
+          "description": "Indicates the relationship between the ticket vendor and the event organiser. \n\n| Parameter value | Description |\n| --------------- | ----------- |\n| `primary`       | The merchant is the organiser and primary distributor of the tickets. |\n| `secondary`     | The merchant is a reseller, only distributing the tickets. |"
+        },
+        "tickets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ticket"
+          },
+          "description": "A list of tickets associated with the booking."
+        }
+      }
+    },
+    "Events-v2": {
+      "type": "object",
+      "description": "Object containing booking information for a list of event tickets associated with the order.\n\n:::info\nThese are the specific data field requirements for merchants who must provide event data. Note that these requirements can be extended on a case by case basis as decided by Revolut.\n\n```\nbooking_id\nevents[].start_date\nevents[].end_date\nevents[].supplier\nevents[].tickets[].id\n```\n:::",
+      "properties": {
+        "booking_id": {
+          "$ref": "#/$defs/Booking-Id"
+        },
+        "events": {
+          "type": "array",
+          "description": "A list of events associated with the booking.",
+          "items": {
+            "$ref": "#/$defs/Event"
+          }
+        }
+      },
+      "required": [
+        "booking_id"
+      ]
+    },
+    "Expire-Pending-After": {
+      "type": "string",
+      "format": "duration",
+      "description": "Automatic expiration period for pending orders, specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n\nOrders in `pending` state will be automatically failed if they stay unpaid for longer than the period specified.\n\nWhen the order expires, it transitions to the `failed` state and an `ORDER_FAILED` webhook event is triggered.\n\n:::note\n- This field can only be set during order creation and cannot be updated afterward.\n- Must be between `PT1M` (1 minute) and `PT720H` (30 days).\n- Cannot be a negative value.\n:::"
+    },
+    "Full-Name": {
+      "type": "string",
+      "description": "The full name of the customer."
+    },
+    "Guest": {
+      "type": "object",
+      "properties": {
+        "first_name": {
+          "type": "string",
+          "description": "Guest's first name."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "Guest's last name."
+        }
+      },
+      "required": [
+        "first_name",
+        "last_name"
+      ]
+    },
+    "Guests": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Guest"
+      },
+      "description": "List of guests associated with the booking."
+    },
+    "Image-Url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https?:\\/{2}.+/gi",
+      "maxLength": 2000,
+      "description": "URL to an image associated with the line item.\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::"
+    },
+    "Industry-Data-v3": {
+      "type": "object",
+      "description": "Object containing industry-specific information associated with the order.\n\nYou can provide data for one or multiple industries in a single order.\n\n:::info\nIn the following cases, industry-specific info is required. Omitting this information may trigger additional scrutiny and risk mitigation actions by the Revolut risk team.\n\n  | Transaction type | Required for |\n  | ---------------- | ----------- |\n  | `airline`        | Airlines and Online Travel Agencies (OTAs). |\n  | `car_rental`     | Car Rental Merchants and Online Travel Agencies (OTAs). |\n  | `crypto`         | Crypto merchants. |\n  | `marketplace`    | Marketplace merchants. |\n  | `event`          | Event ticket sellers. |\n  | `lodging`        | Lodging providers. |\n:::",
+      "properties": {
+        "airline": {
+          "$ref": "#/$defs/Airline-Data-v2"
+        },
+        "car_rental": {
+          "$ref": "#/$defs/Car-Rental-v2"
+        },
+        "crypto": {
+          "$ref": "#/$defs/Crypto-Transactions-v3"
+        },
+        "marketplace": {
+          "$ref": "#/$defs/Marketplace-v3"
+        },
+        "event": {
+          "$ref": "#/$defs/Events-v2"
+        },
+        "lodging": {
+          "$ref": "#/$defs/Lodging-v3"
+        }
+      }
+    },
+    "Journey-Leg": {
+      "type": "object",
+      "properties": {
+        "sequence": {
+          "type": "integer",
+          "description": "Sequence of the journey legs. Increment by 1 for each flight included in the ticket.\n\nFor example: For a `FRA > LHR > DUB > LHR > FRA` journey the sequence will be assigned as:\n  - `FRA > LHR`: 1\n  - `LHR > DUB`: 2\n  - `DUB > LHR`: 3\n  - `LHR > FRA`: 4"
+        },
+        "departure_airport_code": {
+          "type": "string",
+          "description": "The [IATA](https://www.iata.org/en/services/codes) 3-letter airport code for the departure airport."
+        },
+        "arrival_airport_code": {
+          "type": "string",
+          "description": "The [IATA](https://www.iata.org/en/services/codes) 3-letter airport code for the arrival airport."
+        },
+        "flight_number": {
+          "type": "string",
+          "description": "The flight identifier, without airline code."
+        },
+        "fare_base_code": {
+          "type": "string",
+          "description": "The fare base code for the given journey leg."
+        },
+        "travel_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The UTC date and time of the flight departure for the given journey leg."
+        },
+        "airline_name": {
+          "type": "string",
+          "description": "The name of the airline associated with the journey leg."
+        },
+        "airline_code": {
+          "type": "string",
+          "description": "The IATA 2-letter accounting code identifying the airline associated with the journey leg."
+        },
+        "pnr": {
+          "type": "string",
+          "format": "alphanumeric",
+          "pattern": "^[a-zA-Z0-9]*$",
+          "maxLength": 20,
+          "description": "The Passenger Name Record (PNR) for the journey leg issued by the airline. \n\nPNR is a unique identifier for the booking, acting as a digital certificate allowing passengers to retrieve or manage their booking details.\n\n:::warning\nThis is a required field for OTAs.\n:::"
+        }
+      },
+      "required": [
+        "sequence",
+        "departure_airport_code",
+        "arrival_airport_code",
+        "travel_date",
+        "airline_name",
+        "airline_code"
+      ]
+    },
+    "Journey-Legs": {
+      "type": "array",
+      "description": "Array containing information of journey legs associated with the booking.\n\n:::info\nThis field is required for activating **Revolut Flight Alerts** functionalities within the Revolut app. \n\nThis information is used to compile a tracking widget that provides real-time updates on flight status and sends notifications, such as a check-in reminders, boarding alerts, and notifications for cancellations or delays. \n\nTo enable the widget the following fields are required on order creation or update, before capturing the order:\n\n  ```\n  sequence,\n  departure_airport_code,\n  arrival_airport_code,\n  flight_number,\n  travel_date,\n  airline_name,\n  airline_code,\n  ```\n:::",
+      "items": {
+        "$ref": "#/$defs/Journey-Leg"
+      }
+    },
+    "Line-Item": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 250,
+          "description": "Name of the line item."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "physical",
+            "service"
+          ],
+          "description": "Type of the line item."
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "unit_price_amount": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "description": "The unit price of the line item."
+        },
+        "total_amount": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The total amount to be paid for the line item, including taxes and discounts."
+        },
+        "external_id": {
+          "type": "string",
+          "maxLength": 250,
+          "description": "Unique identifier of line item in the merchant's system."
+        },
+        "discounts": {
+          "type": "array",
+          "maxItems": 50,
+          "description": "A list of discounts applied to the line item. Each discount should be subtracted from the total amount payable for the item.",
+          "items": {
+            "$ref": "#/$defs/Discount"
+          }
+        },
+        "taxes": {
+          "type": "array",
+          "maxItems": 50,
+          "description": "A list of taxes applied to the line item. Each tax should be added to the total amount payable for the item.",
+          "items": {
+            "$ref": "#/$defs/Tax"
+          }
+        },
+        "image_urls": {
+          "type": "array",
+          "maxItems": 50,
+          "description": "A list of URLs pointing to images related to the line item. These images can provide visual details or representations of the item.",
+          "items": {
+            "$ref": "#/$defs/Image-Url"
+          }
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 1024,
+          "description": "Description of the line item."
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https?:\\/{2}.+/gi",
+          "maxLength": 2000,
+          "description": "An HTTP/HTTPS URL that links to more information about the line item, such as a product page or details.\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::"
+        }
+      },
+      "required": [
+        "name",
+        "unit_price_amount",
+        "total_amount",
+        "quantity",
+        "type"
+      ]
+    },
+    "Line-Items": {
+      "type": "array",
+      "maxItems": 250,
+      "description": "An array of line items included in the order. Each line item represents an individual product or service, along with its quantity, price, taxes, and discounts.\n\n:::info\nRequired for merchants collecting payment for one or multiple products/services in one transaction. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.\n:::",
+      "items": {
+        "$ref": "#/$defs/Line-Item"
+      }
+    },
+    "Lodging-Booking-Type": {
+      "type": "string",
+      "enum": [
+        "fixed",
+        "flexible"
+      ],
+      "description": "Indicates whether the booking terms are fixed or flexible.\n\n| Parameter value | Description |\n| --------------- | ----------- |\n| `fixed`         | Non-modifiable once confirmed. |\n| `flexible`      | Allows modifications or cancellations under specified conditions."
+    },
+    "Lodging-Category": {
+      "type": "string",
+      "enum": [
+        "bed_and_breakfast",
+        "hostel",
+        "hotel",
+        "short_term_rental",
+        "other"
+      ],
+      "description": "The type of the accommodation associated with the booking."
+    },
+    "Lodging-Check-In-Date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date and time of the check-in."
+    },
+    "Lodging-Check-Out-Date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date and time of the check-out."
+    },
+    "Lodging-Item": {
+      "type": "object",
+      "description": "Object containing details of an individual lodging entry.",
+      "properties": {
+        "check_in_date": {
+          "$ref": "#/$defs/Lodging-Check-In-Date"
+        },
+        "check_out_date": {
+          "$ref": "#/$defs/Lodging-Check-Out-Date"
+        },
+        "category": {
+          "$ref": "#/$defs/Lodging-Category"
+        },
+        "supplier": {
+          "$ref": "#/$defs/Lodging-Supplier"
+        },
+        "booking_type": {
+          "$ref": "#/$defs/Lodging-Booking-Type"
+        },
+        "refundability": {
+          "$ref": "#/$defs/Refundability"
+        },
+        "location": {
+          "$ref": "#/$defs/Lodging-Location"
+        },
+        "guests": {
+          "$ref": "#/$defs/Guests"
+        }
+      }
+    },
+    "Lodging-Location": {
+      "type": "object",
+      "description": "Address of the accommodation.",
+      "properties": {
+        "street_line_1": {
+          "type": "string",
+          "description": "Primary address line.",
+          "maxLength": 100
+        },
+        "street_line_2": {
+          "type": "string",
+          "description": "Secondary address line, such as floor and apartment number.",
+          "maxLength": 100
+        },
+        "region": {
+          "type": "string",
+          "description": "State or province of the address.",
+          "maxLength": 100
+        },
+        "city": {
+          "type": "string",
+          "description": "City of the address.",
+          "maxLength": 100
+        },
+        "country_code": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "ISO 2-letter country code.",
+          "minLength": 2,
+          "maxLength": 2
+        },
+        "postcode": {
+          "type": "string",
+          "description": "Postal code of the address.",
+          "maxLength": 100
+        }
+      },
+      "required": [
+        "street_line_1",
+        "city",
+        "country_code",
+        "postcode"
+      ]
+    },
+    "Lodging-Supplier": {
+      "type": "object",
+      "description": "Object containing supplier information about the lodging provider.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the lodging supplier."
+        },
+        "name": {
+          "type": "string",
+          "description": "Legal name of the lodging supplier."
+        },
+        "payment_date": {
+          "$ref": "#/$defs/Supplier-Payment-Date"
+        }
+      }
+    },
+    "Lodging-v3": {
+      "type": "object",
+      "description": "Object containing details of a lodging booking.\n\n:::info\nThese are the specific data field requirements for merchants who must provide lodging data. Note that these requirements can be extended on a case by case basis as decided by Revolut.\n\n```\nbooking_id\nlodgings[].check_in_date\nlodgings[].check_out_date\nlodgings[].supplier.payment_date\n```\n:::",
+      "properties": {
+        "booking_id": {
+          "$ref": "#/$defs/Booking-Id"
+        },
+        "lodgings": {
+          "type": "array",
+          "description": "List of lodging entries associated with this booking.",
+          "items": {
+            "$ref": "#/$defs/Lodging-Item"
+          }
+        }
+      },
+      "required": [
+        "booking_id"
+      ]
+    },
+    "Marketplace-v3": {
+      "type": "object",
+      "description": "This object is required by Mastercard and Visa for merchants operating as marketplaces under the Merchant Category Code (MCC) `5262`. The marketplace object ensures compliance with the card schemes' regulations by providing detailed information about the seller involved in the transaction.\n\n:::info\nThese are the specific data field requirements for merchants who must provide marketplace data.\n\n```\nseller.id\nseller.name\nseller.website\nseller.phone\nseller.address\n```\n:::",
+      "properties": {
+        "seller": {
+          "type": "object",
+          "description": "Information about the subseller on the marketplace platform.",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The ID of the seller in the merchant's internal system.",
+              "minLength": 1,
+              "maxLength": 15
+            },
+            "name": {
+              "type": "string",
+              "description": "The business or legal name of the seller.",
+              "minLength": 1,
+              "maxLength": 50
+            },
+            "website": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https?:\\/{2}.+/gi",
+              "maxLength": 255,
+              "description": "The URL of the website of the seller.\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `255`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::"
+            },
+            "phone": {
+              "type": "string",
+              "description": "The phone number of the seller."
+            },
+            "address": {
+              "$ref": "#/$defs/Address-v4"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "website",
+            "phone",
+            "address"
+          ]
+        }
+      },
+      "required": [
+        "seller"
+      ]
+    },
+    "Merchant-Order-Data": {
+      "type": "object",
+      "description": "Object for providing additional information stored in the merchant's order management system. ",
+      "properties": {
+        "url": {
+          "$ref": "#/$defs/Merchant-Order-Url"
+        },
+        "reference": {
+          "$ref": "#/$defs/Merchant-Order-External-Reference"
+        }
+      }
+    },
+    "Merchant-Order-External-Reference": {
+      "type": "string",
+      "description": "Merchant order ID for external reference.\n\nUse this field to set the ID that your own system can use to easily track orders."
+    },
+    "Merchant-Order-Url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https?:\\/{2}.+/gi",
+      "maxLength": 2000,
+      "description": "The URL of the order stored in the merchant's order management system.\n\nThis URL will be included in the order confirmation email for payments made via Revolut Pay. If specified, this URL will override the default link to the merchant's **Business website** configured in the Revolut Business account.\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::"
+    },
+    "Metadata": {
+      "type": "object",
+      "description": "Additional information to track your orders in your system, by providing custom metadata using `\"<key>\" : \"<value>\"` pairs.\n\n:::warning\n**Restrictions:**\n\n- Both keys and values must be `string`s\n- Values cannot be `null`.\n- Max number of key-value pairs: `50`\n- Max length of values: `500` characters\n- Format of keys: Must start with a letter and contain only letters, digits, and underscores. Max 40 characters. Pattern: `^[a-zA-Z][a-zA-Z\\\\d_]{0,39}$`\n:::",
+      "maxProperties": 50,
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 500,
+        "description": "Additional metadata value provided with the corresponding metadata key."
+      }
+    },
+    "Order-Amount-v2": {
+      "type": "integer",
+      "description": "The order total expressed in minor currency units, according to the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217). For example, `7034` in `EUR` corresponds to €70.34.\n\n:::info\n- Conversion between major and minor units varies by currency. For instance, `100` minor units equal £1.00 in `GBP`, whereas in `ISK` they represent 100 units. For more details, see the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217).\n- If `line_items` are provided, the order `amount` must equal the sum of all line items' `total_amount`.\n- For card payments with a non-zero amount, the order `amount` must be at least **$0.005** (or equivalent in different currencies, calculated using Revolut's exchange rate on the payment date). Otherwise, card payments can't be performed.\n:::"
+    },
+    "Order-Description": {
+      "type": "string",
+      "description": "The description of the order."
+    },
+    "Passenger": {
+      "type": "object",
+      "properties": {
+        "first_name": {
+          "type": "string",
+          "description": "Passenger's first name."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "Passenger's last name."
+        }
+      },
+      "required": [
+        "first_name",
+        "last_name"
+      ]
+    },
+    "Passengers": {
+      "type": "array",
+      "description": "Array containing information of passengers associated with the booking.",
+      "items": {
+        "$ref": "#/$defs/Passenger"
+      }
+    },
+    "Phone": {
+      "type": "string",
+      "description": "The phone number of the customer in [E.164 format](https://en.wikipedia.org/wiki/E.164)."
+    },
+    "Quantity": {
+      "type": "object",
+      "description": "Object representing the quantity details of a line item, including the amount and its associated unit of measurement.",
+      "properties": {
+        "value": {
+          "type": "number",
+          "format": "double",
+          "minimum": 0,
+          "description": "The number of units of the line item."
+        },
+        "unit": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "The measurement unit for the quantity, such as `cm`, or `kg`."
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "Redirect-Url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https?:\\/{2}.+/gi",
+      "maxLength": 2000,
+      "description": "The URL your customer will be redirected to after a successful payment on the hosted checkout page (`checkout_url` parameter's value of the order).\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::\n\n:::info\nFor more information on how to use the `redirect_url`, see: [Custom redirection via the API](https://developer.revolut.com/docs/guides/merchant/accept-payments/online-payments/hosted-checkout-page/api#custom-post-payment-redirection-optional)\n:::"
+    },
+    "Refundability": {
+      "type": "string",
+      "enum": [
+        "refundable",
+        "non_refundable",
+        "partially_refundable"
+      ],
+      "description": "Parameter indicating whether the booking is refundable, partially refundable, or not refundable."
+    },
+    "Settlement-Currency": {
+      "type": "string",
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case. \n\nIf `settlement_currency` is different from the value of `currency`, the money will be exchanged when the amount is settled to your merchant account. In case of a refund or chargeback, the money will be exchanged to the order's initial `currency`.\n\nIf `settlement_currency` is not specified, this value is taken from `currency`.\n\n:::info\nFor more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).\n:::"
+    },
+    "Shipment": {
+      "type": "object",
+      "description": "Details of an individual shipment.",
+      "properties": {
+        "shipping_company_name": {
+          "type": "string",
+          "maxLength": 250,
+          "description": "Name of the company handling the shipment."
+        },
+        "tracking_number": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Unique tracking number for the shipment."
+        },
+        "estimated_delivery_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Estimated delivery date and time for the shipment. \nThe time should also include the customer's timezone."
+        },
+        "tracking_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https?:\\/{2}.+/gi",
+          "maxLength": 2000,
+          "description": "An HTTP/HTTPS URL where the shipment can be tracked.\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::"
+        }
+      },
+      "required": [
+        "shipping_company_name",
+        "tracking_number"
+      ]
+    },
+    "Shipments": {
+      "type": "array",
+      "description": "List of individual shipment details.",
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/$defs/Shipment"
+      }
+    },
+    "Shipping": {
+      "type": "object",
+      "description": "Details about the shipping related to the order, including address, contact information, and individual shipments.\n\n:::info\nRequired for merchants shipping physical goods. Omitting this information may trigger additional scrutiny and risk mitigation actions by Revolut.\n:::",
+      "properties": {
+        "address": {
+          "$ref": "#/$defs/Address-v3"
+        },
+        "contact": {
+          "$ref": "#/$defs/Contact"
+        },
+        "shipments": {
+          "$ref": "#/$defs/Shipments"
+        }
+      }
+    },
+    "Statement-Descriptor-Suffix": {
+      "type": "string",
+      "description": "You can set a dynamic statement descriptor for your orders by providing a custom suffix. \n\nA statement descriptor is the text shown on cardholders' bank or card statements, helping them recognise a transaction or merchant. This field can be used to send extra information with the statement descriptor for card transactions.\n\nThe complete descriptor is built using the following format: `{base}*{suffix}`, where:\n  \n  - **`{base}`** is the existing descriptor configured in the Revolut Business dashboard (**Settings > Business account > Merchant profile > Statement descriptor**).  \n  - **`{suffix}`** is defined by the `statement_descriptor_suffix` field.\n\n:::note\n- If the combined descriptor's length (base + suffix) exceeds the character limits of card scheme providers, the final value will be truncated. For example if the limit is 22 characters, the base descriptor is `\"base\"` and the suffix is `\"testdescriptorsuffix\"`, the final descriptor becomes `\"base*testdescriptorsuf\"`.\n- The final statement descriptor shown on a cardholder's statement may vary by issuing bank, as some banks apply their own custom formatting or truncation rules.\n:::",
+      "minLength": 1,
+      "maxLength": 19,
+      "pattern": "^[^*\\n\\r\\\\]+$"
+    },
+    "Supplier-Payment-Date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date and time when the funds are released to merchants."
+    },
+    "Tax": {
+      "type": "object",
+      "description": "Details about a tax applied to the line item, including its name and the corresponding amount.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The specific name or designation of the tax applied to the line item.",
+          "maxLength": 100
+        },
+        "amount": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The monetary value of the tax in minor currency units (e.g., cents for EUR).",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "name",
+        "amount"
+      ]
+    },
+    "Ticket": {
+      "type": "object",
+      "description": "Object containing information about a ticket associated with the booking.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "A unique identifier provided by the merchant associated with the ticket."
+        },
+        "transferable": {
+          "type": "boolean",
+          "description": "Indicates whether the ticket is transferable to another buyer."
+        },
+        "refundability": {
+          "$ref": "#/$defs/Refundability"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "Upcoming-Payment": {
+      "type": "object",
+      "description": "Object containing information about upcoming payments associated with the order.",
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601) when the upcoming payment is scheduled to be executed."
+        },
+        "payment_method_id": {
+          "type": "string",
+          "description": "The unique ID of the customer's payment method used to complete the scheduled payment.\n\n:::info\nFor more information about operations related to customer's payment methods, see:\n  - [Retrieve payment method list of a customer](https://developer.revolut.com/docs/api/merchant#retrieve-payment-method-list)\n  - [Retrieve a customer's payment method](https://developer.revolut.com/docs/api/merchant#retrieve-payment-method)\n  - [Update a customer's payment method](https://developer.revolut.com/docs/api/merchant#update-payment-method)\n  - [Delete a customer's payment method](https://developer.revolut.com/docs/api/merchant#delete-payment-method)\n:::"
+        }
+      },
+      "required": [
+        "date",
+        "payment_method_id"
+      ]
+    }
+  }
+}

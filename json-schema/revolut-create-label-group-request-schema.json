@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-create-label-group-request-schema.json",
+  "title": "CreateLabelGroupRequest",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-labels-api-openapi.yml#/components/schemas/CreateLabelGroupRequest",
+  "type": "object",
+  "required": [
+    "name",
+    "labels"
+  ],
+  "properties": {
+    "name": {
+      "description": "The name for the new label group.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "labels": {
+      "description": "The labels to create in the new group.\n\nThe maximum number of labels you can create for a new group is 200.\nIf you need to add more, you can add them later by [creating new labels individually](https://developer.revolut.com/docs/api/business#create-label).",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/$defs/CreateLabelRequest"
+      }
+    }
+  },
+  "$defs": {
+    "CreateLabelRequest": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "description": "The name for the new label.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      }
+    }
+  }
+}

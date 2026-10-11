@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-last-trades-schema.json",
+  "title": "LastTrades",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-public-market-data-api-openapi.yml#/components/schemas/LastTrades",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "The list of the latest trade records.",
+      "items": {
+        "$ref": "#/$defs/PublicTrade"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the data was generated, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string."
+        }
+      },
+      "required": [
+        "timestamp"
+      ]
+    }
+  },
+  "required": [
+    "data",
+    "metadata"
+  ],
+  "$defs": {
+    "PublicTrade": {
+      "type": "object",
+      "description": "A single trade.",
+      "properties": {
+        "tdt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Trading date and time, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string."
+        },
+        "aid": {
+          "type": "string",
+          "description": "Crypto-asset ID code."
+        },
+        "anm": {
+          "type": "string",
+          "description": "Crypto-asset full name."
+        },
+        "p": {
+          "type": "string",
+          "description": "Price in major currency units. For example, for USD, `116243.32` represents 116243.32 dollars."
+        },
+        "pc": {
+          "type": "string",
+          "description": "Price currency."
+        },
+        "pn": {
+          "type": "string",
+          "description": "Price notation."
+        },
+        "q": {
+          "type": "string",
+          "description": "Quantity."
+        },
+        "qc": {
+          "type": "string",
+          "description": "Quantity currency."
+        },
+        "qn": {
+          "type": "string",
+          "description": "Quantity notation."
+        },
+        "ve": {
+          "type": "string",
+          "description": "Venue of execution. Always equals `REVX`."
+        },
+        "pdt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Publication date and time, returned as [ISO-8601](https://wikipedia.org/wiki/ISO_8601) string."
+        },
+        "vp": {
+          "type": "string",
+          "description": "Venue of publication. Always equals `REVX`."
+        },
+        "tid": {
+          "type": "string",
+          "description": "Transaction identification code."
+        }
+      },
+      "required": [
+        "tdt",
+        "aid",
+        "anm",
+        "p",
+        "pc",
+        "pn",
+        "q",
+        "qc",
+        "qn",
+        "ve",
+        "pdt",
+        "vp",
+        "tid"
+      ]
+    }
+  }
+}

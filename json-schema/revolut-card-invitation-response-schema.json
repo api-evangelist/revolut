@@ -1,0 +1,327 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-card-invitation-response-schema.json",
+  "title": "CardInvitationResponse",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-card-invitations-api-openapi.yml#/components/schemas/CardInvitationResponse",
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/CardInvitationId"
+    },
+    "state": {
+      "$ref": "#/$defs/CardInvitationState"
+    },
+    "created_at": {
+      "$ref": "#/$defs/CardInvitationCreatedAt"
+    },
+    "updated_at": {
+      "$ref": "#/$defs/CardInvitationUpdatedAt"
+    },
+    "expiry_date": {
+      "$ref": "#/$defs/CardInvitationExpiryDate"
+    },
+    "card_id": {
+      "$ref": "#/$defs/CardInvitationCardId"
+    },
+    "holder_id": {
+      "$ref": "#/$defs/CardInvitationHolderId"
+    },
+    "virtual": {
+      "$ref": "#/$defs/CardInvitationVirtual"
+    },
+    "label": {
+      "$ref": "#/$defs/CardInvitationLabel"
+    },
+    "spend_program": {
+      "$ref": "#/$defs/SpendProgram"
+    },
+    "spending_limits": {
+      "$ref": "#/$defs/SpendingLimitsSchema"
+    },
+    "spending_period": {
+      "$ref": "#/$defs/CardInvitationSpendingPeriod"
+    },
+    "categories": {
+      "$ref": "#/$defs/CardInvitationCategories"
+    },
+    "merchant_controls": {
+      "$ref": "#/$defs/MerchantControlsSchema"
+    },
+    "countries": {
+      "$ref": "#/$defs/CardInvitationCountries"
+    },
+    "accounts": {
+      "$ref": "#/$defs/CardInvitationAccounts"
+    }
+  },
+  "required": [
+    "id",
+    "created_at",
+    "updated_at",
+    "virtual",
+    "state",
+    "accounts"
+  ],
+  "$defs": {
+    "BusinessMerchantCategory": {
+      "enum": [
+        "health",
+        "general",
+        "services",
+        "airlines",
+        "transport",
+        "accommodation",
+        "utilities",
+        "shopping",
+        "financial",
+        "furniture",
+        "hardware",
+        "groceries",
+        "fuel",
+        "entertainment",
+        "software",
+        "restaurants",
+        "advertising",
+        "cash",
+        "education",
+        "government"
+      ],
+      "type": "string"
+    },
+    "CardInvitationAccounts": {
+      "type": "array",
+      "description": "The list of accounts that will be linked to the card.",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    "CardInvitationCardId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the card issued after this invitation was claimed. \n:::note\nOnly returned for invitations in state `redeemed`.\n:::\n"
+    },
+    "CardInvitationCategories": {
+      "type": "array",
+      "description": "The list of merchant categories that will be available for card spending.             \nIf this parameter is not specified, categories are not restricted.",
+      "items": {
+        "$ref": "#/$defs/BusinessMerchantCategory"
+      }
+    },
+    "CardInvitationCountries": {
+      "description": "The list of countries where the team member will be able to use the card.\nSpecified as 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) codes.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]{2}$"
+      }
+    },
+    "CardInvitationCreatedAt": {
+      "type": "string",
+      "description": "The date and time the card invitation was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.",
+      "format": "date-time"
+    },
+    "CardInvitationExpiryDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time after which this card invitation expires if not claimed or cancelled before then.\nSpecified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n:::note\nOnly returned for invitations in state `created`.\n:::tip\nFor other states, to find out when a card invitation transitioned to its [final state](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations#card-invitation-state), check the `updated_at` value. \n:::"
+    },
+    "CardInvitationHolderId": {
+      "type": "string",
+      "description": "The ID of the team member to be assigned as the holder of the card after the invitation is claimed.\n\n:::note\nIf the team member has been deleted since the invitation was created, the `holder_id` is not returned.\n:::",
+      "format": "uuid"
+    },
+    "CardInvitationId": {
+      "type": "string",
+      "description": "The ID of the card invitation.",
+      "format": "uuid"
+    },
+    "CardInvitationLabel": {
+      "type": "string",
+      "description": "The label of the card."
+    },
+    "CardInvitationSpendingPeriod": {
+      "description": "The controls for the card's spending period.\n\nThey specify the dates when the card will become available or unavailable for spending, and define what happens after the end date.",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/SpendingPeriodSchema"
+        }
+      ]
+    },
+    "CardInvitationState": {
+      "type": "string",
+      "enum": [
+        "created",
+        "expired",
+        "failed",
+        "redeemed"
+      ],
+      "description": "The current state of the card invitation:\n- **`created`**: Invitation has been created but not yet claimed.\n- **`expired`**: Invitation has expired due to expiry date being reached or manual cancellation.\n- **`failed`**: Invitation claim attempt failed.\n- **`redeemed`**: Invitation has been successfully claimed.\n\nTo learn more about card invitation lifecycle, see the guide: [Manage card invitations → Card invitation state](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations#card-invitation-state)."
+    },
+    "CardInvitationUpdatedAt": {
+      "type": "string",
+      "description": "The date and time the card invitation was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.",
+      "format": "date-time"
+    },
+    "CardInvitationVirtual": {
+      "type": "boolean",
+      "description": "Specifies whether the issued card will be a virtual (`true`) or physical (`false`) one."
+    },
+    "MerchantControlsSchema": {
+      "type": "object",
+      "required": [
+        "control_type",
+        "merchant_ids"
+      ],
+      "properties": {
+        "control_type": {
+          "type": "string",
+          "enum": [
+            "block",
+            "allow"
+          ],
+          "description": "The type of control to apply."
+        },
+        "merchant_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "description": "The list of IDs of merchants to which the control applies.\n\n:::tip\nTo find merchant IDs, check transaction details (→ `merchant.id`).\nYou can fetch transaction details for a [specific transaction](https://developer.revolut.com/docs/api/business#get-transaction#response) or for [all transactions](https://developer.revolut.com/docs/api/business#get-transactions#response).\n:::",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    "SpendProgram": {
+      "description": "The [spend program](https://help.revolut.com/business/help/making-paymentsbusiness/spend-controls/setting-card-presets-for-my-team-members/) assigned to the card.\n:::note\nTo use this property, please contact [Revolut API Support](mailto:api-requests@revolut.com).\n:::",
+      "type": "object",
+      "readOnly": true,
+      "properties": {
+        "label": {
+          "description": "The name of the spend program.",
+          "type": "string",
+          "maxLength": 30
+        }
+      },
+      "required": [
+        "label"
+      ]
+    },
+    "SpendingLimitPeriodic": {
+      "type": "object",
+      "description": "The limit for transactions within a given period.",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "The value of the spending limit."
+        },
+        "currency": {
+          "$ref": "#/$defs/TransactionLimitCurrency"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ]
+    },
+    "SpendingLimitSingleTransaction": {
+      "type": "object",
+      "description": "The limit for a single transaction.",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "The value of the spending limit."
+        },
+        "currency": {
+          "$ref": "#/$defs/TransactionLimitCurrency"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ]
+    },
+    "SpendingLimitsSchema": {
+      "type": "object",
+      "properties": {
+        "single": {
+          "description": "The limit for a single transaction.",
+          "$ref": "#/$defs/SpendingLimitSingleTransaction"
+        },
+        "day": {
+          "description": "The daily limit for transactions.",
+          "$ref": "#/$defs/SpendingLimitPeriodic"
+        },
+        "week": {
+          "description": "The weekly limit for transactions.",
+          "$ref": "#/$defs/SpendingLimitPeriodic"
+        },
+        "month": {
+          "description": "The monthly limit for transactions.",
+          "$ref": "#/$defs/SpendingLimitPeriodic"
+        },
+        "quarter": {
+          "description": "The quarterly limit for transactions.",
+          "$ref": "#/$defs/SpendingLimitPeriodic"
+        },
+        "year": {
+          "description": "The yearly limit for transactions.",
+          "$ref": "#/$defs/SpendingLimitPeriodic"
+        },
+        "all_time": {
+          "description": "The all-time limit for transactions.",
+          "$ref": "#/$defs/SpendingLimitPeriodic"
+        }
+      }
+    },
+    "SpendingPeriodSchema": {
+      "type": "object",
+      "properties": {
+        "start_date": {
+          "type": "string",
+          "format": "date",
+          "description": "The start date (inclusive) of the spending period, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format (`YYYY-MM-DD`).\nUses the [timezone set by the business](https://business.revolut.com/settings/appearance), or defaults to `Europe/London`."
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date",
+          "description": "The end date (inclusive) of the spending period, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format (`YYYY-MM-DD`).\nUses the [timezone set by the business](https://business.revolut.com/settings/appearance), or defaults to `Europe/London`."
+        },
+        "end_date_action": {
+          "type": "string",
+          "enum": [
+            "lock",
+            "terminate"
+          ],
+          "description": "The action to take after the end date of the spending period."
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "start_date"
+          ]
+        },
+        {
+          "required": [
+            "end_date",
+            "end_date_action"
+          ]
+        }
+      ]
+    },
+    "TransactionLimitCurrency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "The currency of the spending limit, provided as [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code in upper case."
+    }
+  }
+}

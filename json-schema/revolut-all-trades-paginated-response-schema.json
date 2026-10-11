@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-all-trades-paginated-response-schema.json",
+  "title": "AllTradesPaginatedResponse",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-trades-api-openapi.yml#/components/schemas/AllTradesPaginatedResponse",
+  "type": "object",
+  "required": [
+    "data",
+    "metadata"
+  ],
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Trade"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "timestamp"
+      ],
+      "properties": {
+        "timestamp": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Timestamp in Unix epoch milliseconds."
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "Cursor used to retrieve the next page of results.\n\nTo continue paginating through the results, make a new request and pass this value in the [`cursor`](https://developer.revolut.com/docs/api/revolut-x-crypto-exchange#get-all-trades#request) query parameter."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "Trade": {
+      "type": "object",
+      "description": "A single trade.",
+      "properties": {
+        "tdt": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Trade date and time, expressed in Unix epoch milliseconds."
+        },
+        "aid": {
+          "type": "string",
+          "description": "Crypto-asset ID code."
+        },
+        "anm": {
+          "type": "string",
+          "description": "Crypto-asset full name."
+        },
+        "p": {
+          "type": "string",
+          "description": "Price in major currency units. For example, for USD, `116243.32` represents 116243.32 dollars."
+        },
+        "pc": {
+          "type": "string",
+          "description": "Price currency."
+        },
+        "pn": {
+          "type": "string",
+          "description": "Price notation."
+        },
+        "q": {
+          "type": "string",
+          "description": "Quantity."
+        },
+        "qc": {
+          "type": "string",
+          "description": "Quantity currency."
+        },
+        "qn": {
+          "type": "string",
+          "description": "Quantity notation."
+        },
+        "ve": {
+          "type": "string",
+          "description": "Venue of execution. Always equals `REVX`."
+        },
+        "pdt": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Publication date and time, expressed in Unix epoch milliseconds."
+        },
+        "vp": {
+          "type": "string",
+          "description": "Venue of publication. Always equals `REVX`."
+        },
+        "tid": {
+          "type": "string",
+          "description": "Transaction identification code."
+        }
+      },
+      "required": [
+        "tdt",
+        "aid",
+        "anm",
+        "p",
+        "pc",
+        "pn",
+        "q",
+        "qc",
+        "qn",
+        "ve",
+        "pdt",
+        "vp",
+        "tid"
+      ]
+    }
+  }
+}

@@ -1,0 +1,300 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-transaction-schema.json",
+  "title": "Transaction",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-transactions-api-openapi.yml#/components/schemas/Transaction",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The ID of the transaction."
+    },
+    "type": {
+      "$ref": "#/$defs/TransactionType"
+    },
+    "request_id": {
+      "type": "string",
+      "description": "The request ID that you provided previously."
+    },
+    "state": {
+      "$ref": "#/$defs/TransactionState"
+    },
+    "reason_code": {
+      "type": "string",
+      "description": "The reason code when the transaction `state` is `declined` or `failed`."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the transaction was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the transaction was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the transaction was completed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. \nThis is required when the transaction `state` is `completed`."
+    },
+    "scheduled_for": {
+      "type": "string",
+      "format": "date",
+      "description": "The scheduled date of the payment, if applicable.\nProvided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    },
+    "related_transaction_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the original transaction to which this transaction is related. \nReturned, for example, when this transaction is a refund of the related transaction, or for transactions related to cashback."
+    },
+    "merchant": {
+      "$ref": "#/$defs/TransactionMerchant"
+    },
+    "reference": {
+      "type": "string",
+      "description": "The payment reference."
+    },
+    "legs": {
+      "type": "array",
+      "description": "The legs of the transaction:\n- For transactions between your Revolut accounts, there can be 2 legs, for example, an internal transfer made out of the GBP account and into the EUR account.\n- For transactions in other cases, there is only 1 leg.",
+      "items": {
+        "$ref": "#/$defs/TransactionLeg"
+      }
+    },
+    "card": {
+      "$ref": "#/$defs/TransactionCard"
+    }
+  },
+  "required": [
+    "id",
+    "type",
+    "state",
+    "created_at",
+    "updated_at",
+    "legs"
+  ],
+  "$defs": {
+    "CardReference": {
+      "description": "Reference for the card.\nOne of the name-value pairs assigned to the card for tracking.\n\n:::info\nEach time the card is used, the references are recorded in the [transaction details](https://developer.revolut.com/docs/api/business#get-transaction#response) (`card.references`), helping track transactions made with this card.\n:::\n\nThe names must be unique.\nThe references can be [amended](https://developer.revolut.com/docs/api/business#update-card-references) up to 10 times.\nReferences are only supported for cards owned by the business (i.e. [company](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) or [auto-issued cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards)).\nThey are **not** supported for [team member cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) (i.e. with `holder_id` present). \n\n:::note\nThe references recorded on a transaction are those assigned to the card at the time the transaction took place.\nIf the references are amended, the new references are only applied to future transactions.\nExisting transaction are not affected.\n:::",
+      "type": "object",
+      "required": [
+        "name",
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "description": "The name of the card reference.\nMust be unique.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "value": {
+          "description": "The value for this reference.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        }
+      }
+    },
+    "CountryCodeMerchant": {
+      "type": "string",
+      "pattern": "^[A-Z]{2,3}$",
+      "description": "The bank country of the merchant, provided as an [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.\nTypically 3 letters, though in some cases, card networks might provide it as a 2-letter code."
+    },
+    "Currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+    },
+    "TransactionCard": {
+      "type": "object",
+      "description": "The details of the card associated with the transaction.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the card."
+        },
+        "card_number": {
+          "type": "string",
+          "description": "The masked card number."
+        },
+        "first_name": {
+          "type": "string",
+          "description": "The first name of the cardholder."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "The last name of the cardholder."
+        },
+        "phone": {
+          "type": "string",
+          "description": "The phone number of the cardholder in [E.164](https://en.wikipedia.org/wiki/E.164) format."
+        },
+        "references": {
+          "type": "array",
+          "description": "Card references ([`references`](https://developer.revolut.com/docs/api/business#get-card#response)).\n\n:::note\nThese are the references that were assigned to the card at the time the transaction was made.\nAny [update](https://developer.revolut.com/docs/api/business#update-card-references) to card references does not affect existing transactions.\n:::",
+          "minItems": 1,
+          "maxItems": 5,
+          "items": {
+            "$ref": "#/$defs/CardReference"
+          },
+          "required": [
+            "id",
+            "card_number"
+          ]
+        }
+      }
+    },
+    "TransactionCounterparty": {
+      "type": "object",
+      "properties": {
+        "account_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the counterparty account."
+        },
+        "account_type": {
+          "$ref": "#/$defs/TransactionCounterpartyAccountType"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the counterparty."
+        }
+      },
+      "required": [
+        "account_type"
+      ]
+    },
+    "TransactionCounterpartyAccountType": {
+      "enum": [
+        "self",
+        "revolut",
+        "external"
+      ],
+      "description": "Indicates the type of the account.",
+      "type": "string"
+    },
+    "TransactionLeg": {
+      "type": "object",
+      "description": "The legs of the transaction:\n- For transactions between your Revolut accounts, there can be 2 legs, for example, an internal transfer made out of the BGP account and into the EUR account.\n- For transactions in other cases, there is only 1 leg.",
+      "properties": {
+        "leg_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the leg."
+        },
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "The amount of the transaction."
+        },
+        "fee": {
+          "type": "number",
+          "format": "double",
+          "description": "The amount of the transaction fee."
+        },
+        "currency": {
+          "$ref": "#/$defs/Currency"
+        },
+        "bill_amount": {
+          "type": "number",
+          "format": "double",
+          "description": "The billing amount for cross-currency payments."
+        },
+        "bill_currency": {
+          "$ref": "#/$defs/Currency"
+        },
+        "account_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the account that the transaction is associated with."
+        },
+        "counterparty": {
+          "$ref": "#/$defs/TransactionCounterparty"
+        },
+        "description": {
+          "type": "string",
+          "description": "The transaction leg purpose."
+        },
+        "balance": {
+          "type": "number",
+          "format": "double",
+          "description": "The total balance of the account that the transaction is associated with."
+        }
+      },
+      "required": [
+        "leg_id",
+        "amount",
+        "currency",
+        "account_id"
+      ]
+    },
+    "TransactionMerchant": {
+      "type": "object",
+      "description": "The information about the merchant (only for card transactions).",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the merchant."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the merchant."
+        },
+        "city": {
+          "type": "string",
+          "description": "The city of the merchant."
+        },
+        "category_code": {
+          "type": "string",
+          "description": "The category code of the merchant."
+        },
+        "country": {
+          "$ref": "#/$defs/CountryCodeMerchant"
+        }
+      }
+    },
+    "TransactionState": {
+      "enum": [
+        "created",
+        "pending",
+        "completed",
+        "declined",
+        "failed",
+        "reverted"
+      ],
+      "description": "Indicates the transaction state. Possible values:\n  - `created`: The transaction has been created and is either processed asynchronously or scheduled for a later time.\n  - `pending`: The transaction is pending until it's being processed. If the transfer is made between Revolut accounts, this state is skipped and the transaction is executed instantly.\n  - `completed`: The transaction was successful.\n  - `declined`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, insufficient account balance, wrong receiver information, etc.\n  - `failed`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, invalid API calls, blocked payments, etc.\n  - `reverted`: The transaction was reverted. This can happen for a variety of reasons, for example, the receiver being inaccessible.",
+      "type": "string"
+    },
+    "TransactionType": {
+      "enum": [
+        "atm",
+        "card_payment",
+        "card_refund",
+        "card_chargeback",
+        "card_credit",
+        "charge",
+        "charge_refund",
+        "exchange",
+        "transfer",
+        "loan",
+        "fee",
+        "refund",
+        "topup",
+        "topup_return",
+        "tax",
+        "tax_refund",
+        "rev_payment"
+      ],
+      "description": "Indicates the transaction type.",
+      "type": "string"
+    }
+  }
+}

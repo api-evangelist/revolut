@@ -1,14 +1,12 @@
 generated: '2026-07-20'
 method: searched
-source: >-
-  github.com/revolut-engineering/revolut-openapi specs + developer.revolut.com
-  docs conventions (Merchant, Business, Open Banking).
-summary: >-
-  Revolut runs several distinct REST APIs with different conventions. Merchant and Open Banking
-  support request idempotency via an Idempotency-Key / idempotency-key header. Auth differs per
-  product: Business uses OAuth 2.0 (JWT client assertion, bearer AccessToken), Merchant uses a
-  secret API key as a bearer token, Open Banking uses OAuth 2.0 + detached JWS signatures (FAPI),
-  Revolut X uses an API key with an HMAC request signature, and Crypto Ramp uses a bearer AccessToken.
+source: github.com/revolut-engineering/revolut-openapi specs + developer.revolut.com docs conventions (Merchant,
+  Business, Open Banking).
+summary: 'Revolut runs several distinct REST APIs with different conventions. Merchant and Open Banking support
+  request idempotency via an Idempotency-Key / idempotency-key header. Auth differs per product: Business uses OAuth
+  2.0 (JWT client assertion, bearer AccessToken), Merchant uses a secret API key as a bearer token, Open Banking
+  uses OAuth 2.0 + detached JWS signatures (FAPI), Revolut X uses an API key with an HMAC request signature, and
+  Crypto Ramp uses a bearer AccessToken.'
 authentication:
   business: OAuth 2.0 authorization code + JWT client assertion; bearer AccessToken. See authentication/revolut-authentication.yml
   merchant: 'Secret API key sent as `Authorization: Bearer <secret-api-key>`; public key used client-side in checkout.'
@@ -17,11 +15,41 @@ authentication:
   crypto_ramp: Bearer AccessToken (partner credential).
 idempotency:
   supported: true
-  header:
-    merchant: Idempotency-Key
-    open_banking: idempotency-key
-  scope: Applies to write (POST) operations such as creating orders/payments; a repeated key returns the original result.
+  header: x-idempotency-key
+  scope:
+  - refundOrder
+  - createSubscription
+  - createSubscriptionUsage
+  - CreateDomesticPaymentConsents
+  - CreateDomesticPayments
+  - CreateDomesticScheduledPaymentConsents
+  - CreateDomesticScheduledPayments
+  - CreateDomesticStandingOrderConsents
+  - CreateDomesticStandingOrders
+  - CreateFilePaymentConsents
+  - CreateFilePaymentConsentsConsentIdFile
+  - CreateFilePayments
+  - CreateInternationalPaymentConsents
+  - CreateInternationalPayments
+  - CreateInternationalScheduledPaymentConsents
+  - CreateInternationalScheduledPayments
+  - CreateInternationalStandingOrderConsents
+  - CreateInternationalStandingOrders
+  - createDraftPayment
+  - applyLoyaltyCard
+  - createPass
+  - pushPassUpdate
+  - createTemplate
+  - updateTemplate
+  - activateTemplate
+  - terminateTemplate
   cross_ref: errors/revolut-problem-types.yml
+  coverage: partial
+  mechanism: request header / body token declared in the OpenAPI
+  evidence: x-idempotency-key on 25 of 138 mutating operations
+  verified: derived
+  scope_note: Applies to write (POST) operations such as creating orders/payments; a repeated key returns the original
+    result.
 versioning:
   business: single version in the URI path (/api/1.0)
   merchant: date-based version string (e.g. 2026-04-20) selected via the API; multiple dated specs published

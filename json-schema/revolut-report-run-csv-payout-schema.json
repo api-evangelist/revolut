@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-report-run-csv-payout-schema.json",
+  "title": "Payout statement report CSV",
+  "description": "CSV output for `payout_statement_report` report type. Contains all transactions that contributed to a specific payout.\n\nThe first row is a header row with column names. Subsequent rows contain transaction data, one row per transaction.\n\n:::note\nThe actual response is a raw `text/csv` string. The object schema below is a documentation convention only: OpenAPI's schema language (JSON Schema) describes JSON data shapes and has no native construct for typed CSV columns, so each property here corresponds to a CSV column header rather than a JSON field.\n:::",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-report-runs-api-openapi.yml#/components/schemas/Report-Run-Csv-Payout",
+  "type": "object",
+  "properties": {
+    "created_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time the transaction was created."
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time the transaction was completed."
+    },
+    "payout_affected_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time the payout was affected by this transaction."
+    },
+    "affected_payout_amount": {
+      "type": "boolean",
+      "description": "Indicates whether this transaction contributed to the payout amount (`true`) or not (`false`).\n\nNote: despite the name implying a monetary amount, this field is a boolean flag. A rename is planned for a future API version."
+    },
+    "transaction_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the ledger transaction in the core settlement system. Matches `transaction_id` in the settlement report for the same event. Use `order_id` to cross-reference with the payments report."
+    },
+    "order_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the order associated with this transaction. Use `order_id` to cross-reference with the payments report or settlement report."
+    },
+    "dispute_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the dispute associated with a chargeback or chargeback reversal transaction. Empty for rows not related to a dispute."
+    },
+    "merchant_order_reference": {
+      "type": "string",
+      "description": "Merchant's order reference. The value of the `merchant_order_data.reference` field set when the order was created."
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of the transaction.\n\n| Value | Description |\n| ----- | ----------- |\n| `Settlement` | Settlement of a payment into the merchant balance. |\n| `Refund` | Refund entry reducing the merchant balance. |\n| `External transfer money return` | Return of an external transfer entry. |\n| `Topup` | Balance top-up entry. |\n| `Topup Return` | Reversal of a top-up entry. |\n| `Customer dispute - withdrawal` | Chargeback or dispute withdrawal from the merchant balance. |\n| `Customer dispute - won` | Reversal of a previous dispute withdrawal. |\n| `Transfer from linked pocket` | Transfer from a linked balance pocket. |\n| `Automatic negative balance recovery` | Automatic recovery entry for a negative balance. |\n| `Payout` | Payout-related ledger entry. |\n| `Payout to an external account` | Transfer of payout funds to an external account. |\n| `Transfer from linked pocket with FX` | Transfer from a linked pocket involving FX conversion. |\n| `Payout with FX` | Payout-related entry involving FX conversion. |\n| `Money reserve block` | Reserve block entry withholding funds. |\n| `Money reserve unblock` | Release of previously blocked reserve funds. |\n| `IC++ post-billing fee` | IC++ fee charged after billing. |\n| `Fee refund` | Reversal of a previously charged fee. |\n| `Unrecognised transaction` | Transaction that does not map to a more specific category. |",
+      "enum": [
+        "Settlement",
+        "Refund",
+        "External transfer money return",
+        "Topup",
+        "Topup Return",
+        "Customer dispute - withdrawal",
+        "Customer dispute - won",
+        "Transfer from linked pocket",
+        "Automatic negative balance recovery",
+        "Payout",
+        "Payout to an external account",
+        "Transfer from linked pocket with FX",
+        "Payout with FX",
+        "Money reserve block",
+        "Money reserve unblock",
+        "IC++ post-billing fee",
+        "Fee refund",
+        "Unrecognised transaction"
+      ]
+    },
+    "related_icpp_charge_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the IC++ charge related to the transaction, if applicable."
+    },
+    "transaction_amount": {
+      "type": "number",
+      "description": "Amount of the transaction in the transaction currency."
+    },
+    "transaction_currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the transaction."
+    },
+    "billing_amount": {
+      "type": "number",
+      "description": "Amount of the transaction in the billing currency."
+    },
+    "billing_currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the billing amount."
+    },
+    "state": {
+      "type": "string",
+      "description": "State of the transaction."
+    },
+    "original_transaction_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "For refunds and chargebacks, the ledger transaction ID of the original payment that this transaction reverses. Corresponds to `transaction_id` on the original settlement row. \n\n:::note\nPopulated only for reversal-type rows — for example, when `type` is `Refund` or `Customer dispute - withdrawal`.\n:::"
+    },
+    "original_transaction_amount": {
+      "type": "number",
+      "description": "Amount of the original transaction."
+    },
+    "original_transaction_currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the original transaction."
+    },
+    "original_order_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "For refunds and chargebacks, the order ID of the original payment that this transaction reverses. Refunds and chargebacks create their own order in the system, so `order_id` refers to the refund or chargeback order while `original_order_id` points back to the original payment's order. For settlement transactions, matches `order_id`."
+    },
+    "original_order_channel": {
+      "type": "string",
+      "description": "Channel through which the original order was created.\n\nThe value depends on the original order source and integration. It may reflect platform-specific or externally provided values, so the set of returned values should not be treated as a fixed enum."
+    },
+    "original_merchant_order_reference": {
+      "type": "string",
+      "description": "Merchant's order reference for the original order. The value of the `merchant_order_data.reference` field set when the original order was created."
+    },
+    "fee_amount": {
+      "type": "number",
+      "description": "Total fee amount charged for the transaction."
+    },
+    "fee_currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the fee."
+    },
+    "settlement_amount": {
+      "type": "number",
+      "description": "Total amount settled on the merchant's account."
+    },
+    "settlement_currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the settled amount."
+    },
+    "location_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the location associated with the transaction."
+    },
+    "location_name": {
+      "type": "string",
+      "description": "Name of the location associated with the transaction."
+    },
+    "submerchant_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the submerchant associated with the transaction."
+    },
+    "payout_transfer_reference": {
+      "type": "string",
+      "description": "Reference of the bank transfer for this payout. This value is the same across all rows in the report, as each report covers a single payout."
+    },
+    "payout_total_amount": {
+      "type": "number",
+      "description": "Total amount of this payout. This value is the same across all rows in the report, as each report covers a single payout."
+    },
+    "payout_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time the payout covered by this report was created, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) UTC date-time format. This value is the same across all rows in the report, as each report covers a single payout."
+    }
+  }
+}

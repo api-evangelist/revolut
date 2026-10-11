@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-draft-payment-list-response-schema.json",
+  "title": "DraftPaymentListResponse",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-draft-payment-api-openapi.yml#/components/schemas/DraftPaymentListResponse",
+  "required": [
+    "Items",
+    "Links"
+  ],
+  "type": "object",
+  "properties": {
+    "Items": {
+      "type": "array",
+      "items": {
+        "required": [
+          "CreatedAt",
+          "Id",
+          "Status"
+        ],
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "description": "The ID of the draft payment.",
+            "format": "UUID"
+          },
+          "CreatedAt": {
+            "type": "string",
+            "description": "Date time when the draft payment was created.",
+            "format": "date-time"
+          },
+          "Status": {
+            "$ref": "#/$defs/DraftPaymentStatus"
+          },
+          "RequestedExecutionDate": {
+            "type": "string",
+            "description": "The execution date the draft payment is requested.",
+            "format": "YYYY-MM-DD"
+          },
+          "Title": {
+            "type": "string",
+            "description": "Title of the draft payment."
+          }
+        }
+      }
+    },
+    "Links": {
+      "type": "object",
+      "properties": {
+        "Next": {
+          "type": "string",
+          "description": "Relative URI to the next page.",
+          "format": "uri"
+        }
+      },
+      "description": "Links relevant to the payload."
+    }
+  },
+  "$defs": {
+    "DraftPaymentStatus": {
+      "type": "string",
+      "description": "The status of the draft payment.",
+      "enum": [
+        "Awaiting",
+        "Processed",
+        "Approved",
+        "Deleted"
+      ]
+    }
+  }
+}

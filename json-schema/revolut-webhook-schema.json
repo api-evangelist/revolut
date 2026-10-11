@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-webhook-schema.json",
+  "title": "Webhook",
+  "description": "Webhook",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-webhooks-api-openapi.yml#/components/schemas/Webhook",
+  "type": "object",
+  "required": [
+    "id",
+    "url",
+    "events",
+    "signing_secret"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The UUID of the webhook."
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "The webhook's URL to which event notifications will be sent.\nMust be a valid HTTP or HTTPS URL, capable of receiving POST requests."
+    },
+    "events": {
+      "type": "array",
+      "description": "The list of event types that the webhook is configured to listen to.",
+      "items": {
+        "$ref": "#/$defs/EventType"
+      }
+    },
+    "signing_secret": {
+      "type": "string",
+      "description": "The [signing secret](https://developer.revolut.com/docs/guides/crypto-ramp/tutorials/work-with-webhooks/verify-the-payload-signature#webhook-signing-secret) for the webhook.\nUse it to verify the signature for the webhook's request payload."
+    }
+  },
+  "$defs": {
+    "EventType": {
+      "type": "string",
+      "description": "Webhook event type",
+      "enum": [
+        "ORDER_CREATED",
+        "ORDER_PROCESSING",
+        "ORDER_COMPLETED",
+        "ORDER_FAILED"
+      ]
+    }
+  }
+}

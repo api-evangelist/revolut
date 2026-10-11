@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-report-run-schema.json",
+  "title": "ReportRunDetails",
+  "description": "The `ReportRunDetails` object contains all information associated with a specific report run, identified by the `report_run_id`.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-report-runs-api-openapi.yml#/components/schemas/Report-Run",
+  "type": "object",
+  "properties": {
+    "report_run_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique ID used for accessing report details. Use this to check report generation status."
+    },
+    "status": {
+      "type": "string",
+      "description": "Current status of the report run.\n\n| Value | Description |\n| ----- | ----------- |\n| `processing` | Report generation is still in progress. |\n| `completed` | Report generation finished successfully and the file is available to download for 24 hours via `file_url`. |\n| `failed` | Report generation failed and no report file is available. |\n| `expired` | Report generation previously completed, but the 24-hour file availability window has elapsed and the file can no longer be downloaded. |",
+      "enum": [
+        "processing",
+        "completed",
+        "failed",
+        "expired"
+      ]
+    },
+    "file_url": {
+      "type": "string",
+      "description": "Use this link to download the report file. Available only when `status` is `completed`, and only for 24 hours after report generation finishes."
+    }
+  },
+  "required": [
+    "report_run_id",
+    "status"
+  ]
+}

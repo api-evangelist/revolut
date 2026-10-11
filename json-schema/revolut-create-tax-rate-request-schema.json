@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-create-tax-rate-request-schema.json",
+  "title": "CreateTaxRateRequest",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-tax-rates-api-openapi.yml#/components/schemas/CreateTaxRateRequest",
+  "allOf": [
+    {
+      "$ref": "#/$defs/AccountingTaxRate"
+    },
+    {
+      "description": "The tax rate to create.",
+      "required": [
+        "name",
+        "percentage"
+      ]
+    }
+  ],
+  "$defs": {
+    "AccountingTaxRate": {
+      "type": "object",
+      "description": "The tax rate that can be applied to financial records, such as expenses.",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the tax.",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "percentage": {
+          "type": "number",
+          "format": "double",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "The tax rate percentage applied to the taxable amount. For example, `23` for 23%."
+        }
+      }
+    }
+  }
+}

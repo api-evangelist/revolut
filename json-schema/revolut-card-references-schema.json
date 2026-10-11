@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-card-references-schema.json",
+  "title": "CardReferences",
+  "description": "References for the card.\nUp to 5 name-value pairs assigned to the card for tracking.\n\n:::info\nEach time the card is used, the references are recorded in the [transaction details](https://developer.revolut.com/docs/api/business#get-transaction#response) (`card.references`), helping track transactions made with this card.\n:::\n\nThe names must be unique.\nThe references can be [amended](https://developer.revolut.com/docs/api/business#update-card-references) up to 10 times.\n\nReferences are only supported for cards owned by the business (i.e. [company](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) or [auto-issued cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards)).\nThey are **not** supported for [team member cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) (i.e. with `holder_id` present).\n\n:::note\nThe references recorded on a transaction are those assigned to the card at the time the transaction took place.\nIf the references are amended, they will only be applied to future transactions.\nExisting transaction are not affected.\n:::",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-cards-api-openapi.yml#/components/schemas/CardReferences",
+  "type": "array",
+  "minItems": 1,
+  "maxItems": 5,
+  "uniqueItems": true,
+  "items": {
+    "$ref": "#/$defs/CardReference"
+  },
+  "$defs": {
+    "CardReference": {
+      "description": "Reference for the card.\nOne of the name-value pairs assigned to the card for tracking.\n\n:::info\nEach time the card is used, the references are recorded in the [transaction details](https://developer.revolut.com/docs/api/business#get-transaction#response) (`card.references`), helping track transactions made with this card.\n:::\n\nThe names must be unique.\nThe references can be [amended](https://developer.revolut.com/docs/api/business#update-card-references) up to 10 times.\nReferences are only supported for cards owned by the business (i.e. [company](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) or [auto-issued cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards)).\nThey are **not** supported for [team member cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards) (i.e. with `holder_id` present). \n\n:::note\nThe references recorded on a transaction are those assigned to the card at the time the transaction took place.\nIf the references are amended, the new references are only applied to future transactions.\nExisting transaction are not affected.\n:::",
+      "type": "object",
+      "required": [
+        "name",
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "description": "The name of the card reference.\nMust be unique.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "value": {
+          "description": "The value for this reference.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        }
+      }
+    }
+  }
+}

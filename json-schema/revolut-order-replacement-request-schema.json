@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-order-replacement-request-schema.json",
+  "title": "OrderReplacementRequest",
+  "description": "Request to replace an existing open order with a new one, atomically cancelling the original.\nOnly the fields provided in the request are updated; omitted fields are inherited from the original order\n(with the exception of sizes, which may be recalculated to preserve the counter-side amount — see field docs).",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-orders-api-openapi.yml#/components/schemas/OrderReplacementRequest",
+  "type": "object",
+  "required": [
+    "client_order_id"
+  ],
+  "properties": {
+    "client_order_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Client-generated unique identifier for the replacement request, used to guarantee idempotency.\nRetries with the same value will not create duplicate replacements."
+    },
+    "base_size": {
+      "type": "string",
+      "format": "decimal",
+      "description": "New amount of base currency for the replacement order.\nIf only the price is provided, without the quantity or amount, this parameter will stay the same for SELL orders and be recalculated for BUY orders."
+    },
+    "quote_size": {
+      "type": "string",
+      "format": "decimal",
+      "description": "New amount of quote currency for the replacement order.\nIf only the price is provided, without the quantity or amount, this parameter will stay the same for BUY orders and be recalculated for SELL orders."
+    },
+    "price": {
+      "type": "string",
+      "format": "decimal",
+      "description": "New limit price for the replacement order.\nIf omitted, the original order's price is preserved."
+    },
+    "time_in_force": {
+      "type": "string",
+      "enum": [
+        "gtc",
+        "ioc"
+      ],
+      "description": "New time in force for the replacement order.\nIf omitted, the original order's time in force is preserved."
+    },
+    "execution_instructions": {
+      "type": "array",
+      "description": "Execution instructions applied to the replacement order, overriding those of the original.\nPass an empty array `[]` to explicitly clear all instructions.\nIf the field is omitted entirely, the original order's instructions are preserved.",
+      "minItems": 0,
+      "items": {
+        "type": "string",
+        "enum": [
+          "allow_taker",
+          "post_only"
+        ]
+      }
+    }
+  }
+}

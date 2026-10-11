@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-dispute-challenge-schema.json",
+  "title": "Dispute-Challenge",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-disputes-api-openapi.yml#/components/schemas/Dispute-Challenge",
+  "type": "object",
+  "required": [
+    "reason",
+    "evidences"
+  ],
+  "properties": {
+    "reason": {
+      "$ref": "#/$defs/Dispute-Challenge-Reason"
+    },
+    "comment": {
+      "$ref": "#/$defs/Dispute-Challenge-Comment"
+    },
+    "evidences": {
+      "$ref": "#/$defs/Dispute-Challenge-Evidences"
+    }
+  },
+  "$defs": {
+    "Dispute-Challenge-Comment": {
+      "type": "string",
+      "description": "Additional explanation or comment for the challenge, if needed.",
+      "maxLength": 250
+    },
+    "Dispute-Challenge-Evidences": {
+      "type": "array",
+      "description": "A list of IDs of previously uploaded evidence files to associate with this challenge.\n\n:::warning\nEach evidence ID can only be used for **a single challenge**. This means, that evidences already assigned to a challenge **cannot be reused** for other challenges.\n:::",
+      "items": {
+        "type": "string",
+        "format": "uuid",
+        "description": "ID of a previously uploaded evidence file."
+      },
+      "minItems": 1,
+      "maxItems": 10,
+      "uniqueItems": true
+    },
+    "Dispute-Challenge-Reason": {
+      "type": "string",
+      "description": "The reason for challenging the dispute.",
+      "enum": [
+        "product_already_delivered",
+        "refund_already_issued",
+        "disagree_with_customers_claim"
+      ]
+    }
+  }
+}

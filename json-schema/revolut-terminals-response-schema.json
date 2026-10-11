@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-terminals-response-schema.json",
+  "title": "Terminals response",
+  "description": "Response containing a list of terminals.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-terminals-api-openapi.yml#/components/schemas/Terminals-Response",
+  "type": "object",
+  "properties": {
+    "terminals": {
+      "$ref": "#/$defs/Terminals"
+    }
+  },
+  "required": [
+    "terminals"
+  ],
+  "$defs": {
+    "Terminal": {
+      "title": "Terminal",
+      "type": "object",
+      "description": "Represents a Revolut Terminal device.",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Terminal-Id"
+        },
+        "name": {
+          "$ref": "#/$defs/Terminal-Name"
+        },
+        "type": {
+          "$ref": "#/$defs/Terminal-Type"
+        },
+        "serial_number": {
+          "$ref": "#/$defs/Terminal-Serial-Number"
+        },
+        "battery_level": {
+          "$ref": "#/$defs/Terminal-Battery-Level"
+        },
+        "online": {
+          "$ref": "#/$defs/Terminal-Online"
+        },
+        "last_online_at": {
+          "$ref": "#/$defs/Terminal-Last-Online-At"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type",
+        "serial_number",
+        "battery_level",
+        "online",
+        "last_online_at"
+      ]
+    },
+    "Terminal-Battery-Level": {
+      "title": "Terminal battery level",
+      "type": "integer",
+      "description": "The current battery level of the terminal as a percentage (0-100).",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "Terminal-Id": {
+      "title": "Terminal ID",
+      "type": "string",
+      "format": "uuid",
+      "description": "The unique identifier of the terminal."
+    },
+    "Terminal-Last-Online-At": {
+      "title": "Terminal last online timestamp",
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time when the terminal was last seen online."
+    },
+    "Terminal-Name": {
+      "title": "Terminal name",
+      "type": "string",
+      "description": "The name of the terminal device."
+    },
+    "Terminal-Online": {
+      "title": "Terminal online status",
+      "type": "boolean",
+      "description": "Indicates whether the terminal is currently online and connected.\n\n| Value | Description |\n|-------|-------------|\n| `true` | Terminal is online and available |\n| `false` | Terminal is offline |"
+    },
+    "Terminal-Serial-Number": {
+      "title": "Terminal serial number",
+      "type": "string",
+      "description": "The serial number of the terminal device."
+    },
+    "Terminal-Type": {
+      "title": "Terminal type",
+      "type": "string",
+      "description": "The hardware type/model of the terminal device.",
+      "enum": [
+        "youtransactor_ucube_touch",
+        "newland_n950",
+        "newland_n750",
+        "newland_r25p"
+      ]
+    },
+    "Terminals": {
+      "type": "array",
+      "description": "List of terminal devices.",
+      "items": {
+        "$ref": "#/$defs/Terminal"
+      }
+    }
+  }
+}

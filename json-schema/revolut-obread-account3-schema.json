@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-obread-account3-schema.json",
+  "title": "OBReadAccount3",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-accounts-api-openapi.yml#/components/schemas/OBReadAccount3",
+  "required": [
+    "Data",
+    "Links",
+    "Meta"
+  ],
+  "type": "object",
+  "properties": {
+    "Data": {
+      "type": "object",
+      "properties": {
+        "Account": {
+          "type": "array",
+          "description": "The unique ID of the account that credit and debit entries are made to.",
+          "items": {
+            "$ref": "#/$defs/OBAccount3"
+          }
+        }
+      }
+    },
+    "Links": {
+      "$ref": "#/$defs/Links"
+    },
+    "Meta": {
+      "$ref": "#/$defs/Meta"
+    }
+  },
+  "$defs": {
+    "AccountId": {
+      "maxLength": 40,
+      "minLength": 1,
+      "type": "string",
+      "description": "The unique and immutable ID to identify the account resource.\nThis ID has no meaning to the account owner."
+    },
+    "Links": {
+      "required": [
+        "Self"
+      ],
+      "type": "object",
+      "properties": {
+        "Self": {
+          "type": "string",
+          "description": "The absolute URI to the resource.",
+          "format": "uri"
+        },
+        "Next": {
+          "type": "string",
+          "description": "The absolute URI to the next pagination resource.",
+          "format": "uri"
+        },
+        "Prev": {
+          "type": "string",
+          "description": "The absolute URI to the previous pagination resource.",
+          "format": "uri"
+        }
+      },
+      "description": "Links relevant to the payload."
+    },
+    "Meta": {
+      "title": "MetaData",
+      "type": "object",
+      "properties": {
+        "TotalPages": {
+          "type": "integer",
+          "description": "Used for pagination. Indicates how many pages of results are available.",
+          "format": "int32"
+        }
+      },
+      "description": "Meta data relevant to the payload."
+    },
+    "OBAccount3": {
+      "required": [
+        "AccountId",
+        "AccountSubType",
+        "AccountType",
+        "Currency"
+      ],
+      "type": "object",
+      "properties": {
+        "AccountId": {
+          "$ref": "#/$defs/AccountId"
+        },
+        "Currency": {
+          "pattern": "^[A-Z]{3,3}$",
+          "type": "string",
+          "description": "The currency that the account is held in ([ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case).\n\nThis value is used only when one account number covers multiple accounts for different currencies, and the initiating party needs to identify which currency to use for settlement on the account."
+        },
+        "AccountType": {
+          "$ref": "#/$defs/OBExternalAccountType1Code"
+        },
+        "AccountSubType": {
+          "$ref": "#/$defs/OBExternalAccountSubType1Code"
+        },
+        "Nickname": {
+          "maxLength": 70,
+          "minLength": 1,
+          "type": "string",
+          "description": "The nickname of the account that the account owner assigns to easily identify the account."
+        },
+        "Account": {
+          "type": "array",
+          "description": "The details to identify an account.",
+          "items": {
+            "$ref": "#/$defs/OBCashAccount5"
+          }
+        }
+      },
+      "description": "The unique ID of the account that credit and debit entries are made to."
+    },
+    "OBCashAccount5": {
+      "required": [
+        "Identification",
+        "SchemeName"
+      ],
+      "type": "object",
+      "properties": {
+        "SchemeName": {
+          "$ref": "#/$defs/OBRevolutAccountIdentificationCode"
+        },
+        "Identification": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string",
+          "description": "The identification of the account.\n\n:::warning[Unique account identifier]\nThis field will typically contain an account number or an IBAN which must not be considered as a unique identifier for the account. Several currency subacounts can share this same identifier.\n\nIf you need a unique identifier for each account, ensure you use the `Data.Account.AccountId` instead.\n:::\n"
+        },
+        "Name": {
+          "maxLength": 70,
+          "minLength": 1,
+          "type": "string",
+          "description": "The account name that the account servicing institution assigns.\n\nThe account name is the name or names of the account owner(s) represented at an account level.\n\nThe account name is not the product name or the nickname of the account."
+        },
+        "SecondaryIdentification": {
+          "maxLength": 34,
+          "minLength": 1,
+          "type": "string",
+          "description": "The secondary account ID that the account servicing institution assigns.\n\nBuilding societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination."
+        }
+      },
+      "description": "The details to identify the account."
+    },
+    "OBExternalAccountSubType1Code": {
+      "type": "string",
+      "description": "The sub-type of the account.",
+      "enum": [
+        "CurrentAccount",
+        "Savings",
+        "CreditCard"
+      ]
+    },
+    "OBExternalAccountType1Code": {
+      "type": "string",
+      "description": "The type of the account.",
+      "enum": [
+        "Business",
+        "Personal"
+      ]
+    },
+    "OBRevolutAccountIdentificationCode": {
+      "type": "string",
+      "description": "The name of the identification scheme.\n\nNote the scheme `UK.Revolut.InternalAccountId` is an internal account identifier for those accounts which don't have externally available identifiers.\nIt cannot be used to send or receive funds.\n",
+      "enum": [
+        "UK.OBIE.IBAN",
+        "UK.OBIE.SortCodeAccountNumber",
+        "US.RoutingNumberAccountNumber",
+        "US.BranchCodeAccountNumber",
+        "UK.Revolut.InternalAccountId"
+      ]
+    }
+  }
+}

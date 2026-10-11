@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-obreport-file-response-schema.json",
+  "title": "OBReportFileResponse",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-file-payment-api-openapi.yml#/components/schemas/OBReportFileResponse",
+  "required": [
+    "Payments"
+  ],
+  "type": "object",
+  "properties": {
+    "Payments": {
+      "type": "array",
+      "description": "The list of payments included in the file payment.\nEach element in the list corresponds to a single payment and contains the amount, reference, and status of that individual payment.",
+      "items": {
+        "type": "object",
+        "description": "Detailes for a single payment.",
+        "required": [
+          "Amount",
+          "Reference",
+          "Status"
+        ],
+        "properties": {
+          "Amount": {
+            "required": [
+              "Amount",
+              "Currency"
+            ],
+            "type": "object",
+            "description": "The amount of money paid. Specifies the amount and the currency.",
+            "properties": {
+              "Amount": {
+                "$ref": "#/$defs/Amount"
+              },
+              "Currency": {
+                "$ref": "#/$defs/Currency"
+              }
+            }
+          },
+          "Reference": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "description": "The unique reference assigned to the payment."
+          },
+          "Status": {
+            "$ref": "#/$defs/PaymentStatus"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "Amount": {
+      "pattern": "^\\d{1,13}\\.\\d{1,5}$",
+      "type": "string",
+      "description": "The amount of money."
+    },
+    "Currency": {
+      "pattern": "^[A-Z]{3}$",
+      "type": "string",
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+    },
+    "PaymentStatus": {
+      "type": "string",
+      "description": "The status of the payment.",
+      "enum": [
+        "Created",
+        "Pending",
+        "Completed",
+        "Failed",
+        "Deleted"
+      ]
+    }
+  }
+}

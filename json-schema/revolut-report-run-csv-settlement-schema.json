@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-report-run-csv-settlement-schema.json",
+  "title": "Settlement report CSV",
+  "description": "CSV output for `settlement_report`. Contains settled transactions associated with a Merchant account.\n\nThe first row is a header row with column names. Subsequent rows contain transaction data, one row per transaction.\n\nA partial-settlement is represented by separate `SETTLEMENT` and `REFUND` rows instead of a dedicated type.\n\n:::note\nThe actual response is a raw `text/csv` string. The object schema below is a documentation convention only: OpenAPI's schema language (JSON Schema) describes JSON data shapes and has no native construct for typed CSV columns, so each property here corresponds to a CSV column header rather than a JSON field.\n:::",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-report-runs-api-openapi.yml#/components/schemas/Report-Run-Csv-Settlement",
+  "type": "object",
+  "properties": {
+    "transaction_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the ledger transaction in the core settlement system. Matches `transaction_id` in the payout statement report for the same event. Not the same as `payment_id` in the payments report — a payment and its resulting ledger transaction have different UUIDs. Use `order_id` to cross-reference with the payments report."
+    },
+    "order_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the order. An order is the top-level entity that groups one or more payment attempts against it. `order_id` is consistent across all report types and can be used to cross-reference between the payments report and the settlement or payout reports."
+    },
+    "original_order_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "For refunds and chargebacks, the order ID of the original payment that this transaction reverses. Refunds and chargebacks create their own order in the system, so `order_id` refers to the refund or chargeback order while `original_order_id` points back to the original payment's order. For settlement transactions, matches `order_id`."
+    },
+    "started_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time the row's source record was started. For payment rows, this is the payment start timestamp. For non-payment rows such as refunds and chargebacks, this is the transaction start timestamp. This displayed value is separate from the report filter timeframe."
+    },
+    "updated_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time the row's source record was last updated. For payment rows, this is the payment update timestamp. For non-payment rows such as refunds and chargebacks, this is the transaction update timestamp. This displayed value is separate from the report filter timeframe."
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time the row's source record was completed. For payment rows, this is the payment completion timestamp. For non-payment rows such as refunds and chargebacks, this is the transaction completion timestamp. This displayed value is separate from the report filter timeframe."
+    },
+    "payment_created_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Payment authorisation or creation timestamp for rows linked to a payment, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) UTC date-time format. Empty for refunds and non-payment-related rows where no payment timestamp applies. This displayed value is separate from the report filter timeframe."
+    },
+    "payment_captured_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Payment capture timestamp for rows linked to a captured payment, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) UTC date-time format. Empty for refunds, non-payment-related rows, or payments not captured. This displayed value is separate from the report filter timeframe."
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of the settlement report row.\n\nA partial-settlement is represented by separate `SETTLEMENT` and `REFUND` rows instead of a dedicated type.\n\n| Value | Description |\n| ----- | ----------- |\n| `SETTLEMENT` | Settlement of a payment into the merchant balance. |\n| `REFUND` | Refund entry reducing the merchant balance. |\n| `CHARGEBACK` | Dispute withdrawal entry reducing the merchant balance. |\n| `CHARGEBACK_REVERSAL` | Reversal of a previous chargeback, restoring funds to the merchant balance. |",
+      "enum": [
+        "SETTLEMENT",
+        "REFUND",
+        "CHARGEBACK",
+        "CHARGEBACK_REVERSAL"
+      ]
+    },
+    "state": {
+      "type": "string",
+      "description": "State of the transaction."
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the order."
+    },
+    "merchant_order_ext_ref": {
+      "type": "string",
+      "description": "Merchant's order reference. The value of the `merchant_order_data.reference` field set when the order was created."
+    },
+    "customer_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the customer related to an order."
+    },
+    "amount": {
+      "type": "number",
+      "description": "Total amount of the order."
+    },
+    "currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code that represents the currency of the order."
+    },
+    "settlement_amount": {
+      "type": "number",
+      "description": "Total amount settled on the merchant's account."
+    },
+    "settlement_currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code that represents the currency of the settled amount."
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "Type of the payment method the customer used to pay for the order."
+    },
+    "fee_amount": {
+      "type": "number",
+      "description": "Total fee amount applied to the order, aggregated across all fee components (acquiring markup + interchange + scheme fees)."
+    },
+    "fee_currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code that represents the currency of the total fee."
+    },
+    "processing_fee_amount": {
+      "type": "number",
+      "description": "Acquiring markup fee only — a subset of `fee_amount`. Represents Revolut's service fee, excluding interchange and scheme fees."
+    },
+    "processing_fee_currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code that represents the currency of the acquiring markup fee."
+    },
+    "browser_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "The URL where the customer initiated the payment."
+    },
+    "location_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the location related to the transaction."
+    }
+  }
+}

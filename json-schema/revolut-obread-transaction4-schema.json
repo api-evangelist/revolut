@@ -1,0 +1,426 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-obread-transaction4-schema.json",
+  "title": "OBReadTransaction4",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-transactions-api-openapi.yml#/components/schemas/OBReadTransaction4",
+  "required": [
+    "Data",
+    "Links",
+    "Meta"
+  ],
+  "type": "object",
+  "properties": {
+    "Data": {
+      "type": "object",
+      "properties": {
+        "Transaction": {
+          "type": "array",
+          "description": "The details about the transaction.",
+          "items": {
+            "$ref": "#/$defs/OBTransaction4"
+          }
+        }
+      }
+    },
+    "Links": {
+      "$ref": "#/$defs/Links"
+    },
+    "Meta": {
+      "$ref": "#/$defs/Meta"
+    }
+  },
+  "$defs": {
+    "AccountId": {
+      "maxLength": 40,
+      "minLength": 1,
+      "type": "string",
+      "description": "The unique and immutable ID to identify the account resource.\nThis ID has no meaning to the account owner."
+    },
+    "Currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+    },
+    "Links": {
+      "required": [
+        "Self"
+      ],
+      "type": "object",
+      "properties": {
+        "Self": {
+          "type": "string",
+          "description": "The absolute URI to the resource.",
+          "format": "uri"
+        },
+        "Next": {
+          "type": "string",
+          "description": "The absolute URI to the next pagination resource.",
+          "format": "uri"
+        },
+        "Prev": {
+          "type": "string",
+          "description": "The absolute URI to the previous pagination resource.",
+          "format": "uri"
+        }
+      },
+      "description": "Links relevant to the payload."
+    },
+    "Meta": {
+      "title": "MetaData",
+      "type": "object",
+      "properties": {
+        "TotalPages": {
+          "type": "integer",
+          "description": "Used for pagination. Indicates how many pages of results are available.",
+          "format": "int32"
+        }
+      },
+      "description": "Meta data relevant to the payload."
+    },
+    "OBActiveCurrencyAndAmount_SimpleType": {
+      "pattern": "^\\d{1,13}\\.\\d{1,5}$",
+      "type": "string",
+      "description": "The amount of money where the unit of currency is explicit and compliant with [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)."
+    },
+    "OBActiveOrHistoricCurrencyAndAmount": {
+      "required": [
+        "Amount",
+        "Currency"
+      ],
+      "type": "object",
+      "properties": {
+        "Amount": {
+          "$ref": "#/$defs/OBActiveCurrencyAndAmount_SimpleType"
+        },
+        "Currency": {
+          "pattern": "^[A-Z]{3,3}$",
+          "type": "string",
+          "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+        }
+      },
+      "description": "The amount of the cash balance after a transaction entry is applied to the account."
+    },
+    "OBBalanceType1Code": {
+      "type": "string",
+      "description": "The balance type.",
+      "enum": [
+        "InterimAvailable",
+        "InterimBooked",
+        "ClosingAvailable",
+        "ClosingBooked",
+        "ClosingCleared",
+        "Expected",
+        "ForwardAvailable",
+        "Information",
+        "InterimAvailable",
+        "InterimBooked",
+        "InterimCleared",
+        "OpeningAvailable",
+        "OpeningBooked",
+        "OpeningCleared",
+        "PreviouslyClosedBooked"
+      ]
+    },
+    "OBCashAccount6": {
+      "type": "object",
+      "properties": {
+        "SchemeName": {
+          "$ref": "#/$defs/OBExternalAccountIdentification4Code"
+        },
+        "Identification": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string",
+          "description": "The account ID that the institution assigns to identify an account, which is known by the account owner."
+        },
+        "Name": {
+          "maxLength": 70,
+          "minLength": 1,
+          "type": "string",
+          "description": "The account name that the account servicing institution assigns.\n\nThe account name is the name or names of the account owner(s) represented at an account level.\n\nThe account name is not the product name or the nickname of the account."
+        },
+        "SecondaryIdentification": {
+          "maxLength": 34,
+          "minLength": 1,
+          "type": "string",
+          "description": "The secondary account ID that the account servicing institution assigns.\n\nBuilding societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination."
+        }
+      },
+      "description": "The unique ID of the account in the case of a transaction."
+    },
+    "OBCurrencyExchange5": {
+      "required": [
+        "ExchangeRate",
+        "SourceCurrency"
+      ],
+      "type": "object",
+      "properties": {
+        "SourceCurrency": {
+          "pattern": "^[A-Z]{3,3}$",
+          "type": "string",
+          "description": "The currency that is exchanged from."
+        },
+        "TargetCurrency": {
+          "pattern": "^[A-Z]{3,3}$",
+          "type": "string",
+          "description": "The currency that is exchanged to."
+        },
+        "UnitCurrency": {
+          "pattern": "^[A-Z]{3,3}$",
+          "type": "string",
+          "description": "The currency that the exchange rate is expressed in.\nFor example, for 1 GBP = xxx EUR, the `UnitCurrency` value is GBP."
+        },
+        "ExchangeRate": {
+          "type": "string",
+          "description": "The exchange rate used to convert an amount of money from one currency into another.\n\nThis reflects the price that one currency was bought at with another currency.\n\n:::note\n`ExchangeRate` expresses the ratio between `UnitCurrency` and `QuotedCurrency`:\n**`ExchangeRate` = `UnitCurrency`/`QuotedCurrency`**.\n:::"
+        },
+        "InstructedAmount": {
+          "required": [
+            "Amount",
+            "Currency"
+          ],
+          "type": "object",
+          "properties": {
+            "Amount": {
+              "$ref": "#/$defs/OBActiveCurrencyAndAmount_SimpleType"
+            },
+            "Currency": {
+              "$ref": "#/$defs/Currency"
+            }
+          },
+          "description": "Amount of money to be moved between the debtor and creditor, before deduction of charges, expressed in the currency as ordered by the initiating party."
+        }
+      },
+      "description": "A list of elements to provide details on the currency exchange."
+    },
+    "OBEntryStatus1Code": {
+      "type": "string",
+      "description": "The status of a transaction entry on the books of the account servicer.",
+      "enum": [
+        "Booked",
+        "Pending"
+      ]
+    },
+    "OBExternalAccountIdentification4Code": {
+      "type": "string",
+      "description": "The name of the identification scheme.",
+      "enum": [
+        "UK.OBIE.IBAN",
+        "UK.OBIE.SortCodeAccountNumber",
+        "US.RoutingNumberAccountNumber",
+        "US.BranchCodeAccountNumber"
+      ]
+    },
+    "OBMerchantDetails1": {
+      "type": "object",
+      "properties": {
+        "MerchantName": {
+          "maxLength": 350,
+          "minLength": 1,
+          "type": "string",
+          "description": "The name of the merchant."
+        }
+      },
+      "description": "The details of the merchant involved in the transaction."
+    },
+    "OBSupplementaryData1": {
+      "maxLength": 40,
+      "minLength": 1,
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "description": "The additional information that cannot be captured in the structured fields and/or any other specific block.\n\n**`< * >`** acts as a placeholder here, and it represents an optional property (or multiple such properties) with an arbitrary name and data.\n\nTo see an example, check the response body samples."
+      },
+      "description": "The additional information that cannot be captured in the structured fields and/or any other specific block."
+    },
+    "OBTransaction4": {
+      "title": "",
+      "required": [
+        "AccountId",
+        "Amount",
+        "BookingDateTime",
+        "CreditDebitIndicator",
+        "Status"
+      ],
+      "type": "object",
+      "properties": {
+        "AccountId": {
+          "$ref": "#/$defs/AccountId"
+        },
+        "TransactionId": {
+          "maxLength": 40,
+          "minLength": 1,
+          "type": "string",
+          "description": "The unique and immutable ID to identify the transaction within an servicing institution."
+        },
+        "CreditDebitIndicator": {
+          "type": "string",
+          "description": "Indicates whether the transaction is a credit or a debit entry.",
+          "enum": [
+            "Credit",
+            "Debit"
+          ]
+        },
+        "Status": {
+          "$ref": "#/$defs/OBEntryStatus1Code"
+        },
+        "BookingDateTime": {
+          "type": "string",
+          "description": "The date and time when the transaction entry is created in Revolut's systems.\nRepresented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format including timezone.            \n\n:::note[Offline transactions]\nFor offline transactions, this value reflects when the transaction is recorded by Revolut, not when the transaction was originally initiated.\nThe original transaction date is available in `SupplementaryData.StartedDate`.\n:::",
+          "format": "date-time"
+        },
+        "ValueDateTime": {
+          "type": "string",
+          "description": "The date and time when the transaction is completed.\nReturned only for transactions with `Status=Booked`.\n\nRepresented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format including timezone.",
+          "format": "date-time"
+        },
+        "Amount": {
+          "required": [
+            "Amount",
+            "Currency"
+          ],
+          "type": "object",
+          "properties": {
+            "Amount": {
+              "$ref": "#/$defs/OBActiveCurrencyAndAmount_SimpleType"
+            },
+            "Currency": {
+              "$ref": "#/$defs/Currency"
+            }
+          },
+          "description": "Amount of money in the cash transaction entry. This amount includes the amount in `ChargeAmount`."
+        },
+        "ChargeAmount": {
+          "required": [
+            "Amount",
+            "Currency"
+          ],
+          "type": "object",
+          "properties": {
+            "Amount": {
+              "$ref": "#/$defs/OBActiveCurrencyAndAmount_SimpleType"
+            },
+            "Currency": {
+              "$ref": "#/$defs/Currency"
+            }
+          },
+          "description": "Transaction charges to be paid by the charge bearer."
+        },
+        "CurrencyExchange": {
+          "$ref": "#/$defs/OBCurrencyExchange5"
+        },
+        "ProprietaryBankTransactionCode": {
+          "required": [
+            "Code"
+          ],
+          "type": "object",
+          "properties": {
+            "Code": {
+              "maxLength": 35,
+              "minLength": 1,
+              "type": "string",
+              "description": "The proprietary bank transaction code to identify the underlying transaction."
+            },
+            "Issuer": {
+              "maxLength": 35,
+              "minLength": 1,
+              "type": "string",
+              "description": "The identification of the issuer of the proprietary bank transaction code."
+            }
+          },
+          "description": "A list of elements to fully identify a proprietary bank transaction code."
+        },
+        "SupplementaryData": {
+          "description": "Additional information that cannot be captured in the structured fields and/or any other specific block.",
+          "allOf": [
+            {
+              "$ref": "#/$defs/OBSupplementaryData1"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "StartedDate": {
+                  "readOnly": true,
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "The date and time the transaction started in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n\nReturned if it is different from `BookingDateTime`.\n\nFor example, if the transaction was an offline card transaction made during a flight and would be booked at a later time or date, this field indicates the actual date and time the transaction took place, as provided by the merchant."
+                }
+              }
+            }
+          ]
+        },
+        "TransactionInformation": {
+          "$ref": "#/$defs/TransactionInformation"
+        },
+        "Balance": {
+          "$ref": "#/$defs/OBTransactionCashBalance"
+        },
+        "MerchantDetails": {
+          "$ref": "#/$defs/OBMerchantDetails1"
+        },
+        "CreditorAccount": {
+          "$ref": "#/$defs/OBCashAccount6"
+        },
+        "DebtorAccount": {
+          "$ref": "#/$defs/OBCashAccount6"
+        },
+        "CardInstrument": {
+          "required": [
+            "CardSchemeName"
+          ],
+          "type": "object",
+          "description": "The set of elements to describe the card instrument used in the transaction.",
+          "properties": {
+            "CardSchemeName": {
+              "type": "string",
+              "description": "The brand of the payment card. Possible values include `VISA`, `MASTERCARD`, and `MAESTRO`."
+            },
+            "Identification": {
+              "type": "string",
+              "description": "The last four digits of the card's PAN (Primary Account Number)."
+            },
+            "Name": {
+              "type": "string",
+              "description": "The name of the cardholder."
+            }
+          }
+        }
+      },
+      "description": "The details of the transaction."
+    },
+    "OBTransactionCashBalance": {
+      "required": [
+        "Amount",
+        "CreditDebitIndicator",
+        "Type"
+      ],
+      "type": "object",
+      "properties": {
+        "CreditDebitIndicator": {
+          "type": "string",
+          "description": "Indicates whether the balance is a credit or a debit balance.\n\n:::note\nA zero balance is considered a credit balance.\n:::",
+          "enum": [
+            "Credit",
+            "Debit"
+          ]
+        },
+        "Type": {
+          "$ref": "#/$defs/OBBalanceType1Code"
+        },
+        "Amount": {
+          "$ref": "#/$defs/OBActiveOrHistoricCurrencyAndAmount"
+        }
+      },
+      "description": "A list of elements used to define the balance as a numerical representation of the net increases and decreases in an account after a transaction entry is applied to the account."
+    },
+    "TransactionInformation": {
+      "maxLength": 500,
+      "minLength": 1,
+      "type": "string",
+      "description": "The additional information of the transaction, which is unstructured text."
+    }
+  }
+}

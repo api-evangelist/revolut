@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-order-details-schema.json",
+  "title": "OrderDetails",
+  "description": "The requested order details.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-orders-api-openapi.yml#/components/schemas/OrderDetails",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the order."
+    },
+    "previous_order_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the previous/replaced order.\nPresent only if this order has replaced another one."
+    },
+    "client_order_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the order assigned by the client when creating the order."
+    },
+    "symbol": {
+      "type": "string",
+      "description": "Symbol of the asset for which this order has been created."
+    },
+    "side": {
+      "type": "string",
+      "enum": [
+        "buy",
+        "sell"
+      ],
+      "description": "Side of the order.\nIndicates whether the order was to acquire (buy) or dispose of (sell) an asset."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "market",
+        "limit",
+        "conditional",
+        "tpsl"
+      ],
+      "description": "Type of the order.\n\nA market order is executed immediately at the current market price.\nA limit order is executed only if the asset reaches a specified price set by the trader.\nA conditional order is submitted only once a specific trigger price is reached.\nA tpsl order sets or adjusts the Take Profit and Stop Loss settings for a position."
+    },
+    "quantity": {
+      "type": "string",
+      "description": "The quantity of the order expressed in the base currency.\n\nFor sell orders, this is the exact, initial locked balance amount to be sold.\nFor buy orders, this represents the estimated or projected total quantity to be received upon completion (as the exact quantity depends on the final execution prices)."
+    },
+    "filled_quantity": {
+      "type": "string",
+      "description": "The exact quantity of the order that has been successfully executed, expressed in the base currency.\n\nFor buy orders, this represents the exact total quantity of base currency received so far (gross, before fees are deducted).\nFor sell orders, this represents the exact total quantity of base currency spent so far."
+    },
+    "leaves_quantity": {
+      "type": "string",
+      "description": "The remaining quantity of the order that has not yet been executed, expressed in the base currency.\n\nThis represents the portion of the requested `quantity` that is still waiting to be filled, or the portion that was cancelled."
+    },
+    "amount": {
+      "type": "string",
+      "description": "The amount of the order expressed in quote currency.\n\nFor buy orders, this is the initial locked balance amount.\nFor sell orders, this represents the estimated or projected total value to be received upon completion."
+    },
+    "filled_amount": {
+      "type": "string",
+      "description": "The exact amount of the order that has been successfully executed, expressed in the quote currency.\n\nFor buy orders, this represents the exact total amount of quote currency spent so far.\nFor sell orders, this represents the exact total amount of quote currency received so far (gross, before fees are deducted)."
+    },
+    "price": {
+      "type": "string",
+      "description": "The worst price for the client at which an order will be filled.\n\nThis is the worst price at which the user is willing to trade.\nFor buy orders, it's the maximum price for the order; for sell orders, it's the minimum price."
+    },
+    "average_fill_price": {
+      "type": "string",
+      "description": "Quantity-weighted average fill price of the order.\n\nThis is the average price at which the order has been executed so far.\nIf the order is filled in parts at different prices, this indicates the overall average price for the order."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_new",
+        "new",
+        "partially_filled",
+        "filled",
+        "cancelled",
+        "rejected",
+        "replaced"
+      ],
+      "description": "Status of the order:\n\n- `pending_new`: Accepted by a matching engine but not yet working.\n- `new`: Working order.\n- `partially_filled`: Partially filled order.\n- `filled`: Fully filled order.\n- `cancelled`: Cancelled order.\n- `rejected`: Rejected order.\n- `replaced`: Replaced order."
+    },
+    "reject_reason": {
+      "type": "string",
+      "description": "Reason for rejecting the order, present only for `status=rejected`."
+    },
+    "time_in_force": {
+      "type": "string",
+      "enum": [
+        "gtc",
+        "ioc",
+        "fok"
+      ],
+      "description": "Time in force of the order.\nIndicates how long the order should remain active before it’s either executed or canceled.\nPossible values:\n\n- `gtc`: Good till cancelled.\n  Means that the order stays active until it’s either completely filled or it's manually cancelled by the user who created the order.\n- `ioc`: Immediate or cancel.\n  Means that any portion of the order that cannot be filled immediately will be cancelled.\n- `fok`: Fill or kill.\n  Means that the order must be filled immediately and in its entirety, or it will be cancelled (no partial fills allowed)."
+    },
+    "execution_instructions": {
+      "$ref": "#/$defs/ExecutionInstructions"
+    },
+    "conditional": {
+      "description": "Details regarding the trigger conditions.\nPresent only when the order `type` is `conditional`.",
+      "$ref": "#/$defs/OrderTrigger"
+    },
+    "take_profit": {
+      "description": "Details of the associated Take Profit trigger.\nPresent when the order `type` is `tpsl`. At least one of `stop_loss` or `take_profit` will be present.",
+      "$ref": "#/$defs/OrderTrigger"
+    },
+    "stop_loss": {
+      "description": "Details of the associated Stop Loss trigger.\nPresent when the order `type` is `tpsl`. At least one of `stop_loss` or `take_profit` will be present.",
+      "$ref": "#/$defs/OrderTrigger"
+    },
+    "created_date": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Timestamp in Unix epoch milliseconds."
+    },
+    "updated_date": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Timestamp in Unix epoch milliseconds."
+    },
+    "total_fee": {
+      "type": "string",
+      "format": "decimal",
+      "description": "The total fee for the order."
+    },
+    "fee_currency": {
+      "type": "string",
+      "description": "The currency in which the fee is charged."
+    },
+    "triggered_by": {
+      "description": "Details of the trigger order that submitted the current order.\nPresent when the current order was created as a result of a conditional or Take Profit/Stop Loss trigger being met.",
+      "$ref": "#/$defs/TriggeredBy"
+    },
+    "on_fill": {
+      "description": "Details of the Take Profit/Stop Loss exit strategy order linked to the current order.\nPresent when a TPSL order is attached to this order and will be submitted once the current order is filled.",
+      "$ref": "#/$defs/OnFill"
+    }
+  },
+  "required": [
+    "id",
+    "client_order_id",
+    "symbol",
+    "side",
+    "type",
+    "quantity",
+    "filled_quantity",
+    "leaves_quantity",
+    "price",
+    "status",
+    "time_in_force",
+    "execution_instructions",
+    "created_date",
+    "updated_date"
+  ],
+  "$defs": {
+    "ExecutionInstructions": {
+      "type": "array",
+      "description": "List of execution instructions for the order.\nCan be provided as an empty array `[]` if no specific instructions are required.",
+      "minItems": 0,
+      "items": {
+        "type": "string",
+        "enum": [
+          "allow_taker",
+          "post_only"
+        ]
+      },
+      "default": [
+        "allow_taker"
+      ]
+    },
+    "OnFill": {
+      "type": "object",
+      "description": "Details of the Take Profit/Stop Loss exit strategy order linked to the current order.\nThe linked TPSL order will be submitted once the current order is filled.",
+      "properties": {
+        "take_profit": {
+          "description": "Details of the associated Take Profit trigger.\nAt least one of `stop_loss` or `take_profit` will be present.",
+          "$ref": "#/$defs/OrderTrigger"
+        },
+        "stop_loss": {
+          "description": "Details of the associated Stop Loss trigger.\nAt least one of `stop_loss` or `take_profit` will be present.",
+          "$ref": "#/$defs/OrderTrigger"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the linked TPSL order.\nPresent only when the current order has been filled."
+        }
+      }
+    },
+    "OrderTrigger": {
+      "type": "object",
+      "required": [
+        "trigger_price",
+        "type",
+        "trigger_direction",
+        "time_in_force",
+        "execution_instructions"
+      ],
+      "properties": {
+        "trigger_price": {
+          "type": "string",
+          "format": "decimal",
+          "description": "The price level that activates the order.\nWhen the market price reaches this value according to the `trigger_direction`, the order is submitted."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "market",
+            "limit"
+          ],
+          "description": "Type of the order."
+        },
+        "trigger_direction": {
+          "type": "string",
+          "enum": [
+            "ge",
+            "le"
+          ],
+          "description": "The price comparison operator used to trigger the order.\n* `ge`: Greater than or equal to the trigger price.\n* `le`: Less than or equal to the trigger price."
+        },
+        "limit_price": {
+          "type": "string",
+          "format": "decimal",
+          "description": "The specific price at which the order should be executed.\nRequired for limit orders."
+        },
+        "time_in_force": {
+          "type": "string",
+          "enum": [
+            "gtc",
+            "ioc"
+          ],
+          "description": "Time in force of the order.\nIndicates how long the order should remain active before it's either executed or canceled.\nPossible values:\n\n- `gtc`: Good till cancelled.\n  Means that the order stays active until it's either completely filled or it's manually cancelled by the user who created the order.\n- `ioc`: Immediate or cancel.\n  Means that any portion of the order that cannot be filled immediately will be cancelled."
+        },
+        "execution_instructions": {
+          "$ref": "#/$defs/ExecutionInstructions"
+        }
+      }
+    },
+    "TriggeredBy": {
+      "type": "object",
+      "description": "Details of the trigger order that submitted the current order.\nThe current order was created when the trigger condition of a parent conditional or Take Profit/Stop Loss (TPSL) order was met.",
+      "properties": {
+        "conditional": {
+          "description": "Details of the conditional trigger.\nPresent when `reason` is `conditional`.",
+          "$ref": "#/$defs/OrderTrigger"
+        },
+        "take_profit": {
+          "description": "Details of the Take Profit trigger.\nPresent when `reason` is `take_profit` or `stop_loss`.\nAt least one of `stop_loss` or `take_profit` will be present.",
+          "$ref": "#/$defs/OrderTrigger"
+        },
+        "stop_loss": {
+          "description": "Details of the Stop Loss trigger.\nPresent when `reason` is `take_profit` or `stop_loss`.\nAt least one of `stop_loss` or `take_profit` will be present.",
+          "$ref": "#/$defs/OrderTrigger"
+        },
+        "reason": {
+          "type": "string",
+          "enum": [
+            "conditional",
+            "take_profit",
+            "stop_loss"
+          ],
+          "description": "The type of trigger that caused the current order to be submitted.\n- `conditional`: The order was triggered by a conditional order.\n- `take_profit`: The order was triggered by a Take Profit condition being met.\n- `stop_loss`: The order was triggered by a Stop Loss condition being met."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-report-run-csv-payments-schema.json",
+  "title": "Payments report CSV",
+  "description": "CSV output for `payments_report` report type. Contains all payments including failed and declined ones.\n\nThe first row is a header row with column names. Subsequent rows contain payment data, one row per payment.\n\nFor failed and declined payments, `fee_amount` and `fee_currency` are omitted. For payments made without a card, card-related columns are omitted.\n\n:::note\nThe actual response is a raw `text/csv` string. The object schema below is a documentation convention only: OpenAPI's schema language (JSON Schema) describes JSON data shapes and has no native construct for typed CSV columns, so each property here corresponds to a CSV column header rather than a JSON field.\n:::",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-report-runs-api-openapi.yml#/components/schemas/Report-Run-Csv-Payments",
+  "type": "object",
+  "properties": {
+    "payment_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the payment attempt in the acquiring system. Corresponds to `id` in the IC++ fee breakdown report for the same payment. Not the same as `transaction_id` in the settlement or payout reports — a payment and its resulting ledger transaction have different UUIDs. Use `order_id` to cross-reference with the settlement or payout reports."
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of the payment.\n\n| Value | Description |\n| ----- | ----------- |\n| `PAYMENT` | A payment attempt made against the order. |\n| `REFUND` | A refund record reversing a previously completed payment. |",
+      "enum": [
+        "PAYMENT",
+        "REFUND"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the payment."
+    },
+    "original_payment_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "For refunds, the acquiring ID of the original payment that this record reverses. Corresponds to `payment_id` on the original payment row. Populated only when `type` is `REFUND`."
+    },
+    "order_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the order associated with this payment. An order can have multiple payment attempts — for example, a retry after a declined payment. Use `order_id` to cross-reference with the settlement or payout reports."
+    },
+    "state": {
+      "type": "string",
+      "description": "State of the payment.\n\n| Value | Description |\n| ----- | ----------- |\n| `COMPLETED` | The payment completed successfully. |\n| `FAILED` | The payment failed during processing. |\n| `DECLINED` | The payment was rejected by the issuer or payment flow. |\n| `CANCELLED` | The payment was cancelled before completion. |\n| `PROCESSING` | The payment is still being processed. |",
+      "enum": [
+        "COMPLETED",
+        "FAILED",
+        "DECLINED",
+        "CANCELLED",
+        "PROCESSING"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason code for a failed or declined payment. Present only when `state` is `FAILED` or `DECLINED`.\n\nExample values: `INSUFFICIENT_FUNDS`, `DO_NOT_HONOUR`, `EXPIRED_CARD`, `INVALID_CVV`, `THREE_DS_CHALLENGE_FAILED`, `SUSPECTED_FRAUD`, `LOST_CARD`, `STOLEN_CARD`, `TECHNICAL_ERROR`."
+    },
+    "amount": {
+      "type": "number",
+      "description": "Total amount of the payment."
+    },
+    "currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the payment."
+    },
+    "surcharge_amount": {
+      "type": "number",
+      "description": "Surcharge amount applied to the payment. Empty when no surcharge applies — this field is empty, not set to `0`."
+    },
+    "tip_amount": {
+      "type": "number",
+      "description": "Tip amount included in the payment, if any."
+    },
+    "refunded_amount": {
+      "type": "number",
+      "description": "Amount refunded for the payment."
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time the payment was created."
+    },
+    "captured_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time the payment was captured, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) UTC date-time format. Empty when the payment has not been captured."
+    },
+    "merchant_order_ext_ref": {
+      "type": "string",
+      "description": "Merchant's order reference. The value of the `merchant_order_data.reference` field set when the order was created."
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "Payment method used."
+    },
+    "location_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the location where the payment was made."
+    },
+    "customer_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of the customer."
+    },
+    "customer_card_number": {
+      "type": "string",
+      "description": "Masked card number used for the payment."
+    },
+    "customer_card_country": {
+      "type": "string",
+      "description": "Country of the card used for the payment, as an [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code."
+    },
+    "customer_card_brand": {
+      "type": "string",
+      "description": "Card brand used for the payment. Derived from BIN data. Example values include `VISA`, `MASTERCARD`, `MASTERCARD_DEBIT`, `MAESTRO`, `AMEX`, `DINERS`, `DISCOVER`, `JCB`."
+    },
+    "customer_card_type": {
+      "type": "string",
+      "description": "Card funding type.\n\n| Value | Description |\n| ----- | ----------- |\n| `DEBIT` | Debit card. |\n| `CREDIT` | Credit card. |\n| `PREPAID` | Prepaid card. |\n| `DEFERRED_DEBIT` | Deferred debit card. |\n| `CHARGE` | Charge card. |",
+      "enum": [
+        "DEBIT",
+        "CREDIT",
+        "PREPAID",
+        "DEFERRED_DEBIT",
+        "CHARGE"
+      ]
+    },
+    "customer_card_category": {
+      "type": "string",
+      "description": "Card commercial category.\n\n| Value | Description |\n| ----- | ----------- |\n| `consumer` | Personal card. |\n| `commercial` | Business or corporate card. |",
+      "enum": [
+        "consumer",
+        "commercial"
+      ]
+    },
+    "customer_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email address of the customer."
+    },
+    "fee_amount": {
+      "type": "number",
+      "description": "Total fee amount charged for the payment. Omitted for failed and declined payments."
+    },
+    "fee_currency": {
+      "type": "string",
+      "description": "The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the fee. Omitted for failed and declined payments."
+    }
+  }
+}

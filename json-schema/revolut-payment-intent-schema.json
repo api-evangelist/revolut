@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-payment-intent-schema.json",
+  "title": "Payment Intent",
+  "description": "Represents a payment intent that has been pushed to a Revolut Terminal device.\n\nWhen the payment intent reaches `completed` state, it includes a `payment_id` that can be used to [retrieve the final payment status](https://developer.revolut.com/docs/api/merchant#retrieve-payment-details).",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-payment-intents-api-openapi.yml#/components/schemas/Payment-Intent",
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/Payment-Intent-Id"
+    },
+    "state": {
+      "$ref": "#/$defs/Payment-Intent-State"
+    },
+    "terminal_id": {
+      "$ref": "#/$defs/Terminal-Id"
+    },
+    "order_id": {
+      "$ref": "#/$defs/Order-Id"
+    },
+    "payment_id": {
+      "$ref": "#/$defs/Payment-Id"
+    },
+    "amount": {
+      "$ref": "#/$defs/Payment-Intent-Amount"
+    },
+    "currency": {
+      "$ref": "#/$defs/Currency"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the payment intent was created."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the payment intent was last updated."
+    }
+  },
+  "required": [
+    "id",
+    "order_id",
+    "state",
+    "amount",
+    "currency",
+    "terminal_id",
+    "created_at",
+    "updated_at"
+  ],
+  "$defs": {
+    "Currency": {
+      "type": "string",
+      "format": "ISO 4217",
+      "minLength": 3,
+      "maxLength": 3,
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.\n\n:::info\nFor more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).\n:::"
+    },
+    "Order-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Permanent order ID used to retrieve, capture, cancel, or refund an order after authorization."
+    },
+    "Payment-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the payment."
+    },
+    "Payment-Intent-Amount": {
+      "title": "Payment Intent amount",
+      "type": "integer",
+      "description": "The payment amount expressed in minor currency units, according to the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217). For example, `7034` in `EUR` corresponds to €70.34.\n\n:::info\nConversion between major and minor units varies by currency. For instance, `100` minor units equal £1.00 in `GBP`, whereas in `ISK` they represent 100 units. For more details, see the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217).\n:::"
+    },
+    "Payment-Intent-Id": {
+      "title": "Payment Intent ID",
+      "type": "string",
+      "format": "uuid",
+      "description": "The unique identifier of the payment intent."
+    },
+    "Payment-Intent-State": {
+      "type": "string",
+      "description": "The current state of the payment intent.\n\n| State | Description |\n|-------|-------------|\n| `pending` | Payment intent created and sent to terminal, customer has not yet started interacting |\n| `processing` | Customer is actively interacting with the terminal (e.g., inserting card, entering PIN) |\n| `completed` | Payment authorization is complete, includes a `payment_id` in the response |\n| `cancelled` | Payment intent was cancelled (by system or customer) |\n| `failed` | Payment intent failed due to technical issues (timeout, terminal unavailable, network error) |",
+      "enum": [
+        "pending",
+        "processing",
+        "completed",
+        "cancelled",
+        "failed"
+      ]
+    },
+    "Terminal-Id": {
+      "title": "Terminal ID",
+      "type": "string",
+      "format": "uuid",
+      "description": "The unique identifier of the terminal."
+    }
+  }
+}

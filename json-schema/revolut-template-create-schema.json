@@ -1,0 +1,591 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-template-create-schema.json",
+  "title": "TemplateCreate",
+  "description": "A template as created with `POST /templates`. Revolut assigns the `identifiers` (template id\nand version), fixes `schema_version` at `1.0`, and returns the created template in `draft`\nstate.\n",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-wallet-partner-api-openapi.yml#/components/schemas/TemplateCreate",
+  "type": "object",
+  "required": [
+    "type",
+    "name",
+    "issuer",
+    "branding",
+    "refresh_policy",
+    "localisation"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "boarding_pass",
+        "event_pass",
+        "loyalty_pass",
+        "generic_pass"
+      ],
+      "description": "The pass type this template renders. Immutable after creation."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Your name for the template."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Optional free-form description of the template."
+    },
+    "issuer": {
+      "description": "Issuer information displayed on passes created from this template.",
+      "$ref": "#/$defs/Issuer"
+    },
+    "branding": {
+      "description": "Visual branding applied to passes created from this template.",
+      "$ref": "#/$defs/Branding"
+    },
+    "refresh_policy": {
+      "description": "When passes created from this template refresh their content.",
+      "$ref": "#/$defs/RefreshPolicy"
+    },
+    "barcodes": {
+      "type": "array",
+      "description": "Barcodes inherited by passes that use this template. Defaults to empty. The pass-level\n`barcodes` field on `RevPassBaseContent` defines the inherit, replace, and suppress rules.\n",
+      "items": {
+        "$ref": "#/$defs/Barcode"
+      }
+    },
+    "default_actions": {
+      "type": "array",
+      "description": "Buttons rendered on passes created from this template. Defaults to empty.",
+      "items": {
+        "$ref": "#/$defs/Action"
+      }
+    },
+    "default_triggers": {
+      "type": "array",
+      "description": "Context-aware notifications attached to passes created from this template. Defaults to empty.",
+      "items": {
+        "$ref": "#/$defs/Trigger"
+      }
+    },
+    "localisation": {
+      "description": "Translations resolved by `localisation_key` at render time.",
+      "$ref": "#/$defs/Localisation"
+    },
+    "presentation": {
+      "description": "Optional explicit layout applied to generic passes created from this template. A\npresentation defined on the pass itself takes precedence over the template layout.\nProvide it only when the template `type` is `generic_pass`. Providing it for any other\n`type` returns `422` (`presentation_not_allowed`).\n",
+      "$ref": "#/$defs/PresentationConfig"
+    }
+  },
+  "$defs": {
+    "Action": {
+      "type": "object",
+      "description": "A button rendered on the pass (e.g. \"Open website\", \"Get directions\").",
+      "required": [
+        "id",
+        "type",
+        "label",
+        "url"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the action within this pass."
+        },
+        "type": {
+          "type": "string",
+          "description": "Documented values: `open_external_url`. External URL domain needs to be registered at onboarding."
+        },
+        "label": {
+          "description": "Display label for the button, with optional localisation.",
+          "$ref": "#/$defs/LocalisedText"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Target URL for `open_external_url` actions."
+        },
+        "importance": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Relative prominence of this action (5 = primary, 1 = least prominent)."
+        }
+      }
+    },
+    "Barcode": {
+      "type": "object",
+      "description": "A machine-readable barcode displayed on a Revolut native pass.",
+      "required": [
+        "format",
+        "encoding",
+        "type",
+        "static_payload"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "qr",
+            "pdf417",
+            "aztec",
+            "code128"
+          ],
+          "description": "Symbology used to render the barcode."
+        },
+        "encoding": {
+          "type": "string",
+          "enum": [
+            "ISO-8859-1"
+          ],
+          "description": "Character encoding used for `static_payload`."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "static"
+          ],
+          "description": "Payload type. Only static barcode payloads are supported."
+        },
+        "static_payload": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Static value encoded in the barcode."
+        }
+      }
+    },
+    "Branding": {
+      "type": "object",
+      "description": "Optional visual branding for a pass.",
+      "required": [
+        "brand_name",
+        "logo",
+        "background_image"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "predefined_style"
+          ]
+        },
+        {
+          "required": [
+            "colours"
+          ]
+        }
+      ],
+      "properties": {
+        "brand_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 25,
+          "description": "Brand name displayed on the pass."
+        },
+        "logo": {
+          "description": "Logo image used by the pass.",
+          "$ref": "#/$defs/Image"
+        },
+        "background_image": {
+          "description": "Background or hero image used by the pass.",
+          "$ref": "#/$defs/Image"
+        },
+        "predefined_style": {
+          "type": "string",
+          "enum": [
+            "material",
+            "flat",
+            "glass"
+          ],
+          "description": "Predefined visual style for the pass."
+        },
+        "colours": {
+          "description": "Explicit colour scheme for the pass.",
+          "$ref": "#/$defs/ColourScheme"
+        }
+      }
+    },
+    "ColourScheme": {
+      "type": "object",
+      "description": "Explicit colours used to render a branded pass.",
+      "required": [
+        "primary",
+        "secondary",
+        "background",
+        "text_primary",
+        "text_secondary",
+        "label_primary",
+        "label_secondary"
+      ],
+      "properties": {
+        "primary": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "secondary": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "background": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "text_primary": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "text_secondary": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "label_primary": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "label_secondary": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        }
+      }
+    },
+    "Coordinates": {
+      "type": "object",
+      "description": "Geographic coordinates (WGS 84).",
+      "required": [
+        "lat",
+        "lng"
+      ],
+      "properties": {
+        "lat": {
+          "type": "number",
+          "format": "double",
+          "description": "Latitude in decimal degrees."
+        },
+        "lng": {
+          "type": "number",
+          "format": "double",
+          "description": "Longitude in decimal degrees."
+        }
+      }
+    },
+    "FieldId": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "description": "Unique identifier for a custom field within a generic pass."
+    },
+    "Image": {
+      "type": "object",
+      "description": "An image used by pass branding.",
+      "oneOf": [
+        {
+          "required": [
+            "asset_ref"
+          ],
+          "not": {
+            "required": [
+              "data"
+            ]
+          }
+        },
+        {
+          "required": [
+            "data",
+            "format"
+          ],
+          "not": {
+            "required": [
+              "asset_ref"
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "asset_ref": {
+          "type": "string",
+          "pattern": "^revasset://(public|private)/[0-9a-fA-F-]{36}$",
+          "description": "Reference to an image asset managed by Revolut."
+        },
+        "data": {
+          "type": "string",
+          "contentEncoding": "base64",
+          "minLength": 1,
+          "description": "Base64-encoded image bytes."
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+          ],
+          "description": "Image MIME type."
+        },
+        "description": {
+          "type": "string",
+          "description": "Accessible description of the image."
+        }
+      }
+    },
+    "Issuer": {
+      "type": "object",
+      "description": "Issuer information displayed on a pass.",
+      "required": [
+        "issuer_id",
+        "issuer_full_name",
+        "issuer_display_name"
+      ],
+      "properties": {
+        "issuer_id": {
+          "type": "string",
+          "format": "uuid",
+          "readOnly": true,
+          "description": "Revolut-managed identifier of the issuer. Revolut derives this value from the authenticated\npartner and returns the partner's Revolut-assigned UUID; do not send it in request bodies.\n"
+        },
+        "issuer_full_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50,
+          "description": "Full legal name of the issuer."
+        },
+        "issuer_display_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 25,
+          "description": "Display name of the issuer."
+        }
+      }
+    },
+    "Localisation": {
+      "type": "object",
+      "description": "Translations for a pass or template. The outer keys are lowercase ISO 639-1 language codes\n(e.g. `en`); the inner keys are localisation keys mapped to the translated string. Keys are\nresolved by the `localisation_key` on `LocalisedText` fields (field labels, action labels,\ntrigger presentation) at render time, in this order: the template's localisation map first,\nthen Revolut's localisation catalogue (Revolut-curated translations for standard pass\nstrings), then the field's `default` text.\n",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z]{2}$",
+        "description": "Lowercase ISO 639-1 language code, such as `en` or `fr`."
+      },
+      "additionalProperties": {
+        "type": "object",
+        "description": "Translations for one language, keyed by localisation key.",
+        "additionalProperties": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The translated string for this localisation key."
+        }
+      }
+    },
+    "LocalisedText": {
+      "type": "object",
+      "description": "Text with optional localisation support.",
+      "required": [
+        "default"
+      ],
+      "properties": {
+        "default": {
+          "type": "string",
+          "description": "Fallback text when no localisation matches."
+        },
+        "localisation_key": {
+          "type": "string",
+          "description": "Key resolved at render time against the template's localisation map, then Revolut's\nlocalisation catalogue (Revolut-curated translations for standard pass strings), falling\nback to the `default` text.\n"
+        }
+      }
+    },
+    "PositionalPresentation": {
+      "type": "object",
+      "description": "Maps field IDs into header, primary, secondary, and footer sections. This layout may be supplied on the\npass or by its template. Every referenced ID must match a field in the pass, and every field ID\nmust appear at least once as a `field_id` or `join_field_id` when this layout is used.\n",
+      "required": [
+        "primary"
+      ],
+      "properties": {
+        "header": {
+          "description": "Optional header section row, displayed before the primary section.",
+          "$ref": "#/$defs/PresentationRow"
+        },
+        "primary": {
+          "description": "Primary section row, displayed after the header when provided.",
+          "$ref": "#/$defs/PresentationRow"
+        },
+        "secondary": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "description": "Optional secondary section rows, in display order.",
+          "items": {
+            "$ref": "#/$defs/PresentationRow"
+          }
+        },
+        "footer": {
+          "description": "Footer section row, displayed last.",
+          "$ref": "#/$defs/PresentationRow"
+        }
+      }
+    },
+    "PositionalPresentationWrapper": {
+      "type": "object",
+      "description": "Wrapper for a positional presentation.",
+      "required": [
+        "positional"
+      ],
+      "properties": {
+        "positional": {
+          "$ref": "#/$defs/PositionalPresentation"
+        }
+      }
+    },
+    "Presentation": {
+      "type": "object",
+      "description": "How a trigger is presented to the customer.",
+      "required": [
+        "presentation_type",
+        "title",
+        "description"
+      ],
+      "properties": {
+        "presentation_type": {
+          "type": "string",
+          "description": "Documented values: `notification`, `tile`."
+        },
+        "title": {
+          "description": "Title text for the notification or tile, with optional localisation.",
+          "$ref": "#/$defs/LocalisedText"
+        },
+        "description": {
+          "description": "Body text for the notification or tile, with optional localisation.",
+          "$ref": "#/$defs/LocalisedText"
+        }
+      }
+    },
+    "PresentationConfig": {
+      "type": "object",
+      "description": "Optional explicit positional layout for a generic pass. When omitted, the template presentation\nis used. When neither provides a presentation, the pass is rendered from semantic metadata on\nevery field.\n",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/PositionalPresentationWrapper"
+        }
+      ]
+    },
+    "PresentationRow": {
+      "type": "object",
+      "description": "A row in a positional generic-pass presentation.",
+      "required": [
+        "items"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/RowItem"
+          }
+        }
+      }
+    },
+    "RefreshPolicy": {
+      "type": "object",
+      "description": "When passes created from a template refresh their content, and how often refreshes are allowed.",
+      "required": [
+        "condition",
+        "cooldown_period"
+      ],
+      "properties": {
+        "condition": {
+          "type": "string",
+          "enum": [
+            "on_open",
+            "on_shown",
+            "on_manual_refresh"
+          ],
+          "description": "The event that triggers a content refresh:\n\n| Value | Description |\n| ----- | ----------- |\n| `on_open` | The customer opens the pass. |\n| `on_shown` | The pass is shown on the customer's screen. |\n| `on_manual_refresh` | The customer explicitly refreshes the pass. |\n"
+        },
+        "cooldown_period": {
+          "type": "string",
+          "description": "Minimum interval between content refreshes, as an ISO 8601 duration (e.g. `PT5M` for\n5 minutes, `PT1H` for 1 hour). Refresh events that arrive within the cooldown period are\nskipped. `PT0S` disables the cooldown: every triggering event refreshes content.\n",
+          "pattern": "^P(?!$)(\\d+Y)?(\\d+M)?(\\d+W)?(\\d+D)?(T(?=\\d)(\\d+H)?(\\d+M)?(\\d+(\\.\\d+)?S)?)?$"
+        }
+      }
+    },
+    "RowItem": {
+      "type": "object",
+      "description": "A field placed in a positional presentation row.",
+      "required": [
+        "field_id"
+      ],
+      "properties": {
+        "field_id": {
+          "description": "ID of the primary field displayed in this slot.",
+          "$ref": "#/$defs/FieldId"
+        },
+        "join_field_id": {
+          "description": "Optional ID of a field joined to the primary field in the same slot.",
+          "$ref": "#/$defs/FieldId"
+        },
+        "alignment": {
+          "type": "string",
+          "description": "Horizontal placement of the slot within its row.",
+          "enum": [
+            "full",
+            "start",
+            "middle",
+            "end"
+          ]
+        }
+      }
+    },
+    "Trigger": {
+      "type": "object",
+      "description": "A context-aware notification that nudges the customer (e.g. proximity alert, time before event).",
+      "required": [
+        "id",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the trigger within this pass."
+        },
+        "type": {
+          "type": "string",
+          "description": "Documented values: `proximity_time`, `proximity_geo_location`, `field_change`."
+        },
+        "importance": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Relative prominence of this trigger (5 = high, 1 = low)."
+        },
+        "time_target": {
+          "type": "string",
+          "description": "Reference to a datetime field (e.g. `flight.scheduled_departure_at`)."
+        },
+        "time_offset": {
+          "type": "string",
+          "description": "ISO 8601 duration before the target (e.g. `PT1H` for 1 hour before departure)."
+        },
+        "location_targets": {
+          "type": "array",
+          "description": "Geographic coordinates for proximity-based triggers.",
+          "items": {
+            "$ref": "#/$defs/Coordinates"
+          }
+        },
+        "radius_meters": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Radius in meters around the `location_targets` coordinates for the proximity alert."
+        },
+        "field_target": {
+          "type": "string",
+          "description": "Name of the semantic field to watch for changes (e.g. `boarding.gate`)."
+        },
+        "presentation": {
+          "description": "How the trigger is presented to the customer (notification, tile).",
+          "$ref": "#/$defs/Presentation"
+        }
+      }
+    }
+  }
+}

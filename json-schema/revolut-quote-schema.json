@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-quote-schema.json",
+  "title": "Quote",
+  "description": "The exchange price between fiat and crypto currencies (including fees).",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-partners-api-openapi.yml#/components/schemas/Quote",
+  "type": "object",
+  "required": [
+    "service_fee",
+    "network_fee",
+    "crypto",
+    "partner_fee"
+  ],
+  "properties": {
+    "service_fee": {
+      "$ref": "#/$defs/MoneyFiat",
+      "description": "The sum of Revolut Ramp fee and Partner fee.\n\n:::note\nThe Partner fee is also provided separately in the `partner_fee` parameter.\n:::"
+    },
+    "network_fee": {
+      "$ref": "#/$defs/MoneyFiat",
+      "description": "Crypto network fee."
+    },
+    "crypto": {
+      "$ref": "#/$defs/MoneyCryptoId",
+      "description": "Crypto amount that the customer receives in the case of a successful exchange."
+    },
+    "partner_fee": {
+      "$ref": "#/$defs/MoneyFiat",
+      "description": "Partner fee.\n\n:::note\nThis Partner fee is also included in the `service_fee` value, which represents the total sum of Partner fee and Revolut Ramp fee.\n:::"
+    }
+  },
+  "$defs": {
+    "CurrencyCryptoId": {
+      "type": "string",
+      "description": "The ID of the currency, obtained from the [`/config`](https://developer.revolut.com/docs/api/crypto-ramp#retrieve-configuration) endpoint."
+    },
+    "CurrencyFiat": {
+      "type": "string",
+      "format": "ISO 4217",
+      "description": "The fiat currency [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code."
+    },
+    "MoneyCryptoId": {
+      "type": "object",
+      "required": [
+        "amount",
+        "currencyId"
+      ],
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "float",
+          "description": "The amount."
+        },
+        "currencyId": {
+          "$ref": "#/$defs/CurrencyCryptoId"
+        }
+      }
+    },
+    "MoneyFiat": {
+      "type": "object",
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "float",
+          "description": "The amount."
+        },
+        "currency": {
+          "$ref": "#/$defs/CurrencyFiat"
+        }
+      }
+    }
+  }
+}

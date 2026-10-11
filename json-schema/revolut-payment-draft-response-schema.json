@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-payment-draft-response-schema.json",
+  "title": "PaymentDraftResponse",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-payment-drafts-api-openapi.yml#/components/schemas/PaymentDraftResponse",
+  "type": "object",
+  "properties": {
+    "scheduled_for": {
+      "type": "string",
+      "format": "date",
+      "description": "The scheduled date of the payment draft in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    },
+    "title": {
+      "type": "string",
+      "description": "The title of the payment draft."
+    },
+    "payments": {
+      "type": "array",
+      "description": "The list of payments in the bulk.",
+      "items": {
+        "$ref": "#/$defs/PaymentInfo"
+      }
+    },
+    "source": {
+      "type": "string",
+      "description": "The source from which the payment draft was created.",
+      "enum": [
+        "api",
+        "integration",
+        "email",
+        "business_app"
+      ]
+    }
+  },
+  "required": [
+    "payments"
+  ],
+  "$defs": {
+    "AmountWithCurrency": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "The amount of the transaction."
+        },
+        "currency": {
+          "$ref": "#/$defs/Currency"
+        }
+      }
+    },
+    "Currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+    },
+    "PaymentInfo": {
+      "type": "object",
+      "description": "The details of the payment draft.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the payment.\n\nDo not confuse it with the [payment draft ID](https://developer.revolut.com/docs/api/business#get-payment-drafts#response) or [transaction ID](https://developer.revolut.com/docs/api/business#get-transaction)."
+        },
+        "amount": {
+          "$ref": "#/$defs/AmountWithCurrency"
+        },
+        "currency": {
+          "$ref": "#/$defs/Currency"
+        },
+        "account_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the account to pay from."
+        },
+        "receiver": {
+          "$ref": "#/$defs/PaymentReceiver"
+        },
+        "state": {
+          "$ref": "#/$defs/PaymentState"
+        },
+        "reason": {
+          "type": "string",
+          "description": "The reason for the current state."
+        },
+        "error_message": {
+          "type": "string",
+          "description": "The description of the error message."
+        },
+        "current_charge_options": {
+          "type": "object",
+          "description": "The explanation of conversion process.",
+          "required": [
+            "from",
+            "to"
+          ],
+          "properties": {
+            "from": {
+              "$ref": "#/$defs/AmountWithCurrency"
+            },
+            "to": {
+              "$ref": "#/$defs/AmountWithCurrency"
+            },
+            "rate": {
+              "type": "string"
+            },
+            "fee": {
+              "$ref": "#/$defs/AmountWithCurrency"
+            }
+          }
+        },
+        "reference": {
+          "type": "string",
+          "description": "The description of the transaction."
+        },
+        "transfer_reason_code": {
+          "$ref": "#/$defs/TransferReasonCode"
+        }
+      },
+      "required": [
+        "id",
+        "amount",
+        "account_id",
+        "receiver",
+        "state",
+        "current_charge_options"
+      ]
+    },
+    "PaymentReceiver": {
+      "type": "object",
+      "description": "The details of the transfer recipient.\n\nIf the counterparty has multiple payment methods available (e.g. 2 accounts, or 1 account and 1 card), you must specify the account (`account_id`) or card (`card_id`) to which you want to transfer the money.",
+      "properties": {
+        "counterparty_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the receiving counterparty."
+        },
+        "account_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the receiving counterparty's account. Used for bank transfers.\n\nIf the counterparty has multiple payment methods available, use it to specify the account to which you want to send the money."
+        },
+        "card_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the receiving counterparty's card.\nUsed for card transfers.\n\nIf the counterparty has multiple payment methods available, use it to specify the card to which you want to send the money."
+        }
+      },
+      "required": [
+        "counterparty_id"
+      ]
+    },
+    "PaymentState": {
+      "enum": [
+        "CREATED",
+        "PENDING",
+        "COMPLETED",
+        "REVERTED",
+        "DECLINED",
+        "CANCELLED",
+        "FAILED",
+        "DELETED"
+      ],
+      "type": "string",
+      "description": "Indicates the state of the transaction."
+    },
+    "TransferReasonCode": {
+      "type": "string",
+      "description": "The reason code for the transaction. Transactions to certain countries and currencies might require you to provide a transfer reason. \nYou can check available reason codes with the [`GET /transfer-reasons` operation](https://developer.revolut.com/docs/api/business#get-transfer-reasons).\n\nIf a transfer reason is not required for the given currency and country, this field is ignored."
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-webhook-update-schema.json",
+  "title": "Webhook update",
+  "description": "The request body for updating a webhook.\n\nAll fields are optional. Only the fields provided in the request will be updated.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-webhooks-api-openapi.yml#/components/schemas/Webhook-Update",
+  "type": "object",
+  "properties": {
+    "url": {
+      "$ref": "#/$defs/Webhook-Url"
+    },
+    "events": {
+      "$ref": "#/$defs/Webhook-Events"
+    }
+  },
+  "$defs": {
+    "Webhook-Events": {
+      "type": "array",
+      "description": "List of event types that the webhook is configured to listen to.\n\nEach event is related to status changes of a specific object in the Merchant API:\n\n  | Object | Event types |\n  | --------- | ----------- |\n  | `Order`   | <ul> <li>`ORDER_COMPLETED`</li> <li>`ORDER_AUTHORISED`</li> <li>`ORDER_CANCELLED`</li> <li>`ORDER_FAILED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_DECLINED`</li> <li>`ORDER_INCREMENTAL_AUTHORISATION_FAILED`</li> </ul> |\n  | `Payment` | <ul> <li>`ORDER_PAYMENT_AUTHENTICATION_CHALLENGED`</li> <li>`ORDER_PAYMENT_AUTHENTICATED`</li> <li>`ORDER_PAYMENT_DECLINED`</li> <li>`ORDER_PAYMENT_FAILED`</li> </ul> |\n  | `Subscription`  | <ul> <li>`SUBSCRIPTION_INITIATED`</li> <li>`SUBSCRIPTION_FINISHED`</li> <li>`SUBSCRIPTION_CANCELLED`</li> <li>`SUBSCRIPTION_OVERDUE`</li></ul> |\n  | `Payout`  | <ul> <li>`PAYOUT_INITIATED`</li> <li>`PAYOUT_COMPLETED`</li> <li>`PAYOUT_FAILED`</li> </ul> |\n  | `Dispute`  | <ul> <li>`DISPUTE_ACTION_REQUIRED`</li> <li>`DISPUTE_UNDER_REVIEW`</li> <li>`DISPUTE_WON`</li> <li>`DISPUTE_LOST`</li></ul> |",
+      "items": {
+        "type": "string",
+        "description": "The available event types your can listen to.",
+        "enum": [
+          "ORDER_COMPLETED",
+          "ORDER_AUTHORISED",
+          "ORDER_CANCELLED",
+          "ORDER_FAILED",
+          "ORDER_INCREMENTAL_AUTHORISATION_AUTHORISED",
+          "ORDER_INCREMENTAL_AUTHORISATION_DECLINED",
+          "ORDER_INCREMENTAL_AUTHORISATION_FAILED",
+          "ORDER_PAYMENT_AUTHENTICATION_CHALLENGED",
+          "ORDER_PAYMENT_AUTHENTICATED",
+          "ORDER_PAYMENT_DECLINED",
+          "ORDER_PAYMENT_FAILED",
+          "SUBSCRIPTION_INITIATED",
+          "SUBSCRIPTION_FINISHED",
+          "SUBSCRIPTION_CANCELLED",
+          "SUBSCRIPTION_OVERDUE",
+          "PAYOUT_INITIATED",
+          "PAYOUT_COMPLETED",
+          "PAYOUT_FAILED",
+          "DISPUTE_ACTION_REQUIRED",
+          "DISPUTE_UNDER_REVIEW",
+          "DISPUTE_WON",
+          "DISPUTE_LOST"
+        ]
+      },
+      "minItems": 1
+    },
+    "Webhook-Url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https?:\\/{2}.+/gi",
+      "maxLength": 2000,
+      "description": "Your webhook's URL to which event notifications will be sent. \n\nMust be a valid HTTP or HTTPS URL, capable of receiving `POST` requests.\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be either `http` or `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::"
+    }
+  }
+}

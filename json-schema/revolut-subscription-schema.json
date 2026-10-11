@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-subscription-schema.json",
+  "title": "Subscription",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-subscriptions-api-openapi.yml#/components/schemas/Subscription",
+  "type": "object",
+  "required": [
+    "id",
+    "state",
+    "customer_id",
+    "plan_id",
+    "plan_variation_id",
+    "payment_method_type",
+    "created_at",
+    "updated_at",
+    "current_cycle_id"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/Subscription-Id"
+    },
+    "external_reference": {
+      "$ref": "#/$defs/Subscription-External-Reference"
+    },
+    "state": {
+      "$ref": "#/$defs/Subscription-State"
+    },
+    "customer_id": {
+      "$ref": "#/$defs/Customer-Id"
+    },
+    "plan_id": {
+      "$ref": "#/$defs/Subscription-Plan-Id"
+    },
+    "plan_variation_id": {
+      "$ref": "#/$defs/Subscription-Plan-Variation-Id"
+    },
+    "payment_method_type": {
+      "$ref": "#/$defs/Subscription-Payment-Method-Type"
+    },
+    "payment_method_id": {
+      "$ref": "#/$defs/Payment-Method-Id"
+    },
+    "created_at": {
+      "$ref": "#/$defs/Subscription-Created"
+    },
+    "updated_at": {
+      "$ref": "#/$defs/Subscription-Updated"
+    },
+    "start_date": {
+      "$ref": "#/$defs/Subscription-Start-Date"
+    },
+    "current_cycle_id": {
+      "$ref": "#/$defs/Subscription-Cycle-Id"
+    },
+    "trial_duration": {
+      "$ref": "#/$defs/Subscription-Trial-Duration"
+    },
+    "trial_end_date": {
+      "$ref": "#/$defs/Subscription-Trial-End-Date"
+    },
+    "setup_order_id": {
+      "$ref": "#/$defs/Setup-Order-Id"
+    },
+    "scheduled_action": {
+      "$ref": "#/$defs/Subscription-Scheduled-Action"
+    }
+  },
+  "$defs": {
+    "Customer-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the customer."
+    },
+    "Payment-Method-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the payment method."
+    },
+    "Setup-Order-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the order created for handling the setup payment for the subscription.\n\nUse the [Retrieve an order](https://developer.revolut.com/docs/api/merchant#retrieve-order) endpoint with this ID to get order details, including the `checkout_url` for redirecting customers to the Hosted Payment Page or the `token` for widget integration.\n\n:::note\nThe order is created in parallel to the subscription and is used to collect the initial payment and save the customer's payment method for future billing cycles.\n:::"
+    },
+    "Subscription-Change-Plan-Reason": {
+      "type": "string",
+      "description": "The reason for the scheduled action. This field is informational and does not affect how the action is processed.\n\n| Value | Description |\n| ----- | ----------- |\n| `customer_request` | The action was requested by the customer. |\n| `merchant_request` | The action was initiated by the merchant. |",
+      "enum": [
+        "customer_request",
+        "merchant_request"
+      ],
+      "default": "merchant_request"
+    },
+    "Subscription-Created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the subscription was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    },
+    "Subscription-Cycle-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the subscription cycle."
+    },
+    "Subscription-External-Reference": {
+      "type": "string",
+      "maxLength": 1024,
+      "description": "Optional external reference for the subscription.\n\nUse this field to store your own system's identifier for easy tracking and correlation."
+    },
+    "Subscription-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the subscription."
+    },
+    "Subscription-Payment-Method-Type": {
+      "type": "string",
+      "enum": [
+        "automatic",
+        "manual"
+      ],
+      "description": "The type of payment method used for the subscription.\n\n| Type | Description |\n| ---- | ----------- |\n| `automatic` | Payments are automatically charged to the customer's saved payment method. |\n| `manual` | Payments require manual processing by the customer. |"
+    },
+    "Subscription-Plan-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the subscription plan."
+    },
+    "Subscription-Plan-Phase-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the subscription plan phase."
+    },
+    "Subscription-Plan-Variation-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the subscription plan variation."
+    },
+    "Subscription-Scheduled-Action": {
+      "description": "A pending scheduled action on the subscription, applied at the end of the current billing cycle.",
+      "type": "object",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Subscription-Scheduled-Action-Cancel"
+        },
+        {
+          "$ref": "#/$defs/Subscription-Scheduled-Action-Change-Plan"
+        }
+      ]
+    },
+    "Subscription-Scheduled-Action-Cancel": {
+      "title": "Subscription-Scheduled-Action-Cancel",
+      "type": "object",
+      "description": "A cancellation scheduled to take effect at the end of the current billing cycle.",
+      "required": [
+        "type",
+        "reason"
+      ],
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/Subscription-Scheduled-Action-Type"
+        },
+        "reason": {
+          "$ref": "#/$defs/Subscription-Change-Plan-Reason"
+        }
+      }
+    },
+    "Subscription-Scheduled-Action-Change-Plan": {
+      "title": "Subscription-Scheduled-Action-Change-Plan",
+      "type": "object",
+      "description": "A plan variation change scheduled to take effect at the end of the current billing cycle.",
+      "required": [
+        "type",
+        "reason",
+        "plan_variation_id"
+      ],
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/Subscription-Scheduled-Action-Type"
+        },
+        "reason": {
+          "$ref": "#/$defs/Subscription-Change-Plan-Reason"
+        },
+        "plan_variation_id": {
+          "$ref": "#/$defs/Subscription-Plan-Variation-Id"
+        },
+        "plan_variation_phase_id": {
+          "$ref": "#/$defs/Subscription-Plan-Phase-Id"
+        }
+      }
+    },
+    "Subscription-Scheduled-Action-Type": {
+      "type": "string",
+      "description": "The type of the scheduled action.\n\n| Value | Description |\n| ----- | ----------- |\n| `cancel` | A cancellation scheduled to take effect at the end of the current billing cycle. |\n| `change_plan_variation` | A plan variation change scheduled to take effect at the end of the current billing cycle. |",
+      "enum": [
+        "cancel",
+        "change_plan_variation"
+      ]
+    },
+    "Subscription-Start-Date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "The date and time the subscription started in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n\nThis field is `null` until the subscription becomes active."
+    },
+    "Subscription-State": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "active",
+        "overdue",
+        "paused",
+        "cancelled",
+        "finished"
+      ],
+      "description": "The state of the subscription.\n\n| State | Description |\n| ----- | ----------- |\n| `pending` | The subscription has been created but is not yet active. This typically occurs when awaiting the first payment or setup completion. |\n| `active` | The subscription is currently active and billing cycles are processing normally. |\n| `overdue` | The subscription has a failed payment and is awaiting resolution. |\n| `paused` | The subscription has been temporarily paused and no billing will occur. |\n| `cancelled` | The subscription has been cancelled and will not renew. |\n| `finished` | The subscription has completed all billing cycles (for limited-duration subscriptions). |"
+    },
+    "Subscription-Trial-Duration": {
+      "type": "string",
+      "format": "duration",
+      "description": "The trial period duration for this subscription in [ISO 8601 duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations) (e.g., \"P14D\" for 14 days).\n\n### Override plan defaults\n\nSubscription plans can define a default trial duration. When creating a subscription, you can use this field to override the plan's default trial period:\n\n| Field value | Behaviour | Example |\n| ----------- | -------- | ------- |\n| **Not provided** | Uses the trial duration defined in the plan (if any) | Plan has `\"P7D\"` → subscription gets 7-day trial |\n| **Different value** | Overrides the plan's default trial duration | Plan has `\"P7D\"` → set to `\"P30D\"` for promotional offer, or `\"P3D\"` to reduce |\n| **`\"P0D\"`** | Explicitly skips the trial period | Plan has `\"P7D\"` → set to `\"P0D\"` to skip trial entirely |\n\n:::note\nOnly days (`D`) are allowed. Time components such as hours, minutes, or seconds are not permitted.\n:::",
+      "pattern": "^P[0-9]+D$"
+    },
+    "Subscription-Trial-End-Date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "The date and time when the subscription's trial period ends in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n\nThis value is automatically calculated by the system as: `start_date` + `trial_duration`\n\nThe `trial_duration` used in the calculation comes from either:\n- The subscription's custom `trial_duration` (if provided at creation time), or\n- The plan's default `trial_duration` (if no override was specified)\n\nThis field is `null` when the subscription has no trial period (e.g., when `trial_duration` is not set or is `\"P0D\"`)."
+    },
+    "Subscription-Updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the subscription was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    }
+  }
+}

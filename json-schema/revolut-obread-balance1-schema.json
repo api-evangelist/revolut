@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-obread-balance1-schema.json",
+  "title": "OBReadBalance1",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-accounts-api-openapi.yml#/components/schemas/OBReadBalance1",
+  "required": [
+    "Data",
+    "Links",
+    "Meta"
+  ],
+  "type": "object",
+  "properties": {
+    "Data": {
+      "required": [
+        "Balance"
+      ],
+      "type": "object",
+      "properties": {
+        "Balance": {
+          "minItems": 1,
+          "type": "array",
+          "description": "A list of elements to define the balance details.",
+          "items": {
+            "$ref": "#/$defs/OBCashBalance1"
+          }
+        }
+      },
+      "description": "The balance details."
+    },
+    "Links": {
+      "$ref": "#/$defs/Links"
+    },
+    "Meta": {
+      "$ref": "#/$defs/Meta"
+    }
+  },
+  "$defs": {
+    "AccountId": {
+      "maxLength": 40,
+      "minLength": 1,
+      "type": "string",
+      "description": "The unique and immutable ID to identify the account resource.\nThis ID has no meaning to the account owner."
+    },
+    "Links": {
+      "required": [
+        "Self"
+      ],
+      "type": "object",
+      "properties": {
+        "Self": {
+          "type": "string",
+          "description": "The absolute URI to the resource.",
+          "format": "uri"
+        },
+        "Next": {
+          "type": "string",
+          "description": "The absolute URI to the next pagination resource.",
+          "format": "uri"
+        },
+        "Prev": {
+          "type": "string",
+          "description": "The absolute URI to the previous pagination resource.",
+          "format": "uri"
+        }
+      },
+      "description": "Links relevant to the payload."
+    },
+    "Meta": {
+      "title": "MetaData",
+      "type": "object",
+      "properties": {
+        "TotalPages": {
+          "type": "integer",
+          "description": "Used for pagination. Indicates how many pages of results are available.",
+          "format": "int32"
+        }
+      },
+      "description": "Meta data relevant to the payload."
+    },
+    "OBActiveCurrencyAndAmount_SimpleType": {
+      "pattern": "^\\d{1,13}\\.\\d{1,5}$",
+      "type": "string",
+      "description": "The amount of money where the unit of currency is explicit and compliant with [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)."
+    },
+    "OBActiveOrHistoricCurrencyAndAmount": {
+      "required": [
+        "Amount",
+        "Currency"
+      ],
+      "type": "object",
+      "properties": {
+        "Amount": {
+          "$ref": "#/$defs/OBActiveCurrencyAndAmount_SimpleType"
+        },
+        "Currency": {
+          "pattern": "^[A-Z]{3,3}$",
+          "type": "string",
+          "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+        }
+      },
+      "description": "The amount of the cash balance after a transaction entry is applied to the account."
+    },
+    "OBBalanceType1Code": {
+      "type": "string",
+      "description": "The balance type.",
+      "enum": [
+        "InterimAvailable",
+        "InterimBooked",
+        "ClosingAvailable",
+        "ClosingBooked",
+        "ClosingCleared",
+        "Expected",
+        "ForwardAvailable",
+        "Information",
+        "InterimAvailable",
+        "InterimBooked",
+        "InterimCleared",
+        "OpeningAvailable",
+        "OpeningBooked",
+        "OpeningCleared",
+        "PreviouslyClosedBooked"
+      ]
+    },
+    "OBCashBalance1": {
+      "required": [
+        "AccountId",
+        "Amount",
+        "CreditDebitIndicator",
+        "DateTime",
+        "Type"
+      ],
+      "type": "object",
+      "properties": {
+        "AccountId": {
+          "$ref": "#/$defs/AccountId"
+        },
+        "CreditDebitIndicator": {
+          "type": "string",
+          "description": "Indicates whether the balance is a credit or a debit balance.\n\n:::note\nA zero balance is considered a credit balance.\n:::",
+          "enum": [
+            "Credit",
+            "Debit"
+          ]
+        },
+        "Type": {
+          "$ref": "#/$defs/OBBalanceType1Code"
+        },
+        "DateTime": {
+          "type": "string",
+          "description": "The date and time for the balance.\n\nAll dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.\nAll date-time fields in responses must include the timezone.\n\nFor example: `2017-04-05T10:43:07+00:00`.",
+          "format": "date-time"
+        },
+        "Amount": {
+          "$ref": "#/$defs/OBActiveOrHistoricCurrencyAndAmount"
+        },
+        "CreditLine": {
+          "type": "array",
+          "description": "A list of elements to provide details on the credit line.",
+          "items": {
+            "$ref": "#/$defs/OBCreditLine1"
+          }
+        }
+      },
+      "description": "A list of elements to define the balance details."
+    },
+    "OBCreditLine1": {
+      "required": [
+        "Included"
+      ],
+      "type": "object",
+      "properties": {
+        "Included": {
+          "type": "boolean",
+          "description": "Indicates whether the credit line is included in the balance of the account.\n\n:::note\nIf set to `false`, credit line is not included in the account balance.\n:::"
+        },
+        "Type": {
+          "$ref": "#/$defs/OBExternalLimitType1Code"
+        },
+        "Amount": {
+          "$ref": "#/$defs/OBActiveOrHistoricCurrencyAndAmount"
+        }
+      },
+      "description": "Set of elements used to provide details on the credit line."
+    },
+    "OBExternalLimitType1Code": {
+      "type": "string",
+      "description": "The limit type.",
+      "enum": [
+        "Available"
+      ]
+    }
+  }
+}

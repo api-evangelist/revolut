@@ -1,0 +1,306 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-counterparty-schema.json",
+  "title": "Counterparty",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-counterparties-api-openapi.yml#/components/schemas/Counterparty",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the counterparty."
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the counterparty."
+    },
+    "revtag": {
+      "type": "string",
+      "description": "The [Revtag](https://help.revolut.com/help/transfers/internal-transfers/username-payments/revtags/) of the counterparty."
+    },
+    "profile_type": {
+      "$ref": "#/$defs/ProfileType"
+    },
+    "country": {
+      "$ref": "#/$defs/CountryCode"
+    },
+    "state": {
+      "enum": [
+        "created",
+        "draft",
+        "deleted"
+      ],
+      "description": "Indicates the state of the counterparty.",
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the counterparty was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the counterparty was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    },
+    "accounts": {
+      "type": "array",
+      "description": "The list of public accounts associated with this counterparty.",
+      "items": {
+        "$ref": "#/$defs/CounterpartyAccount"
+      }
+    },
+    "cards": {
+      "type": "array",
+      "description": "The list of cards associated with this counterparty.",
+      "items": {
+        "$ref": "#/$defs/CounterpartyCard"
+      }
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "state",
+    "created_at",
+    "updated_at"
+  ],
+  "$defs": {
+    "AccountCurrency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+    },
+    "BankCountryCode": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$",
+      "description": "The country of the bank, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code."
+    },
+    "CounterpartyAccount": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the counterparty's account."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the counterparty."
+        },
+        "bank_country": {
+          "$ref": "#/$defs/BankCountryCode"
+        },
+        "currency": {
+          "$ref": "#/$defs/AccountCurrency"
+        },
+        "type": {
+          "enum": [
+            "revolut",
+            "external"
+          ],
+          "description": "Indicates the type of account.",
+          "type": "string"
+        },
+        "account_no": {
+          "type": "string",
+          "description": "The bank account number of the counterparty."
+        },
+        "iban": {
+          "type": "string",
+          "description": "The IBAN number of the counterparty's account if applicable."
+        },
+        "sort_code": {
+          "type": "string",
+          "description": "The sort code of the counterparty's account if applicable."
+        },
+        "routing_number": {
+          "type": "string",
+          "description": "The routing number of the counterparty's account if applicable."
+        },
+        "bic": {
+          "type": "string",
+          "description": "The BIC number of the counterparty's account if applicable."
+        },
+        "clabe": {
+          "type": "string",
+          "description": "The CLABE number of the counterparty's account if applicable."
+        },
+        "ifsc": {
+          "type": "string",
+          "description": "The IFSC number of the counterparty's account if applicable."
+        },
+        "bsb_code": {
+          "type": "string",
+          "description": "The BSB number of the counterparty's account if applicable."
+        },
+        "route": {
+          "type": "string",
+          "enum": [
+            "ach",
+            "fedwire",
+            "swift"
+          ],
+          "description": "Routing method for US/USD transfers. Defaults to `ach` for US-registered businesses and `fedwire` for non-US businesses."
+        },
+        "bank_number": {
+          "type": "string",
+          "description": "Brazilian bank identification code (COMPE). Returned for BR counterparties."
+        },
+        "branch_code": {
+          "type": "string",
+          "description": "Brazilian branch (agência) code. Returned for BR counterparties."
+        },
+        "account_type": {
+          "type": "string",
+          "enum": [
+            "checking",
+            "savings"
+          ],
+          "description": "Bank account type. Returned for BR, CO, and CL counterparties. Defaults to `checking` for US ACH transfers."
+        },
+        "tax_id": {
+          "type": "string",
+          "maxLength": 20,
+          "description": "Tax identification number.\nRouted based on `bank_country` and recipient type:\n- **BR**:\n  - **Individual**: CPF (Cadastro de Pessoas Físicas). Accepted formats: `^\\d{11}$` or `^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$`.\n  - **Company**: CNPJ (Cadastro Nacional da Pessoa Jurídica). Accepted formats: `^\\d{14}$` or `^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}$`.\n- **CO (company)**: NIT (Número de Identificación Tributaria). Accepted format: `^\\d{10}$`.\n- **CL (individual, company)**: RUT (Rol Único Tributario)."
+        },
+        "national_id": {
+          "type": "string",
+          "description": "National identification number.\nSpecifies Colombian Cédula de Ciudadanía when `bank_country` is `CO` and `profile_type` is `personal`."
+        },
+        "phone": {
+          "type": "string",
+          "maxLength": 20,
+          "description": "The phone number of the counterparty in [E.164](https://en.wikipedia.org/wiki/E.164) format.\n\nCountry-specific formats:\n- **CO**: `+57` followed by 10 digits (`^\\+?57\\d{10}$`)\n- **LK**: `+94` followed by 10 digits (`^\\+?94\\d{10}$`)\n- **KR**: `+82` followed by 10 digits (`^\\+?82\\d{10}$`)"
+        },
+        "business_registration_id": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Company registration number. Used for business LK counterparties."
+        },
+        "recipient_charges": {
+          "enum": [
+            "no",
+            "expected"
+          ],
+          "description": "Indicates the possibility of the recipient charges.\n\n:::warning\nThis field is deprecated and should be disregarded.\nIt is returned for legacy purposes only.\n:::",
+          "type": "string",
+          "deprecated": true
+        },
+        "address": {
+          "$ref": "#/$defs/CounterpartyAddress"
+        }
+      },
+      "required": [
+        "id",
+        "currency",
+        "type"
+      ]
+    },
+    "CounterpartyAddress": {
+      "type": "object",
+      "description": "The address of the counterparty's account.",
+      "required": [
+        "country"
+      ],
+      "properties": {
+        "street_line1": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Street line 1 information."
+        },
+        "street_line2": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Street line 2 information."
+        },
+        "region": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "The name of the region (state or province), for example, Ontario for Canada."
+        },
+        "city": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "The name of the city."
+        },
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "The country of the counterparty, as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code."
+        },
+        "postcode": {
+          "type": "string",
+          "maxLength": 15,
+          "description": "The postcode of the counterparty address."
+        }
+      }
+    },
+    "CounterpartyCard": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "last_digits",
+        "scheme",
+        "country",
+        "currency"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The ID of the counterparty's card."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the counterparty."
+        },
+        "last_digits": {
+          "type": "string",
+          "description": "The last four digits of the card number."
+        },
+        "scheme": {
+          "type": "string",
+          "enum": [
+            "visa",
+            "mastercard"
+          ],
+          "description": "The card brand."
+        },
+        "country": {
+          "$ref": "#/$defs/CountryCodeCard"
+        },
+        "currency": {
+          "$ref": "#/$defs/Currency"
+        }
+      }
+    },
+    "CountryCode": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$",
+      "description": "The counterparty's bank country, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code."
+    },
+    "CountryCodeCard": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$",
+      "description": "The country of the card issuer, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code."
+    },
+    "Currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+    },
+    "ProfileType": {
+      "type": "string",
+      "enum": [
+        "personal",
+        "business"
+      ],
+      "description": "The type of the counterparty.\nIndicates whether the recipient is an individual or a company."
+    }
+  }
+}

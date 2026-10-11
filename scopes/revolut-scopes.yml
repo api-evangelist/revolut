@@ -1,0 +1,34 @@
+generated: '2026-10-12'
+method: derived
+source: openapi/revolut-wallet-partner-api-openapi.yml
+schemes:
+- name: oauth2
+  source: openapi/revolut-wallet-partner-api-openapi.yml
+  flows:
+  - flow: clientCredentials
+    tokenUrl: https://partner.wallet.revolut.com/oauth/token
+  description: |-
+    OAuth 2.0 **client credentials**. Request a short-lived access token from the token endpoint
+    (authenticating with your onboarding credential: `client_secret`, `private_key_jwt`, or your
+    mTLS certificate) and send it as `Authorization: Bearer <token>`. Request `passes.write`
+    for pass operations, `templates.read` for template retrieval, and `templates.write` for
+    template mutations. May be used on its own or together with mTLS.
+scopes:
+- scope: passes.write
+  description: Create and update passes.
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/revolut-wallet-partner-api-openapi.yml
+- scope: templates.read
+  description: Retrieve and list templates.
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/revolut-wallet-partner-api-openapi.yml
+- scope: templates.write
+  description: Create, update, activate, and terminate templates.
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/revolut-wallet-partner-api-openapi.yml

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-synchronous-webhook-schema.json",
+  "title": "SynchronousWebhook",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-other-api-openapi.yml#/components/schemas/Synchronous-Webhook",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the synchronous webhook object."
+    },
+    "signing_key": {
+      "type": "string",
+      "pattern": "^swsk_[a-zA-Z0-9]{32}$",
+      "description": "A randomly generated signing key, which can be used by merchants to authenticate requests from Revolut by verifying the signature. For more information, see: [Payload Signature](https://developer.revolut.com/docs/api/merchant#authentication)."
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https:\\/{2}.+/gi",
+      "maxLength": 2000,
+      "description": "The valid URL of the endpoint, that uses HTTPS URL schema. Revolut sends the shipping address of the customer to this URL for validation.\n\n:::warning\nRestrictions:\n- Must be a valid URI as defined by [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)\n- URI scheme is required and must be `https`\n- URI host is required and cannot be `localhost` or an IP address\n- Max length: `2000`\n- Reserved or invalid characters must be percent-encoded (for example, use `%20` instead of a space)\n:::"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "fast_checkout.validate_address"
+      ],
+      "description": "Type of event this synchronous webhook is configured for.\n\n:::note\nAt the moment, synchronous webhooks only support address validation events. \n:::"
+    },
+    "location_id": {
+      "$ref": "#/$defs/Location-Id"
+    }
+  },
+  "required": [
+    "id",
+    "signing_key",
+    "url",
+    "event_type"
+  ],
+  "$defs": {
+    "Location-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique ID representing the location where merchants sells products.\n\n:::info\nFor more information, see: [Locations](https://developer.revolut.com/docs/api/merchant#tag-locations).\n:::        "
+    }
+  }
+}

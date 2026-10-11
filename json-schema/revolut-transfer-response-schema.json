@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-transfer-response-schema.json",
+  "title": "TransferResponse",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-transfers-api-openapi.yml#/components/schemas/TransferResponse",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The ID of the transaction created."
+    },
+    "state": {
+      "$ref": "#/$defs/TransactionState"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the transaction was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the transaction was completed in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    }
+  },
+  "required": [
+    "id",
+    "state",
+    "created_at"
+  ],
+  "$defs": {
+    "TransactionState": {
+      "enum": [
+        "created",
+        "pending",
+        "completed",
+        "declined",
+        "failed",
+        "reverted"
+      ],
+      "description": "Indicates the transaction state. Possible values:\n  - `created`: The transaction has been created and is either processed asynchronously or scheduled for a later time.\n  - `pending`: The transaction is pending until it's being processed. If the transfer is made between Revolut accounts, this state is skipped and the transaction is executed instantly.\n  - `completed`: The transaction was successful.\n  - `declined`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, insufficient account balance, wrong receiver information, etc.\n  - `failed`: The transaction was unsuccessful. This can happen for a variety of reasons, for example, invalid API calls, blocked payments, etc.\n  - `reverted`: The transaction was reverted. This can happen for a variety of reasons, for example, the receiver being inaccessible.",
+      "type": "string"
+    }
+  }
+}

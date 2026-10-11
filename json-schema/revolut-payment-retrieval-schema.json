@@ -1,0 +1,367 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-payment-retrieval-schema.json",
+  "title": "Payment-Retrieval",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-payments-api-openapi.yml#/components/schemas/Payment-Retrieval",
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/Payment-Id"
+    },
+    "order_id": {
+      "$ref": "#/$defs/Order-Id"
+    },
+    "payment_method": {
+      "type": "object",
+      "description": "The payment method used to pay for the order.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Revolut-Pay"
+        },
+        {
+          "$ref": "#/$defs/Card-For-Payment-Details"
+        },
+        {
+          "$ref": "#/$defs/Sepa-Direct-Debit"
+        }
+      ]
+    },
+    "token": {
+      "$ref": "#/$defs/Payment-Token"
+    },
+    "amount": {
+      "$ref": "#/$defs/Payment-Amount"
+    },
+    "currency": {
+      "$ref": "#/$defs/Currency"
+    },
+    "state": {
+      "$ref": "#/$defs/Payment-State-v2"
+    },
+    "decline_reason": {
+      "$ref": "#/$defs/Decline-Reason-v2"
+    },
+    "authentication_challenge": {
+      "$ref": "#/$defs/Authentication-Challenge"
+    }
+  },
+  "required": [
+    "id",
+    "order_id",
+    "payment_method"
+  ],
+  "$defs": {
+    "Authentication-Challenge": {
+      "type": "object",
+      "description": "Details about the authentication challenge that should be performed to complete the authentication process. For more information about Revolut's 3DS solution, see: [3D Secure overview](https://developer.revolut.com/docs/guides/merchant/reference/3d-secure).\n\nOnly returned if the payment's state is `authentication_challenge`.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Three-Ds"
+        },
+        {
+          "$ref": "#/$defs/Three-Ds-Fingerprint"
+        }
+      ]
+    },
+    "Authentication-Challenge-Type": {
+      "type": "string",
+      "enum": [
+        "three_ds",
+        "three_ds_fingerprint"
+      ],
+      "description": "Type of the authentication challenge the payment triggers."
+    },
+    "Card-For-Payment-Details": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "card",
+            "revolut_pay"
+          ],
+          "description": "The type of payment method used to pay for the order."
+        },
+        "brand": {
+          "type": "string",
+          "description": "The type of the card."
+        },
+        "last_four": {
+          "type": "string",
+          "description": "The last four digits of the card number."
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the saved payment method.\n\n:::note\nThe `id` parameter is only returned if the payment method is saved.\n:::"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "Currency": {
+      "type": "string",
+      "format": "ISO 4217",
+      "minLength": 3,
+      "maxLength": 3,
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.\n\n:::info\nFor more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).\n:::"
+    },
+    "Decline-Reason-v2": {
+      "type": "string",
+      "description": "The reason for a `failed` or `declined` payment.\n\nA failed or declined payment can result from multiple reasons. To learn more, check our [failure reasons](https://developer.revolut.com/docs/guides/merchant/reference/error-codes/decline-reasons).",
+      "enum": [
+        "3ds_challenge_abandoned",
+        "3ds_challenge_failed_manually",
+        "cardholder_name_missing",
+        "customer_challenge_abandoned",
+        "customer_challenge_failed",
+        "customer_name_mismatch",
+        "do_not_honour",
+        "expired_card",
+        "high_risk",
+        "insufficient_funds",
+        "invalid_address",
+        "invalid_amount",
+        "invalid_card",
+        "invalid_country",
+        "invalid_cvv",
+        "invalid_email",
+        "invalid_expiry",
+        "invalid_merchant",
+        "invalid_phone",
+        "invalid_pin",
+        "issuer_not_available",
+        "pick_up_card",
+        "rejected_by_customer",
+        "restricted_card",
+        "suspected_fraud",
+        "technical_error",
+        "transaction_not_allowed_for_cardholder",
+        "unknown_card",
+        "withdrawal_limit_exceeded"
+      ]
+    },
+    "Order-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Permanent order ID used to retrieve, capture, cancel, or refund an order after authorization."
+    },
+    "Payment-Amount": {
+      "type": "integer",
+      "format": "int64",
+      "minimum": 0,
+      "description": "The payment amount in minor units (e.g., cents). The value of this field depends on the payment type and state.\n\n| Payment type | State | Amount value |\n|--------------|-------|--------------|\n| Standard payment | Any | Total payment amount |\n| Pre-authorised payment | `authorisation_started` | New amount being authorised (during increment processing) |\n| Pre-authorised payment | `authorised` | Currently authorised amount (equals `authorised_amount`) |\n\n:::info\nFor pre-authorised payments, see the `authorised_amount` field for tracking the currently authorised amount separately.\n:::"
+    },
+    "Payment-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the payment."
+    },
+    "Payment-Method-Type": {
+      "type": "string",
+      "enum": [
+        "apple_pay",
+        "card",
+        "google_pay",
+        "revolut_pay_card",
+        "revolut_pay_account",
+        "sepa_direct_debit"
+      ],
+      "description": "The type of payment method used to pay for the order.\n\nAvailable values:\n\n| Payment method `type` | Description |\n| --------------------- | ----------- |\n| `apple_pay` | The customer paid the order using Apple Pay. |\n| `card` | The customer paid the order using their credit or debit card. |\n| `google_pay` | The customer paid the order using Google Pay. |\n| `revolut_pay_card` | The customer paid the order via Revolut Pay using their credit or debit card. |\n| `revolut_pay_account` | The customer paid the order via Revolut Pay using their Revolut account. |\n| `sepa_direct_debit` | The customer paid the order using SEPA Direct Debit. |"
+    },
+    "Payment-State-v2": {
+      "type": "string",
+      "description": "The status of the payment.",
+      "enum": [
+        "pending",
+        "authentication_challenge",
+        "authentication_verified",
+        "authorisation_started",
+        "authorisation_passed",
+        "authorised",
+        "capture_started",
+        "captured",
+        "refund_validated",
+        "refund_started",
+        "cancellation_started",
+        "declining",
+        "completing",
+        "cancelling",
+        "failing",
+        "completed",
+        "declined",
+        "soft_declined",
+        "cancelled",
+        "failed"
+      ]
+    },
+    "Payment-Token": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Temporary token of the payment used to fetch the reward offer during checkout and link user registrations to the given offers. \n\nThe token is only valid for a limited time."
+    },
+    "RPay-Account": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "card",
+            "revolut_pay"
+          ],
+          "description": "The type of payment method used to pay for the order."
+        },
+        "subtype": {
+          "type": "string",
+          "enum": [
+            "revolut_account",
+            "card"
+          ],
+          "description": "Indicates whether the customer used their card or Revolut account via Revolut Pay."
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the saved payment method.\n\n:::note\nThe `id` parameter is only returned if the payment method is saved.\n:::"
+        }
+      },
+      "required": [
+        "type",
+        "subtype"
+      ]
+    },
+    "RPay-Card": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "card",
+            "revolut_pay"
+          ],
+          "description": "The type of payment method used to pay for the order."
+        },
+        "subtype": {
+          "type": "string",
+          "enum": [
+            "revolut_account",
+            "card"
+          ],
+          "description": "Indicates whether the customer used their card or Revolut account via Revolut Pay."
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the saved payment method.\n\n:::note\nThe `id` parameter is only returned if the payment method is saved.\n:::"
+        },
+        "brand": {
+          "type": "string",
+          "description": "The type of the card."
+        },
+        "last_four": {
+          "type": "string",
+          "description": "The last four digits of the card number."
+        }
+      },
+      "required": [
+        "type",
+        "subtype"
+      ]
+    },
+    "Revolut-Pay": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/RPay-Account"
+        },
+        {
+          "$ref": "#/$defs/RPay-Card"
+        }
+      ]
+    },
+    "Sepa-Direct-Debit": {
+      "type": "object",
+      "description": "Object containing details of a SEPA Direct Debit payment.\n\n:::info\nFor more information, see: [SEPA Direct Debit server-to-server integration](https://developer.revolut.com/docs/guides/merchant/accept-payments/payment-methods/sepa-direct-debit/server-to-server)\n:::",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the saved payment method.\n\n:::note\nThe `id` parameter is only returned when the payment method is saved for the merchant.\n:::"
+        },
+        "type": {
+          "$ref": "#/$defs/Payment-Method-Type"
+        },
+        "debtor_iban_last_four": {
+          "$ref": "#/$defs/Sepa-Direct-Debit-Debtor-Iban-Last-Four"
+        },
+        "debtor_name": {
+          "$ref": "#/$defs/Sepa-Direct-Debit-Debtor-Name"
+        },
+        "mandate_reference": {
+          "$ref": "#/$defs/Sepa-Direct-Debit-Mandate-Reference"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "Sepa-Direct-Debit-Debtor-Iban-Last-Four": {
+      "type": "string",
+      "description": "The last four digits of the debtor's IBAN.",
+      "minLength": 4,
+      "maxLength": 4
+    },
+    "Sepa-Direct-Debit-Debtor-Name": {
+      "type": "string",
+      "description": "The full name of the debtor as provided in the mandate."
+    },
+    "Sepa-Direct-Debit-Mandate-Reference": {
+      "type": "string",
+      "description": "The unique mandate reference generated by Revolut. Include this in pre-debit notifications sent to your customers."
+    },
+    "Three-Ds": {
+      "title": "three_ds",
+      "type": "object",
+      "description": "Information about the 3DS challenge.",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/Authentication-Challenge-Type"
+        },
+        "acs_url": {
+          "type": "string",
+          "format": "url",
+          "description": "The URL of the authentication challenge."
+        }
+      },
+      "required": [
+        "type",
+        "acs_url"
+      ]
+    },
+    "Three-Ds-Fingerprint": {
+      "title": "three_ds_fingerprint",
+      "type": "object",
+      "description": "Information about the 3DS fingerprint challenge.",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/Authentication-Challenge-Type"
+        },
+        "fingerprint_url": {
+          "type": "string",
+          "format": "url",
+          "description": "The URL of the fingerprint. (Used only internally by Revolut.)"
+        },
+        "fingerprint_data": {
+          "type": "string",
+          "format": "JSON",
+          "description": "Data about the fingerprint used for authentication. (Used only internally\nby Revolut.)"
+        }
+      },
+      "required": [
+        "type",
+        "fingerprint_url",
+        "fingerprint_data"
+      ]
+    }
+  }
+}

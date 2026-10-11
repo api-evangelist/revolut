@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-create-webhook-request-schema.json",
+  "title": "CreateWebhookRequest",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-webhooks-v2-api-openapi.yml#/components/schemas/CreateWebhookRequest",
+  "type": "object",
+  "required": [
+    "url"
+  ],
+  "properties": {
+    "url": {
+      "$ref": "#/$defs/Url",
+      "description": "A valid webhook URL to which to send event notifications. The supported protocol is `https`."
+    },
+    "events": {
+      "description": "A list of event types to subscribe to.\nIf you don't provide it, you're automatically subscribed to the [default event types](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks#default-event-types).",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/WebhookEventType"
+      },
+      "default": [
+        "TransactionCreated",
+        "TransactionStateChanged"
+      ]
+    }
+  },
+  "$defs": {
+    "Url": {
+      "description": "A valid webhook URL to which to send event notifications. The supported protocol is `https`.",
+      "type": "string",
+      "format": "uri"
+    },
+    "WebhookEventType": {
+      "enum": [
+        "TransactionCreated",
+        "TransactionStateChanged",
+        "PayoutLinkCreated",
+        "PayoutLinkStateChanged"
+      ],
+      "description": "The type of the webhook event to subscribe to."
+    }
+  }
+}

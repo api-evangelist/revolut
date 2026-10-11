@@ -17,7 +17,8 @@ paths:
     post:
       summary: Validate an account name (CoP/VoP)
       operationId: validateAccountName
-      description: 'Validate a counterparty''s account name against their account details when adding a counterparty or making a transfer to a new or existing counterparty.
+      description: 'Validate a counterparty''s account name against their account details when adding a counterparty or making a transfer to a
+        new or existing counterparty.
 
 
         :::warning
@@ -40,7 +41,8 @@ paths:
 
         - In Sandbox, this feature is only available for **testing**.
 
-        While **incomplete or invalid requests** will return production-like error responses, **complete and valid requests** in Sandbox do **not** undergo real validation and will always return `cannot_be_checked`.
+        While **incomplete or invalid requests** will return production-like error responses, **complete and valid requests** in Sandbox do **not**
+        undergo real validation and will always return `cannot_be_checked`.
 
         :::
 
@@ -125,7 +127,10 @@ paths:
                   company_name: Joseph Bloggs Pty Ltd
       responses:
         '200':
-          description: "Account name validation result\n\n:::note\n- The actual results returned in the response come from the CoP services, not from Revolut.\n  The Business API passes them on as received.\n\n  Because of this, the descriptions below should be treated as an approximation rather than complete documentation.\n- The responses differ depending on the CoP service, even when the schema appears the same.\n  Make sure that you refer to the appropriate response variant.\n:::"
+          description: "Account name validation result\n\n:::note\n- The actual results returned in the response come from the CoP services, not\
+            \ from Revolut.\n  The Business API passes them on as received.\n\n  Because of this, the descriptions below should be treated as\
+            \ an approximation rather than complete documentation.\n- The responses differ depending on the CoP service, even when the schema\
+            \ appears the same.\n  Make sure that you refer to the appropriate response variant.\n:::"
           content:
             application/json:
               schema:
@@ -484,7 +489,8 @@ paths:
         name: name
         schema:
           type: string
-        description: "The name of the counterparty to retrieve. It does not need to be an exact match, partial match is also supported. \n\n:::note\nSpecial characters must be properly URL-encoded.\n:::"
+        description: "The name of the counterparty to retrieve. It does not need to be an exact match, partial match is also supported. \n\n:::note\n\
+          Special characters must be properly URL-encoded.\n:::"
       - in: query
         name: account_no
         schema:
@@ -511,7 +517,8 @@ paths:
           type: string
           format: date-time
           default: the date-time at which the request is made
-        description: "Retrieves counterparties with `created_at` < `created_before`.\nThe default value is the current date and time at which you are calling the endpoint. \n\nProvide it in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+        description: "Retrieves counterparties with `created_at` < `created_before`.\nThe default value is the current date and time at which\
+          \ you are calling the endpoint. \n\nProvide it in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
       - in: query
         name: limit
         schema:
@@ -522,7 +529,8 @@ paths:
         description: 'The maximum number of counterparties returned per page.
 
 
-          To get to the next page, make a new request and use the `created_at` date of the last counterparty returned in the previous response as the value for `created_before`.'
+          To get to the next page, make a new request and use the `created_at` date of the last counterparty returned in the previous response
+          as the value for `created_before`.'
       security:
       - AccessToken:
         - READ
@@ -758,7 +766,8 @@ paths:
 
         Some payment rails may have stricter requirements regarding the `address` field – for example, by also requiring the `region` field.
 
-        This is why we recommend that you use **all** available address fields (including `street_line1`, `region` and `city`) when creating a counterparty.
+        This is why we recommend that you use **all** available address fields (including `street_line1`, `region` and `city`) when creating a
+        counterparty.
 
 
         This significantly reduces the risk of any disruption to payments made via the API.
@@ -773,11 +782,13 @@ paths:
 
         For example:
 
-        - **Revtag**: If you''ve already added `johnsmith` as a Revolut counterparty, you can''t add another counterparty with the `johnsmith` Revtag.
+        - **Revtag**: If you''ve already added `johnsmith` as a Revolut counterparty, you can''t add another counterparty with the `johnsmith`
+        Revtag.
 
         If you try to do so, you''ll get an error.
 
-        - **Other details**: If you''ve added John Smith as an individual UK counterparty using GBP with `sort_code=54-01-05` and `account_no=12345678`, you can still use the same details to create another counterparty.
+        - **Other details**: If you''ve added John Smith as an individual UK counterparty using GBP with `sort_code=54-01-05` and `account_no=12345678`,
+        you can still use the same details to create another counterparty.
 
 
         ### Counterparty name
@@ -1043,7 +1054,8 @@ paths:
           description: 'Not Found
 
 
-            Returned, for example, when the counterparty that you''re trying to add doesn''t exist, or when the name that you provide for the Revtag counterparty doesn''t match the actual name on the account.'
+            Returned, for example, when the counterparty that you''re trying to add doesn''t exist, or when the name that you provide for the
+            Revtag counterparty doesn''t match the actual name on the account.'
           content:
             application/json:
               schema:
@@ -1055,7 +1067,8 @@ paths:
           description: 'Unprocessable Content
 
 
-            Returned, for example, when the Revolut counterparty that you''re trying to add using Revtag already exists, or when the counterparty cannot be added.'
+            Returned, for example, when the Revolut counterparty that you''re trying to add using Revtag already exists, or when the counterparty
+            cannot be added.'
           content:
             application/json:
               schema:
@@ -1093,7 +1106,8 @@ paths:
         :::
 
 
-        Use this endpoint to discover which country and currency combinations are supported before checking field requirements with the Check counterparty field requirements endpoint.
+        Use this endpoint to discover which country and currency combinations are supported before checking field requirements with the Check
+        counterparty field requirements endpoint.
 
 
         For more details, see the guide: **Check supported counterparty countries and currencies** section in Create a counterparty.'
@@ -1140,7 +1154,8 @@ paths:
         :::
 
 
-        When creating a counterparty via the Create a counterparty endpoint, certain fields (such as `first_name`, `last_name`, `company_name`, `tax_id`, `route`, or `account_type`) become required depending on the counterparty''s bank country, currency, and profile type.
+        When creating a counterparty via the Create a counterparty endpoint, certain fields (such as `first_name`, `last_name`, `company_name`,
+        `tax_id`, `route`, or `account_type`) become required depending on the counterparty''s bank country, currency, and profile type.
 
         This read-only endpoint allows you to discover these contextual fields dynamically, along with their validation rules and available options.
 
@@ -1181,7 +1196,8 @@ paths:
       - name: route
         in: query
         required: false
-        description: "The routing method for the corridor. \nWhen omitted, the response includes fields for the default route.\nFor example, for USD to US, the default is `ach`."
+        description: "The routing method for the corridor. \nWhen omitted, the response includes fields for the default route.\nFor example, for\
+          \ USD to US, the default is `ach`."
         schema:
           type: string
       responses:
@@ -1511,7 +1527,8 @@ paths:
 
         :::tip [What is a payment method?]
 
-        A payment method is an individual account or card linked to a counterparty. When you retrieve a counterparty, the response includes an `accounts` array and a `cards` array — each entry in these arrays is a payment method with its own `id`.
+        A payment method is an individual account or card linked to a counterparty. When you retrieve a counterparty, the response includes an
+        `accounts` array and a `cards` array — each entry in these arrays is a payment method with its own `id`.
 
         :::
 
@@ -1542,7 +1559,8 @@ paths:
       - name: payment_method_id
         in: path
         required: true
-        description: The ID of the payment method to update. To get the `payment_method_id` for the bank account, [retrieve the counterparty](https://developer.revolut.com/docs/api/business#get-counterparty) and use the `id` from the `accounts` array in the response.
+        description: The ID of the payment method to update. To get the `payment_method_id` for the bank account, [retrieve the counterparty](https://developer.revolut.com/docs/api/business#get-counterparty)
+          and use the `id` from the `accounts` array in the response.
         schema:
           type: string
           format: uuid
@@ -1624,7 +1642,9 @@ components:
       properties:
         name:
           type: string
-          description: "The name of the field to be provided in the [Create a counterparty endpoint](https://developer.revolut.com/docs/api/business#add-counterparty) request body. \nMatches the field names in the Create a counterparty endpoint exactly (e.g. `first_name`, `last_name`, `tax_id`, `route`, `account_type`)."
+          description: "The name of the field to be provided in the [Create a counterparty endpoint](https://developer.revolut.com/docs/api/business#add-counterparty)\
+            \ request body. \nMatches the field names in the Create a counterparty endpoint exactly (e.g. `first_name`, `last_name`, `tax_id`,\
+            \ `route`, `account_type`)."
         required:
           type: boolean
           description: Indicates whether this field must be provided when creating the counterparty.
@@ -1659,7 +1679,8 @@ components:
     CountryCode:
       type: string
       pattern: ^[A-Z]{2}$
-      description: The counterparty's bank country, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+      description: The counterparty's bank country, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes)
+        code.
     Error:
       type: object
       properties:
@@ -1734,14 +1755,16 @@ components:
         country:
           type: string
           pattern: ^[A-Z]{2}$
-          description: The country of the counterparty, as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+          description: The country of the counterparty, as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes)
+            code.
         postcode:
           type: string
           maxLength: 15
           description: The postcode of the counterparty address.
     IndividualName:
       type: object
-      description: 'The name of the counterparty, provided when the counterparty is an **individual** (personal account type) and is **not** being added via Revtag.
+      description: 'The name of the counterparty, provided when the counterparty is an **individual** (personal account type) and is **not** being
+        added via Revtag.
 
 
         If specified, `company_name` and `name` must be empty.'
@@ -1768,7 +1791,8 @@ components:
     CountryCodeCard:
       type: string
       pattern: ^[A-Z]{2}$
-      description: The country of the card issuer, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+      description: The country of the card issuer, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes)
+        code.
     CounterpartyAccount:
       type: object
       properties:
@@ -1839,7 +1863,10 @@ components:
         tax_id:
           type: string
           maxLength: 20
-          description: "Tax identification number.\nRouted based on `bank_country` and recipient type:\n- **BR**:\n  - **Individual**: CPF (Cadastro de Pessoas Físicas). Accepted formats: `^\\d{11}$` or `^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$`.\n  - **Company**: CNPJ (Cadastro Nacional da Pessoa Jurídica). Accepted formats: `^\\d{14}$` or `^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}$`.\n- **CO (company)**: NIT (Número de Identificación Tributaria). Accepted format: `^\\d{10}$`.\n- **CL (individual, company)**: RUT (Rol Único Tributario)."
+          description: "Tax identification number.\nRouted based on `bank_country` and recipient type:\n- **BR**:\n  - **Individual**: CPF (Cadastro\
+            \ de Pessoas Físicas). Accepted formats: `^\\d{11}$` or `^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$`.\n  - **Company**: CNPJ (Cadastro Nacional\
+            \ da Pessoa Jurídica). Accepted formats: `^\\d{14}$` or `^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}$`.\n- **CO (company)**: NIT (Número\
+            \ de Identificación Tributaria). Accepted format: `^\\d{10}$`.\n- **CL (individual, company)**: RUT (Rol Único Tributario)."
         national_id:
           type: string
           description: 'National identification number.
@@ -1915,7 +1942,8 @@ components:
             Provide it when adding a Revolut counterparty via Revtag.'
         revtag:
           type: string
-          description: The [Revtag](https://help.revolut.com/help/transfers/internal-transfers/username-payments/revtags/) of the counterparty to add.
+          description: The [Revtag](https://help.revolut.com/help/transfers/internal-transfers/username-payments/revtags/) of the counterparty
+            to add.
         name:
           type: string
           description: 'The name of the counterparty, provided when the counterparty is being added via **Revtag**.
@@ -1935,7 +1963,8 @@ components:
             '
         company_name:
           type: string
-          description: 'The name of the counterparty, provided when the counterparty is a **company** (business account type) and is **not** being added via Revtag.
+          description: 'The name of the counterparty, provided when the counterparty is a **company** (business account type) and is **not** being
+            added via Revtag.
 
 
             If specified, `individual_name` and `name` must be empty.
@@ -1986,7 +2015,8 @@ components:
           - ach
           - fedwire
           - swift
-          description: "Routing method for US USD transfers. When omitted, defaults to `ach` for US-registered businesses and `fedwire` for non-US businesses. \n\nRequired when `bank_country` is `US` and the desired routing method differs from the default."
+          description: "Routing method for US USD transfers. When omitted, defaults to `ach` for US-registered businesses and `fedwire` for non-US\
+            \ businesses. \n\nRequired when `bank_country` is `US` and the desired routing method differs from the default."
           example: ach
         bank_number:
           type: string
@@ -2010,10 +2040,14 @@ components:
         tax_id:
           type: string
           maxLength: 20
-          description: "Tax identification number.\n\nRequired and routed based on `bank_country` and recipient type:\n- **BR**:\n  - **Individual**: CPF (Cadastro de Pessoas Físicas). Accepted formats: `^\\d{11}$` or `^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$`.\n  - **Company**: CNPJ (Cadastro Nacional da Pessoa Jurídica). Accepted formats: `^\\d{14}$` or `^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}$`.\n- **CO (company)**: NIT (Número de Identificación Tributaria). Accepted format: `^\\d{10}$`.\n- **CL (individual, company)**: RUT (Rol Único Tributario)."
+          description: "Tax identification number.\n\nRequired and routed based on `bank_country` and recipient type:\n- **BR**:\n  - **Individual**:\
+            \ CPF (Cadastro de Pessoas Físicas). Accepted formats: `^\\d{11}$` or `^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$`.\n  - **Company**: CNPJ\
+            \ (Cadastro Nacional da Pessoa Jurídica). Accepted formats: `^\\d{14}$` or `^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}$`.\n- **CO (company)**:\
+            \ NIT (Número de Identificación Tributaria). Accepted format: `^\\d{10}$`.\n- **CL (individual, company)**: RUT (Rol Único Tributario)."
         national_id:
           type: string
-          description: National identification number. Required  when `bank_country` is `CO` and `profile_type` is `personal`, must specify Colombian Cédula de Ciudadanía.
+          description: National identification number. Required  when `bank_country` is `CO` and `profile_type` is `personal`, must specify Colombian
+            Cédula de Ciudadanía.
         phone:
           type: string
           maxLength: 20
@@ -2073,7 +2107,8 @@ components:
         country:
           type: string
           pattern: ^[A-Z]{2}$
-          description: The country of the counterparty, as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+          description: The country of the counterparty, as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes)
+            code.
           example: GB
         postcode:
           type: string
@@ -2109,7 +2144,8 @@ components:
         country:
           type: string
           pattern: ^[A-Z]{2}$
-          description: The country of the counterparty, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code.
+          description: The country of the counterparty, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes)
+            code.
           example: GB
         postcode:
           type: string
@@ -2211,8 +2247,64 @@ components:
       type: string
       pattern: ^[A-Z]{3}$
       description: '[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.'
+    ValidateAccountNameRequestAU:
+      type: object
+      description: Referenced by this document but never defined in it. API Evangelist added this empty placeholder so the document resolves;
+        the shape is unknown and is NOT a claim about the API.
+      x-ae-placeholder: true
+    ValidateAccountNameRequestEUR:
+      type: object
+      description: Referenced by this document but never defined in it. API Evangelist added this empty placeholder so the document resolves;
+        the shape is unknown and is NOT a claim about the API.
+      x-ae-placeholder: true
+    ValidateAccountNameRequestRO:
+      type: object
+      description: Referenced by this document but never defined in it. API Evangelist added this empty placeholder so the document resolves;
+        the shape is unknown and is NOT a claim about the API.
+      x-ae-placeholder: true
+    ValidateAccountNameRequestUK:
+      type: object
+      description: Referenced by this document but never defined in it. API Evangelist added this empty placeholder so the document resolves;
+        the shape is unknown and is NOT a claim about the API.
+      x-ae-placeholder: true
+    ValidateAccountNameResponseAU:
+      type: object
+      description: Referenced by this document but never defined in it. API Evangelist added this empty placeholder so the document resolves;
+        the shape is unknown and is NOT a claim about the API.
+      x-ae-placeholder: true
+    ValidateAccountNameResponseEUR:
+      type: object
+      description: Referenced by this document but never defined in it. API Evangelist added this empty placeholder so the document resolves;
+        the shape is unknown and is NOT a claim about the API.
+      x-ae-placeholder: true
+    ValidateAccountNameResponseRO:
+      type: object
+      description: Referenced by this document but never defined in it. API Evangelist added this empty placeholder so the document resolves;
+        the shape is unknown and is NOT a claim about the API.
+      x-ae-placeholder: true
+    ValidateAccountNameResponseUK:
+      type: object
+      description: Referenced by this document but never defined in it. API Evangelist added this empty placeholder so the document resolves;
+        the shape is unknown and is NOT a claim about the API.
+      x-ae-placeholder: true
   securitySchemes:
     AccessToken:
       type: http
       scheme: bearer
-      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n:::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not** [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2. [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"
+      description: "Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.\n\
+        \nThe access token will be obtained the first time you set up your application and has an expiration of 40 minutes. \nDuring setup, a\
+        \ `refresh_token` will also be obtained which allows to obtain a new `access_token`.\n\n:::danger\nNever share your client-assertion JWT\
+        \ (JSON web token), `access_token` and `refresh_token` with anyone, as these can be used to access your banking data and initiate transactions.\n\
+        :::\n\nAccess tokens can be issued with four security scopes and require a JWT (JSON Web Token) signature to be obtained:\n- `READ`: Permissions\
+        \ for `GET` operations.\n- `WRITE`: Permissions to update counterparties, webhooks, and issue payment drafts.\n- `PAY`: Permissions to\
+        \ initiate or cancel transactions and currency exchanges.    \n- `READ_SENSITIVE_CARD_DATA`: Permissions to retrieve sensitive card details.\n\
+        \n  :::warning\n  If you enable the `READ_SENSITIVE_CARD_DATA` scope for your access token, you must set up IP whitelisting. \n  Failing\
+        \ to do so will prevent you from accessing **any** Business API endpoint. \n\n  IP whitelisting means that you must specify an IP or a\
+        \ set of IPs which will be the only IPs from which requests to the API will be accepted. \n  To do so:\n  1. Go to the Revolut Business\
+        \ web app [settings](https://business.revolut.com/settings) → **APIs** → **Business API**.\n  2. Select the corresponding API certificate.\n\
+        \  3. In **Production IP whitelist**, provide the IP(s) which should be whitelisted.\n      Make sure that the IPs you provide are **not**\
+        \ [local (i.e. private) IP addresses](https://www.okta.com/en-sg/identity-101/understanding-private-ip-ranges/). \n  4. Save the new settings.\n\
+        \  :::\n\nTo configure your JWT and obtain the refresh and first access tokens, complete the following steps:\n\n  1. [Sign up for a Revolut\
+        \ Business account](https://developer.revolut.com/docs/guides/manage-accounts/get-started/sign-up-for-revolut-business-account)\n  2.\
+        \ [Prepare your Sandbox environment](https://developer.revolut.com/docs/guides/manage-accounts/get-started/prepare-sandbox-environment)\n\
+        \  3. [Make your first API request](https://developer.revolut.com/docs/guides/manage-accounts/get-started/make-your-first-api-request)"

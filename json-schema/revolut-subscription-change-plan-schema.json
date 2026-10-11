@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-subscription-change-plan-schema.json",
+  "title": "Subscription-Change-Plan",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-subscriptions-api-openapi.yml#/components/schemas/Subscription-Change-Plan",
+  "type": "object",
+  "properties": {
+    "plan_variation_id": {
+      "$ref": "#/$defs/Subscription-Plan-Variation-Id"
+    },
+    "plan_variation_phase_id": {
+      "$ref": "#/$defs/Subscription-Plan-Phase-Id"
+    },
+    "scheduled": {
+      "type": "string",
+      "description": "When the plan change should take effect.\n\n| Value | Description |\n| ----- | ----------- |\n| `at_cycle_end` | The change is applied at the end of the current billing cycle. |",
+      "enum": [
+        "at_cycle_end"
+      ]
+    },
+    "reason": {
+      "$ref": "#/$defs/Subscription-Change-Plan-Reason"
+    }
+  },
+  "required": [
+    "plan_variation_id",
+    "scheduled"
+  ],
+  "$defs": {
+    "Subscription-Change-Plan-Reason": {
+      "type": "string",
+      "description": "The reason for the scheduled action. This field is informational and does not affect how the action is processed.\n\n| Value | Description |\n| ----- | ----------- |\n| `customer_request` | The action was requested by the customer. |\n| `merchant_request` | The action was initiated by the merchant. |",
+      "enum": [
+        "customer_request",
+        "merchant_request"
+      ],
+      "default": "merchant_request"
+    },
+    "Subscription-Plan-Phase-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the subscription plan phase."
+    },
+    "Subscription-Plan-Variation-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the subscription plan variation."
+    }
+  }
+}

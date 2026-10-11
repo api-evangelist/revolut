@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-location-creation-schema.json",
+  "title": "Location-Creation",
+  "description": "Request body for creating a location. The structure of the `details` object depends on the `type` of the location.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-locations-api-openapi.yml#/components/schemas/Location-Creation",
+  "type": "object",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Location-Creation-Online"
+    },
+    {
+      "$ref": "#/$defs/Location-Creation-Physical"
+    }
+  ],
+  "$defs": {
+    "Address-v3": {
+      "type": "object",
+      "description": "Details of a physical address.",
+      "properties": {
+        "street_line_1": {
+          "type": "string",
+          "description": "Primary address line.",
+          "maxLength": 100
+        },
+        "street_line_2": {
+          "type": "string",
+          "description": "Secondary address line, such as floor and apartment number.",
+          "maxLength": 100
+        },
+        "region": {
+          "type": "string",
+          "description": "State or province of the address.",
+          "maxLength": 100
+        },
+        "city": {
+          "type": "string",
+          "description": "City of the address.",
+          "maxLength": 100
+        },
+        "country_code": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "ISO 2-letter country code.",
+          "minLength": 2,
+          "maxLength": 2
+        },
+        "postcode": {
+          "type": "string",
+          "description": "Postal code of the address.",
+          "maxLength": 100
+        }
+      },
+      "required": [
+        "street_line_1",
+        "city",
+        "country_code",
+        "postcode"
+      ]
+    },
+    "Day-Opening-Hours": {
+      "type": "array",
+      "description": "A list of one or more time intervals for a single day. \n\nA day can have multiple intervals (e.g., closing for a lunch break).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "time",
+            "description": "The local time when the interval begins.\n\n:::note\nThe format is `hh:mm[:ss]`; seconds are optional and must be `00` if provided.\n:::"
+          },
+          "to": {
+            "type": "string",
+            "format": "time",
+            "description": "The local time when the interval ends.\n\n:::note\nThe format is `hh:mm[:ss]`; seconds are optional and must be `00` if provided.\n:::"
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ]
+      }
+    },
+    "Geo-Location": {
+      "type": "object",
+      "description": "Coordinates of the location.",
+      "properties": {
+        "lat": {
+          "type": "number",
+          "format": "double",
+          "description": "The latitude of the location, in decimal degrees.",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "lon": {
+          "type": "number",
+          "format": "double",
+          "description": "To longitude of the location, in decimal degrees.",
+          "minimum": -180,
+          "maximum": 180
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ]
+    },
+    "Location-Creation-Online": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/Location-Name"
+        },
+        "type": {
+          "$ref": "#/$defs/Location-Type"
+        },
+        "details": {
+          "$ref": "#/$defs/Location-Online-Details"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "details"
+      ]
+    },
+    "Location-Creation-Physical": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/Location-Name"
+        },
+        "type": {
+          "$ref": "#/$defs/Location-Type"
+        },
+        "details": {
+          "$ref": "#/$defs/Location-Physical-Details"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "details"
+      ]
+    },
+    "Location-Name": {
+      "type": "string",
+      "description": "Name of the location. \n\n:::warning\nThe `name` parameter's value must be unique across all locations.\n:::"
+    },
+    "Location-Online-Details": {
+      "type": "object",
+      "description": "Additional details of the location.",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "description": "Domain address of the location. Required for online locations.\n\n:::warning\nThe `domain` parameter's value must be unique across all locations.\n:::"
+        }
+      },
+      "required": [
+        "domain"
+      ]
+    },
+    "Location-Physical-Details": {
+      "type": "object",
+      "description": "Additional details of the location.",
+      "properties": {
+        "address": {
+          "$ref": "#/$defs/Address-v3"
+        },
+        "geo_location": {
+          "$ref": "#/$defs/Geo-Location"
+        },
+        "opening_hours": {
+          "$ref": "#/$defs/Opening-Hours"
+        }
+      },
+      "required": [
+        "address",
+        "geo_location",
+        "opening_hours"
+      ]
+    },
+    "Location-Type": {
+      "type": "string",
+      "description": "Type of the location.\n\n| Value | Description |\n| ----- | ----------- |\n| `online` | Represents an online store. |\n| `physical` | Represents a physical point of sale. |",
+      "enum": [
+        "online",
+        "physical"
+      ]
+    },
+    "Opening-Hours": {
+      "type": "object",
+      "description": "An object containing the opening hours for each day of the week.\n\nA day can have multiple intervals (e.g., closing for a lunch break).",
+      "properties": {
+        "monday": {
+          "description": "Opening hours for Monday.",
+          "$ref": "#/$defs/Day-Opening-Hours"
+        },
+        "tuesday": {
+          "description": "Opening hours for Tuesday.",
+          "$ref": "#/$defs/Day-Opening-Hours"
+        },
+        "wednesday": {
+          "description": "Opening hours for Wednesday.",
+          "$ref": "#/$defs/Day-Opening-Hours"
+        },
+        "thursday": {
+          "description": "Opening hours for Thursday.",
+          "$ref": "#/$defs/Day-Opening-Hours"
+        },
+        "friday": {
+          "description": "Opening hours for Friday.",
+          "$ref": "#/$defs/Day-Opening-Hours"
+        },
+        "saturday": {
+          "description": "Opening hours for Saturday.",
+          "$ref": "#/$defs/Day-Opening-Hours"
+        },
+        "sunday": {
+          "description": "Opening hours for Sunday.",
+          "$ref": "#/$defs/Day-Opening-Hours"
+        }
+      }
+    }
+  }
+}

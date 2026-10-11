@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-counterparty-countries-response-schema.json",
+  "title": "CounterpartyCountriesResponse",
+  "description": "The response containing supported bank countries and their available currencies.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-counterparties-api-openapi.yml#/components/schemas/CounterpartyCountriesResponse",
+  "type": "object",
+  "properties": {
+    "countries": {
+      "type": "array",
+      "description": "A list of supported bank countries.",
+      "items": {
+        "$ref": "#/$defs/CounterpartyCountry"
+      }
+    }
+  },
+  "required": [
+    "countries"
+  ],
+  "$defs": {
+    "BankCountryCode": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$",
+      "description": "The country of the bank, provided as a 2-letter [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) code."
+    },
+    "CounterpartyCountry": {
+      "type": "object",
+      "description": "A supported bank country with its available currencies.",
+      "properties": {
+        "country": {
+          "$ref": "#/$defs/BankCountryCode"
+        },
+        "currencies": {
+          "type": "array",
+          "description": "The currencies available for counterparty creation in this country.",
+          "items": {
+            "$ref": "#/$defs/Currency"
+          }
+        }
+      },
+      "required": [
+        "country",
+        "currencies"
+      ]
+    },
+    "Currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+    }
+  }
+}

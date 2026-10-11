@@ -1,0 +1,348 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-subscription-plan-schema.json",
+  "title": "Subscription-Plan",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-subscriptions-api-openapi.yml#/components/schemas/Subscription-Plan",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "state",
+    "created_at",
+    "updated_at",
+    "variations"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/Subscription-Plan-Id"
+    },
+    "name": {
+      "$ref": "#/$defs/Subscription-Plan-Name"
+    },
+    "trial_duration": {
+      "$ref": "#/$defs/Subscription-Plan-Trial-Duration"
+    },
+    "state": {
+      "$ref": "#/$defs/Subscription-Plan-State"
+    },
+    "created_at": {
+      "$ref": "#/$defs/Subscription-Plan-Created"
+    },
+    "updated_at": {
+      "$ref": "#/$defs/Subscription-Plan-Updated"
+    },
+    "variations": {
+      "type": "array",
+      "description": "List of subscription plan variations.",
+      "items": {
+        "$ref": "#/$defs/Subscription-Plan-Variation"
+      }
+    }
+  },
+  "$defs": {
+    "Currency": {
+      "type": "string",
+      "format": "ISO 4217",
+      "minLength": 3,
+      "maxLength": 3,
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case.\n\n:::info\nFor more information about the supported currencies, see: [Help Center](https://help.revolut.com/business/help/merchant-accounts/payments/in-which-currencies-can-i-accept-payments/).\n:::"
+    },
+    "Cycle-Count": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "description": "Number of billing cycles for this phase before moving to the next phase.\n\n| Value | Behavior |\n| ----- | -------- |\n| `null` or omitted | Phase continues indefinitely. The subscription remains in this phase with no automatic progression. |\n| Specific number (e.g., `1`, `3`, `12`) | After completing this many billing cycles, the subscription automatically moves to the next phase as determined by the `ordinal` field. |\n\n**Example**: If `cycle_count=3` and `cycle_duration=P1M`, the subscription will complete 3 monthly cycles then move to the phase with the next highest `ordinal` value.\n\n:::note\nIf no next phase exists in after a cycle with a specific `cycle_count`, the subscription will automatically stop when it completes its cycles.\n:::",
+      "title": "Cycle-Count"
+    },
+    "Cycle-Duration": {
+      "type": "string",
+      "format": "duration",
+      "description": "The length of each billing cycle for this phase in [ISO 8601 duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations).\n\nThis determines how often the customer is billed during this phase. The total time spent in a phase is `cycle_duration × cycle_count`.\n\n**Common durations**:\n\n| Duration | Description |\n| -------- | ----------- |\n| `P1M` | 1 month |\n| `P1Y` | 1 year |\n| `P15D` | 15 days |\n| `P1W` | 1 week |\n| `PT2H` | 2 hours |\n\n**Example**: If `cycle_duration=P1M` and `cycle_count=12`, the customer will be billed monthly for 12 months (1 year total)."
+    },
+    "Subscription-Amount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Subscription amount in minor currency units (e.g., cents for USD, pence for GBP).\n\nFor example, `9900` in `GBP` represents £99.00.\n\n:::info\nConversion between major and minor units varies by currency. For instance, `100` minor units equal £1.00 in `GBP`, whereas in `ISK` they represent 100 units. For more details, see the [ISO 4217 standard](https://en.wikipedia.org/wiki/ISO_4217).\n:::"
+    },
+    "Subscription-Item": {
+      "title": "Subscription item",
+      "type": "object",
+      "description": "A subscription item that defines a billing line within a plan phase. Can be either a fixed-fee (flat) item or a metered (usage) item.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Subscription-Item-Flat"
+        },
+        {
+          "$ref": "#/$defs/Subscription-Item-Usage"
+        }
+      ]
+    },
+    "Subscription-Item-Code": {
+      "type": "string",
+      "description": "A merchant-defined identifier for a usage-based subscription item. You set this code on each usage item when creating a subscription plan, and supply it when reporting consumption on [Create a subscription usage endpoint](https://developer.revolut.com/docs/api/merchant#create-subscription-usage) to target the correct metered item.\n\nThis allows a subscription with multiple usage items (e.g., `api_calls` and `storage_gb`) to receive consumption reports against the right item without relying on internal IDs.\n\nThe code must be unique within a plan phase.",
+      "maxLength": 250
+    },
+    "Subscription-Item-Flat": {
+      "type": "object",
+      "description": "Object structure of flat subscription item.",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Subscription-Item-Id"
+        },
+        "name": {
+          "$ref": "#/$defs/Subscription-Item-Name"
+        },
+        "type": {
+          "$ref": "#/$defs/Subscription-Item-Type"
+        },
+        "package_size": {
+          "$ref": "#/$defs/Subscription-Item-Package-Size"
+        },
+        "unit": {
+          "$ref": "#/$defs/Subscription-Item-Unit"
+        },
+        "quantity": {
+          "$ref": "#/$defs/Subscription-Item-Quantity"
+        },
+        "amount": {
+          "type": "integer",
+          "description": "Amount in minor currency units (e.g., cents for USD)."
+        },
+        "currency": {
+          "$ref": "#/$defs/Currency"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type",
+        "amount",
+        "currency",
+        "unit",
+        "quantity"
+      ]
+    },
+    "Subscription-Item-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The unique identifier of the subscription item."
+    },
+    "Subscription-Item-Name": {
+      "type": "string",
+      "description": "The name of the subscription item.",
+      "maxLength": 250
+    },
+    "Subscription-Item-Package-Size": {
+      "type": "number",
+      "description": "The number of units grouped together as a single billable package. Used to enable pricing of items that are too inexpensive to charge individually.\n\nFor example, a `package_size` of `1000` with a unit price of 10 minor units (£0.10 in GBP) lets you sell 1000 tokens for £0.10 — effectively pricing each token at £0.0001, below the minimum chargeable amount.\n\nSet to `1` to price each unit individually."
+    },
+    "Subscription-Item-Quantity": {
+      "type": "number",
+      "description": "The quantity of the item."
+    },
+    "Subscription-Item-Tier": {
+      "type": "object",
+      "properties": {
+        "upper_quantity_threshold": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "The upper bound of the tier (exclusive). Null means unlimited."
+        },
+        "amount": {
+          "type": "integer",
+          "description": "Per-unit amount in minor currency units (e.g., cents for USD) charged for usage within this tier's threshold range."
+        }
+      },
+      "required": [
+        "amount"
+      ]
+    },
+    "Subscription-Item-Type": {
+      "type": "string",
+      "description": "The type of subscription item.",
+      "enum": [
+        "flat",
+        "usage"
+      ]
+    },
+    "Subscription-Item-Unit": {
+      "type": "string",
+      "description": "The unit of measurement for the item.",
+      "maxLength": 100
+    },
+    "Subscription-Item-Usage": {
+      "type": "object",
+      "description": "Object structure of usage subscription item.",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Subscription-Item-Id"
+        },
+        "name": {
+          "$ref": "#/$defs/Subscription-Item-Name"
+        },
+        "type": {
+          "$ref": "#/$defs/Subscription-Item-Type"
+        },
+        "package_size": {
+          "$ref": "#/$defs/Subscription-Item-Package-Size"
+        },
+        "unit": {
+          "$ref": "#/$defs/Subscription-Item-Unit"
+        },
+        "amount": {
+          "type": "integer",
+          "description": "Flat amount per unit in minor currency units. Mutually exclusive with `tiers`."
+        },
+        "currency": {
+          "$ref": "#/$defs/Currency"
+        },
+        "tiers": {
+          "type": "array",
+          "description": "Graduated pricing tiers. Mutually exclusive with `amount`.",
+          "items": {
+            "$ref": "#/$defs/Subscription-Item-Tier"
+          }
+        },
+        "code": {
+          "$ref": "#/$defs/Subscription-Item-Code"
+        },
+        "usage_aggregation_method": {
+          "$ref": "#/$defs/Usage-Aggregation-Method"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type",
+        "currency",
+        "unit",
+        "code",
+        "usage_aggregation_method"
+      ]
+    },
+    "Subscription-Items": {
+      "type": "array",
+      "description": "A list of subscription items for this phase.",
+      "items": {
+        "$ref": "#/$defs/Subscription-Item"
+      }
+    },
+    "Subscription-Plan-Created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the subscription plan was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    },
+    "Subscription-Plan-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the subscription plan."
+    },
+    "Subscription-Plan-Name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "description": "The name of the subscription plan."
+    },
+    "Subscription-Plan-Ordinal": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "The sequential order of this phase in the subscription billing lifecycle.\n\nPhases execute in ascending order based on this value:\n- Phase with `ordinal=1` executes first\n- Phase with `ordinal=2` executes second, and so on\n\nWhen a phase completes its `cycle_count`, the subscription automatically progresses to the phase with the next `ordinal` value.\n\n**Example**: A subscription with phases ordered as `ordinal=1` (trial), `ordinal=2` (regular), `ordinal=3` (discounted) will progress through them in that sequence.",
+      "title": "Subscription-Plan-Ordinal"
+    },
+    "Subscription-Plan-Phase": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Subscription-Plan-Phase-Id"
+        },
+        "ordinal": {
+          "$ref": "#/$defs/Subscription-Plan-Ordinal"
+        },
+        "cycle_duration": {
+          "$ref": "#/$defs/Cycle-Duration"
+        },
+        "cycle_count": {
+          "$ref": "#/$defs/Cycle-Count"
+        },
+        "amount": {
+          "$ref": "#/$defs/Subscription-Amount"
+        },
+        "currency": {
+          "$ref": "#/$defs/Currency"
+        },
+        "subscription_items": {
+          "$ref": "#/$defs/Subscription-Items"
+        }
+      },
+      "required": [
+        "id",
+        "ordinal",
+        "cycle_duration"
+      ]
+    },
+    "Subscription-Plan-Phase-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the subscription plan phase."
+    },
+    "Subscription-Plan-State": {
+      "type": "string",
+      "enum": [
+        "active",
+        "deactivated"
+      ],
+      "description": "The state of the subscription plan.\n\n| State | Description |\n| ----- | ----------- |\n| `active` | The plan is active and can be used to create new subscriptions. |\n| `deactivated` | The plan has been deactivated and cannot be used for new subscriptions. |"
+    },
+    "Subscription-Plan-Trial-Duration": {
+      "type": "string",
+      "format": "duration",
+      "description": "The default trial period duration for this subscription plan in [ISO 8601 duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations) (e.g., \"P14D\" for 14 days).\n\nThis value serves as the default trial duration for all subscriptions created from this plan. Individual subscriptions can override this value at creation time.\n\n:::note\nOnly days (`D`) are allowed. Time components such as hours, minutes, or seconds are not permitted.\n:::",
+      "pattern": "^P[0-9]+D$"
+    },
+    "Subscription-Plan-Updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the subscription plan was last updated in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    },
+    "Subscription-Plan-Variation": {
+      "type": "object",
+      "required": [
+        "id",
+        "phases"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Subscription-Plan-Variation-Id"
+        },
+        "phases": {
+          "type": "array",
+          "description": "List of billing phases for this variation.",
+          "items": {
+            "$ref": "#/$defs/Subscription-Plan-Phase"
+          }
+        }
+      }
+    },
+    "Subscription-Plan-Variation-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the subscription plan variation."
+    },
+    "Usage-Aggregation-Method": {
+      "type": "string",
+      "description": "The method used to aggregate usage events over a billing cycle to calculate the chargeable amount.\n\n| Value | Behaviour |\n| ----- | --------- |\n| `sum` | Totals all reported usage events during the cycle. Use for cumulative metrics (e.g., API calls, data transferred). |\n| `latest` | Uses the most recently reported value at the end of the cycle. If no usage is reported in a cycle, `0` is used — values do not carry over from previous cycles. Use for gauge-style metrics (e.g., active seats). |\n| `max` | Uses the peak value reported during the cycle. Use for capacity-based billing (e.g., max concurrent connections). |",
+      "enum": [
+        "sum",
+        "latest",
+        "max"
+      ]
+    }
+  }
+}

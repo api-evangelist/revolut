@@ -1,0 +1,943 @@
+{
+  "@context": {
+    "@vocab": "https://revolut.com/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "revolut": "https://revolut.com/schema#",
+    "ResourceCreatedResponse": "revolut:ResourceCreatedResponse",
+    "id": {
+      "@id": "revolut:id",
+      "@type": "xsd:string"
+    },
+    "AccountingCategoryResponse": "revolut:AccountingCategoryResponse",
+    "name": {
+      "@id": "revolut:name",
+      "@type": "xsd:string"
+    },
+    "code": {
+      "@id": "revolut:code",
+      "@type": "xsd:string"
+    },
+    "created_at": {
+      "@id": "revolut:created_at",
+      "@type": "xsd:dateTime"
+    },
+    "updated_at": {
+      "@id": "revolut:updated_at",
+      "@type": "xsd:dateTime"
+    },
+    "default_tax_rate_id": {
+      "@id": "revolut:default_tax_rate_id",
+      "@type": "xsd:string"
+    },
+    "LabelResponse": "revolut:LabelResponse",
+    "CreateLabelRequest": "revolut:CreateLabelRequest",
+    "UpdateLabelRequest": "revolut:UpdateLabelRequest",
+    "LabelGroupResponse": "revolut:LabelGroupResponse",
+    "UpdateAccountingCategoryRequest": "revolut:UpdateAccountingCategoryRequest",
+    "CreateAccountingCategoryRequest": "revolut:CreateAccountingCategoryRequest",
+    "AccountingTaxRate": "revolut:AccountingTaxRate",
+    "percentage": {
+      "@id": "revolut:percentage",
+      "@type": "xsd:decimal"
+    },
+    "UpdateTaxRateRequest": "revolut:UpdateTaxRateRequest",
+    "UpdateLabelGroupRequest": "revolut:UpdateLabelGroupRequest",
+    "ErrorWithId": "revolut:ErrorWithId",
+    "error_id": {
+      "@id": "revolut:error_id",
+      "@type": "xsd:string"
+    },
+    "message": {
+      "@id": "revolut:message",
+      "@type": "xsd:string"
+    },
+    "CreateLabelGroupRequest": "revolut:CreateLabelGroupRequest",
+    "labels": {
+      "@id": "revolut:labels",
+      "@container": "@list"
+    },
+    "TaxRateResponse": "revolut:TaxRateResponse",
+    "Error": "revolut:Error",
+    "EstimatedTime": "revolut:EstimatedTime",
+    "unit": {
+      "@id": "revolut:unit",
+      "@type": "xsd:string"
+    },
+    "min": {
+      "@id": "revolut:min",
+      "@type": "xsd:integer"
+    },
+    "max": {
+      "@id": "revolut:max",
+      "@type": "xsd:integer"
+    },
+    "Account": "revolut:Account",
+    "balance": {
+      "@id": "revolut:balance",
+      "@type": "xsd:decimal"
+    },
+    "currency": {
+      "@id": "revolut:currency",
+      "@type": "@id"
+    },
+    "state": {
+      "@id": "revolut:state",
+      "@type": "xsd:string"
+    },
+    "public": {
+      "@id": "revolut:public",
+      "@type": "xsd:boolean"
+    },
+    "BeneficiaryAddress": "revolut:BeneficiaryAddress",
+    "street_line1": {
+      "@id": "revolut:street_line1",
+      "@type": "xsd:string"
+    },
+    "street_line2": {
+      "@id": "revolut:street_line2",
+      "@type": "xsd:string"
+    },
+    "region": {
+      "@id": "revolut:region",
+      "@type": "xsd:string"
+    },
+    "city": {
+      "@id": "revolut:city",
+      "@type": "xsd:string"
+    },
+    "country": {
+      "@id": "revolut:country",
+      "@type": "xsd:string"
+    },
+    "postcode": {
+      "@id": "revolut:postcode",
+      "@type": "xsd:string"
+    },
+    "PaymentSystem": "revolut:PaymentSystem",
+    "AccountBankDetailsItem": "revolut:AccountBankDetailsItem",
+    "iban": {
+      "@id": "revolut:iban",
+      "@type": "xsd:string"
+    },
+    "bic": {
+      "@id": "revolut:bic",
+      "@type": "xsd:string"
+    },
+    "account_no": {
+      "@id": "revolut:account_no",
+      "@type": "xsd:string"
+    },
+    "sort_code": {
+      "@id": "revolut:sort_code",
+      "@type": "xsd:string"
+    },
+    "routing_number": {
+      "@id": "revolut:routing_number",
+      "@type": "xsd:string"
+    },
+    "beneficiary": {
+      "@id": "revolut:beneficiary",
+      "@type": "xsd:string"
+    },
+    "beneficiary_address": {
+      "@id": "revolut:beneficiary_address",
+      "@type": "@id"
+    },
+    "bank_country": {
+      "@id": "revolut:bank_country",
+      "@type": "@id"
+    },
+    "pooled": {
+      "@id": "revolut:pooled",
+      "@type": "xsd:boolean"
+    },
+    "unique_reference": {
+      "@id": "revolut:unique_reference",
+      "@type": "xsd:string"
+    },
+    "schemes": {
+      "@id": "revolut:schemes",
+      "@container": "@list"
+    },
+    "estimated_time": {
+      "@id": "revolut:estimated_time",
+      "@type": "@id"
+    },
+    "OBReadBalance1": "revolut:OBReadBalance1",
+    "Data": {
+      "@id": "revolut:Data"
+    },
+    "Links": {
+      "@id": "revolut:Links",
+      "@type": "@id"
+    },
+    "Meta": {
+      "@id": "revolut:Meta",
+      "@type": "@id"
+    },
+    "OBActiveOrHistoricCurrencyAndAmount": "revolut:OBActiveOrHistoricCurrencyAndAmount",
+    "Amount": {
+      "@id": "revolut:Amount",
+      "@type": "@id"
+    },
+    "Currency": {
+      "@id": "revolut:Currency",
+      "@type": "xsd:string"
+    },
+    "OBCashAccount5": "revolut:OBCashAccount5",
+    "SchemeName": {
+      "@id": "revolut:SchemeName",
+      "@type": "@id"
+    },
+    "Identification": {
+      "@id": "revolut:Identification",
+      "@type": "xsd:string"
+    },
+    "Name": {
+      "@id": "revolut:Name",
+      "@type": "xsd:string"
+    },
+    "SecondaryIdentification": {
+      "@id": "revolut:SecondaryIdentification",
+      "@type": "xsd:string"
+    },
+    "OBReadBeneficiary3": "revolut:OBReadBeneficiary3",
+    "OBExternalAccountSubType1Code": "revolut:OBExternalAccountSubType1Code",
+    "OBExternalAccountType1Code": "revolut:OBExternalAccountType1Code",
+    "OBCreditLine1": "revolut:OBCreditLine1",
+    "Included": {
+      "@id": "revolut:Included",
+      "@type": "xsd:boolean"
+    },
+    "Type": {
+      "@id": "revolut:Type",
+      "@type": "@id"
+    },
+    "OBReadConsent1": "revolut:OBReadConsent1",
+    "Risk": {
+      "@id": "revolut:Risk",
+      "@type": "@id"
+    },
+    "OBAccount3": "revolut:OBAccount3",
+    "AccountId": {
+      "@id": "revolut:AccountId",
+      "@type": "@id"
+    },
+    "AccountType": {
+      "@id": "revolut:AccountType",
+      "@type": "@id"
+    },
+    "AccountSubType": {
+      "@id": "revolut:AccountSubType",
+      "@type": "@id"
+    },
+    "Nickname": {
+      "@id": "revolut:Nickname",
+      "@type": "xsd:string"
+    },
+    "OBError1": "revolut:OBError1",
+    "ErrorCode": {
+      "@id": "revolut:ErrorCode",
+      "@type": "xsd:string"
+    },
+    "Message": {
+      "@id": "revolut:Message",
+      "@type": "xsd:string"
+    },
+    "OBExternalPermissions1Code": "revolut:OBExternalPermissions1Code",
+    "OBExternalRequestStatus1Code": "revolut:OBExternalRequestStatus1Code",
+    "OBCashBalance1": "revolut:OBCashBalance1",
+    "CreditDebitIndicator": {
+      "@id": "revolut:CreditDebitIndicator",
+      "@type": "xsd:string"
+    },
+    "DateTime": {
+      "@id": "revolut:DateTime",
+      "@type": "xsd:dateTime"
+    },
+    "CreditLine": {
+      "@id": "revolut:CreditLine",
+      "@container": "@list"
+    },
+    "OBReadData1": "revolut:OBReadData1",
+    "Permissions": {
+      "@id": "revolut:Permissions",
+      "@container": "@list"
+    },
+    "ExpirationDateTime": {
+      "@id": "revolut:ExpirationDateTime",
+      "@type": "xsd:dateTime"
+    },
+    "TransactionFromDateTime": {
+      "@id": "revolut:TransactionFromDateTime",
+      "@type": "xsd:dateTime"
+    },
+    "TransactionToDateTime": {
+      "@id": "revolut:TransactionToDateTime",
+      "@type": "xsd:dateTime"
+    },
+    "OBRevolutAccountIdentificationCode": "revolut:OBRevolutAccountIdentificationCode",
+    "OBReadConsentResponse1": "revolut:OBReadConsentResponse1",
+    "OBBeneficiary3": "revolut:OBBeneficiary3",
+    "BeneficiaryId": {
+      "@id": "revolut:BeneficiaryId",
+      "@type": "xsd:string"
+    },
+    "CreditorAccount": {
+      "@id": "revolut:CreditorAccount",
+      "@type": "@id"
+    },
+    "OBBalanceType1Code": "revolut:OBBalanceType1Code",
+    "OBReadAccount3": "revolut:OBReadAccount3",
+    "OBExternalLimitType1Code": "revolut:OBExternalLimitType1Code",
+    "OBErrorResponse1": "revolut:OBErrorResponse1",
+    "Code": {
+      "@id": "revolut:Code",
+      "@type": "xsd:string"
+    },
+    "Id": {
+      "@id": "revolut:Id",
+      "@type": "xsd:string"
+    },
+    "Errors": {
+      "@id": "revolut:Errors",
+      "@container": "@list"
+    },
+    "GetApplicationResponse": "revolut:GetApplicationResponse",
+    "client_id": {
+      "@id": "revolut:client_id",
+      "@type": "xsd:string"
+    },
+    "token_endpoint_auth_method": {
+      "@id": "revolut:token_endpoint_auth_method",
+      "@type": "xsd:string"
+    },
+    "tls_client_auth_dn": {
+      "@id": "revolut:tls_client_auth_dn",
+      "@type": "xsd:string"
+    },
+    "id_token_signed_response_alg": {
+      "@id": "revolut:id_token_signed_response_alg",
+      "@type": "xsd:string"
+    },
+    "request_object_signing_alg": {
+      "@id": "revolut:request_object_signing_alg",
+      "@type": "xsd:string"
+    },
+    "redirect_uris": {
+      "@id": "revolut:redirect_uris",
+      "@container": "@list"
+    },
+    "org_jwks_endpoint": {
+      "@id": "revolut:org_jwks_endpoint",
+      "@type": "@id"
+    },
+    "org_name": {
+      "@id": "revolut:org_name",
+      "@type": "xsd:string"
+    },
+    "scope": {
+      "@id": "revolut:scope",
+      "@type": "xsd:string"
+    },
+    "RegisterApplicationResponse": "revolut:RegisterApplicationResponse",
+    "iss": {
+      "@id": "revolut:iss",
+      "@type": "xsd:string"
+    },
+    "iat": {
+      "@id": "revolut:iat",
+      "@type": "xsd:integer"
+    },
+    "exp": {
+      "@id": "revolut:exp",
+      "@type": "xsd:integer"
+    },
+    "application_type": {
+      "@id": "revolut:application_type",
+      "@type": "xsd:string"
+    },
+    "software_statement": {
+      "@id": "revolut:software_statement",
+      "@type": "xsd:string"
+    },
+    "grant_types": {
+      "@id": "revolut:grant_types",
+      "@container": "@list"
+    },
+    "ErrorResponse": "revolut:ErrorResponse",
+    "timestamp": {
+      "@id": "revolut:timestamp",
+      "@type": "xsd:integer"
+    },
+    "AccountBalanceEntry": "revolut:AccountBalanceEntry",
+    "available": {
+      "@id": "revolut:available",
+      "@type": "xsd:string"
+    },
+    "staked": {
+      "@id": "revolut:staked",
+      "@type": "xsd:string"
+    },
+    "reserved": {
+      "@id": "revolut:reserved",
+      "@type": "xsd:string"
+    },
+    "total": {
+      "@id": "revolut:total",
+      "@type": "xsd:string"
+    },
+    "BusinessMerchantCategory": "revolut:BusinessMerchantCategory",
+    "CardInvitationCreatedResponse": "revolut:CardInvitationCreatedResponse",
+    "expiry_date": {
+      "@id": "revolut:expiry_date",
+      "@type": "@id"
+    },
+    "holder_id": {
+      "@id": "revolut:holder_id",
+      "@type": "@id"
+    },
+    "virtual": {
+      "@id": "revolut:virtual",
+      "@type": "@id"
+    },
+    "label": {
+      "@id": "revolut:label",
+      "@type": "@id"
+    },
+    "spending_limits": {
+      "@id": "revolut:spending_limits",
+      "@type": "@id"
+    },
+    "spending_period": {
+      "@id": "revolut:spending_period",
+      "@type": "@id"
+    },
+    "categories": {
+      "@id": "revolut:categories",
+      "@type": "@id"
+    },
+    "merchant_controls": {
+      "@id": "revolut:merchant_controls",
+      "@type": "@id"
+    },
+    "countries": {
+      "@id": "revolut:countries",
+      "@type": "@id"
+    },
+    "accounts": {
+      "@id": "revolut:accounts",
+      "@type": "@id"
+    },
+    "SpendingLimitSingleTransaction": "revolut:SpendingLimitSingleTransaction",
+    "amount": {
+      "@id": "revolut:amount",
+      "@type": "xsd:decimal"
+    },
+    "ErrorUnprocessableEntity": "revolut:ErrorUnprocessableEntity",
+    "MerchantControlsSchema": "revolut:MerchantControlsSchema",
+    "control_type": {
+      "@id": "revolut:control_type",
+      "@type": "xsd:string"
+    },
+    "merchant_ids": {
+      "@id": "revolut:merchant_ids",
+      "@container": "@list"
+    },
+    "SpendProgram": "revolut:SpendProgram",
+    "CardInvitationUpdatedResponse": "revolut:CardInvitationUpdatedResponse",
+    "spend_program": {
+      "@id": "revolut:spend_program",
+      "@type": "@id"
+    },
+    "CardInvitationResponse": "revolut:CardInvitationResponse",
+    "card_id": {
+      "@id": "revolut:card_id",
+      "@type": "@id"
+    },
+    "ErrorWithStatus": "revolut:ErrorWithStatus",
+    "status": {
+      "@id": "revolut:status",
+      "@type": "xsd:integer"
+    },
+    "SpendingLimitsSchema": "revolut:SpendingLimitsSchema",
+    "single": {
+      "@id": "revolut:single",
+      "@type": "@id"
+    },
+    "day": {
+      "@id": "revolut:day",
+      "@type": "@id"
+    },
+    "week": {
+      "@id": "revolut:week",
+      "@type": "@id"
+    },
+    "month": {
+      "@id": "revolut:month",
+      "@type": "@id"
+    },
+    "quarter": {
+      "@id": "revolut:quarter",
+      "@type": "@id"
+    },
+    "year": {
+      "@id": "revolut:year",
+      "@type": "@id"
+    },
+    "all_time": {
+      "@id": "revolut:all_time",
+      "@type": "@id"
+    },
+    "SpendingPeriodSchema": "revolut:SpendingPeriodSchema",
+    "start_date": {
+      "@id": "revolut:start_date",
+      "@type": "xsd:date"
+    },
+    "end_date": {
+      "@id": "revolut:end_date",
+      "@type": "xsd:date"
+    },
+    "end_date_action": {
+      "@id": "revolut:end_date_action",
+      "@type": "xsd:string"
+    },
+    "SpendingLimitPeriodic": "revolut:SpendingLimitPeriodic",
+    "CardInvitationState": "revolut:CardInvitationState",
+    "CardReference": "revolut:CardReference",
+    "value": {
+      "@id": "revolut:value",
+      "@type": "xsd:string"
+    },
+    "CardProduct": "revolut:CardProduct",
+    "CardResponse": "revolut:CardResponse",
+    "contact_ids": {
+      "@id": "revolut:contact_ids",
+      "@type": "@id"
+    },
+    "product": {
+      "@id": "revolut:product",
+      "@type": "@id"
+    },
+    "last_digits": {
+      "@id": "revolut:last_digits",
+      "@type": "xsd:string"
+    },
+    "expiry": {
+      "@id": "revolut:expiry",
+      "@type": "xsd:string"
+    },
+    "references": {
+      "@id": "revolut:references",
+      "@type": "@id"
+    },
+    "can_be_unlocked": {
+      "@id": "revolut:can_be_unlocked",
+      "@type": "@id"
+    },
+    "CardState": "revolut:CardState",
+    "CardCreatedResponse": "revolut:CardCreatedResponse",
+    "CurrencyPair": "revolut:CurrencyPair",
+    "base": {
+      "@id": "revolut:base",
+      "@type": "xsd:string"
+    },
+    "quote": {
+      "@id": "revolut:quote",
+      "@type": "xsd:string"
+    },
+    "base_step": {
+      "@id": "revolut:base_step",
+      "@type": "xsd:string"
+    },
+    "quote_step": {
+      "@id": "revolut:quote_step",
+      "@type": "xsd:string"
+    },
+    "min_order_size": {
+      "@id": "revolut:min_order_size",
+      "@type": "xsd:string"
+    },
+    "max_order_size": {
+      "@id": "revolut:max_order_size",
+      "@type": "xsd:string"
+    },
+    "min_order_size_quote": {
+      "@id": "revolut:min_order_size_quote",
+      "@type": "xsd:string"
+    },
+    "CounterpartyCard": "revolut:CounterpartyCard",
+    "scheme": {
+      "@id": "revolut:scheme",
+      "@type": "xsd:string"
+    },
+    "CounterpartyRequirementsFieldOption": "revolut:CounterpartyRequirementsFieldOption",
+    "default": {
+      "@id": "revolut:default",
+      "@type": "xsd:boolean"
+    },
+    "CounterpartyRequirementsField": "revolut:CounterpartyRequirementsField",
+    "required": {
+      "@id": "revolut:required",
+      "@type": "xsd:boolean"
+    },
+    "regex": {
+      "@id": "revolut:regex",
+      "@type": "@id"
+    },
+    "options": {
+      "@id": "revolut:options",
+      "@container": "@list"
+    },
+    "CounterpartyRequirementsResponse": "revolut:CounterpartyRequirementsResponse",
+    "fields": {
+      "@id": "revolut:fields",
+      "@container": "@list"
+    },
+    "CounterpartyCountriesResponse": "revolut:CounterpartyCountriesResponse",
+    "CounterpartyError": "revolut:CounterpartyError",
+    "params": {
+      "@id": "revolut:params",
+      "@type": "@id"
+    },
+    "UpdateCounterpartyPaymentMethodRequest": "revolut:UpdateCounterpartyPaymentMethodRequest",
+    "address": {
+      "@id": "revolut:address",
+      "@type": "@id"
+    },
+    "CounterpartyAddress": "revolut:CounterpartyAddress",
+    "IndividualName": "revolut:IndividualName",
+    "first_name": {
+      "@id": "revolut:first_name",
+      "@type": "xsd:string"
+    },
+    "last_name": {
+      "@id": "revolut:last_name",
+      "@type": "xsd:string"
+    },
+    "CounterpartyRequirementsFieldRegex": "revolut:CounterpartyRequirementsFieldRegex",
+    "pattern": {
+      "@id": "revolut:pattern",
+      "@type": "xsd:string"
+    },
+    "description": {
+      "@id": "revolut:description",
+      "@type": "xsd:string"
+    },
+    "CounterpartyAccount": "revolut:CounterpartyAccount",
+    "type": {
+      "@id": "revolut:type",
+      "@type": "xsd:string"
+    },
+    "clabe": {
+      "@id": "revolut:clabe",
+      "@type": "xsd:string"
+    },
+    "ifsc": {
+      "@id": "revolut:ifsc",
+      "@type": "xsd:string"
+    },
+    "bsb_code": {
+      "@id": "revolut:bsb_code",
+      "@type": "xsd:string"
+    },
+    "route": {
+      "@id": "revolut:route",
+      "@type": "xsd:string"
+    },
+    "bank_number": {
+      "@id": "revolut:bank_number",
+      "@type": "xsd:string"
+    },
+    "branch_code": {
+      "@id": "revolut:branch_code",
+      "@type": "xsd:string"
+    },
+    "account_type": {
+      "@id": "revolut:account_type",
+      "@type": "xsd:string"
+    },
+    "tax_id": {
+      "@id": "revolut:tax_id",
+      "@type": "xsd:string"
+    },
+    "national_id": {
+      "@id": "revolut:national_id",
+      "@type": "xsd:string"
+    },
+    "phone": {
+      "@id": "revolut:phone",
+      "@type": "xsd:string"
+    },
+    "business_registration_id": {
+      "@id": "revolut:business_registration_id",
+      "@type": "xsd:string"
+    },
+    "recipient_charges": {
+      "@id": "revolut:recipient_charges",
+      "@type": "xsd:string"
+    },
+    "CounterpartyCountry": "revolut:CounterpartyCountry",
+    "currencies": {
+      "@id": "revolut:currencies",
+      "@container": "@list"
+    },
+    "CreateCounterpartyRequest": "revolut:CreateCounterpartyRequest",
+    "profile_type": {
+      "@id": "revolut:profile_type",
+      "@type": "xsd:string"
+    },
+    "revtag": {
+      "@id": "revolut:revtag",
+      "@type": "xsd:string"
+    },
+    "company_name": {
+      "@id": "revolut:company_name",
+      "@type": "xsd:string"
+    },
+    "individual_name": {
+      "@id": "revolut:individual_name",
+      "@type": "@id"
+    },
+    "CounterpartyErrorParams": "revolut:CounterpartyErrorParams",
+    "counterparty_id": {
+      "@id": "revolut:counterparty_id",
+      "@type": "xsd:string"
+    },
+    "UpdateCounterpartyPaymentMethodAddress": "revolut:UpdateCounterpartyPaymentMethodAddress",
+    "ProfileType": "revolut:ProfileType",
+    "Counterparty": "revolut:Counterparty",
+    "cards": {
+      "@id": "revolut:cards",
+      "@container": "@list"
+    },
+    "Sepa-Direct-Debit-v2": "revolut:Sepa-Direct-Debit-v2",
+    "saved_for": {
+      "@id": "revolut:saved_for",
+      "@type": "@id"
+    },
+    "debtor_iban_last_four": {
+      "@id": "revolut:debtor_iban_last_four",
+      "@type": "@id"
+    },
+    "debtor_name": {
+      "@id": "revolut:debtor_name",
+      "@type": "@id"
+    },
+    "mandate_reference": {
+      "@id": "revolut:mandate_reference",
+      "@type": "@id"
+    },
+    "billing_address": {
+      "@id": "revolut:billing_address",
+      "@type": "@id"
+    },
+    "Customer-Simplified": "revolut:Customer-Simplified",
+    "full_name": {
+      "@id": "revolut:full_name",
+      "@type": "@id"
+    },
+    "email": {
+      "@id": "revolut:email",
+      "@type": "@id"
+    },
+    "Billing-Address": "revolut:Billing-Address",
+    "street_line_1": {
+      "@id": "revolut:street_line_1",
+      "@type": "xsd:string"
+    },
+    "street_line_2": {
+      "@id": "revolut:street_line_2",
+      "@type": "xsd:string"
+    },
+    "country_code": {
+      "@id": "revolut:country_code",
+      "@type": "xsd:string"
+    },
+    "Payment-Method-Update": "revolut:Payment-Method-Update",
+    "Card-Brand-v2": "revolut:Card-Brand-v2",
+    "Customer-Created": "revolut:Customer-Created",
+    "Customer-Creation-v2": "revolut:Customer-Creation-v2",
+    "date_of_birth": {
+      "@id": "revolut:date_of_birth",
+      "@type": "@id"
+    },
+    "Customer-Update-v2": "revolut:Customer-Update-v2",
+    "Error-v2": "revolut:Error-v2",
+    "Card-v2": "revolut:Card-v2",
+    "bin": {
+      "@id": "revolut:bin",
+      "@type": "@id"
+    },
+    "last_four": {
+      "@id": "revolut:last_four",
+      "@type": "@id"
+    },
+    "expiry_month": {
+      "@id": "revolut:expiry_month",
+      "@type": "@id"
+    },
+    "expiry_year": {
+      "@id": "revolut:expiry_year",
+      "@type": "@id"
+    },
+    "cardholder_name": {
+      "@id": "revolut:cardholder_name",
+      "@type": "@id"
+    },
+    "brand": {
+      "@id": "revolut:brand",
+      "@type": "@id"
+    },
+    "funding": {
+      "@id": "revolut:funding",
+      "@type": "@id"
+    },
+    "issuer": {
+      "@id": "revolut:issuer",
+      "@type": "@id"
+    },
+    "issuer_country": {
+      "@id": "revolut:issuer_country",
+      "@type": "@id"
+    },
+    "terminal_hardware_id": {
+      "@id": "revolut:terminal_hardware_id",
+      "@type": "@id"
+    },
+    "Customers": "revolut:Customers",
+    "next_page_token": {
+      "@id": "revolut:next_page_token",
+      "@type": "@id"
+    },
+    "customers": {
+      "@id": "revolut:customers",
+      "@container": "@list"
+    },
+    "Card-Funding-v2": "revolut:Card-Funding-v2",
+    "Payment-Method-Type-v2": "revolut:Payment-Method-Type-v2",
+    "Saved-For": "revolut:Saved-For",
+    "Revolut-Pay-v2": "revolut:Revolut-Pay-v2",
+    "Customer-v3": "revolut:Customer-v3",
+    "payment_methods": {
+      "@id": "revolut:payment_methods",
+      "@container": "@list"
+    },
+    "Customer-Payment-Methods-v2": "revolut:Customer-Payment-Methods-v2",
+    "Dispute-Payment-Method-Type": "revolut:Dispute-Payment-Method-Type",
+    "Dispute-Challenge": "revolut:Dispute-Challenge",
+    "reason": {
+      "@id": "revolut:reason",
+      "@type": "@id"
+    },
+    "comment": {
+      "@id": "revolut:comment",
+      "@type": "@id"
+    },
+    "evidences": {
+      "@id": "revolut:evidences",
+      "@type": "@id"
+    },
+    "Dispute-Payment-Method-Revolut-Pay-Card": "revolut:Dispute-Payment-Method-Revolut-Pay-Card",
+    "card_brand": {
+      "@id": "revolut:card_brand",
+      "@type": "@id"
+    },
+    "card_last_four": {
+      "@id": "revolut:card_last_four",
+      "@type": "@id"
+    },
+    "Dispute-Payment-Method-Card": "revolut:Dispute-Payment-Method-Card",
+    "Dispute-Payment-Method-Sepa-Direct-Debit": "revolut:Dispute-Payment-Method-Sepa-Direct-Debit",
+    "Dispute-Payment-Method-Apple-Pay": "revolut:Dispute-Payment-Method-Apple-Pay",
+    "Dispute-Payment-Method-Google-Pay": "revolut:Dispute-Payment-Method-Google-Pay",
+    "Dispute-Evidence": "revolut:Dispute-Evidence",
+    "Dispute-Payment": "revolut:Dispute-Payment",
+    "order_id": {
+      "@id": "revolut:order_id",
+      "@type": "@id"
+    },
+    "arn": {
+      "@id": "revolut:arn",
+      "@type": "@id"
+    },
+    "payment_method": {
+      "@id": "revolut:payment_method",
+      "@type": "@id"
+    },
+    "Dispute-Challenge-Reason": "revolut:Dispute-Challenge-Reason",
+    "Dispute": "revolut:Dispute",
+    "substate": {
+      "@id": "revolut:substate",
+      "@type": "xsd:string"
+    },
+    "response_due_date": {
+      "@id": "revolut:response_due_date",
+      "@type": "xsd:dateTime"
+    },
+    "reason_code": {
+      "@id": "revolut:reason_code",
+      "@type": "xsd:string"
+    },
+    "reason_description": {
+      "@id": "revolut:reason_description",
+      "@type": "xsd:string"
+    },
+    "payment": {
+      "@id": "revolut:payment",
+      "@type": "@id"
+    },
+    "Dispute-Payment-Method-Apple-Tap-To-Pay": "revolut:Dispute-Payment-Method-Apple-Tap-To-Pay",
+    "Dispute-Payment-Method-Revolut-Pay-Account": "revolut:Dispute-Payment-Method-Revolut-Pay-Account",
+    "Dispute-Evidence-Creation": "revolut:Dispute-Evidence-Creation",
+    "file": {
+      "@id": "revolut:file",
+      "@type": "xsd:string"
+    },
+    "OBExternalConsentStatus1Code": "revolut:OBExternalConsentStatus1Code",
+    "OBExternalAccountIdentification4Code": "revolut:OBExternalAccountIdentification4Code",
+    "OBWriteDataDomestic2": "revolut:OBWriteDataDomestic2",
+    "ConsentId": {
+      "@id": "revolut:ConsentId",
+      "@type": "xsd:string"
+    },
+    "Initiation": {
+      "@id": "revolut:Initiation",
+      "@type": "@id"
+    },
+    "OBCashAccountDebtor4": "revolut:OBCashAccountDebtor4",
+    "OBWriteDataFundsConfirmationResponse1": "revolut:OBWriteDataFundsConfirmationResponse1",
+    "FundsAvailableResult": {
+      "@id": "revolut:FundsAvailableResult",
+      "@type": "@id"
+    },
+    "OBWriteFundsConfirmationResponse1": "revolut:OBWriteFundsConfirmationResponse1",
+    "OBExternalPaymentContext1Code": "revolut:OBExternalPaymentContext1Code",
+    "OBWriteDataDomesticConsentResponse2": "revolut:OBWriteDataDomesticConsentResponse2",
+    "CreationDateTime": {
+      "@id": "revolut:CreationDateTime",
+      "@type": "xsd:dateTime"
+    },
+    "Status": {
+      "@id": "revolut:Status",
+      "@type": "@id"
+    },
+    "StatusUpdateDateTime": {
+      "@id": "revolut:StatusUpdateDateTime",
+      "@type": "xsd:dateTime"
+    }
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Revolut API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Revolut's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-12) from openapi/revolut-accounting-api-openapi.yml, openapi/revolut-accounting-categories-api-openapi.yml, openapi/revolut-accounts-api-openapi.yml.",
+  "dcterms:created": "2026-10-12",
+  "dcterms:source": [
+    "openapi/revolut-accounting-api-openapi.yml",
+    "openapi/revolut-accounting-categories-api-openapi.yml",
+    "openapi/revolut-accounts-api-openapi.yml",
+    "openapi/revolut-apple-pay-merchant-registration-api-openapi.yml",
+    "openapi/revolut-applications-api-openapi.yml"
+  ]
+}

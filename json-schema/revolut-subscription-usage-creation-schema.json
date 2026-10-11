@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-subscription-usage-creation-schema.json",
+  "title": "Subscription-Usage-Creation",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-subscriptions-api-openapi.yml#/components/schemas/Subscription-Usage-Creation",
+  "type": "object",
+  "required": [
+    "subscription_id",
+    "subscription_item_code",
+    "usage_date",
+    "quantity"
+  ],
+  "properties": {
+    "subscription_id": {
+      "$ref": "#/$defs/Subscription-Id"
+    },
+    "subscription_item_code": {
+      "$ref": "#/$defs/Subscription-Item-Code"
+    },
+    "usage_date": {
+      "$ref": "#/$defs/Subscription-Usage-Date"
+    },
+    "quantity": {
+      "$ref": "#/$defs/Subscription-Usage-Quantity"
+    },
+    "metadata": {
+      "$ref": "#/$defs/Subscription-Usage-Metadata"
+    }
+  },
+  "$defs": {
+    "Subscription-Id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the subscription."
+    },
+    "Subscription-Item-Code": {
+      "type": "string",
+      "description": "A merchant-defined identifier for a usage-based subscription item. You set this code on each usage item when creating a subscription plan, and supply it when reporting consumption on [Create a subscription usage endpoint](https://developer.revolut.com/docs/api/merchant#create-subscription-usage) to target the correct metered item.\n\nThis allows a subscription with multiple usage items (e.g., `api_calls` and `storage_gb`) to receive consumption reports against the right item without relying on internal IDs.\n\nThe code must be unique within a plan phase.",
+      "maxLength": 250
+    },
+    "Subscription-Usage-Date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The timestamp indicating when the consumption actually occurred.\n\n| Constraint | Detail |\n| ---------- | ------ |\n| Format | [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time string (e.g., `YYYY-MM-DDTHH:mm:ssZ`). |\n| Timezone | Must be UTC. |\n| Validation | Revolut uses this to identify the applicable billing cycle. Accepted for the active cycle (`start_date ≤ usage_date < end_date`), for a recently ended cycle before its `usage_cutoff_date`, and for the one next upcoming cycle. Other dates are rejected. |"
+    },
+    "Subscription-Usage-Metadata": {
+      "type": "object",
+      "description": "Key-value pairs you can attach to a usage record for your own tracking and reporting purposes.\n\n| Constraint | Detail |\n| ---------- | ------ |\n| Keys | Maximum 50 keys per record. |\n| Value types | String, number, or boolean only. |\n| Number precision | Up to 20 digits before and 20 digits after the decimal point. |",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "maxProperties": 50
+    },
+    "Subscription-Usage-Quantity": {
+      "type": "number",
+      "description": "The quantity of consumption to record for this usage report. \n\nSupports up to 20 digits before and 20 digits after the decimal point.",
+      "exclusiveMinimum": 0
+    }
+  }
+}

@@ -1,0 +1,373 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-obwrite-domestic-scheduled2-schema.json",
+  "title": "OBWriteDomesticScheduled2",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-domestic-scheduled-payment-api-openapi.yml#/components/schemas/OBWriteDomesticScheduled2",
+  "required": [
+    "Data",
+    "Risk"
+  ],
+  "type": "object",
+  "properties": {
+    "Data": {
+      "$ref": "#/$defs/OBWriteDataDomesticScheduled2"
+    },
+    "Risk": {
+      "$ref": "#/$defs/OBRisk1"
+    }
+  },
+  "$defs": {
+    "OBActiveCurrencyAndAmount_SimpleType": {
+      "pattern": "^\\d{1,13}\\.\\d{1,5}$",
+      "type": "string",
+      "description": "The amount of money where the unit of currency is explicit and compliant with [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)."
+    },
+    "OBCashAccountCreditor3": {
+      "required": [
+        "Identification",
+        "Name",
+        "SchemeName"
+      ],
+      "type": "object",
+      "properties": {
+        "SchemeName": {
+          "$ref": "#/$defs/OBExternalAccountIdentification4Code"
+        },
+        "Identification": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string",
+          "description": "The account ID that the institution assigns to identify an account, which is known by the account owner."
+        },
+        "Name": {
+          "maxLength": 70,
+          "minLength": 1,
+          "type": "string",
+          "description": "The account name that the account servicing institution assigns.\n\nThe account name is the name or names of the account owner(s) represented at an account level.\n\nThe account name is not the product name or the nickname of the account.\n\n:::note\n[ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary)s might optionally validate this name to confirm the payee.\n:::"
+        },
+        "SecondaryIdentification": {
+          "maxLength": 34,
+          "minLength": 1,
+          "type": "string",
+          "description": "The secondary account ID that the account servicing institution assigns.\n\nBuilding societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination."
+        }
+      },
+      "description": "The details to identify the account."
+    },
+    "OBCashAccountDebtor4": {
+      "required": [
+        "Identification",
+        "SchemeName"
+      ],
+      "type": "object",
+      "description": "The details to identify the account from which the payment consent can be approved.\n\nIf provided in the consent, the [PSU](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) will only be able to approve the payment consent from an account which matches the provided account identifier.\n",
+      "properties": {
+        "SchemeName": {
+          "$ref": "#/$defs/OBExternalAccountIdentification4Code"
+        },
+        "Identification": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string",
+          "description": "The identifier assigned to the account, which is known by the account owner."
+        },
+        "Name": {
+          "maxLength": 70,
+          "minLength": 1,
+          "type": "string",
+          "description": "The name or names of the account owner(s) represented at an account level.\n\nThe account name is not the product name or the nickname of the account.\n\n:::warning\nThe name value is not validated against the actual owner name of the account.\n:::"
+        },
+        "SecondaryIdentification": {
+          "maxLength": 34,
+          "minLength": 1,
+          "type": "string",
+          "description": "The secondary account ID that the account servicing institution assigns.\n\nBuilding societies can use this ID to identify accounts with a roll number in addition to a sort code and account number combination."
+        }
+      }
+    },
+    "OBDomesticScheduled2": {
+      "type": "object",
+      "description": "The Initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds from the debtor account to the creditor for a single scheduled domestic payment.",
+      "allOf": [
+        {
+          "$ref": "#/$defs/OBDomesticScheduledBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "DebtorAccount": {
+              "$ref": "#/$defs/OBCashAccountDebtor4"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "CreditorAccount",
+            "InstructedAmount",
+            "InstructionIdentification",
+            "RequestedExecutionDateTime"
+          ]
+        }
+      ]
+    },
+    "OBDomesticScheduledBase": {
+      "type": "object",
+      "properties": {
+        "InstructionIdentification": {
+          "maxLength": 35,
+          "minLength": 1,
+          "type": "string",
+          "description": "The unique ID that an instructing party assigns for an instructed party to unambiguously identify the instruction.\n\nThis ID is used between the instructing party and the instructed party to refer to an individual instruction.\nIt can be included in the messages related to the instruction."
+        },
+        "EndToEndIdentification": {
+          "maxLength": 35,
+          "minLength": 1,
+          "type": "string",
+          "description": "The unique and immutable ID that the initiating party assigns to unambiguously identify the transaction.\n\nThis ID is used for reconciliation or to link tasks related to the transaction.\nIt can be included in the messages related to the transaction.\n\n:::note\nFaster Payments Scheme can access only 31 characters for the `EndToEndIdentification` field.\n:::"
+        },
+        "RequestedExecutionDateTime": {
+          "type": "string",
+          "description": "The date and time when the initiating party requests the clearing agent to process the payment.\n\nThis is the date the debtor's account is to be debited.\n\nAll dates in the JSON payloads are represented in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format.\nAll date-time fields in responses must include the timezone.\n\nFor example: `2017-04-05T10:43:07+00:00`.",
+          "format": "date-time"
+        },
+        "InstructedAmount": {
+          "required": [
+            "Amount",
+            "Currency"
+          ],
+          "type": "object",
+          "properties": {
+            "Amount": {
+              "$ref": "#/$defs/OBActiveCurrencyAndAmount_SimpleType"
+            },
+            "Currency": {
+              "pattern": "^[A-Z]{3,3}$",
+              "type": "string",
+              "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+            }
+          },
+          "description": "The amount of money to be moved between the debtor and creditor, before deduction of charges, expressed in the currency that the initiating party instructs.\n\nThis amount has to be transported unchanged through the transaction chain."
+        },
+        "CreditorAccount": {
+          "$ref": "#/$defs/OBCashAccountCreditor3"
+        },
+        "CreditorPostalAddress": {
+          "$ref": "#/$defs/OBPostalAddress6"
+        },
+        "RemittanceInformation": {
+          "$ref": "#/$defs/OBRemittanceInformation1"
+        }
+      },
+      "description": "The Initiation payload that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which is used to request movement of funds from the debtor account to the creditor for a single scheduled domestic payment."
+    },
+    "OBExternalAccountIdentification4Code": {
+      "type": "string",
+      "description": "The name of the identification scheme.",
+      "enum": [
+        "UK.OBIE.IBAN",
+        "UK.OBIE.SortCodeAccountNumber",
+        "US.RoutingNumberAccountNumber",
+        "US.BranchCodeAccountNumber"
+      ]
+    },
+    "OBExternalMerchantCategoryCode": {
+      "type": "string",
+      "description": "The merchant category code."
+    },
+    "OBExternalMerchantCustomerIdentification": {
+      "type": "string",
+      "description": "The merchant customer identification."
+    },
+    "OBExternalPaymentContext1Code": {
+      "type": "string",
+      "description": "The payment context.",
+      "enum": [
+        "BillPayment",
+        "EcommerceGoods",
+        "EcommerceServices",
+        "Other",
+        "PartyToParty"
+      ]
+    },
+    "OBPostalAddress6": {
+      "type": "object",
+      "properties": {
+        "Department": {
+          "maxLength": 70,
+          "minLength": 1,
+          "type": "string",
+          "description": "The name of the department."
+        },
+        "SubDepartment": {
+          "maxLength": 70,
+          "minLength": 1,
+          "type": "string",
+          "description": "The name of the sub-department."
+        },
+        "StreetName": {
+          "maxLength": 70,
+          "minLength": 1,
+          "type": "string",
+          "description": "The name of the street."
+        },
+        "BuildingNumber": {
+          "maxLength": 16,
+          "minLength": 1,
+          "type": "string",
+          "description": "The number of the building."
+        },
+        "PostCode": {
+          "maxLength": 16,
+          "minLength": 1,
+          "type": "string",
+          "description": "The post code of the address."
+        },
+        "TownName": {
+          "maxLength": 35,
+          "minLength": 1,
+          "type": "string",
+          "description": "The name of the town."
+        },
+        "CountrySubDivision": {
+          "maxLength": 35,
+          "minLength": 1,
+          "type": "string",
+          "description": "The subdivision of the country, such as state, region, or county."
+        },
+        "Country": {
+          "pattern": "^[A-Z]{2,2}$",
+          "type": "string",
+          "description": "The name of the country."
+        },
+        "AddressLine": {
+          "maxItems": 7,
+          "minItems": 0,
+          "type": "array",
+          "description": "The information that locates and identifies the address of the creditor, presented in free format text.",
+          "items": {
+            "maxLength": 70,
+            "minLength": 1,
+            "type": "string"
+          }
+        }
+      },
+      "description": "The postal address of the creditor, as defined by postal services."
+    },
+    "OBRemittanceInformation1": {
+      "type": "object",
+      "properties": {
+        "Unstructured": {
+          "maxLength": 140,
+          "minLength": 1,
+          "type": "string",
+          "description": "The information used for matching/reconciliation of an entry with the items that the payment is intended to settle, such as commercial invoices in an accounts' receivable system, in an unstructured form."
+        },
+        "Reference": {
+          "maxLength": 35,
+          "minLength": 1,
+          "type": "string",
+          "description": "The unique reference that the creditor assigns to unambiguously identify the payment transaction.\n\nIf available, the initiating party should provide this reference in the structured remittance information to enable reconciliation by the creditor upon receipt of the amount of money.\n\nIf the business context requires the use of a creditor reference or a payment remit identification, and only one identifier can be passed through the end-to-end chain, the creditor's reference or payment remittance identification should be quoted in the end-to-end transaction identification.\n\n:::note\nFaster Payments Scheme can accept only 18 characters for the `Reference` field.\n:::\n\n:::warning\nOnly one reference should be provided, if both `Reference` and `Unstructured` parameters are provided, then the `Unstructured` parameter will be ignored.\n:::"
+        }
+      },
+      "description": "The information used for matching an entry with the items that the transfer is intended to settle, such as commercial invoices in an accounts' receivable system."
+    },
+    "OBRisk1": {
+      "type": "object",
+      "properties": {
+        "PaymentContextCode": {
+          "$ref": "#/$defs/OBExternalPaymentContext1Code"
+        },
+        "MerchantCategoryCode": {
+          "$ref": "#/$defs/OBExternalMerchantCategoryCode"
+        },
+        "MerchantCustomerIdentification": {
+          "$ref": "#/$defs/OBExternalMerchantCustomerIdentification"
+        },
+        "DeliveryAddress": {
+          "required": [
+            "Country",
+            "TownName"
+          ],
+          "type": "object",
+          "properties": {
+            "AddressLine": {
+              "maxItems": 2,
+              "minItems": 0,
+              "type": "array",
+              "description": "The information that locates and identifies the delivery address, as defined by postal services, that is presented in free format text.",
+              "items": {
+                "maxLength": 70,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "StreetName": {
+              "maxLength": 70,
+              "minLength": 1,
+              "type": "string",
+              "description": "The name of the street."
+            },
+            "BuildingNumber": {
+              "maxLength": 16,
+              "minLength": 1,
+              "type": "string",
+              "description": "The number of the building."
+            },
+            "PostCode": {
+              "maxLength": 16,
+              "minLength": 1,
+              "type": "string",
+              "description": "The post code of the delivery address."
+            },
+            "TownName": {
+              "maxLength": 35,
+              "minLength": 1,
+              "type": "string",
+              "description": "The name of the town."
+            },
+            "CountrySubDivision": {
+              "maxItems": 2,
+              "minItems": 0,
+              "type": "array",
+              "description": "The subdivision of the country, for example, state, region or county.",
+              "items": {
+                "maxLength": 35,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "Country": {
+              "pattern": "^[A-Z]{2,2}$",
+              "type": "string",
+              "description": "The name of the country."
+            }
+          },
+          "description": "The information that locates and identifies the delivery address, as defined by postal services or in free format text."
+        }
+      },
+      "description": "The Risk section contains the risk indicators that the initiating party sends to the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary), which can be used to specify additional details for risk scoring for account information."
+    },
+    "OBWriteDataDomesticScheduled2": {
+      "required": [
+        "ConsentId",
+        "Initiation"
+      ],
+      "type": "object",
+      "properties": {
+        "ConsentId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string",
+          "description": "The unique ID that the [ASPSP](https://developer.revolut.com/docs/guides/build-banking-apps/glossary) assigns to identify the consent resource."
+        },
+        "Initiation": {
+          "$ref": "#/$defs/OBDomesticScheduled2"
+        }
+      }
+    }
+  }
+}

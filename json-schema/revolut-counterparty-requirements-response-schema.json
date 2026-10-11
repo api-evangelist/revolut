@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-counterparty-requirements-response-schema.json",
+  "title": "CounterpartyRequirementsResponse",
+  "description": "The response containing applicable counterparty fields and their validation rules.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-counterparties-api-openapi.yml#/components/schemas/CounterpartyRequirementsResponse",
+  "type": "object",
+  "properties": {
+    "fields": {
+      "type": "array",
+      "description": "A list of applicable and conditionally required fields for the specific counterparty context.",
+      "items": {
+        "$ref": "#/$defs/CounterpartyRequirementsField"
+      }
+    }
+  },
+  "required": [
+    "fields"
+  ],
+  "$defs": {
+    "CounterpartyRequirementsField": {
+      "type": "object",
+      "description": "Represents a contextual field and its rules.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the field to be provided in the [Create a counterparty endpoint](https://developer.revolut.com/docs/api/business#add-counterparty) request body. \nMatches the field names in the Create a counterparty endpoint exactly (e.g. `first_name`, `last_name`, `tax_id`, `route`, `account_type`)."
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Indicates whether this field must be provided when creating the counterparty."
+        },
+        "regex": {
+          "$ref": "#/$defs/CounterpartyRequirementsFieldRegex"
+        },
+        "options": {
+          "type": "array",
+          "description": "A list of allowed values for the field (enum).\nIf provided, the field value must be one of these options.",
+          "items": {
+            "$ref": "#/$defs/CounterpartyRequirementsFieldOption"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "required"
+      ]
+    },
+    "CounterpartyRequirementsFieldOption": {
+      "type": "object",
+      "description": "An allowed value option for the field.",
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "The accepted value to be passed to the API."
+        },
+        "default": {
+          "type": "boolean",
+          "description": "Indicates the default option for the field if there is one."
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "CounterpartyRequirementsFieldRegex": {
+      "type": "object",
+      "description": "Regular expression validation rules.",
+      "properties": {
+        "pattern": {
+          "type": "string",
+          "description": "The regex pattern the field value must match."
+        },
+        "description": {
+          "type": "string",
+          "description": "A human-readable description of the regex constraint."
+        }
+      },
+      "required": [
+        "pattern",
+        "description"
+      ]
+    }
+  }
+}

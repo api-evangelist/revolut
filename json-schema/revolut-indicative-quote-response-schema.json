@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-indicative-quote-response-schema.json",
+  "title": "IndicativeQuoteResponse",
+  "description": "The expected processing attributes for a potential transfer.",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-transfers-api-openapi.yml#/components/schemas/IndicativeQuoteResponse",
+  "type": "object",
+  "properties": {
+    "amount": {
+      "$ref": "#/$defs/Money",
+      "description": "Amount the recipient receives before fees are deducted, in major units."
+    },
+    "fee": {
+      "$ref": "#/$defs/IndicativeQuoteFee",
+      "description": "Total fee for the transfer (in source or target currency)."
+    },
+    "estimated_total": {
+      "$ref": "#/$defs/Money",
+      "description": "Total amount of money which will be charged on the sender's account."
+    },
+    "estimated_exchange_rate": {
+      "type": "string",
+      "description": "Exchange rate for the transfer.\n\nFor same-currency transfers, this field is omitted from the response."
+    },
+    "estimated_amount_after_exchange": {
+      "$ref": "#/$defs/Money",
+      "description": "Amount of the money converted to the sender's currency.\n\nFor same-currency transfers, this field is omitted from the response."
+    },
+    "estimated_arrival": {
+      "$ref": "#/$defs/IndicativeQuoteEstimatedArrival"
+    },
+    "warnings": {
+      "type": "array",
+      "description": "Potential warnings regarding the quote:\n\n- `volatile_fx_rate`: Returned when the specified FX rate is volatile.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "volatile_fx_rate"
+        ]
+      }
+    }
+  },
+  "required": [
+    "amount",
+    "fee",
+    "estimated_total"
+  ],
+  "$defs": {
+    "Currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "[ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code in upper case."
+    },
+    "IndicativeQuoteEstimatedArrival": {
+      "type": "object",
+      "description": "Estimated time and speed of funds arrival in relation to the current date and time.\nPresent if such information is available.",
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "The estimated arrival date provided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+        },
+        "speed": {
+          "type": "string",
+          "enum": [
+            "instant",
+            "in_seconds",
+            "today",
+            "tomorrow",
+            "by_date"
+          ],
+          "description": "The expected speed of the transfer.\n\nPossible values are:\n- **`instant`**: The funds are expected to reach the recipient **immediately** after the transfer is created.\n- **`in_seconds`**: The funds are expected to reach the recipient **within 5 minutes** after the transfer is created.\n- **`today`**: The funds are expected to reach the recipient by the end of the **same day** the transfer is created.\n- **`tomorrow`**: The funds are expected to reach the recipient by the end of the **day after** the transfer is created.\n- **`by_date`**: The funds are expected to reach the recipient by the end of the **day specified** in the `date` parameter."
+        }
+      },
+      "required": [
+        "date",
+        "speed"
+      ]
+    },
+    "IndicativeQuoteFee": {
+      "type": "object",
+      "description": "Details of the total fee for the transfer.",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "Fee amount in major units."
+        },
+        "currency": {
+          "$ref": "#/$defs/Currency"
+        },
+        "breakdown": {
+          "$ref": "#/$defs/IndicativeQuoteFeeBreakdown"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ]
+    },
+    "IndicativeQuoteFeeBreakdown": {
+      "type": "object",
+      "description": "Breakdown of transfer and exchange fees.\n\nWhen the total `fee` is zero, this field is omitted from the response.",
+      "properties": {
+        "transfer_fee": {
+          "$ref": "#/$defs/SimpleFee"
+        },
+        "exchange_fee": {
+          "$ref": "#/$defs/SimpleFee"
+        }
+      }
+    },
+    "Money": {
+      "type": "object",
+      "description": "A monetary amount and its associated currency.",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "Amount in major units."
+        },
+        "currency": {
+          "$ref": "#/$defs/Currency"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ]
+    },
+    "SimpleFee": {
+      "type": "object",
+      "description": "A specific fee component.",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "Fee amount in major units."
+        },
+        "currency": {
+          "$ref": "#/$defs/Currency"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ]
+    }
+  }
+}

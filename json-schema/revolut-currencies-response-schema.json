@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/revolut/main/json-schema/revolut-currencies-response-schema.json",
+  "title": "CurrenciesResponse",
+  "description": "Supported currencies, represented as an object containing other objects.\n\nThis outer object contains multiple key-value pairs, where each key is a currency code (e.g. `BTC`, `ETH`), and each corresponding value is an inner object containing details about that currency.\n\n<b><pre> &lt; * &gt; </pre></b>\n<details id='currency-schema'>\n  <summary>\n    The inner object representing a single currency. It has the following schema: \n  </summary>\n\n  | Parameter | Description |\n  |-----------|-------------|\n  | **`symbol`**    | The symbol of the currency. |\n  | **`name`**    | The full name of the currency. |\n  | **`scale`**    | The scale of the currency, that is, the number of decimal places used to express the currency's smallest unit. <br/> For example, a scale of `8` means that the currency amount can be represented with precision up to eight decimal places, e.g. BTC: `0.00000001`. |\n  | **`asset_type`**    | The type of the currency. Possible values are: `fiat`, `crypto`. |\n  | **`status`**    | Indicates whether it is available for use. |\n\n</details>",
+  "x-generated": "2026-10-12",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/revolut-configuration-api-openapi.yml#/components/schemas/CurrenciesResponse",
+  "type": "object",
+  "additionalProperties": {
+    "$ref": "#/$defs/Currency"
+  },
+  "$defs": {
+    "Currency": {
+      "type": "object",
+      "description": "A supported currency.",
+      "properties": {
+        "symbol": {
+          "type": "string",
+          "description": "The symbol of the currency."
+        },
+        "name": {
+          "type": "string",
+          "description": "The full name of the currency."
+        },
+        "scale": {
+          "type": "integer",
+          "description": "The scale of the currency, that is, the number of decimal places used to express the currency's smallest unit. \n\nFor example, a scale of `8` means that the currency amount can be represented with precision up to eight decimal places, e.g. BTC: `0.00000001`."
+        },
+        "asset_type": {
+          "type": "string",
+          "description": "The type of the currency.",
+          "enum": [
+            "fiat",
+            "crypto"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "description": "The status of the currency. \nIndicates whether it is available for use.",
+          "enum": [
+            "active",
+            "inactive"
+          ]
+        }
+      },
+      "required": [
+        "symbol",
+        "name",
+        "scale",
+        "asset_type",
+        "status"
+      ]
+    }
+  }
+}
