@@ -1,0 +1,68 @@
+# DERIVED by derive-integration-map.py (roadmap#949): each integration workflow, step by step,
+# resolved to spec file -> tag -> business capability (Turbo EA, CC BY 4.0) and the operation's
+# phrasing intent. Read from our own files; an unmapped link says why.
+slug: revolut
+workflows:
+- file: revolut-apple-pay-web-checkout.yml
+  title: Revolut + Apple Pay web checkout
+  partner: apple-pay
+  template: null
+  repos:
+  - revolut
+  - apple-pay
+  steps:
+  - step: registerDomain
+    repo: revolut
+    spec_file: revolut-apple-pay-merchant-registration-api-openapi.yml
+    operationId: registerDomainApplePay
+    tag: Apple Pay merchant registration
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: null
+    effect: null
+    unmapped: no capability edge for this spec file
+  - step: validateMerchant
+    repo: apple-pay
+    spec_file: apple-pay-merchant-validation-api-openapi.yml
+    operationId: requestPaymentSession
+    tag: Merchant Validation
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: null
+    effect: null
+    unmapped: no capability edge for this spec file
+  - step: createOrder
+    repo: revolut
+    spec_file: revolut-orders-api-openapi.yml
+    operationId: createOrder
+    tag: Orders
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: null
+    effect: null
+    unmapped: no capability edge for this spec file
+  - step: retrieveOrder
+    repo: revolut
+    spec_file: revolut-orders-api-openapi.yml
+    operationId: retrieveOrder
+    tag: Orders
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: null
+    effect: null
+    unmapped: no capability edge for this spec file
+  connects:
+    revolut:
+      capabilities: []
+      tags:
+      - Apple Pay merchant registration
+      - Orders
+    apple-pay:
+      capabilities: []
+      tags:
+      - Merchant Validation
+  intents: []
