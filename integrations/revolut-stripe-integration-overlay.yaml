@@ -4,16 +4,38 @@ overlay: 1.0.0
 info:
   title: revolut as a banking-partner in stripe's contract
   version: 1.0.0
-extends: https://raw.githubusercontent.com/api-evangelist/stripe/refs/heads/main/openapi/stripe-payment-methods-api-openapi.yml
+extends: https://raw.githubusercontent.com/api-evangelist/stripe/refs/heads/main/openapi/stripe-setup-intents-api-openapi.yml
 actions:
-- target: $.components.schemas.PostPaymentMethodsRequest.properties.ideal.properties.bank
+- target: $.components.schemas.PostSetupIntentsRequest.properties.payment_method_data.properties.ideal.properties.bank
   update:
     x-apievangelist-integration:
       values:
         revolut:
           provider: revolut
           relationship: banking-partner
-          evidence: https://github.com/api-evangelist/stripe/blob/main/openapi/stripe-payment-methods-api-openapi.yml
+          evidence: https://github.com/api-evangelist/stripe/blob/main/openapi/stripe-setup-intents-api-openapi.yml
+      method: derived
+      generated: '2026-10-12'
+      generator: build-integration-preconfigs.py
+- target: $.components.schemas.PostSetupIntentsIntentConfirmRequest.properties.payment_method_data.properties.ideal.properties.bank
+  update:
+    x-apievangelist-integration:
+      values:
+        revolut:
+          provider: revolut
+          relationship: banking-partner
+          evidence: https://github.com/api-evangelist/stripe/blob/main/openapi/stripe-setup-intents-api-openapi.yml
+      method: derived
+      generated: '2026-10-12'
+      generator: build-integration-preconfigs.py
+- target: $.components.schemas.PostSetupIntentsIntentRequest.properties.payment_method_data.properties.ideal.properties.bank
+  update:
+    x-apievangelist-integration:
+      values:
+        revolut:
+          provider: revolut
+          relationship: banking-partner
+          evidence: https://github.com/api-evangelist/stripe/blob/main/openapi/stripe-setup-intents-api-openapi.yml
       method: derived
       generated: '2026-10-12'
       generator: build-integration-preconfigs.py
