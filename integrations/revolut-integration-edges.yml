@@ -13,6 +13,8 @@ checked:
 - https://monid.ai/tools/revolut
 - https://n8n.io/integrations/revolut-business/
 - https://n8n.io/integrations/revolut/
+- https://raw.githubusercontent.com/ccxt/ccxt/master/exchanges.json
+- https://www.esma.europa.eu/sites/default/files/2024-12/CASPS.csv
 - https://www.make.com/en/integrations/revolut-business (403 challenge)
 - https://www.openbanking.org.uk/regulated-providers/revolut-bank-uk-ltd/
 - https://www.openbanking.org.uk/regulated-providers/revolut-uab/
@@ -43,7 +45,10 @@ edges:
 - partner_name: Apple Pay
   partner: apple-pay
   partner_match: domain+verified
-  partner_note: "Shared domain apple.com resolved to the product repo: Revolut's published Merchant API spec (openapi/_original/revolut-merchant-openapi.yaml, registerDomainApplePay) links https://developer.apple.com/documentation/applepaywebmerchantregistrationapi; apple-pay is the Apple Pay product repo (humanURL developer.apple.com/documentation/apple_pay_on_the_web) (verified 2026-10-13)."
+  partner_note: 'Shared domain apple.com resolved to the product repo: Revolut''s published Merchant API spec (openapi/_original/revolut-merchant-openapi.yaml,
+    registerDomainApplePay) links https://developer.apple.com/documentation/applepaywebmerchantregistrationapi;
+    apple-pay is the Apple Pay product repo (humanURL developer.apple.com/documentation/apple_pay_on_the_web) (verified
+    2026-10-13).'
   type: contract
   direction: provider-built
   category: payments
@@ -162,4 +167,47 @@ edges:
     api_families: null
     detected_by: sweep-standard-registers.py
     detected: '2026-10-12'
+- partner_name: CCXT
+  partner: null
+  partner_match: null
+  type: coverage
+  channel: open-source-node
+  relationship: connector-coverage
+  direction: partner-built
+  evidence: https://github.com/ccxt/ccxt/blob/master/ts/src/revolutx.ts
+  ccxt_id: revolutx
+  ccxt_certified: false
+  ccxt_pro: false
+  matched_by: domain:revolut.com
+  partner_gap: no ccxt repo in all/* (catalog gap)
+  detected_by: sweep-crypto.py
+  first_seen: '2026-10-13'
+- partner_name: MiCA (EU)
+  partner: null
+  type: contract
+  channel: regulator-register
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://www.esma.europa.eu/sites/default/files/2024-12/CASPS.csv
+  contract_reference:
+    register: 'ESMA interim MiCA register: crypto-asset service providers (CASPS.csv)'
+    spec_file: null
+    role: authorised-casp
+    registered_name: Revolut Digital Assets (Europe) Ltd
+    register_id: 549300ET4IUR6RCZOL84
+    competent_authority: Cyprus Securities and Exchange Commission (CySEC)
+    home_member_state: CY
+    authorised: 20/10/2025
+    services:
+    - Providing Custody and administration of crypto-assets on behalf of clients
+    - Placing of crypto-assets
+    - Exchange of crypto-assets for funds
+    - Exchange of crypto-assets for other crypto-assets
+    - Operation of a trading platform for crypto-assets
+    - Providing transfer services for crypto-assets on behalf of clients
+    matched_domain: revolut.com
+    detected_by: sweep-crypto.py
+    detected: '2026-10-13'
+  detected_by: sweep-crypto.py
+  first_seen: '2026-10-13'
 templates: []
