@@ -6,8 +6,10 @@ source:
 - https://composio.dev/toolkits/revolut
 - https://monid.ai/tools/revolut
 checked:
+- https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary
 - https://api.github.com/orgs/revolut-engineering/repos
 - https://composio.dev/toolkits/revolut
+- https://data.directory.openbankingbrasil.org.br/participants
 - https://monid.ai/tools/revolut
 - https://n8n.io/integrations/revolut-business/
 - https://n8n.io/integrations/revolut/
@@ -59,5 +61,49 @@ edges:
     value: revolut
     property: payment_method_data.ideal.bank
     detected_by: detect-payment-method-edges.py
+    detected: '2026-10-12'
+- partner_name: Consumer Data Right
+  partner: null
+  type: contract
+  channel: regulator-register
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary
+  contract_reference:
+    register: CDR Register (Australia, ACCC)
+    spec_file: null
+    role: data-holder
+    registered_name: Revolut
+    register_id: a890809f-ee12-ed11-a831-000d3a8830d6
+    matched_domain: revolut.com
+    api_families: null
+    detected_by: sweep-standard-registers.py
+    detected: '2026-10-12'
+- partner_name: Open Finance Brasil
+  partner: null
+  type: contract
+  channel: regulator-register
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://data.directory.openbankingbrasil.org.br/participants
+  contract_reference:
+    register: Open Finance Brasil directory (Banco Central do Brasil)
+    spec_file: null
+    role: participant
+    registered_name: REVOLUT SOCIEDADE DE CREDITO DIRETO S.A.
+    register_id: e7f953ef-0535-4089-b1c1-fff7675c94a6
+    matched_domain: revolut.com
+    api_families:
+    - admin
+    - discovery_outages
+    - discovery_status
+    - enrollments
+    - payments-consents
+    - payments-pix
+    - payments-pix-recurring-payments
+    - payments-pix-recurring-payments-automatic
+    - payments-recurring-consents
+    - payments-recurring-consents-automatic
+    detected_by: sweep-standard-registers.py
     detected: '2026-10-12'
 templates: []
