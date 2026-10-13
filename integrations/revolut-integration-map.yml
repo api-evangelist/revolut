@@ -66,3 +66,28 @@ workflows:
       tags:
       - Merchant Validation
   intents: []
+- file: revolut-stripe-preconfig.yml
+  title: 'revolut through stripe: PostSetupIntents preconfigured with revolut'
+  partner: stripe
+  template: null
+  repos:
+  - stripe
+  steps:
+  - step: call-with-preset
+    repo: stripe
+    spec_file: stripe-setup-intents-api-openapi.yml
+    operationId: PostSetupIntents
+    tag: Setup Intents
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: Start saving a payment method for later
+    effect: write
+    unmapped: no capability edge for this spec file
+  connects:
+    stripe:
+      capabilities: []
+      tags:
+      - Setup Intents
+  intents:
+  - Start saving a payment method for later
