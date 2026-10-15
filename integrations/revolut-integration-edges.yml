@@ -14,6 +14,7 @@ checked:
 - https://n8n.io/integrations/revolut-business/
 - https://n8n.io/integrations/revolut/
 - https://raw.githubusercontent.com/ccxt/ccxt/master/exchanges.json
+- https://www.bcb.gov.br/estabilidadefinanceira/participantespix
 - https://www.esma.europa.eu/sites/default/files/2024-12/CASPS.csv
 - https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv
 - https://www.make.com/en/integrations/revolut-business (403 challenge)
@@ -242,5 +243,79 @@ edges:
     detected_by: sweep-capital-markets.py
     detected: '2026-10-15'
   detected_by: sweep-capital-markets.py
+  first_seen: '2026-10-15'
+- partner_name: Open Finance Brasil functional certification
+  partner: null
+  partner_match: register
+  type: register
+  channel: regulator-register
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://data.directory.openbankingbrasil.org.br/participants
+  category: open finance conformance (Brazil)
+  contract_reference:
+    register: Open Finance Brasil directory, per-family CertificationStatus (submissions in github.com/OpenBanking-Brasil/conformance)
+    spec_file: null
+    standard: Open Finance Brasil
+    role: certified-participant
+    registrations:
+    - registered_name: REVOLUT SOCIEDADE DE CREDITO DIRETO S.A.
+      register_id: e7f953ef-0535-4089-b1c1-fff7675c94a6
+      cnpj: '51342763000151'
+      matched_domain: revolut.com
+      matched_by: domain
+    certified_products:
+    - product: payments
+      families:
+      - enrollments
+      - payments-consents
+      - payments-pix
+      status: Self-Certified
+      expires: '2027-10-01'
+      certification_uri: https://github.com/OpenBanking-Brasil/conformance/blob/main/submissions/functional/payments/4.0.0/51342763_Revolut---Opus-Open-Banking_payments_v4.0_09-04-2026.json
+    - product: recurring-payments
+      families:
+      - payments-pix-recurring-payments
+      - payments-pix-recurring-payments-automatic
+      - payments-recurring-consents
+      - payments-recurring-consents-automatic
+      status: Self-Certified
+      expires: '2027-04-20'
+      certification_uri: https://github.com/OpenBanking-Brasil/conformance/blob/main/submissions/functional/automatic-payments/2.2.0/51342763_Revolut---Opus-Open-Banking_automatic-payments_v2.2.0_09-04-2026.json
+    signal_note: one entry per PRODUCT TYPE, lapsed flagged; family counts are context, never read
+    detected_by: sweep-latam-open-finance.py
+    detected: '2026-10-15'
+  detected_by: sweep-latam-open-finance.py
+  first_seen: '2026-10-15'
+- partner_name: Pix (Banco Central do Brasil)
+  partner: null
+  partner_match: register
+  type: register
+  channel: regulator-register
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://www.bcb.gov.br/estabilidadefinanceira/participantespix
+  category: instant payments (Brazil)
+  contract_reference:
+    register: Pix participants (Banco Central do Brasil, https://www.bcb.gov.br/content/estabilidadefinanceira/participantes_pix/lista-participantes-instituicoes-em-adesao-pix-20261015.csv)
+    spec_file: null
+    standard: Pix
+    role: pix-participant
+    registrations:
+    - registered_name: REVOLUT SCD S.A.
+      ispb: '51342763'
+      cnpj: 51.342.763/0001-51
+      institution_type: Sociedade de Crédito Direto
+      spi_participation: Direta
+      pix_participation: Facultativa
+      pix_modality: Provedor de Conta Transacional
+      payment_initiation: true
+      matched_domain: revolut.com
+      matched_by: domain
+      identity: Open Finance Brasil directory, same CNPJ 51342763000151 ('REVOLUT SOCIEDADE DE CREDITO DIRETO S.A.')
+    signal_note: 'participation only: the domain comes from a labelled lookup (registrations[].identity)'
+    detected_by: sweep-latam-open-finance.py
+    detected: '2026-10-15'
+  detected_by: sweep-latam-open-finance.py
   first_seen: '2026-10-15'
 templates: []
