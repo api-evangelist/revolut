@@ -12,14 +12,18 @@ checked:
 - https://connectors.airbyte.com/files/registries/v0/cloud_registry.json
 - https://connectors.airbyte.com/files/registries/v0/oss_registry.json
 - https://data.directory.openbankingbrasil.org.br/participants
+- https://eservices.mas.gov.sg/fid
 - https://monid.ai/tools/revolut
 - https://n8n.io/integrations/revolut-business/
 - https://n8n.io/integrations/revolut/
 - https://raw.githubusercontent.com/ccxt/ccxt/master/exchanges.json
 - https://www.bcb.gov.br/estabilidadefinanceira/participantespix
+- https://www.bi.go.id/id/layanan/informasi-perizinan/sistem-pembayaran/default.aspx
+- https://www.bnm.gov.my/list-of-regulatees
 - https://www.esma.europa.eu/sites/default/files/2024-12/CASPS.csv
 - https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv
 - https://www.make.com/en/integrations/revolut-business (403 challenge)
+- https://www.ojk.go.id/id/kanal/iknb/data-dan-statistik/direktori/fintech/Default.aspx
 - https://www.openbanking.org.uk/regulated-providers/revolut-bank-uk-ltd/
 - https://www.openbanking.org.uk/regulated-providers/revolut-uab/
 - https://www.openbanking.org.uk/regulated-providers/revolut/
@@ -375,5 +379,32 @@ edges:
     in_cloud: true
     builder: unknown (community connector; contributor not in the record)
   detected_by: sweep-data-integration.py
+  first_seen: '2026-10-18'
+- partner_name: MAS Financial Institutions Directory
+  partner: null
+  partner_match: register
+  type: register
+  channel: regulator-register
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://eservices.mas.gov.sg/fid
+  category: open finance (Singapore)
+  contract_reference:
+    register: MAS Financial Institutions Directory
+    spec_file: null
+    standard: MAS licensing (Banking Act / Payment Services Act, Singapore)
+    role: licensed-participant
+    registrations:
+    - registered_name: REVOLUT TECHNOLOGIES SINGAPORE PTE. LTD.
+      licences:
+      - Major Payment Institution
+      matched_domain: revolut.com
+      matched_by: domain
+      evidence: https://eservices.mas.gov.sg/fid/institution/detail/218707-REVOLUT-TECHNOLOGIES-SINGAPORE-PTE-LTD
+      register_id: 218707-REVOLUT-TECHNOLOGIES-SINGAPORE-PTE-LTD
+    signal_note: 'participation only: a regulator licence; no API conformance is published by this register'
+    detected_by: sweep-gulf-asean-open-finance.py
+    detected: '2026-10-18'
+  detected_by: sweep-gulf-asean-open-finance.py
   first_seen: '2026-10-18'
 templates: []
