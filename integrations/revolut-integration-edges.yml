@@ -73,21 +73,6 @@ edges:
   - registerDomainApplePay
   - unregisterDomainApplePay
   note: The Merchant API exposes Apple Pay merchant (domain) registration operations.
-- partner_name: stripe
-  partner: stripe
-  partner_match: domain
-  type: contract
-  channel: partner-built
-  relationship: banking-partner
-  direction: partner-built
-  evidence: https://github.com/api-evangelist/stripe/blob/main/openapi/stripe-setup-intents-api-openapi.yml
-  contract_reference:
-    repo: stripe
-    spec_file: stripe-setup-intents-api-openapi.yml
-    value: revolut
-    property: payment_method_data.ideal.bank
-    detected_by: detect-payment-method-edges.py
-    detected: '2026-10-12'
 - partner_name: CCXT
   partner: null
   partner_match: null
@@ -226,6 +211,61 @@ edges:
     api_families: null
     detected_by: sweep-standard-registers.py
     detected: '2026-10-14'
+- partner_name: Zapier
+  partner: zapier
+  partner_match: aggregator
+  type: marketplace
+  marketplace: zapier-directory
+  channel: ipaas-listing
+  relationship: ipaas-bridge
+  direction: third-party
+  evidence: https://zapier.com/apps/revolut-for-business/integrations
+  category: null
+  contract_reference:
+    register: Zapier app directory (zapier.com/api/v4/apps)
+    spec_file: null
+    role: ipaas-connector:zapier
+    registered_name: Revolut Business
+    matched_domain: revolut.com
+    matched_by: domain
+    detected_by: sweep-workflow-automation.py
+    detected: '2026-10-15'
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    app_slug: revolut-for-business
+    beta: false
+    builder: unknown (not in the directory record)
+  detected_by: sweep-workflow-automation.py
+  first_seen: '2026-10-15'
+- partner_name: npm registry
+  partner: npm
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (JavaScript/TypeScript)
+  evidence: https://www.npmjs.com/package/@revolut/checkout
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: '@revolut/checkout'
+      version: 1.1.25
+      released: '2026-03-04'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@revolut/checkout
+      repo_leg: domain:revolut.com
+      publisher_leg: email:revolut.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
 - partner_name: ISO 10383 (MIC)
   partner: null
   type: register
@@ -255,108 +295,9 @@ edges:
       legal_name: REVOLUT DIGITAL ASSETS EUROPE LTD
       country: CY
     detected_by: sweep-capital-markets.py
-    detected: '2026-10-15'
+    detected: '2026-10-19'
   detected_by: sweep-capital-markets.py
-  first_seen: '2026-10-15'
-- partner_name: Open Finance Brasil functional certification
-  partner: null
-  partner_match: register
-  type: register
-  channel: regulator-register
-  relationship: standard-participant
-  direction: partner-built
-  evidence: https://data.directory.openbankingbrasil.org.br/participants
-  category: open finance conformance (Brazil)
-  contract_reference:
-    register: Open Finance Brasil directory, per-family CertificationStatus (submissions in github.com/OpenBanking-Brasil/conformance)
-    spec_file: null
-    standard: Open Finance Brasil
-    role: certified-participant
-    registrations:
-    - registered_name: REVOLUT SOCIEDADE DE CREDITO DIRETO S.A.
-      register_id: e7f953ef-0535-4089-b1c1-fff7675c94a6
-      cnpj: '51342763000151'
-      matched_domain: revolut.com
-      matched_by: domain
-    certified_products:
-    - product: payments
-      families:
-      - enrollments
-      - payments-consents
-      - payments-pix
-      status: Self-Certified
-      expires: '2027-10-01'
-      certification_uri: https://github.com/OpenBanking-Brasil/conformance/blob/main/submissions/functional/payments/4.0.0/51342763_Revolut---Opus-Open-Banking_payments_v4.0_09-04-2026.json
-    - product: recurring-payments
-      families:
-      - payments-pix-recurring-payments
-      - payments-pix-recurring-payments-automatic
-      - payments-recurring-consents
-      - payments-recurring-consents-automatic
-      status: Self-Certified
-      expires: '2027-04-20'
-      certification_uri: https://github.com/OpenBanking-Brasil/conformance/blob/main/submissions/functional/automatic-payments/2.2.0/51342763_Revolut---Opus-Open-Banking_automatic-payments_v2.2.0_09-04-2026.json
-    signal_note: one entry per PRODUCT TYPE, lapsed flagged; family counts are context, never read
-    detected_by: sweep-latam-open-finance.py
-    detected: '2026-10-15'
-  detected_by: sweep-latam-open-finance.py
-  first_seen: '2026-10-15'
-- partner_name: Pix (Banco Central do Brasil)
-  partner: null
-  partner_match: register
-  type: register
-  channel: regulator-register
-  relationship: standard-participant
-  direction: partner-built
-  evidence: https://www.bcb.gov.br/estabilidadefinanceira/participantespix
-  category: instant payments (Brazil)
-  contract_reference:
-    register: Pix participants (Banco Central do Brasil, https://www.bcb.gov.br/content/estabilidadefinanceira/participantes_pix/lista-participantes-instituicoes-em-adesao-pix-20261015.csv)
-    spec_file: null
-    standard: Pix
-    role: pix-participant
-    registrations:
-    - registered_name: REVOLUT SCD S.A.
-      ispb: '51342763'
-      cnpj: 51.342.763/0001-51
-      institution_type: Sociedade de Crédito Direto
-      spi_participation: Direta
-      pix_participation: Facultativa
-      pix_modality: Provedor de Conta Transacional
-      payment_initiation: true
-      matched_domain: revolut.com
-      matched_by: domain
-      identity: Open Finance Brasil directory, same CNPJ 51342763000151 ('REVOLUT SOCIEDADE DE CREDITO DIRETO S.A.')
-    signal_note: 'participation only: the domain comes from a labelled lookup (registrations[].identity)'
-    detected_by: sweep-latam-open-finance.py
-    detected: '2026-10-15'
-  detected_by: sweep-latam-open-finance.py
-  first_seen: '2026-10-15'
-- partner_name: Zapier
-  partner: zapier
-  partner_match: aggregator
-  type: marketplace
-  marketplace: zapier-directory
-  channel: ipaas-listing
-  relationship: ipaas-bridge
-  direction: third-party
-  evidence: https://zapier.com/apps/revolut-for-business/integrations
-  category: null
-  contract_reference:
-    register: Zapier app directory (zapier.com/api/v4/apps)
-    spec_file: null
-    role: ipaas-connector:zapier
-    registered_name: Revolut Business
-    matched_domain: revolut.com
-    matched_by: domain
-    detected_by: sweep-workflow-automation.py
-    detected: '2026-10-15'
-    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
-    app_slug: revolut-for-business
-    beta: false
-    builder: unknown (not in the directory record)
-  detected_by: sweep-workflow-automation.py
-  first_seen: '2026-10-15'
+  first_seen: '2026-10-19'
 - partner_name: Airbyte
   partner: airbyte
   partner_match: aggregator
@@ -414,34 +355,93 @@ edges:
     detected: '2026-10-18'
   detected_by: sweep-gulf-asean-open-finance.py
   first_seen: '2026-10-18'
-- partner_name: npm registry
-  partner: npm
+- partner_name: Open Finance Brasil functional certification
+  partner: null
   partner_match: register
   type: register
-  direction: provider-built
-  category: official SDK (JavaScript/TypeScript)
-  evidence: https://www.npmjs.com/package/@revolut/checkout
-  channel: package-registry
-  relationship: distribution-channel
+  channel: regulator-register
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://data.directory.openbankingbrasil.org.br/participants
+  category: open finance conformance (Brazil)
   contract_reference:
-    register: npm registry (public registry JSON)
+    register: Open Finance Brasil directory, per-family CertificationStatus (submissions in github.com/OpenBanking-Brasil/conformance)
     spec_file: null
-    language: JavaScript/TypeScript
-    packages:
-    - name: '@revolut/checkout'
-      version: 1.1.25
-      released: '2026-03-04'
-      released_field: modified
-      lapsed: false
-      page: https://www.npmjs.com/package/@revolut/checkout
-      repo_leg: domain:revolut.com
-      publisher_leg: email:revolut.com
+    standard: Open Finance Brasil
+    role: certified-participant
+    registrations:
+    - registered_name: REVOLUT SOCIEDADE DE CREDITO DIRETO S.A.
+      register_id: e7f953ef-0535-4089-b1c1-fff7675c94a6
+      cnpj: '51342763000151'
+      matched_domain: revolut.com
       matched_by: domain
-    current: true
-    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
-      24 months'
-    detected_by: sweep-official-sdks.py
-    detected: '2026-10-18'
-  detected_by: sweep-official-sdks.py
-  first_seen: '2026-10-18'
+    certified_products:
+    - product: payments
+      families:
+      - enrollments
+      - payments-consents
+      - payments-pix
+      status: Self-Certified
+      expires: '2027-10-01'
+      certification_uri: https://github.com/OpenBanking-Brasil/conformance/blob/main/submissions/functional/payments/4.0.0/51342763_Revolut---Opus-Open-Banking_payments_v4.0_09-04-2026.json
+    - product: recurring-payments
+      families:
+      - payments-pix-recurring-payments
+      - payments-pix-recurring-payments-automatic
+      - payments-recurring-consents
+      - payments-recurring-consents-automatic
+      status: Self-Certified
+      expires: '2027-04-20'
+      certification_uri: https://github.com/OpenBanking-Brasil/conformance/blob/main/submissions/functional/automatic-payments/2.2.0/51342763_Revolut---Opus-Open-Banking_automatic-payments_v2.2.0_09-04-2026.json
+    signal_note: one entry per PRODUCT TYPE, lapsed flagged; family counts are context, never read
+    detected_by: sweep-latam-open-finance.py
+    detected: '2026-10-15'
+  detected_by: sweep-latam-open-finance.py
+  first_seen: '2026-10-15'
+- partner_name: Pix (Banco Central do Brasil)
+  partner: null
+  partner_match: register
+  type: register
+  channel: regulator-register
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://www.bcb.gov.br/estabilidadefinanceira/participantespix
+  category: instant payments (Brazil)
+  contract_reference:
+    register: Pix participants (Banco Central do Brasil, https://www.bcb.gov.br/content/estabilidadefinanceira/participantes_pix/lista-participantes-instituicoes-em-adesao-pix-20261019.csv)
+    spec_file: null
+    standard: Pix
+    role: pix-participant
+    registrations:
+    - registered_name: REVOLUT SCD S.A.
+      ispb: '51342763'
+      cnpj: 51.342.763/0001-51
+      institution_type: Sociedade de Crédito Direto
+      spi_participation: Direta
+      pix_participation: Facultativa
+      pix_modality: Provedor de Conta Transacional
+      payment_initiation: true
+      matched_domain: revolut.com
+      matched_by: domain
+      identity: Open Finance Brasil directory, same CNPJ 51342763000151 ('REVOLUT SOCIEDADE DE CREDITO DIRETO S.A.')
+    signal_note: 'participation only: the domain comes from a labelled lookup (registrations[].identity)'
+    detected_by: sweep-latam-open-finance.py
+    detected: '2026-10-19'
+  detected_by: sweep-latam-open-finance.py
+  first_seen: '2026-10-15'
+- partner_name: stripe
+  partner: stripe
+  partner_match: domain
+  type: contract
+  channel: partner-built
+  relationship: banking-partner
+  direction: partner-built
+  evidence: https://github.com/api-evangelist/stripe/blob/main/openapi/stripe-payment-intents-api-openapi.yml
+  contract_reference:
+    repo: stripe
+    spec_file: stripe-payment-intents-api-openapi.yml
+    value: revolut
+    property: payment_method_data.ideal.bank
+    detected_by: detect-payment-method-edges.py
+    detected: '2026-10-12'
 templates: []
